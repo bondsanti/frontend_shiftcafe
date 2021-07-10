@@ -20,31 +20,34 @@
             </v-row>
 
             <div class="mt-4">
-              <v-text-field
-                label="USERNAME"
-                :rules="rules"
-                hide-details="auto"
-                color="secondary"
-                outlined
-                dark
-                class="mb-3"
-                append-icon="mdi-account-circle-outline"
-                v-model="username"
-              ></v-text-field>
-              <v-text-field
-                label="PASSWORD"
-                color="secondary"
-                :rules="rules"
-                dark
-                outlined
-                :type="!showPass ? 'password' : 'text'"
-                @click:append="showPass = !showPass"
-                append-icon="mdi-eye-off"
-                v-model="password"
-              ></v-text-field>
+              <v-form v-model="valid" ref="form">
+                <v-text-field
+                  label="USERNAME"
+                  :rules="rules"
+                  hide-details="auto"
+                  color="secondary"
+                  outlined
+                  dark
+                  class="mb-3"
+                  append-icon="mdi-account-circle-outline"
+                  v-model="username"
+                ></v-text-field>
+                <v-text-field
+                  label="PASSWORD"
+                  color="secondary"
+                  :rules="rules"
+                  dark
+                  outlined
+                  :type="!showPass ? 'password' : 'text'"
+                  @click:append="showPass = !showPass"
+                  append-icon="mdi-eye-off"
+                  v-model="password"
+                  @keypress.prevent.enter="login"
+                ></v-text-field>
+              </v-form>
             </div>
 
-            <v-btn block light @click="login"> Login </v-btn>
+            <v-btn block light @click="login" :disabled="!valid"> Login </v-btn>
           </v-col>
           <v-col cols="1" sm="1" md="3" lg="4"></v-col>
         </v-row>
@@ -69,34 +72,24 @@ export default {
   data() {
     return {
       showPass: false,
-      rules: [
-        value => !!value || "Required.",
-        value => (value && value.length >= 3) || "Min 3 characters"
-      ],
+      rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
       username: "",
       password: "",
       snackbar: false,
       timeout: 2000,
-      error: null
+      error: null,
+      valid: true
     };
   },
   methods: {
     async login() {
+      this.$refs.form.validate();
       const payload = {
         data: {
           username: this.username,
           password: this.password
         }
       };
-
-      // try {
-      //   await this.$auth.loginWith('local', payload)
-      //   this.$router.push('/')
-      // } catch (e) {
-      //   console.log(e)
-      //   this.snackbar = true
-      //   this.error = e.message
-      // }
 
       this.$auth.loginWith("local", payload).then(res => {
         console.log(res);

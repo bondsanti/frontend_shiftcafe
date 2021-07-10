@@ -55,17 +55,23 @@ export default {
         {
           icon: "mdi-apps",
           title: "ขาย",
-          to: "/seller"
+          to: "/seller/seller"
         },
         {
-          icon: "mdi-currency-usd ",
+          icon: "mdi-cash-register",
           title: "เงินทอน",
-          to: "/inspire"
+          to: "/seller/cashdraw"
         },
         {
           icon: "mdi-account",
-          title: "สมัครสมาชิก",
-          to: "/seller"
+
+          title: "ลงทะเบียนสมาชิก",
+          to: "/seller/register"
+        },
+       {
+          icon: "mdi-gift",
+          title: "แลก Point",
+          to: "/seller/point"
         },
         {
           icon: "mdi-archive",
@@ -77,6 +83,7 @@ export default {
           title: "จัดข้อมูลสมาชิก",
           to: "/manage/customers"
         }
+
       ],
       miniVariant: false,
 

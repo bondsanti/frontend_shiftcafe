@@ -14,7 +14,14 @@ module.exports = {
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: 'shift café' }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/logo.ico' }]
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/logo.ico' },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css2?family=Mitr&family=Sarabun&display=swap'
+      }
+    ]
   },
 
   /*
@@ -35,10 +42,10 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/vuetify', '@nuxtjs/axios', '@nuxtjs/auth'],
+  modules: ['@nuxtjs/vuetify', '@nuxtjs/axios', '@nuxtjs/auth', '@nuxtjs/moment'],
 
   axios: {
-    baseURL: 'http://192.168.1.24:5555/api'
+    baseURL: 'https://api.shift-cafe.com/api'
   },
 
   auth: {
@@ -63,6 +70,18 @@ module.exports = {
       login: '/login'
     }
   },
+  vuetify: {
+    theme: {
+      light: true, //you don't actually need this line as it's for default
+      themes: {
+        light: {
+          primary: '#1d1d1d',
+          secondary: '#ededed',
+          info: '#39b54a'
+        }
+      }
+    }
+  },
 
   /*
    ** Build configuration
@@ -72,5 +91,9 @@ module.exports = {
      ** You can extend webpack config here
      */
     extend (config, ctx) {}
+  },
+  server:{
+    port:3000 ,
+    host:'0.0.0.0'
   }
 }

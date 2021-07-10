@@ -1,622 +1,414 @@
 <template>
-  <v-app>
-     <v-sheet>
-       <v-card>
-    <v-app-bar
-      class="white--text  darken-4"
-      elevation="15"
-      dense
-      dark
-    >
-      <v-toolbar-title >
-        <v-icon> mdi-format-list-checks </v-icon>
-        customers
-      </v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <div>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-          dense
-          outlined
-          color="orange"
-          dark
-          class="mr-1 black--text text--black"
-        ></v-text-field>
-      </div>
-
-      <v-btn fab small @click.stop="drawer = !drawer" icon>
-        <v-icon>mdi-filter-outline</v-icon>
-      </v-btn>
-
-      <v-btn fab small @click.stop="dialog = true" icon>
-        <v-icon>mdi-pencil-plus</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-navigation-drawer v-model="drawer" right absolute temporary>
-      <v-list-item>
-        <v-list-item-avatar color="deep-purple accent-4">
-          <v-icon color="white">mdi-filter-outline</v-icon>
-        </v-list-item-avatar>
-
-        <v-list-item-content>
-          <v-list-item-title>customers</v-list-item-title>
-          <v-list-item-subtitle>Filters</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-divider></v-divider>
-
-      <v-list dense>
-        <v-list-item>
-          <v-list-item-content>
-            <v-select
-              :items="['All', 'platinum', 'gold', 'Low']"
-              v-model="filters.level"
-              label="level"
-              hide-details
-              dense
-              outlined
-            ></v-select>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item>
-          <v-list-item-content>
-            <v-select
-              :items="['All', 'Overdue', 'For today', 'For the future']"
-              v-model="filters.deadline"
-              label="Deadline"
-              hide-details
-              dense
-              outlined
-            ></v-select>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-data-table
-      :search="search"
-      :headers="headers"
-      :items="tasks"
-      sort-by="deadline"
-    >
-      <template v-slot:top>
-        <v-toolbar flat height="0">
-          <v-dialog v-model="dialog" max-width="500px">
-            <v-card>
-              <v-card-title>
-                <span class="headline">{{ formTitle }}</span>
-              </v-card-title>
-
-              <v-card-text class="pb-0">
-                <v-container>
-                  <v-form ref="form" v-model="form_valid" lazy-validation>
-                    <v-row class="mt-1">
-                      <v-col cols="12" sm="6" md="12">
-                        <v-text-field
-                          v-model="editedItem.name"
-                          :rules="[(v) => !!v || 'Task Name is required']"
-                          :readonly="editedIndex === 0"
-                          required
-                          label="Task Name"
-                          dense
+  <v-container>
+    <v-row>
+      <v-col cols="12">
+        <base-material-card class="px-5 py-3">
+          <v-card-text class="px-0 pb-0">
+            <v-sheet>
+              <v-data-table
+                :headers="headers"
+                :items="desserts"
+                :search="search"
+                sort-by="calories"
+                class="elevation-5 rounded-lg px-5 py-7"
+              >
+                <template v-slot:top color="#1d1d1d">
+                  <v-toolbar class="mb-2 rounded-lg " color="#1d1d1d" dark flat>
+                    <v-icon class="mx-2" dark>
+                    mdi-clipboard account outline
+                  </v-icon>
+                    <v-toolbar-title>ระบบจัดสมาชิก</v-toolbar-title>
+                    <v-divider class="mx-4" inset vertical></v-divider>
+                    <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="ค้นหา"
+                      single-line
+                      hide-details
+                      class="subheading font-weight-bold"
+                    ></v-text-field>
+                    <v-spacer></v-spacer>
+                    <v-dialog v-model="dialog" max-width="500px">
+                      <template v-slot:activator="{ attrs }">
+                        <!-- <v-btn
+                        
+                          class="ma-2"
+                          color="1d1d1d"
                           outlined
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-select
-                          :items="['platinum', 'gold', 'Low']"
-                          v-model="editedItem.level"
-                          :rules="[(v) => !!v || 'Task level is required']"
-                          :readonly="editedIndex === 0"
-                          required
-                          label="level"
-                          dense
-                          outlined
-                        ></v-select>
-                      </v-col>
-
-                      <v-col cols="12" sm="6" md="4">
-                        <v-dialog
-                          ref="dialog"
-                          v-model="modal_date_picker"
-                          persistent
-                          width="290px"
+                          dark
+                          v-bind="attrs"
+                          @click="addEmp"
                         >
-                          <template v-slot:activator="{ on }">
-                            <v-text-field
-                              v-model="editedItem.deadline"
-                              :rules="[
-                                (v) => !!v || 'Task Deadline is required',
-                              ]"
-                              :readonly="editedIndex === 0"
-                              required
-                              label="Deadline"
-                              dense
-                              outlined
-                              v-on="editedIndex === 0 ? '' : on"
-                            ></v-text-field>
-                          </template>
-                          <v-date-picker
-                            v-model="editedItem.deadline"
-                            scrollable
-                            class="pb-2"
+                          <v-icon dark>
+                            mdi-plus
+                          </v-icon>
+                          เพิ่มสมาชิก
+                        </v-btn> -->
+                      </template>
+                      <v-card>
+                        <v-card-title>
+                          <v-card-title
+                            class="black white--text text-h5 elevation-5 rounded-lg"
                           >
-                            <v-btn
-                              text
-                              color="primary"
-                              @click="modal_date_picker = false"
-                            >
-                              Cancel
-                            </v-btn>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              color="blue darken-1"
-                              class="white--text"
-                              @click="$refs.dialog.save(editedItem.deadline)"
-                            >
-                              Select
-                            </v-btn>
-                          </v-date-picker>
-                        </v-dialog>
-                      </v-col>
+                            <v-icon class="ma-2" dark>
+                              mdi-account
+                            </v-icon>
+                            {{ formTitle }}
+                          </v-card-title>
+                        </v-card-title>
+                        <v-card-text>
+                          <v-container>
+                            <v-row>
+                              <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                  dense
+                                  filled
+                                  solo-inverted
+                                  v-model="emp.pname"
+                                  label="คำนำหน้าชื่อ"
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                  dense
+                                  filled
+                                  solo-inverted
+                                  v-model="emp.fname"
+                                  label="ชื่อ"
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="6" md="4">
+                                <v-text-field
+                                  dense
+                                  filled
+                                  solo-inverted
+                                  v-model="emp.lname"
+                                  label="นามสกุล"
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                  dense
+                                  filled
+                                  solo-inverted
+                                  type="date"
+                                  v-model="emp.birthday"
+                                  label="birthday"
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                  dense
+                                  filled
+                                  solo-inverted
+                                  v-model="emp.tel"
+                                  label="เบอร์โทรติดต่อ"
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                  dense
+                                  filled
+                                  solo-inverted
+                                  v-model="emp.email"
+                                  label="e-mail"
+                                ></v-text-field>
+                              </v-col>
+                              <v-col cols="12" sm="6" md="6">
+                                <v-text-field
+                                  dense
+                                  filled
+                                  solo-inverted
+                                  v-model="emp.address"
+                                  label="ที่อยู่"
+                                ></v-text-field>
+                              </v-col>
+                            </v-row>
+                          </v-container>
+                        </v-card-text>
 
-                      <v-col cols="12">
-                        <v-textarea
-                          outlined
-                          dense
-                          name="task_details"
-                          label="Task Details (Optional)"
-                          auto-grow
-                          v-model="editedItem.details"
-                          :readonly="editedIndex === 0"
-                        ></v-textarea>
-                      </v-col>
-                    </v-row>
-                  </v-form>
-                </v-container>
-              </v-card-text>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn color="blue darken-1" text @click="close">
+                            ยกเลิก
+                          </v-btn>
+                          <v-btn color="blue darken-1" text @click="save">
+                            บันทึก
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
 
-              <v-card-actions v-if="editedIndex !== 0" class="pb-4">
-                <v-btn color="blue darken-1" text @click="close">
-                  Cancel
-                </v-btn>
+                    <v-dialog v-model="dialogDelete" max-width="300px">
+                      <v-sheet
+                        class="px-7 pt-7 pb-4 mx-auto text-center d-inline-block"
+                        color="#d1d1d1d"
+                        dark
+                      >
+                        <v-card-title class="text-h5">
+                          คุณต้องการลบหรือไม่
+                        </v-card-title>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
 
-                <v-spacer></v-spacer>
+                          <v-btn
+                            x-large
+                            class="ma-1"
+                            color=""
+                            plain
+                            text
+                            @click="closeDelete"
+                            >ยกเลิก</v-btn
+                          >
+                          <v-btn
+                            x-large
+                            plain
+                            color="error"
+                            class="ma-1"
+                            text
+                            @click="deleteItemConfirm"
+                            >ลบ</v-btn
+                          >
 
-                <v-btn
-                  color="blue darken-1"
-                  class="white--text"
-                  :loading="loading"
-                  plain
-                  @click="save"
-                >
-                  Save
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+                          <v-spacer></v-spacer>
+                        </v-card-actions>
+                      </v-sheet>
+                    </v-dialog>
+                  </v-toolbar>
+                </template>
+                <template v-slot:item.actions="{ item }">
+                  <v-btn
+                    outlined
+                    rounded
+                    class="mr-2"
+                    color="#1d1d1d"
+                    @click="editItem(item)"
+                  >
+                    <v-icon dark>
+                      mdi-pencil
+                    </v-icon>
+                    แก้ไข
+                  </v-btn>
+                  <v-btn
+                  
+                    outlined
+                    rounded
+                    class="mr-2"
+                    color="error"
+                    @click="deleteItem(item)"
+                  >
+                    ลบ
+                  </v-btn>
+                </template>
 
-          <v-dialog v-model="dialogDelete" max-width="300px">
-            <v-card>
-              <v-card-title class="subtitle-1">แน่ใจแล้วใช่มั้ย?</v-card-title>
-              <v-card-actions class="pb-4">
-                <!-- close -->
-                <v-btn
-                  :disabled="loading"
-                  class="ma-1"
-                  color="grey"
-                  plain
-                  @click="closeDelete"
-                >
-                  ยกเลิก
-                </v-btn>
-                <v-spacer></v-spacer>
-                <!-- del confirm -->
-                <v-btn
-                  :loading="loading"
-                  class="ma-1"
-                  color="error"
-                  plain
-                  @click="deleteItemConfirm"
-                >
-                  ลบ
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
-
-      <template v-slot:[`item.level`]="{ item }">
-        <v-chip
-          class="ma-2"
-          :color="getlevelColor(item.level)"
-          text-color="white"
-          small
-        >
-          {{ item.level }}
-        </v-chip>
-      </template>
-
-      <template v-slot:[`item.deadline`]="{ item }">
-        <v-chip
-          class="ma-2"
-          :color="getDateColor(item.deadline)"
-          :text-color="getDateColor(item.deadline)"
-          outlined
-          small
-        >
-          {{ getFormattedDate(item.deadline) }}
-        </v-chip>
-      </template>
-
-      <template v-slot:[`item.actions`]="{ item }">
-        <!-- view -->
-        <v-btn
-          class="white--text"
-          color="green"
-          elevation="0"
-          medium
-          outlined
-          @click="viewItem(item)"
-        >
-          <v-icon>mdi-eye</v-icon>ข้อมมูล
-        </v-btn>
-        <!-- edit -->
-        <v-btn
-          class="white--text"
-          color="orange"
-          elevation="0"
-          medium
-          outlined
-          @click="editItem(item)"
-        >
-          <v-icon>mdi-delete</v-icon>แก้ไข
-        </v-btn>
-        <!-- del -->
-        <v-btn
-          class="white--text"
-          color="red"
-          elevation="0"
-          medium
-          outlined
-          @click="deleteItem(item)"
-        >
-          <v-icon>mdi-delete</v-icon>ลบ
-        </v-btn>
-      </template>
-
-      <template v-slot:no-data>
-        <div class="mt-4 mb-4">
-          Nothing to show 😞<br />
-          <a class="text-decoration-underline" @click="initialize"
-            >Click here</a
-          >
-          to reset.
-        </div>
-      </template>
-    </v-data-table>
-       </v-card>
-     </v-sheet>
-  </v-app>
+                <template v-slot:item.birthday="{ item }">
+                  <span>{{ item.birthday | moment }}</span>
+                </template>
+                <template v-slot:no-data>
+                  <v-btn color="primary" @click="initialize"> Reset </v-btn>
+                </template>
+              </v-data-table>
+            </v-sheet>
+          </v-card-text>
+        </base-material-card>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
-
 <script>
+import moment from "moment";
 export default {
+  middleware: "auth",
+  async asyncData({ $axios }) {
+    //  const emp = await $axios.$get('/api/employee')
+    //  console.log(emp)
+  },
   data: () => ({
     loading: false,
-    filters: {
-      priority: '',
-      status: '',
-      deadline: '',
-    },
-    drawer: null,
-    search: '',
+    search: "",
+    // loading: true,
     dialog: false,
     dialogDelete: false,
-    tasks: [],
+    headers: [
+      {
+        text: "คำนำหน้าชื่อ",
+
+        value: "pname"
+      },
+      {
+        text: "ชื่อจริง",
+
+        value: "fname"
+      },
+      { text: "นามสกุล", value: "lname" },
+      { text: "วันเกิด ", value: "birthday" },
+      { text: "เบอร์โทร ", value: "tel" },
+      { text: "อีเมล์", value: "email" },
+      { text: "ที่อยู่", value: "address" },
+      { text: 'ระดับสมาชิก', value: 'level' },
+      { text: 'แต้มสะสม', value: 'point' },
+      { text: "Actions", value: "actions", sortable: false }
+    ],
+
+    desserts: [],
+
     editedIndex: -1,
-    editedItem: {
-      name: '',
-      priority: '',
-      status: '',
-      deadline: '',
-      details: '',
+    emp: {
+      _id: "",
+      pname: "",
+      fname: "",
+      lname: "",
+      birthday: "",
+      tel: "",
+      email: "",
+      address: "",
+      level:"",
+      point:""
     },
-    defaultItem: {
-      name: '',
-      priority: '',
-      status: '',
-      deadline: '',
-      details: '',
-    },
-    modal_date_picker: false,
-    form_valid: true,
+    type: null,
+    deleteId: null
   }),
-
   computed: {
-    headers() {
-      return [
-        {
-          text: 'คำนำหน้าชื่อ',
-          value: 'pname',
-        },
-        {
-          text: 'ชื่อจริง',
-          value: 'fname',
-        },
-        { text: 'นามสกุล', value: 'lname' },
-        { text: 'Username', value: 'username' },
-        { text: 'วันเกิด ', value: 'birthday' },
-        { text: 'เบอร์โทร ', value: 'tel' },
-        { text: 'อีเมล์', value: 'email' },
-        { text: 'ที่อยู่', value: 'address' },
-        // { text: 'Task', align: 'start', sortable: false, value: 'name', divider: true },
-        {
-          text: 'Priority',
-          value: 'priority',
-          align: 'center',
-          filter: (value) => {
-            if (!this.filters.priority || this.filters.priority === 'All')
-              return true
-            return value === this.filters.priority
-          },
-        },
-        {
-          text: 'Status',
-          value: 'status',
-          align: 'center',
-          filter: (value) => {
-            if (!this.filters.status || this.filters.status === 'All')
-              return true
-            return value === this.filters.status
-          },
-        },
-        {
-          text: 'Deadline',
-          value: 'deadline',
-          align: 'center',
-          filter: (value) => {
-            if (!this.filters.deadline || this.filters.deadline === 'All')
-              return true
-            return this.classifyDate(value) === this.filters.deadline
-          },
-        },
-        { text: 'Actions', align: 'center', value: 'actions', sortable: false },
-      ]
-    },
     formTitle() {
-      if (this.editedIndex === -1) {
-        return 'New task'
-      } else if (this.editedIndex === 0) {
-        return 'View task'
-      } else {
-        return 'Edit task'
-      }
-    },
+      return this.editedIndex === -1 ? "เพิ่มสมาชิก" : "แก้ไขสมาชิก";
+    }
   },
-
   watch: {
     dialog(val) {
-      val || this.close()
+      val || this.close();
     },
     dialogDelete(val) {
-      val || this.closeDelete()
-    },
+      val || this.closeDelete();
+    }
   },
-
   created() {
-    this.initialize()
+    this.initialize();
   },
-
   methods: {
-    getPriorityColor(priority) {
-      if (priority === 'High') return 'red'
-      else if (priority === 'Medium') return 'yellow'
-      else return 'grey'
-    },
-
-    getStatusColor(status) {
-      if (status === 'To do') return 'blue'
-      else if (status === 'Doing') return 'orange'
-      else return 'success'
-    },
-
-    getFormattedDate(date) {
-      return new Date(date).toJSON().slice(0, 10).replace(/-/g, '/')
-    },
-
-    classifyDate(date) {
-      if (new Date().toJSON().slice(0, 10) === date) return 'For today'
-      else if (new Date().toJSON().slice(0, 10) > date) return 'Overdue'
-      else return 'For the future'
-    },
-
-    getDateColor(date) {
-      if (this.classifyDate(date) === 'For today') return 'orange'
-      else if (this.classifyDate(date) === 'Overdue') return 'red'
-      else return 'success'
-    },
-
     initialize() {
-      this.tasks = [
-        {
-          name: 'Make the bed',
-          details:
-            'Lorem ipsum is a placeholder text used to fill unfilled spaces until proper text is found.',
-          priority: 'Low',
-          status: 'To do',
-          deadline: '2022-05-05',
-        },
-        {
-          name: 'Have breakfast',
-          details:
-            'Lorem ipsum is a placeholder text used to fill unfilled spaces until proper text is found.',
-          priority: 'High',
-          status: 'Doing',
-          deadline: '2021-05-22',
-        },
-        {
-          name: 'Take a shower',
-          details:
-            'Lorem ipsum is a placeholder text used to fill unfilled spaces until proper text is found.',
-          priority: 'Medium',
-          status: 'Done',
-          deadline: '2023-05-03',
-        },
-        {
-          name: 'Call mom',
-          details:
-            'Lorem ipsum is a placeholder text used to fill unfilled spaces until proper text is found.',
-          priority: 'High',
-          status: 'Doing',
-          deadline: '2021-05-25',
-        },
-        {
-          name: 'Take the dog for a walk',
-          details:
-            'Lorem ipsum is a placeholder text used to fill unfilled spaces until proper text is found.',
-          priority: 'Medium',
-          status: 'To do',
-          deadline: '2024-05-13',
-        },
-        {
-          name: 'Do the dishes',
-          details:
-            'Lorem ipsum is a placeholder text used to fill unfilled spaces until proper text is found.',
-          priority: 'High',
-          status: 'To do',
-          deadline: '2021-05-21',
-        },
-        {
-          name: 'Watch Game of Thrones',
-          details:
-            'Lorem ipsum is a placeholder text used to fill unfilled spaces until proper text is found.',
-          priority: 'Low',
-          status: 'Doing',
-          deadline: '2021-05-09',
-        },
-        {
-          name: 'Go shopping',
-          details:
-            'Lorem ipsum is a placeholder text used to fill unfilled spaces until proper text is found.',
-          priority: 'Medium',
-          status: 'Done',
-          deadline: '2021-05-20',
-        },
-        {
-          name: 'Take a nap',
-          details:
-            'Lorem ipsum is a placeholder text used to fill unfilled spaces until proper text is found.',
-          priority: 'High',
-          status: 'To do',
-          deadline: '2023-05-16',
-        },
-        {
-          name: 'Go to the gym',
-          details:
-            'Lorem ipsum is a placeholder text used to fill unfilled spaces until proper text is found.',
-          priority: 'Low',
-          status: 'Done',
-          deadline: '2021-05-19',
-        },
-      ]
+      this.loading = true;
+      this.$axios.$get("/employee").then(desserts => {
+        this.desserts = desserts;
+      });
+      this.desserts = [];
     },
-
-    viewItem(item) {
-      this.editedIndex = 0
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
-    },
-
     editItem(item) {
-      this.editedIndex = this.tasks.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
+      // this.editedIndex = this.desserts.indexOf(item)
+      // this.editedItem = Object.assign({}, item)
+      this.type = "edit";
+      this.emp = item;
+      this.dialog = true;
     },
-
     deleteItem(item) {
-      this.editedIndex = this.tasks.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
+      this.deleteId = item._id;
+      this.editedIndex = this.desserts.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
     },
-    async deleteItemConfirm() {
-      this.loading = true
-      this.tasks.splice(this.editedIndex, 1)
-      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      this.loading = false
-      this.closeDelete()
+    deleteItemConfirm() {
+      this.desserts.splice(this.editedIndex, 1);
+      this.$axios
+        .$delete("/api/employee/" + this.deleteId)
+        .then(() => {
+          this.closeDelete();
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      this.closeDelete();
     },
 
     close() {
-      this.$refs.form.resetValidation()
-      this.dialog = false
+      this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
     },
-
     closeDelete() {
-      this.dialogDelete = false
+      this.dialogDelete = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
     },
-
-    // save() {
-    //   if (this.validateForm()) {
-    //     if (this.editedIndex > -1) {
-    //       Object.assign(this.tasks[this.editedIndex], this.editedItem)
-    //     } else {
-    //       this.tasks.push(this.editedItem)
-    //     }
-    //     this.close()
-    //   }
-    // },
-
-    async save() {
-      this.loading = true
-      if (this.validateForm()) {
-        if (this.editedIndex > -1) {
-          Object.assign(this.tasks[this.editedIndex], this.editedItem)
-await new Promise((resolve) => setTimeout(resolve, 1000))
-
-        } else {
-          this.tasks.push(this.editedItem)
-          await new Promise((resolve) => setTimeout(resolve, 1000))
-        }
-        this.close()
+    save() {
+      // if (this.editedIndex > -1) {
+      //   Object.assign(this.desserts[this.editedIndex], this.editedItem)
+      // } else {
+      //   this.desserts.push(this.editedItem)
+      // }
+      if (this.type === "add") {
+        this.loading = true;
+        this.$axios
+          .$post("/api/employee", {
+            ...this.emp,
+            ref_id_role: "60e274847a205d160021ffbe",
+            idcard: "123654789"
+          })
+          .then(() => {
+            this.close();
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      } else {
+        this.loading = true;
+        this.$axios
+          .$put("/api/employee/" + this.emp._id, this.emp)
+          .then(() => {
+            this.close();
+          })
+          .catch(e => {
+            console.log(e);
+          });
       }
-
-      this.loading = false
-      this.close()
+      this.close();
     },
-
-    validateForm() {
-      return this.$refs.form.validate()
+    toBuddhistYear(moment, format) {
+      var christianYear = moment.format("YYYY");
+      var buddhishYear = (parseInt(christianYear) + 543).toString();
+      return moment
+        .format(
+          format
+            .replace("YYYY", buddhishYear)
+            .replace("YY", buddhishYear.substring(2, 4))
+        )
+        .replace(christianYear, buddhishYear);
     },
+    addEmp() {
+      this.type = "add";
+      this.emp = {
+        _id: "",
+        username: "",
+        password: "",
+        idcard: "",
+        pname: "",
+        fname: "",
+        lname: "",
+        birthday: "",
+        tel: "",
+        email: "",
+        address: ""
+      };
+      this.dialog = true;
+    }
   },
-}
+  filters: {
+    moment: function(date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("Do MMMM YYYY");
+    }
+  }
+};
 </script>
-<style scoped>
-.v-application .primary--text {
-    color: #1d0000 !important;
-    caret-color: #000000 !important;
-}
-.theme--light.v-label {
-    color: rgb(0 0 0 / 60%);
+<style>
+#table > .v-data-footer .v-icon {
+  color: rgb(255, 0, 0);
 }
 </style>

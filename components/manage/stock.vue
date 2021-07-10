@@ -12,34 +12,45 @@
                 :style="{
                   background: $vuetify.theme.themes[theme].formBackground
                 }"
-                class="elevation-5 rounded-lg px-5 py-7"
+                class="elevation-5 rounded-lg px-5 py-2"
               >
                 <v-row class="mb-0">
                   <v-col cols="12">
-                    <v-toolbar-title>จัดการStock</v-toolbar-title>
-                  </v-col>
-                </v-row>
-
-                <v-btn
+                    <v-toolbar class="mb-2 rounded-lg " color="#1d1d1d" dark flat>
+                    <v-toolbar-title>
+                      <v-icon class="mx-2" dark>
+                    mdi-archive
+                  </v-icon>
+                      จัดการStock</v-toolbar-title>
+                    <v-divider class="mx-4" inset vertical></v-divider>
+                     <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
+                      <v-btn
                   @click="addRow"
                   outlined
-                  color="primary"
+                  color="1d1d1d"
                   class="mx-6 ma-6"
                 >
                   <v-icon dark>
                     mdi-plus
                   </v-icon>
-                  <span>เพิ่ม</span>
+                  <span>เพิ่มรายการ</span>
                 </v-btn>
 
+                    </v-toolbar>
+                  </v-col>
+                </v-row>
+
+          
                 <v-row
                   class="rounded mb-2 mx-0"
                   v-for="(job, index) in formData.jobs"
                   :key="index"
                   style="border: 1px solid lightgrey;"
                 >
-                  <v-col cols="12" md="3">
+                  <v-col cols="3" md="3">
                     <v-autocomplete
+                    outlined
                       v-model="job.position"
                       :items="positions"
                       label="เมนู"
@@ -47,17 +58,29 @@
                       :rules="requiredRules"
                     />
                   </v-col>
-                  <v-col cols="12" md="4">
+                  <v-col cols="3" md="2">
                     <v-text-field
-                      label="จำนวล"
+                    outlined
+                      label="จำนวลที่คาดว่าจะผลิดได้"
                       v-model="job.company"
                       :rules="requiredRules"
                       hint="The name is quite enough."
                       prepend-icon="mdi-bag-personal-outline"
                     />
                   </v-col>
-                  <v-col cols="12" md="4">
+                  <v-col cols="3" md="2">
+                    <v-text-field
+                    outlined
+                      label="จำนวลไกล้หมดให้แจ้งเตือน"
+                      v-model="job.company"
+                      :rules="requiredRules"
+                      hint="The name is quite enough."
+                      prepend-icon="mdi-bell-ring-outline"
+                    />
+                  </v-col>
+                  <v-col cols="3" md="3">
                     <v-dialog
+                    outlined
                       ref="dialog"
                       v-model="calenderModal"
                       persistent
@@ -65,6 +88,7 @@
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
+                        outlined
                           v-model="job.dateRange"
                           label="วันที่ขาย"
                           prepend-icon="mdi-calendar"
@@ -132,28 +156,64 @@
                       <v-icon>mdi-close</v-icon>
                     </v-btn>
                   </v-col>
+             
                 </v-row>
-                <v-row>
-                  <v-col cols="12">
-                    <v-btn outlined color="success" @click="validate">
+                
+                <v-row justify="center" align="center">
+                
+                     <v-btn   color="#1d1d1d"   class="mx-2 ma-2 white--text" large elevation="5" rounded-lg @click="validate">
                       เพิ่มลงฐานข้อมูล
                     </v-btn>
-                  </v-col>
+    
+                
+                   
+
+                 
+
                 </v-row>
+                
               </v-form>
             </v-sheet>
           </v-card-text>
         </base-material-card>
       </v-col>
     </v-row>
-
     <base-v-component />
 
+
     <base-material-card class="px-5 py-3">
+
+    
     <v-sheet>
-    <v-card    elevation="18"  class="px-0 pb-0">
+    <v-card    outlined
+      color="#1d1d1d"  elevation="5"  class="px-0 pb-0 elevation-5 rounded-lg">
+   
+            
+                   
+    
+                  
+                   <v-toolbar class="mb-2 rounded-lg " color="#1d1d1d" dark flat>
+                    <v-toolbar-title  single-line
+                      sticky>
+                      <v-icon class="mx-2" dark>
+                    mdi-archive
+                  </v-icon>
+                      ข้อมูล stock </v-toolbar-title>
+                    <v-divider class="mx-4" inset vertical></v-divider>
+                     <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
+                     <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="ค้นหา"
+                      class="white--text subheading font-weight-bold mt-4"
+                    ></v-text-field>
+
+                    </v-toolbar>
       <v-simple-table>
+
         <thead>
+          
           <tr>
             <th class="primary--text">
               ลำดับ
@@ -244,6 +304,7 @@
 </template>
 <script>
 export default {
+   middleware:'auth',
   data: () => ({
     valid: false,
     calenderModal: false,

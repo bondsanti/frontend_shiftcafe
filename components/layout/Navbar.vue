@@ -64,6 +64,7 @@ export default {
         },
         {
           icon: "mdi-account",
+
           title: "ลงทะเบียนสมาชิก",
           to: "/seller/register"
         },
@@ -71,6 +72,16 @@ export default {
           icon: "mdi-gift",
           title: "แลก Point",
           to: "/seller/point"
+        },
+        {
+          icon: "mdi-archive",
+          title: "จัดการstock",
+          to: "/manage/stock"
+        },
+        {
+          icon: "mdi-clipboard account outline",
+          title: "จัดข้อมูลสมาชิก",
+          to: "/manage/customers"
         }
 
       ],

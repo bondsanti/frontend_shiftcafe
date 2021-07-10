@@ -45,7 +45,7 @@ module.exports = {
   modules: ['@nuxtjs/vuetify', '@nuxtjs/axios', '@nuxtjs/auth'],
 
   axios: {
-    baseURL: 'http://192.168.1.24:5555/api'
+    baseURL: 'https://api.shift-cafe.com/api'
   },
 
   auth: {

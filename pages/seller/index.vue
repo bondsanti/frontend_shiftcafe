@@ -8,7 +8,7 @@
             dense
             rounded
             label="Search"
-            prepend-inner-icon="mdi-home"
+            prepend-inner-icon="mdi-nagnify"
             class="mt-6 mr-2"
             sm="2"
           ></v-text-field>

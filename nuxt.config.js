@@ -4,52 +4,44 @@ module.exports = {
   mode: 'universal',
 
   /*
-  ** Headers of the page
-  */
+   ** Headers of the page
+   */
   head: {
     titleTemplate: 'shift café  | %s',
     title: 'shift café',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: pkg.description }
+      { hid: 'description', name: 'description', content: 'shift café' }
     ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/logo.ico' }
-    ]
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/logo.ico' }]
   },
 
   /*
-  ** Customize the progress-bar color
-  */
+   ** Customize the progress-bar color
+   */
   loading: { color: '#FFFFFF' },
 
   /*
-  ** Global CSS
-  */
-  css: [
-  ],
+   ** Global CSS
+   */
+  css: [],
 
   /*
-  ** Plugins to load before mounting the App
-  */
-  plugins: [
-  ],
+   ** Plugins to load before mounting the App
+   */
+  plugins: [],
 
   /*
-  ** Nuxt.js modules
-  */
-  modules: [
-    '@nuxtjs/vuetify',
-    '@nuxtjs/axios',
-    '@nuxtjs/auth'
-  ],
+   ** Nuxt.js modules
+   */
+  modules: ['@nuxtjs/vuetify', '@nuxtjs/axios', '@nuxtjs/auth'],
 
   axios: {
     baseURL: 'http://localhost:5555/api'
   },
 
-  auth: {                                               
+  auth: {
     strategies: {
       local: {
         endpoints: {
@@ -73,14 +65,12 @@ module.exports = {
   },
 
   /*
-  ** Build configuration
-  */
+   ** Build configuration
+   */
   build: {
     /*
-    ** You can extend webpack config here
-    */
-    extend(config, ctx) {
-      
-    }
+     ** You can extend webpack config here
+     */
+    extend (config, ctx) {}
   }
 }

@@ -76,9 +76,6 @@ export default {
           icon: "mdi-clipboard account outline",
           title: "จัดข้อมูลสมาชิก",
           to: "/manage/customers"
-
-          to: "/seller/seller"
-
         }
       ],
       miniVariant: false,

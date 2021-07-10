@@ -65,7 +65,20 @@ export default {
         {
           icon: "mdi-account",
           title: "สมัครสมาชิก",
+          to: "/seller"
+        },
+        {
+          icon: "mdi-archive",
+          title: "จัดการstock",
+          to: "/manage/stock"
+        },
+        {
+          icon: "mdi-clipboard account outline",
+          title: "จัดข้อมูลสมาชิก",
+          to: "/manage/customers"
+
           to: "/seller/seller"
+
         }
       ],
       miniVariant: false,

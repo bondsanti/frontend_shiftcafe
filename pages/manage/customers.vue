@@ -1,6 +1,5 @@
 <template>
-<div class="mt-3">  
-  
+<div class="mt-2">  
    <customers />
    <todo />
 </div>
@@ -11,6 +10,7 @@
 import customers from '@/components/manage/customers.vue'
 
 export default {
+
   components:{ 
      customers ,
    

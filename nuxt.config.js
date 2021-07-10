@@ -42,7 +42,7 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/vuetify', '@nuxtjs/axios', '@nuxtjs/auth'],
+  modules: ['@nuxtjs/vuetify', '@nuxtjs/axios', '@nuxtjs/auth', '@nuxtjs/moment'],
 
   axios: {
     baseURL: 'https://api.shift-cafe.com/api'
@@ -91,5 +91,9 @@ module.exports = {
      ** You can extend webpack config here
      */
     extend (config, ctx) {}
+  },
+  server:{
+    port:3000 ,
+    host:'0.0.0.0'
   }
 }

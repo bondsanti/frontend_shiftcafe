@@ -65,7 +65,7 @@ export default {
         {
           icon: "mdi-account",
           title: "สมัครสมาชิก",
-          to: "/seller"
+          to: "/seller/seller"
         }
       ],
       miniVariant: false,

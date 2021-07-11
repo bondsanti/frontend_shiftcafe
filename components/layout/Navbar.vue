@@ -87,6 +87,11 @@ export default {
           icon:"mdi-barley ",
           title:"จัดการหน่วยนับ",
           to:"/manage/manageunitsmenu"
+        },
+           {
+          icon:"mdi-food-fork-drink  ",
+          title:"จัดหมวดหมู่",
+          to:"/manage/category"
         }
       ],
       miniVariant: false,

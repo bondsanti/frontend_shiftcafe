@@ -5,54 +5,30 @@
         <v-dialog v-model="dialogadd" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mr-5" v-bind="attrs" v-on="on">
-              <v-icon left> mdi-fridge-industrial-outline  </v-icon> จัดการstock
+              <v-icon left> mdi-barley </v-icon> เมนูจัดการหน่วย
             </v-btn>
           </template>
           <v-card>
             <v-card-title>
               <span class="text-h5"
-                ><v-icon left> mdi-fridge-industrial-outline  </v-icon> เพิ่มการstock</span
+                ><v-icon left> mdi-barley </v-icon> เพิ่มหน่วย</span
               >
             </v-card-title>
 
             <v-card-text>
               <v-container>
-                 <v-row>
+                <v-row>
                   <v-col cols="12">
-                    <v-select
-                      label="รายการอาหาร"
-                      outlined
-                      color="#1D1D1D"
-                      :items="items"
-                    ></v-select>
+                    
                   </v-col>
-                  <v-col cols="12" md="6" class="mt-n7">
+                
+                  <v-col cols="12" class="mt-n7">
                     <v-text-field
                       outlined
-                      label="จำนวลอาหารที่พร้อมขาย"
+                      label="ชื่อหน่วยนับ"
                       required
                       color="#1D1D1D"
                     ></v-text-field>
-                    
-                  </v-col>
-                   
-                  <v-col cols="12" md="6" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="ให้แจ้งเตื่อนเมื่่อใกล้หมด"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-select
-                      outlined
-                      label="หน่วย"
-                      required
-                      color="#1D1D1D"
-                      :items="items"
-                    >  </v-select>
-                    
                   </v-col>
                   <v-col cols="12" class="mt-n7">
                     <v-text-field
@@ -62,6 +38,10 @@
                       color="#1D1D1D"
                     ></v-text-field>
                   </v-col>
+
+                
+                 
+                 
                 </v-row>
               </v-container>
             </v-card-text>
@@ -69,14 +49,14 @@
              <v-card-actions>
               <v-btn class="ma-1" color="primary" dark @click="close">
                 <v-icon aria-hidden="false" class="mx-2">
-                 mdi-fridge-industrial-off-outline  
+                  mdi-barley-off 
                 </v-icon>
                 ยกเลิก
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn class="ma-1" color="info" @click="save">
                 <v-icon aria-hidden="false" class="mx-2">
-                  mdi-fridge-industrial-alert-outline  
+                  mdi-barley
                 </v-icon>
                 เพิ่มข้อมูล
               </v-btn>
@@ -108,14 +88,14 @@
                 <v-card-title>
 
                      <span class="text-h5"
-                ><v-icon left>  mdi-fridge-industrial-outline </v-icon> {{ formTitle }}</span
+                ><v-icon left> mdi-barley </v-icon> {{ formTitle }}</span
               >
                   
                 </v-card-title>
 
                 <v-card-text>
                   <v-container>
-                    <!-- <v-row>
+                    <v-row>
                        <v-col cols="12">
                     
                   </v-col>
@@ -135,54 +115,7 @@
                         ></v-text-field>
                       </v-col>
                     
-                    </v-row> -->
-                   <v-row>
-                  <v-col cols="12">
-                    <v-select
-                      label="รายการอาหาร"
-                        v-model="editedItem.name"
-                      outlined
-                      color="#1D1D1D"
-                      :items="items"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="6" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="จำนวลอาหารที่พร้อมขาย"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                    
-                  </v-col>
-            
-                  <v-col cols="12" md="6" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="ให้แจ้งเตื่อนเมื่่อใกล้หมด"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-select
-                      outlined
-                      label="หน่วย"
-                      required
-                      color="#1D1D1D"
-                      :items="items"
-                    >  </v-select>
-                    
-                  </v-col>
-                  <v-col cols="12" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="วันที่ลงข้อมูล"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
+                    </v-row>
                   </v-container>
                 </v-card-text>
 
@@ -191,14 +124,14 @@
                  <v-card-actions>
               <v-btn class="ma-1" color="primary" dark @click="close">
                 <v-icon aria-hidden="false" class="mx-2">
-                    mdi-fridge-industrial-off-outline 
+                   mdi-barley-off 
                 </v-icon>
                 ยกเลิก
               </v-btn>
               <v-spacer></v-spacer>
               <v-btn class="ma-1" color="info" @click="save">
                 <v-icon aria-hidden="false" class="mx-2">
-                   mdi-fridge-industrial-alert -outline
+                  mdi-barley 
                 </v-icon>
                 เพิ่มข้อมูล
               </v-btn>
@@ -221,12 +154,12 @@
                   <v-spacer></v-spacer>
                   <v-btn color="info" class="ma-2" @click="closeDelete"
                     > <v-icon aria-hidden="false" class="mx-2">
-                  mdi-fridge-industrial-alert-outline
+                  mdi-barley 
                 </v-icon>ยกเลิก</v-btn
                   >
                   <v-btn color="primary"  class="ma-2"  @click="deleteItemConfirm"
                     > <v-icon aria-hidden="false" class="mx-4">
-                   mdi-fridge-industrial-off-outline
+                  mdi-barley-off
                 </v-icon>ลบ</v-btn
                   >
                   <v-spacer></v-spacer>
@@ -238,7 +171,7 @@
            <template v-slot:item.actions="{ item }">
                   <v-btn color="primary" @click="editItem(item)">
                     <v-icon aria-hidden="false" class="mx-2">
-                        mdi-fridge-industrial-outline
+                       mdi-barley 
                     </v-icon>
                     แก้ไข
                   </v-btn>
@@ -249,7 +182,7 @@
                     @click="deleteItem(item)"
                   >
                     <v-icon dark class="mx-2">
-                       mdi-fridge-industrial-off-outline 
+                       mdi-barley-off 
                     </v-icon>
                     ลบ
                   </v-btn>
@@ -273,16 +206,14 @@ export default {
     search: '',
     headers: [
       {
-        text: "รายการสิ้นค้า",
+        text: "ชื่อหนวย",
         align: "start",
         sortable: false,
         value: "name"
       },
-      { text: "จำนวลที่พร้อมขาย", value: "calories" },
-        { text: "ให้แจ้งเตื่อนเมื่อใกล้หมด", value: "fat" },
-        { text: "หน่วยนับ", value: "units" },
+     
       { text: "วันที่เพิ่มหน่วย", value: "data" },
-      { text: "ดำเนินการ", value: "actions", sortable: false }
+      { text: "Actions", value: "actions", sortable: false }
     ],
     desserts: [],
     editedIndex: -1,
@@ -315,85 +246,45 @@ export default {
   methods: {
     initialize() {
       this.desserts = [
-       {
-          name: "โยเกริตแช่แข็ง",
-          calories: 159,
-          fat: "10",
-          units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
+        {
+          name: "Frozen Yogurt",
+          data:"11 กรกฏาคม 2564"
         },
         {
-          name: "แซนวิชไอศกรีม",
-          calories: 237,
-          fat: "10",
-          units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
+          name: "Ice cream sandwich",
+       data:"12 กรกฏาคม 2564"
         },
         {
           name: "Eclair",
-          calories: 262,
-          fat: "10",
-          units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
+           data:"13 กรกฏาคม 2564"
         },
         {
-          name: "คัพเค้ก",
-          calories: 305,
-          fat: "10",
-          units: "ขิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
+          name: "Cupcake",
+          data:"11 กรกฏาคม 2564"
         },
         {
-          name: "ขนมปังปิง",
-          calories: 356,
-          fat: "10",
-          units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
+          name: "Gingerbread",
+          data:"11 กรกฏาคม 2564"
         },
         {
-          name: "เนยถั่วและเยลลี่",
-          calories: 175,
-          fat: "10",
-          units: "ชุด"
-          ,
-          data:"13 กรกฏาคม 2564"
+          name: "Jelly bean",
+        data:"11 กรกฏาคม 2564"
         },
         {
-          name: "อมยิ้ม",
-          calories: 192,
-        fat: "10",
-          units: "อัน"
-          ,
-          data:"13 กรกฏาคม 2564"
+          name: "Lollipop",
+       data:"11 กรกฏาคม 2564"
         },
         {
-          name: "รังฝึ้งสด",
-          calories: 408,
-          fat: "10",
-          units: "อัน",
-          data:"13 กรกฏาคม 2564"
-
+          name: "Honeycomb",
+          data:"11 กรกฏาคม 2564"
         },
         {
-          name: "โดนัท",
-          calories: 452,
-          fat: "10",
-         units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
+          name: "Donut",
+          data:"11 กรกฏาคม 2564"
         },
         {
-          name: "คิทแคท",
-          calories: 518,
-         fat: "10",
-          units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
+          name: "KitKat",
+         data:"11 กรกฏาคม 2564"
         }
       ];
     },

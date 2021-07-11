@@ -74,7 +74,7 @@ export default {
           to: "/seller/point"
         },
         {
-          icon: "mdi-archive",
+          icon: "mdi-fridge-industrial-outline",
           title: "จัดการstock",
           to: "/manage/stock"
         },
@@ -82,6 +82,11 @@ export default {
           icon: "mdi-clipboard account outline",
           title: "จัดข้อมูลสมาชิก",
           to: "/manage/customers"
+        },
+        {
+          icon:"mdi-barley ",
+          title:"จัดการหน่วยนับ",
+          to:"/manage/manageunitsmenu"
         }
       ],
       miniVariant: false,

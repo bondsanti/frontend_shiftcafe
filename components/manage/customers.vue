@@ -15,8 +15,8 @@
                 <template v-slot:top color="#1d1d1d">
                   <v-toolbar class="mb-2 rounded-lg " color="#1d1d1d" dark flat>
                     <v-icon class="mx-2" dark>
-                    mdi-clipboard account outline
-                  </v-icon>
+                      mdi-clipboard account outline
+                    </v-icon>
                     <v-toolbar-title>ระบบจัดสมาชิก</v-toolbar-title>
                     <v-divider class="mx-4" inset vertical></v-divider>
                     <v-spacer></v-spacer>
@@ -49,78 +49,64 @@
                       </template>
                       <v-card>
                         <v-card-title>
-                          <v-card-title
-                            class="black white--text text-h5 elevation-5 rounded-lg"
-                          >
-                            <v-icon class="ma-2" dark>
-                              mdi-account
-                            </v-icon>
-                            {{ formTitle }}
+                          <v-card-title>
+                            <span class="text-h5"
+                              ><v-icon left> mdi-account-box </v-icon>
+                              แก้ไขข้อมูลลูกค้า</span
+                            >
                           </v-card-title>
                         </v-card-title>
                         <v-card-text>
                           <v-container>
                             <v-row>
-                              <v-col cols="12" sm="6" md="4">
-                                <v-text-field
-                                  dense
-                                  filled
-                                  solo-inverted
-                                  v-model="emp.pname"
-                                  label="คำนำหน้าชื่อ"
-                                ></v-text-field>
+                              <v-col cols="12">
+                                     <v-select
+              label="คำนำหน้า"
+              outlined
+              
+              color="#1D1D1D"
+            :items="items"
+            ></v-select>
                               </v-col>
-                              <v-col cols="12" sm="6" md="4">
+                              <v-col cols="12" sm="6" md="6" class="mt-n7">
                                 <v-text-field
-                                  dense
-                                  filled
-                                  solo-inverted
+                                  outlined
                                   v-model="emp.fname"
                                   label="ชื่อ"
                                 ></v-text-field>
                               </v-col>
-                              <v-col cols="12" sm="6" md="4">
+                              <v-col cols="12" sm="6" md="6" class="mt-n7">
                                 <v-text-field
-                                  dense
-                                  filled
-                                  solo-inverted
+                                  outlined
                                   v-model="emp.lname"
                                   label="นามสกุล"
                                 ></v-text-field>
                               </v-col>
-                              <v-col cols="12" sm="6" md="6">
+                              <v-col cols="12" sm="6" md="6" class="mt-n7">
                                 <v-text-field
-                                  dense
-                                  filled
-                                  solo-inverted
+                                  outlined
                                   type="date"
                                   v-model="emp.birthday"
                                   label="birthday"
                                 ></v-text-field>
                               </v-col>
-                              <v-col cols="12" sm="6" md="6">
+                              <v-col cols="12" sm="6" md="6" class="mt-n7">
                                 <v-text-field
-                                  dense
-                                  filled
-                                  solo-inverted
+                                  outlined
                                   v-model="emp.tel"
                                   label="เบอร์โทรติดต่อ"
                                 ></v-text-field>
                               </v-col>
-                              <v-col cols="12" sm="6" md="6">
+                              <v-col cols="12" sm="6" md="6" class="mt-n7">
                                 <v-text-field
-                                  dense
-                                  filled
-                                  solo-inverted
+                                  outlined
                                   v-model="emp.email"
                                   label="e-mail"
                                 ></v-text-field>
                               </v-col>
-                              <v-col cols="12" sm="6" md="6">
+                              <v-col cols="12" sm="6" md="6" class="mt-n7">
                                 <v-text-field
-                                  dense
-                                  filled
-                                  solo-inverted
+                                  outlined
                                   v-model="emp.address"
                                   label="ที่อยู่"
                                 ></v-text-field>
@@ -130,11 +116,17 @@
                         </v-card-text>
 
                         <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn color="blue darken-1" text @click="close">
+                          <v-btn color="primary" @click="close">
+                            <v-icon aria-hidden="false" class="mx-2">
+                              mdi-account-off
+                            </v-icon>
                             ยกเลิก
                           </v-btn>
-                          <v-btn color="blue darken-1" text @click="save">
+                          <v-spacer></v-spacer>
+                          <v-btn class="ma-1" color="info" @click="save">
+                            <v-icon aria-hidden="false" class="mx-2">
+                              mdi-account-convert-outline
+                            </v-icon>
                             บันทึก
                           </v-btn>
                         </v-card-actions>
@@ -153,13 +145,7 @@
                         <v-card-actions>
                           <v-spacer></v-spacer>
 
-                          <v-btn
-                            x-large
-                            class="ma-1"
-                            color=""
-                            plain
-                            text
-                            @click="closeDelete"
+                          <v-btn class="ma-1" plain @click="closeDelete"
                             >ยกเลิก</v-btn
                           >
                           <v-btn
@@ -167,7 +153,6 @@
                             plain
                             color="error"
                             class="ma-1"
-                            text
                             @click="deleteItemConfirm"
                             >ลบ</v-btn
                           >
@@ -179,26 +164,21 @@
                   </v-toolbar>
                 </template>
                 <template v-slot:item.actions="{ item }">
-                  <v-btn
-                    outlined
-                    rounded
-                    class="mr-2"
-                    color="#1d1d1d"
-                    @click="editItem(item)"
-                  >
-                    <v-icon dark>
+                  <v-btn color="primary" @click="editItem(item)">
+                    <v-icon aria-hidden="false" class="mx-2">
                       mdi-pencil
                     </v-icon>
                     แก้ไข
                   </v-btn>
                   <v-btn
-                  
-                    outlined
-                    rounded
+                    rounded-lx
                     class="mr-2"
                     color="error"
                     @click="deleteItem(item)"
                   >
+                    <v-icon dark class="mx-2">
+                      mdi-account-remove
+                    </v-icon>
                     ลบ
                   </v-btn>
                 </template>
@@ -231,9 +211,10 @@ export default {
     // loading: true,
     dialog: false,
     dialogDelete: false,
+    items: ["นาย", "นาง", "นางสาว"],
     headers: [
       {
-        text: "คำนำหน้าชื่อ",
+        text: "คำนำหน้า",
 
         value: "pname"
       },
@@ -247,8 +228,8 @@ export default {
       { text: "เบอร์โทร ", value: "tel" },
       { text: "อีเมล์", value: "email" },
       { text: "ที่อยู่", value: "address" },
-      { text: 'ระดับสมาชิก', value: 'level' },
-      { text: 'แต้มสะสม', value: 'point' },
+      { text: "ระดับสมาชิก", value: "level" },
+      { text: "แต้มสะสม", value: "point" },
       { text: "Actions", value: "actions", sortable: false }
     ],
 
@@ -264,15 +245,15 @@ export default {
       tel: "",
       email: "",
       address: "",
-      level:"",
-      point:""
+      level: "",
+      point: ""
     },
     type: null,
     deleteId: null
   }),
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "เพิ่มสมาชิก" : "แก้ไขสมาชิก";
+      return this.editedIndex === -1 ? "แก้ไขสมาชิก" : "แก้ไขสมาชิก";
     }
   },
   watch: {
@@ -408,7 +389,23 @@ export default {
 };
 </script>
 <style>
-#table > .v-data-footer .v-icon {
-  color: rgb(255, 0, 0);
+.scroll::-webkit-scrollbar {
+  width: 17px;
+}
+
+.scroll::-webkit-scrollbar-track {
+  background: #ededed;
+  border-left: 1px solid #ededed;
+  border-radius: 10px;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  background: #b0b0b0;
+  border: solid 3px #e6e6e6;
+  border-radius: 7px;
+}
+
+.scroll::-webkit-scrollbar-thumb:hover {
+  background: black;
 }
 </style>

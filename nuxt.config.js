@@ -12,10 +12,14 @@ module.exports = {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'shift café' }
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'shift café powered by Dev Fong Co.,Ltd.'
+      }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/logo.ico' },
+      { rel: 'icon', type: 'image/x-icon', href: '/logo2.ico' },
       {
         rel: 'stylesheet',
         href:
@@ -42,7 +46,12 @@ module.exports = {
   /*
    ** Nuxt.js modules
    */
-  modules: ['@nuxtjs/vuetify', '@nuxtjs/axios', '@nuxtjs/auth', '@nuxtjs/moment'],
+  modules: [
+    '@nuxtjs/vuetify',
+    '@nuxtjs/axios',
+    '@nuxtjs/auth',
+    '@nuxtjs/moment'
+  ],
 
   axios: {
     baseURL: 'https://api.shift-cafe.com/api'
@@ -92,8 +101,8 @@ module.exports = {
      */
     extend (config, ctx) {}
   },
-  server:{
-    port:3000 ,
-    host:'0.0.0.0'
+  server: {
+    port: 3000,
+    host: '0.0.0.0'
   }
 }

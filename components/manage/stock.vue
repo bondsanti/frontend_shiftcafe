@@ -1,5 +1,5 @@
 <template>
-  <v-container  fluid tag="section">
+  <div class="ma-5">
     <v-row>
       <v-col cols="12">
         <base-material-card>
@@ -16,32 +16,36 @@
               >
                 <v-row class="mb-0">
                   <v-col cols="12">
-                    <v-toolbar class="mb-2 rounded-lg " color="#1d1d1d" dark flat>
-                    <v-toolbar-title>
-                      <v-icon class="mx-2" dark>
-                    mdi-archive
-                  </v-icon>
-                      จัดการStock</v-toolbar-title>
-                    <v-divider class="mx-4" inset vertical></v-divider>
-                     <v-spacer></v-spacer>
-                    <v-spacer></v-spacer>
+                    <v-toolbar
+                      class="mb-2 rounded-lg "
+                      color="#1d1d1d"
+                      dark
+                      flat
+                    >
+                      <v-toolbar-title>
+                        <v-icon class="mx-2" dark>
+                          mdi-archive
+                        </v-icon>
+                        จัดการStock</v-toolbar-title
+                      >
+                      <v-divider class="mx-4" inset vertical></v-divider>
+                      <v-spacer></v-spacer>
+                      <v-spacer></v-spacer>
                       <v-btn
-                  @click="addRow"
-                  outlined
-                  color="1d1d1d"
-                  class="mx-6 ma-6"
-                >
-                  <v-icon dark>
-                    mdi-plus
-                  </v-icon>
-                  <span>เพิ่มรายการ</span>
-                </v-btn>
-
+                        @click="addRow"
+                        outlined
+                        color="1d1d1d"
+                        class="mx-6 ma-6"
+                      >
+                        <v-icon dark>
+                          mdi-plus
+                        </v-icon>
+                        <span>เพิ่มรายการ</span>
+                      </v-btn>
                     </v-toolbar>
                   </v-col>
                 </v-row>
 
-          
                 <v-row
                   class="rounded mb-2 mx-0"
                   v-for="(job, index) in formData.jobs"
@@ -50,7 +54,7 @@
                 >
                   <v-col cols="3" md="3">
                     <v-autocomplete
-                    outlined
+                      outlined
                       v-model="job.position"
                       :items="positions"
                       label="เมนู"
@@ -60,7 +64,7 @@
                   </v-col>
                   <v-col cols="3" md="2">
                     <v-text-field
-                    outlined
+                      outlined
                       label="จำนวลที่คาดว่าจะผลิดได้"
                       v-model="job.company"
                       :rules="requiredRules"
@@ -70,7 +74,7 @@
                   </v-col>
                   <v-col cols="3" md="2">
                     <v-text-field
-                    outlined
+                      outlined
                       label="จำนวลไกล้หมดให้แจ้งเตือน"
                       v-model="job.company"
                       :rules="requiredRules"
@@ -80,7 +84,7 @@
                   </v-col>
                   <v-col cols="3" md="3">
                     <v-dialog
-                    outlined
+                      outlined
                       ref="dialog"
                       v-model="calenderModal"
                       persistent
@@ -88,7 +92,7 @@
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <v-text-field
-                        outlined
+                          outlined
                           v-model="job.dateRange"
                           label="วันที่ขาย"
                           prepend-icon="mdi-calendar"
@@ -156,22 +160,20 @@
                       <v-icon>mdi-close</v-icon>
                     </v-btn>
                   </v-col>
-             
                 </v-row>
-                
+
                 <v-row justify="center" align="center">
-                
-                     <v-btn   color="#1d1d1d"   class="mx-2 ma-2 white--text" large elevation="5" rounded-lg @click="validate">
-                      เพิ่มลงฐานข้อมูล
-                    </v-btn>
-    
-                
-                   
-
-                 
-
+                  <v-btn
+                    color="#1d1d1d"
+                    class="mx-2 ma-2 white--text"
+                    large
+                    elevation="5"
+                    rounded-lg
+                    @click="validate"
+                  >
+                    เพิ่มลงฐานข้อมูล
+                  </v-btn>
                 </v-row>
-                
               </v-form>
             </v-sheet>
           </v-card-text>
@@ -180,131 +182,124 @@
     </v-row>
     <base-v-component />
 
-
     <base-material-card class="px-5 py-3">
+      <v-sheet>
+        <v-card
+          outlined
+          color="#1d1d1d"
+          elevation="5"
+          class="px-0 pb-0 elevation-5 rounded-lg"
+        >
+          <v-toolbar class="mb-2 rounded-lg " color="#1d1d1d" dark flat>
+            <v-toolbar-title single-line sticky>
+              <v-icon class="mx-2" dark>
+                mdi-archive
+              </v-icon>
+              ข้อมูล stock
+            </v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
+            <v-spacer></v-spacer>
+            <v-spacer></v-spacer>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="ค้นหา"
+              class="white--text subheading font-weight-bold mt-4"
+            ></v-text-field>
+          </v-toolbar>
+          <v-simple-table>
+            <thead>
+              <tr>
+                <th class="primary--text">
+                  ลำดับ
+                </th>
+                <th class="primary--text">
+                  ชื่อ
+                </th>
+                <th class="primary--text">
+                  จำนวล
+                </th>
+                <th class="primary--text">
+                  วันที่
+                </th>
+                <th class="text-right primary--text">
+                  ราคาที่คาดจะขายได้
+                </th>
+              </tr>
+            </thead>
 
-    
-    <v-sheet>
-    <v-card    outlined
-      color="#1d1d1d"  elevation="5"  class="px-0 pb-0 elevation-5 rounded-lg">
-   
-            
-                   
-    
-                  
-                   <v-toolbar class="mb-2 rounded-lg " color="#1d1d1d" dark flat>
-                    <v-toolbar-title  single-line
-                      sticky>
-                      <v-icon class="mx-2" dark>
-                    mdi-archive
-                  </v-icon>
-                      ข้อมูล stock </v-toolbar-title>
-                    <v-divider class="mx-4" inset vertical></v-divider>
-                     <v-spacer></v-spacer>
-                    <v-spacer></v-spacer>
-                     <v-text-field
-                      v-model="search"
-                      append-icon="mdi-magnify"
-                      label="ค้นหา"
-                      class="white--text subheading font-weight-bold mt-4"
-                    ></v-text-field>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>แก้วกาแฟร้อน</td>
+                <td>90</td>
+                <td>18 มีนาคม 2564</td>
+                <td class="text-right">
+                  36,738 บาท
+                </td>
+              </tr>
 
-                    </v-toolbar>
-      <v-simple-table>
+              <tr>
+                <td>2</td>
+                <td>แก้วกาแฟเย็น</td>
+                <td>80</td>
+                <td>18 มีนาคม 2564</td>
+                <td class="text-right">
+                  23,789 บาท
+                </td>
+              </tr>
 
-        <thead>
-          
-          <tr>
-            <th class="primary--text">
-              ลำดับ
-            </th>
-            <th class="primary--text">
-              ชื่อ
-            </th>
-            <th class="primary--text">
-              จำนวล
-            </th>
-            <th class="primary--text">
-              วันที่
-            </th>
-            <th class="text-right primary--text">
-              ราคาที่คาดจะขายได้
-            </th>
-          </tr>
-        </thead>
+              <tr>
+                <td>3</td>
+                <td>เค้ก</td>
+                <td>70</td>
+                <td>18 มีนาคม 2564</td>
+                <td class="text-right">
+                  56,142 บาท
+                </td>
+              </tr>
 
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>แก้วกาแฟร้อน</td>
-            <td>90</td>
-            <td>18 มีนาคม 2564</td>
-            <td class="text-right">
-              36,738 บาท
-            </td>
-          </tr>
+              <tr>
+                <td>4</td>
+                <td>น้ำดืม</td>
+                <td>60</td>
+                <td>18 มีนาคม 2564</td>
+                <td class="text-right">
+                  38,735 บาท
+                </td>
+              </tr>
 
-          <tr>
-            <td>2</td>
-            <td>แก้วกาแฟเย็น</td>
-            <td>80</td>
-            <td>18 มีนาคม 2564</td>
-            <td class="text-right">
-              23,789 บาท
-            </td>
-          </tr>
+              <tr>
+                <td>5</td>
+                <td>น้ำอัดลม</td>
+                <td>23</td>
+                <td>18 มีนาคม 2564</td>
+                <td class="text-right">
+                  63,542 บาท
+                </td>
+              </tr>
 
-          <tr>
-            <td>3</td>
-            <td>เค้ก</td>
-            <td>70</td>
-            <td>18 มีนาคม 2564</td>
-            <td class="text-right">
-              56,142 บาท
-            </td>
-          </tr>
-
-          <tr>
-            <td>4</td>
-            <td>น้ำดืม</td>
-            <td>60</td>
-            <td>18 มีนาคม 2564</td>
-            <td class="text-right">
-              38,735 บาท
-            </td>
-          </tr>
-
-          <tr>
-            <td>5</td>
-            <td>น้ำอัดลม</td>
-            <td>23</td>
-            <td>18 มีนาคม 2564</td>
-            <td class="text-right">
-              63,542 บาท
-            </td>
-          </tr>
-
-          <tr>
-            <td>6</td>
-            <td>อาหาร</td>
-            <td>20</td>
-            <td>18 มีนาคม 2564</td>
-            <td class="text-right">
-              78,615 บาท
-            </td>
-          </tr>
-        </tbody>
-      </v-simple-table>
-    </v-card>
-    </v-sheet>
+              <tr>
+                <td>6</td>
+                <td>อาหาร</td>
+                <td>20</td>
+                <td>18 มีนาคม 2564</td>
+                <td class="text-right">
+                  78,615 บาท
+                </td>
+              </tr>
+            </tbody>
+          </v-simple-table>
+        </v-card>
+      </v-sheet>
     </base-material-card>
 
     <div class="py-3" />
-  </v-container>
+  </div>
 </template>
 <script>
 export default {
-   middleware:'auth',
+  middleware: "auth",
   data: () => ({
     valid: false,
     calenderModal: false,

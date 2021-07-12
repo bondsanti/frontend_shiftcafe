@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div class="ma-2">
     <v-row>
       <v-col cols="12">
         <base-material-card class="px-5 py-3">
@@ -15,8 +15,8 @@
                 <template v-slot:top color="#1d1d1d">
                   <v-toolbar class="mb-2 rounded-lg " color="#1d1d1d" dark flat>
                     <v-icon class="mx-2" dark>
-                    mdi-clipboard account outline
-                  </v-icon>
+                      mdi-clipboard account outline
+                    </v-icon>
                     <v-toolbar-title>ระบบจัดสมาชิก</v-toolbar-title>
                     <v-divider class="mx-4" inset vertical></v-divider>
                     <v-spacer></v-spacer>
@@ -192,7 +192,6 @@
                     แก้ไข
                   </v-btn>
                   <v-btn
-                  
                     outlined
                     rounded
                     class="mr-2"
@@ -215,7 +214,7 @@
         </base-material-card>
       </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 <script>
 import moment from "moment";
@@ -247,8 +246,8 @@ export default {
       { text: "เบอร์โทร ", value: "tel" },
       { text: "อีเมล์", value: "email" },
       { text: "ที่อยู่", value: "address" },
-      { text: 'ระดับสมาชิก', value: 'level' },
-      { text: 'แต้มสะสม', value: 'point' },
+      { text: "ระดับสมาชิก", value: "level" },
+      { text: "แต้มสะสม", value: "point" },
       { text: "Actions", value: "actions", sortable: false }
     ],
 
@@ -264,8 +263,8 @@ export default {
       tel: "",
       email: "",
       address: "",
-      level:"",
-      point:""
+      level: "",
+      point: ""
     },
     type: null,
     deleteId: null

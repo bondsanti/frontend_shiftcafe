@@ -60,7 +60,7 @@ export default {
         {
           icon: "mdi-cash-register",
           title: "เงินทอน",
-          to: "/seller/cashdraw"
+          to: "/seller"
         },
         {
           icon: "mdi-account",
@@ -71,7 +71,7 @@ export default {
         {
           icon: "mdi-gift",
           title: "แลก Point",
-          to: "/seller/point"
+          to: "/seller"
         },
         {
           icon: "mdi-archive",

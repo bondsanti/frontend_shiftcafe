@@ -1,5 +1,5 @@
 <template>
-  <v-container class="mb-15" style="background-color:#ededed;height:100%" fluid>
+  <div class="ma-3">
     <v-row>
       <v-col cols="12" sm="12" md="8">
         <v-card class=" rounded-xl pb-1 " color="#ededed" elevation="5">
@@ -167,7 +167,7 @@
         </v-row>
       </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script>

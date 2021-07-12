@@ -93,6 +93,30 @@ export default {
           title:"จัดหมวดหมู่",
           to:"/manage/category"
         }
+        ,
+           {
+          icon:"mdi-notebook-edit-outline",
+          title:"จัดการสินค้า",
+          to:"/manage/product"
+        }
+        ,
+           {
+          icon:"mdi-ticket-account",
+          title:"จัดระดับสมาขิก",
+          to:"/manage/levelmember"
+        }
+          ,
+           {
+          icon:"mdi-card-account-details-outline ",
+          title:"จัดการพนังงาน",
+          to:"/manage/employee"
+        }
+         ,
+           {
+          icon:"mdi-file-powerpoint-box",
+          title:"จัดการแต้ม",
+          to:"/manage/pointmanage"
+        }
       ],
       miniVariant: false,
 

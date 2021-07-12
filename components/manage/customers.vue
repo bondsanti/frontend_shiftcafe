@@ -1,201 +1,295 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="12">
-        <base-material-card class="px-5 py-3">
-          <v-card-text class="px-0 pb-0">
-            <v-sheet>
-              <v-data-table
-                :headers="headers"
-                :items="desserts"
-                :search="search"
-                sort-by="calories"
-                class="elevation-5 rounded-lg px-5 py-7"
-              >
-                <template v-slot:top color="#1d1d1d">
-                  <v-toolbar class="mb-2 rounded-lg " color="#1d1d1d" dark flat>
-                    <v-icon class="mx-2" dark>
-                      mdi-clipboard account outline
-                    </v-icon>
-                    <v-toolbar-title>ระบบจัดสมาชิก</v-toolbar-title>
-                    <v-divider class="mx-4" inset vertical></v-divider>
-                    <v-spacer></v-spacer>
-                    <v-spacer></v-spacer>
-                    <v-text-field
-                      v-model="search"
-                      append-icon="mdi-magnify"
-                      label="ค้นหา"
-                      single-line
-                      hide-details
-                      class="subheading font-weight-bold"
-                    ></v-text-field>
-                    <v-spacer></v-spacer>
-                    <v-dialog v-model="dialog" max-width="500px">
-                      <template v-slot:activator="{ attrs }">
-                        <!-- <v-btn
-                        
-                          class="ma-2"
-                          color="1d1d1d"
+  <div class="ma-3">
+    <v-card class="mx-auto mt-6 py-3" elevaation="5" justify-centaer>
+      <v-card-text class="px-0 pb-0">
+        <v-card-title>
+          <v-dialog v-model="dialognew" max-width="500px">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" dark class="mr-5" v-bind="attrs" v-on="on">
+                <v-icon left> mdi-account-box </v-icon> ลงทะเบียนสมาชิก
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title>
+                <span class="text-h5"
+                  ><v-icon left> mdi-account-box </v-icon> ข้อมูลลูกค้า</span
+                >
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-select
+                        label="คำนำหน้า"
+                        outlined
+                        color="#1D1D1D"
+                        :items="items"
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12" md="6" class="mt-n7">
+                      <v-text-field
+                        label="ชื่อ"
+                        outlined
+                        required
+                        color="#1D1D1D"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6" class="mt-n7">
+                      <v-text-field
+                        outlined
+                        label="นามสกุล"
+                        required
+                        color="#1D1D1D"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" class="mt-n7">
+                      <v-text-field
+                        outlined
+                        label="วันเกิด"
+                        required
+                        color="#1D1D1D"
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" class="mt-n7">
+                      <v-text-field
+                        outlined
+                        label="เบอร์โทร"
+                        required
+                        color="#1D1D1D"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" class="mt-n7">
+                      <v-text-field
+                        outlined
+                        label="อีเมล์"
+                        required
+                        color="#1D1D1D"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" class="mt-n7">
+                      <v-textarea
+                        color="#1D1D1D"
+                        outlined
+                        name=""
+                        label="ที่อยู่"
+                      ></v-textarea>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+       <v-card-actions>
+              <v-btn class="ma-1" color="primary" dark @click="close">
+                <v-icon aria-hidden="false" class="mx-2">
+                  mdi-account-box 
+                </v-icon>
+                ยกเลิก
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn class="ma-1" color="info" @click="save">
+                <v-icon aria-hidden="false" class="mx-2">
+                  mdi-account-box
+                </v-icon>
+                เพิ่มข้อมูล
+              </v-btn>
+            </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-spacer></v-spacer>
+
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            label="ค้นหา"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
+        <v-data-table :headers="headers" :items="desserts" :search="search">
+          <template v-slot:[`item.img`]="{}">
+            <img
+              src="@/assets/img/photo-2.jpg"
+              class="mt-2 mb-2 rounded-circle"
+              aspect-ratio="1"
+              style="width: 50px; height: 50px"
+            />
+          </template>
+          <template v-slot:top color="indig">
+            <v-spacer></v-spacer>
+            <v-dialog v-model="dialog" max-width="500px">
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5 post-content">{{ formTitle }}</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12" sm="6">
+                        <v-select
+                          label="คำนำหน้า"
                           outlined
-                          dark
-                          v-bind="attrs"
-                          @click="addEmp"
-                        >
-                          <v-icon dark>
-                            mdi-plus
-                          </v-icon>
-                          เพิ่มสมาชิก
-                        </v-btn> -->
-                      </template>
-                      <v-card>
-                        <v-card-title>
-                          <v-card-title>
-                            <span class="text-h5"
-                              ><v-icon left> mdi-account-box </v-icon>
-                              แก้ไขข้อมูลลูกค้า</span
-                            >
-                          </v-card-title>
-                        </v-card-title>
-                        <v-card-text>
-                          <v-container>
-                            <v-row>
-                              <v-col cols="12">
-                                     <v-select
-              label="คำนำหน้า"
-              outlined
-              
-              color="#1D1D1D"
-            :items="items"
-            ></v-select>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="6" class="mt-n7">
-                                <v-text-field
-                                  outlined
-                                  v-model="emp.fname"
-                                  label="ชื่อ"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="6" class="mt-n7">
-                                <v-text-field
-                                  outlined
-                                  v-model="emp.lname"
-                                  label="นามสกุล"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="6" class="mt-n7">
-                                <v-text-field
-                                  outlined
-                                  type="date"
-                                  v-model="emp.birthday"
-                                  label="birthday"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="6" class="mt-n7">
-                                <v-text-field
-                                  outlined
-                                  v-model="emp.tel"
-                                  label="เบอร์โทรติดต่อ"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="6" class="mt-n7">
-                                <v-text-field
-                                  outlined
-                                  v-model="emp.email"
-                                  label="e-mail"
-                                ></v-text-field>
-                              </v-col>
-                              <v-col cols="12" sm="6" md="6" class="mt-n7">
-                                <v-text-field
-                                  outlined
-                                  v-model="emp.address"
-                                  label="ที่อยู่"
-                                ></v-text-field>
-                              </v-col>
-                            </v-row>
-                          </v-container>
-                        </v-card-text>
+                          color="#1D1D1D"
+                          :items="items"
+                          v-model="emp.pname"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="emp.fname"
+                          label="ชื่อ"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="emp.lname"
+                          label="นามสกุล"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <!-- <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="emp.username"
+                          label="username"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col> -->
+                      <!-- <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="emp.password"
+                          label="password"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col> -->
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          type="date"
+                          v-model="emp.birthday"
+                          label="birthday"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="emp.tel"
+                          label="เบอร์โทรติดต่อ"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="emp.email"
+                          label="e-mail"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="emp.address"
+                          label="ที่อยู่"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                       <v-col cols="12" sm="6">
+                        <v-select
+                          label="ระดับ"
+                          outlined
+                          color="#1D1D1D"
+                          :items="level"
+                          v-model="emp.level"
+                        ></v-select>
+                        
+                      </v-col>
+                          <v-col cols="12" >
+                        <v-text-field
+                          v-model="emp.point"
+                          label="แต้ม"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
 
-                        <v-card-actions>
-                          <v-btn color="primary" @click="close">
-                            <v-icon aria-hidden="false" class="mx-2">
-                              mdi-account-off
-                            </v-icon>
-                            ยกเลิก
-                          </v-btn>
-                          <v-spacer></v-spacer>
-                          <v-btn class="ma-1" color="info" @click="save">
-                            <v-icon aria-hidden="false" class="mx-2">
-                              mdi-account-convert-outline
-                            </v-icon>
-                            บันทึก
-                          </v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </v-dialog>
-
-                    <v-dialog v-model="dialogDelete" max-width="300px">
-                      <v-sheet
-                        class="px-7 pt-7 pb-4 mx-auto text-center d-inline-block"
-                        color="#d1d1d1d"
-                        dark
-                      >
-                        <v-card-title class="text-h5">
-                          คุณต้องการลบหรือไม่
-                        </v-card-title>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-
-                          <v-btn class="ma-1" plain @click="closeDelete"
-                            >ยกเลิก</v-btn
-                          >
-                          <v-btn
-                            x-large
-                            plain
-                            color="error"
-                            class="ma-1"
-                            @click="deleteItemConfirm"
-                            >ลบ</v-btn
-                          >
-
-                          <v-spacer></v-spacer>
-                        </v-card-actions>
-                      </v-sheet>
-                    </v-dialog>
-                  </v-toolbar>
-                </template>
-                <template v-slot:item.actions="{ item }">
-                  <v-btn color="primary" @click="editItem(item)">
-                    <v-icon aria-hidden="false" class="mx-2">
-                      mdi-pencil
-                    </v-icon>
-                    แก้ไข
-                  </v-btn>
-                  <v-btn
-                    rounded-lx
-                    class="mr-2"
-                    color="error"
-                    @click="deleteItem(item)"
+                      <v-card-actions>
+              <v-btn class="ma-1" color="primary" dark @click="close">
+                <v-icon aria-hidden="false" class="mx-2">
+                   mdi-account-box
+                </v-icon>
+                ยกเลิก
+              </v-btn>
+              <v-spacer></v-spacer>
+              <v-btn class="ma-1" color="info" @click="save">
+                <v-icon aria-hidden="false" class="mx-2">
+                   mdi-account-box
+                </v-icon>
+                บันทึก
+              </v-btn>
+            </v-card-actions>
+                
+              </v-card>
+            </v-dialog>
+            <v-dialog v-model="dialogDelete" max-width="280px">
+              <v-card>
+                <v-card-title class="text-h5">คุณต้องการลบหรือไม่</v-card-title>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="blue darken-1" text @click="closeDelete"
+                    >Cancel</v-btn
                   >
-                    <v-icon dark class="mx-2">
-                      mdi-account-remove
-                    </v-icon>
-                    ลบ
-                  </v-btn>
-                </template>
+                  <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                    >OK</v-btn
+                  >
+                  <v-spacer></v-spacer>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </template>
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-btn small class="mr-2" color="warning" @click="editItem(item)">
+               <v-icon aria-hidden="false" class="mx-2">
+                    mdi-account-box
+                </v-icon>
+              แก้ไข
+              
+            </v-btn>
+            <v-btn small class="mr-2" color="error" @click="deleteItem(item)">
+               <v-icon aria-hidden="false" class="mx-2">
+                    mdi-account-box
+                </v-icon>
+              ลบ
+            </v-btn>
+          </template>
 
-                <template v-slot:item.birthday="{ item }">
-                  <span>{{ item.birthday | moment }}</span>
-                </template>
-                <template v-slot:no-data>
-                  <v-btn color="primary" @click="initialize"> Reset </v-btn>
-                </template>
-              </v-data-table>
-            </v-sheet>
-          </v-card-text>
-        </base-material-card>
-      </v-col>
-    </v-row>
-  </v-container>
+          <template v-slot:[`item.birthday`]="{ item }">
+            <span>{{ item.birthday | moment }}</span>
+          </template>
+          <template v-slot:no-data>
+            <v-btn color="primary" @click="initialize"> Reset </v-btn>
+          </template>
+        </v-data-table>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 <script>
 import moment from "moment";
@@ -212,25 +306,19 @@ export default {
     dialog: false,
     dialogDelete: false,
     items: ["นาย", "นาง", "นางสาว"],
+    level: ["classic", "silver", "gold","platinum "],
     headers: [
-      {
-        text: "คำนำหน้า",
-
-        value: "pname"
-      },
-      {
-        text: "ชื่อจริง",
-
-        value: "fname"
-      },
-      { text: "นามสกุล", value: "lname" },
-      { text: "วันเกิด ", value: "birthday" },
-      { text: "เบอร์โทร ", value: "tel" },
-      { text: "อีเมล์", value: "email" },
-      { text: "ที่อยู่", value: "address" },
-      { text: "ระดับสมาชิก", value: "level" },
-      { text: "แต้มสะสม", value: "point" },
-      { text: "Actions", value: "actions", sortable: false }
+      { text: "อวตาร", sortable: false, value: "img" },
+      { text: "คำนำหน้า",sortable: false, value: "pname" },
+      { text: "ชื่อจริง", sortable: false,value: "fname" },
+      { text: "นามสกุล", sortable: false,value: "lname" },
+      { text: "วันเกิด ",sortable: false, value: "birthday" },
+      { text: "เบอร์โทร ",sortable: false, value: "tel" },
+      { text: "อีเมล์",sortable: false, value: "email" },
+      { text: "ที่อยู่",sortable: false, value: "address" },
+      { text: "ระดับสมาชิก",sortable: false, value: "level" },
+      { text: "แต้มสะสม",sortable: false, value: "point" },
+      { text: "ดำเนินการ", value: "actions", sortable: false }
     ],
 
     desserts: [],

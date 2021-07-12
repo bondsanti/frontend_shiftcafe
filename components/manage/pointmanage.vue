@@ -3,18 +3,23 @@
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialogadd" max-width="500px">
+            
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mr-5" v-bind="attrs" v-on="on">
-              <v-icon left> mdi-barley </v-icon> เมนูจัดการหน่วย
-            </v-btn>
-          </template>
+              <v-card color="primary" dark class="mr-5 mb-4" >
+                  <span color="primary" class="mr-5 mt-2"  >  <v-icon left class="mb-2 mt-2 ml-2 "> mdi-file-powerpoint-box
+                        </v-icon>จัดการพอยท์ เพิ่ม/ลด
+                    </span>
+              </v-card>
+                    <v-btn color="primary" disabled dark class="mr-5" v-bind="attrs" v-on="on">
+                    <v-icon left> mdi-barley </v-icon> จัดการพอยท์ เพิ่ม/ลด
+                    </v-btn>
+            </template>
           <v-card>
             <v-card-title>
               <span class="text-h5"
                 ><v-icon left> mdi-barley </v-icon> เพิ่มหน่วย</span
               >
             </v-card-title>
-
             <v-card-text>
               <v-container>
                 <v-row>
@@ -85,15 +90,14 @@
           
             <v-dialog v-model="dialog" max-width="500px">
               <v-card>
-                <v-card-title>
+                <!-- <v-card-title>
 
                      <span class="text-h5"
                 ><v-icon left> mdi-barley </v-icon> {{ formTitle }}</span
               >
                   
-                </v-card-title>
-
-                <v-card-text>
+                </v-card-title> -->
+                <!-- <v-card-text>
                   <v-container>
                     <v-row>
                        <v-col cols="12">
@@ -117,11 +121,11 @@
                     
                     </v-row>
                   </v-container>
-                </v-card-text>
+                </v-card-text> -->
 
                 
 
-                 <v-card-actions>
+                 <!-- <v-card-actions>
               <v-btn class="ma-1" color="primary" dark @click="close">
                 <v-icon aria-hidden="false" class="mx-2">
                    mdi-barley-off 
@@ -135,13 +139,13 @@
                 </v-icon>
                 เพิ่มข้อมูล
               </v-btn>
-            </v-card-actions>
+            </v-card-actions> -->
 
 
                 
               </v-card>
             </v-dialog>
-            <v-dialog v-model="dialogDelete" max-width="270px">
+            <!-- <v-dialog v-model="dialogDelete" max-width="270px">
               <v-card>
                 <v-card-title class="text-h5 white--text  primary"
                   >
@@ -165,11 +169,11 @@
                   <v-spacer></v-spacer>
                 </v-card-actions>
               </v-card>
-            </v-dialog>
+            </v-dialog> -->
           
         </template>
-           <template v-slot:[`item.actions`]="{ item }">
-                  <v-btn class="mr2" color="warning" @click="editItem(item)">
+           <!-- <template v-slot:[`item.actions`]="{ item }">
+                  <v-btn color="primary" @click="editItem(item)">
                     <v-icon aria-hidden="false" class="mx-2">
                        mdi-barley 
                     </v-icon>
@@ -186,7 +190,7 @@
                     </v-icon>
                     ลบ
                   </v-btn>
-                </template>
+                </template> -->
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -205,15 +209,12 @@ export default {
     dialogDelete: false,
     search: '',
     headers: [
-      {
-        text: "ชื่อหนวย",
-        align: "start",
-        sortable: false,
-        value: "name"
-      },
-     
-      { text: "วันที่เพิ่มหน่วย", value: "data" , sortable: false },
-      { text: "Actions", value: "actions", sortable: false }
+      {text: "ชื่อลูกค้า", align: "start",sortable: false,value: "ref_cus_id" },
+      {text: "แต้ม", align: "start",sortable: false,value: "point" },
+       {text: "สถานะ", align: "start",sortable: false,value: "status" },
+      { text: "ชื่อพนักงานที่จัดการ", sortable: false, value: "ref_emp_id" },
+       { text: "วันทีเพิ่มลดแต้ม",sortable: false, value: "data" },
+    //   { text: "Actions", value: "actions", sortable: false }
     ],
     desserts: [],
     editedIndex: -1,

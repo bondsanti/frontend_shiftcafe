@@ -1,5 +1,5 @@
 <template>
-  <v-container style="background-color:#ededed;height:100%" fluid>
+   <div class="ma-3">
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialogadd" max-width="500px">
@@ -168,8 +168,8 @@
             </v-dialog>
           
         </template>
-           <template v-slot:item.actions="{ item }">
-                  <v-btn color="primary" @click="editItem(item)">
+          <template v-slot:[`item.actions`]="{ item }">
+                  <v-btn  class="mr2" color="warning" @click="editItem(item)">
                     <v-icon aria-hidden="false" class="mx-2">
                         mdi-food-fork-drink
                     </v-icon>
@@ -194,7 +194,7 @@
         </template>
       </v-data-table>
     </v-card>
-  </v-container>
+   </div>
 </template>
 
 <script>
@@ -212,7 +212,7 @@ export default {
         value: "name"
       },
      
-      { text: "วันที่เพิ่มหน่วย", value: "data" },
+      { text: "วันที่เพิ่มหน่วย", value: "data" , sortable: false },
       { text: "Actions", value: "actions", sortable: false }
     ],
     desserts: [],

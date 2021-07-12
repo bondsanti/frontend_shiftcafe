@@ -119,10 +119,10 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="desserts" :search="search">
-        <template v-slot:[`item.img`]="{}">
+      <v-data-table :headers="headers" :items="products" :search="search">
+        <template v-slot:[`item.img`]="{ item }">
           <img
-            src="@/assets/img/photo-1.jpg"
+            :src="'https://api.shift-cafe.com/' + item.img"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
             style="width: 150px; height: 150px"
@@ -258,7 +258,7 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn  class="mr2" color="warning" @click="editItem(item)">
+          <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
               mdi-notebook-edit-outline
             </v-icon>
@@ -296,8 +296,8 @@ export default {
     headers: [
       { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อสิ้นค้า", sortable: false, value: "product_name" },
-      { text: "หน่วย", sortable: false, value: "ref_uid" },
-      { text: "ประเภท", sortable: false, value: "ref_cate_id" },
+      { text: "หน่วย", sortable: false, value: "ref_uid.u_name" },
+      { text: "ประเภท", sortable: false, value: "ref_cate_id.cate_name" },
       { text: "ราคาต้นทุน", sortable: false, value: "price_cost" },
       { text: "ราคา", sortable: false, value: "price" },
       { text: "สต็อก", sortable: false, value: "stock" },
@@ -324,11 +324,14 @@ export default {
       stock: "",
       img: "",
       data: " "
-    }
+    },
+    dialogadd: "",
+    items: []
   }),
+  props: ["products"],
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "แก้ไขสิ้นค้า";
+      return this.editedIndex === -1 ? "New Item" : "แก้ไขสินค้า";
     }
   },
   watch: {

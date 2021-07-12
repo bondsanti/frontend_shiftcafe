@@ -1,0 +1,83 @@
+<template>
+  <div color="#ededed">
+    <div class="text-center mb-5">
+      <v-card class="mx-auto rounded-xl">
+        <v-img height="100%" src="classic.png">
+          <v-row align="end">
+            <v-col align-self="start" class="pa-6" cols="4">
+              <v-avatar class="profile" size="120">
+                <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
+              </v-avatar>
+            </v-col>
+            <v-col align-self="start" class="pa-5 mt-10 " cols="8">
+              <v-list-item-subtitle class="white--text text-uppercase">
+                Mr. Santi Chooprayoon</v-list-item-subtitle
+              >
+            </v-col>
+          </v-row>
+        </v-img>
+      </v-card>
+      <!--<v-avatar size="180" style="border: 4px solid #ffffff">
+        <img :src="account.avatar_img" />
+      </v-avatar>-->
+      <v-progress-linear
+        v-model="knowledge"
+        height="15"
+        color="amber"
+        class="mt-5 rounded-xl"
+      >
+        <strong>{{ Math.ceil(knowledge) }}%</strong>
+      </v-progress-linear>
+    </div>
+
+    <v-card class="mx-auto">
+      <v-list flat>
+        <h4 class="text-center pa-2">
+          สวัสดี คุณ : <span class="red_fix--text"> Santi</span>
+        </h4>
+        <v-divider></v-divider>
+        <v-list-item-group v-model="selectedItem" color="red_fix">
+          <v-list-item v-for="(item, i) in items" :key="i" :to="item.to">
+            <v-list-item-icon>
+              <v-icon v-text="item.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.text"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </v-card>
+  </div>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      selectedItem: 0,
+      knowledge: 33,
+      items: [
+        { text: "ข้อมูลส่วนตัว", icon: "mdi-account", to: "/members/profile" },
+        {
+          text: "พอยท์",
+          icon: "mdi-checkbook",
+          to: "/members/bank_account"
+        },
+        {
+          text: "คูปอง",
+          icon: "mdi-account-group",
+          to: "/members/dealers"
+        },
+        {
+          text: "ประวัติการสั่งซื้อ",
+          icon: "mdi-history",
+          to: "/members/history_buy"
+        }
+      ],
+      account: {
+        avatar_img: "https://cdn.vuetifyjs.com/images/john.jpg"
+      }
+    };
+  }
+};
+</script>

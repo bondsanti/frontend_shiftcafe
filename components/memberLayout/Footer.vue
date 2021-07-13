@@ -1,7 +1,6 @@
 <template>
-  <div> 
+  <div>
     <v-bottom-navigation
-      :value="value"
       color="error"
       fixed
       class="hidden-lg-and-up"
@@ -26,21 +25,8 @@
         <v-icon>mdi-chat</v-icon>
       </v-btn>
     </v-bottom-navigation>
-      <v-footer absolute app dark color="#1d1d1d" fi>
-    <span>&copy; {{ new Date().getFullYear() }}</span>
-  </v-footer>
-
+    <v-footer absolute app dark color="#1d1d1d">
+      <span>&copy; {{ new Date().getFullYear() }}</span>
+    </v-footer>
   </div>
 </template>
-<script>
-export default {
-  data() {
-    return {
-      value: 2,
-      show_cart: false,
-      date_cart_exp: null,
-    }
-  },
-
-</script>
-<style scoped></style>

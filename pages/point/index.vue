@@ -7,7 +7,6 @@
         </v-col>
         <v-col xs="12" sm="12" md="9" class="">
           <h2 class="text-left white--text mb-2">ประวัติการได้พอยท์</h2>
-
           <v-text-field
             dense
             placeholder="ค้นหา"

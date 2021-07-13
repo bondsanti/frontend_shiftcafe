@@ -64,7 +64,6 @@ export default {
         },
         {
           icon: "mdi-account",
-
           title: "ลงทะเบียนสมาชิก",
           to: "/seller/register"
         },
@@ -115,7 +114,6 @@ export default {
         }
       ],
       miniVariant: false,
-
       title: "admin"
     };
   },

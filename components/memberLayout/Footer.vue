@@ -33,7 +33,6 @@
   </div>
 </template>
 <script>
-import moment from 'moment'
 export default {
   data() {
     return {
@@ -42,30 +41,6 @@ export default {
       date_cart_exp: null,
     }
   },
-  created() {
-    this.$nuxt.$on('Action_Cart_Show', (value) => {
-      this.show_cart = value
-    })
-  },
-  mounted(){
-    this.exp_cart()
-  },
-  methods: {
-    exp_cart(){
-      const duration = moment.duration(900, 's');
-      const intervalId = setInterval(() => {
-      duration.subtract(1, "s");
-      this.date_cart_exp = `${duration.minutes()}:${duration.seconds()}`;
-      //console.log(`${duration.hours()}h:${duration.minutes()}m:${duration.seconds()}s`);
-      // `:${duration.milliseconds()}` to add milliseconds
 
-      if (duration.asMilliseconds() !== 0) return;
-       clearInterval(intervalId);
-       this.date_cart_exp = "หมดอายุ"
-       //console.warn("Times up!");
-    }, 1000);
-    }
-  }
-}
 </script>
 <style scoped></style>

@@ -388,6 +388,9 @@ export default {
       this.orders = [];
       this.subTotal = 0;
     }
+  },
+  created(context) {
+    console.log(this.$store.state.auth.user);
   }
 };
 </script>

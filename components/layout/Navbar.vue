@@ -64,7 +64,6 @@ export default {
         },
         {
           icon: "mdi-account",
-
           title: "ลงทะเบียนสมาชิก",
           to: "/seller/register"
         },
@@ -81,7 +80,7 @@ export default {
         {
           icon: "mdi-clipboard account outline",
           title: "จัดข้อมูลสมาชิก",
-          to: "/manage/customer"
+          to: "/manage/customers"
         },
         {
           icon: "mdi-barley ",
@@ -113,15 +112,8 @@ export default {
           title: "จัดการแต้ม",
           to: "/manage/pointmanage"
         }
-        ,
-           {
-          icon:"mdi-ticket-percent-outline ",
-          title:"จัดการคูปอง",
-          to:"/manage/coupon"
-        }
       ],
       miniVariant: false,
-
       title: "admin"
     };
   },

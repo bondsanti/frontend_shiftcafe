@@ -32,15 +32,4 @@
 
   </div>
 </template>
-<script>
-export default {
-  data() {
-    return {
-      value: 2,
-      show_cart: false,
-      date_cart_exp: null,
-    }
-  },
 
-</script>
-<style scoped></style>

@@ -97,7 +97,7 @@
 
       <v-data-table
         :headers="headers"
-        :items="desserts"
+        :items="stock"
         :search="search"
        
       >
@@ -115,27 +115,6 @@
 
                 <v-card-text>
                   <v-container>
-                    <!-- <v-row>
-                       <v-col cols="12">
-                    
-                  </v-col>
-                      <v-col cols="12" class="mt-n7">
-                        <v-text-field
-                        
-                         outlined
-                          v-model="editedItem.name"
-                          label="หน่วย"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" class="mt-n7">
-                        <v-text-field
-                         outlined
-                          v-model="editedItem.data"
-                          label="วันที่แก้ไข"
-                        ></v-text-field>
-                      </v-col>
-                    
-                    </v-row> -->
                    <v-row>
                   <v-col cols="12">
                     <v-select
@@ -273,30 +252,22 @@ export default {
     dialogDelete: false,
     search: '',
     headers: [
-      {
-        text: "รายการสิ้นค้า",
-        align: "start",
-        sortable: false,
-        value: "name"
-      },
-      { text: "จำนวลที่พร้อมขาย", value: "calories", sortable: false  },
-        { text: "ให้แจ้งเตื่อนเมื่อใกล้หมด", value: "fat" , sortable: false },
-        { text: "หน่วยนับ", value: "units", sortable: false  },
-      { text: "วันที่เพิ่มหน่วย", value: "data", sortable: false  },
-      { text: "ดำเนินการ", value: "actions", sortable: false }
-    ],
+      {text: "รายการสิ้นค้า", align: "start", sortable: false, value: "ref_pro_id" },
+      { text: "จำนวลที่พร้อมขาย", value: "qty_max", sortable: false  },
+      { text: "ให้แจ้งเตื่อนเมื่อใกล้หมด", value: "qty_min" , sortable: false },
+      { text: "วันที่เพิ่มหน่วย", value: "datetime", sortable: false  },
+      { text: "ดำเนินการ", value: "actions", sortable: false } ],
     desserts: [],
     editedIndex: -1,
-    editedItem: {
-      name: "",
-      data:""
-    
+    editedItem: {  name: "", data:""
+
     },
     defaultItem: {
       name: "",
        data:""
     }
   }),
+  props:['stock'],
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "แก้หนวยนับ";

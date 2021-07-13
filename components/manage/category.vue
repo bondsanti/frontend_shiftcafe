@@ -1,71 +1,22 @@
 <template>
-   <div class="ma-3">
+  <div class="ma-3">
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
-        <v-dialog v-model="dialogadd" max-width="500px">
+        <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mr-5" v-bind="attrs" v-on="on">
+            <v-btn
+              color="primary"
+              dark
+              class="mr-5"
+              v-bind="attrs"
+              v-on="on"
+              @click="addItem"
+            >
               <v-icon left> mdi-food-fork-drink </v-icon> จัดหมวดหมู่
             </v-btn>
           </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5"
-                ><v-icon left> mdi-food-fork-drink </v-icon> เพิ่มหมวดหมู่</span
-              >
-            </v-card-title>
-
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12">
-                    
-                  </v-col>
-                
-                  <v-col cols="12" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="ชื่อหมวดหมู่"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="วันที่ลงข้อมูล"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-
-                
-                 
-                 
-                </v-row>
-              </v-container>
-            </v-card-text>
-
-             <v-card-actions>
-              <v-btn class="ma-1" color="primary" dark @click="close">
-                <v-icon aria-hidden="false" class="mx-2">
-                 mdi-food-off
-                </v-icon>
-                ยกเลิก
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn class="ma-1" color="info" @click="save">
-                <v-icon aria-hidden="false" class="mx-2">
-                   mdi-food-fork-drink
-                </v-icon>
-                เพิ่มข้อมูล
-              </v-btn>
-            </v-card-actions>
-          </v-card>
         </v-dialog>
-
         <v-spacer></v-spacer>
-
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -75,118 +26,88 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table
-        :headers="headers"
-        :items="desserts"
-        :search="search"
-       
-      >
+      <v-data-table :headers="headers" :items="category" :search="search" :items-per-page="15">
         <template v-slot:top>
-          
-            <v-dialog v-model="dialog" max-width="500px">
-              <v-card>
-                <v-card-title>
-
-                     <span class="text-h5"
-                ><v-icon left>  mdi-food-fork-drink </v-icon> {{ formTitle }}</span
-              >
-                  
-                </v-card-title>
-
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                       <v-col cols="12">
-                    
-                  </v-col>
-                      <v-col cols="12" class="mt-n7">
-                        <v-text-field
-                        
-                         outlined
-                          v-model="editedItem.name"
-                          label="หน่วย"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" class="mt-n7">
-                        <v-text-field
-                         outlined
-                          v-model="editedItem.data"
-                          label="วันที่แก้ไข"
-                        ></v-text-field>
-                      </v-col>
-                    
-                    </v-row>
-                  </v-container>
-                </v-card-text>
-
-                
-
-                 <v-card-actions>
-              <v-btn class="ma-1" color="primary" dark @click="close">
-                <v-icon aria-hidden="false" class="mx-2">
-                    mdi-food-off
-                </v-icon>
-                ยกเลิก
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn class="ma-1" color="info" @click="save">
-                <v-icon aria-hidden="false" class="mx-2">
-                   mdi-food-fork-drink 
-                </v-icon>
-                เพิ่มข้อมูล
-              </v-btn>
-            </v-card-actions>
-
-
-                
-              </v-card>
-            </v-dialog>
-            <v-dialog v-model="dialogDelete" max-width="270px">
-              <v-card>
-                <v-card-title class="text-h5 white--text  primary"
-                  >
-                  
-                  แน่ใจแล้วใช่มั้ยที่จะลบ
-                  
-                  </v-card-title
+          <v-dialog v-model="dialog" max-width="500px">
+            <v-card>
+              <v-card-title>
+                <span class="text-h5"
+                  ><v-icon left> mdi-food-fork-drink </v-icon> {{ formTitle }}</span
                 >
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="info" class="ma-2" @click="closeDelete"
-                    > <v-icon aria-hidden="false" class="mx-2">
-                   mdi-food-off
-                </v-icon>ยกเลิก</v-btn
-                  >
-                  <v-btn color="primary"  class="ma-2"  @click="deleteItemConfirm"
-                    > <v-icon aria-hidden="false" class="mx-4">
-                   mdi-food-fork-drink
-                </v-icon>ลบ</v-btn
-                  >
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          
+              </v-card-title>
+
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12"> </v-col>
+                    <v-col cols="12" class="mt-n7">
+                      <v-text-field
+                        outlined
+                        v-model="cate.cate_name"
+                        label="ชื่อ"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-btn class="ma-1" color="primary" dark @click="close">
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-food-off
+                  </v-icon>
+                  ยกเลิก
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn class="ma-1" color="info" @click="save">
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-food-fork-drink
+                  </v-icon>
+                  เพิ่มข้อมูล
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="dialogDelete" max-width="270px">
+            <v-card>
+              <v-card-title class="text-h5 white--text  primary">
+                แน่ใจแล้วใช่มั้ยที่จะลบ
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="info" class="ma-2" @click="closeDelete">
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-food-off </v-icon
+                  >ยกเลิก</v-btn
+                >
+                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
+                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
+                  >ลบ</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </template>
-          <template v-slot:[`item.actions`]="{ item }">
-                  <v-btn  class="mr2" color="warning" @click="editItem(item)">
-                    <v-icon aria-hidden="false" class="mx-2">
-                        mdi-food-fork-drink
-                    </v-icon>
-                    แก้ไข
-                  </v-btn>
-                  <v-btn
-                    rounded-lx
-                    class="mr-2"
-                    color="error"
-                    @click="deleteItem(item)"
-                  >
-                    <v-icon dark class="mx-2">
-                        mdi-food-off
-                    </v-icon>
-                    ลบ
-                  </v-btn>
-                </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-btn class="mr2" color="warning" @click="editItem(item)">
+            <v-icon aria-hidden="false" class="mx-2">
+             mdi-food-fork-drink
+            </v-icon>
+            แก้ไข
+          </v-btn>
+          <v-btn
+            rounded-lx
+            class="mr-2"
+            color="error"
+            @click="deleteItem(item)"
+          >
+            <v-icon dark class="mx-2">
+              mdi-food-off
+            </v-icon>
+            ลบ
+          </v-btn>
+        </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -194,42 +115,30 @@
         </template>
       </v-data-table>
     </v-card>
-   </div>
+  </div>
 </template>
 
 <script>
 export default {
   data: () => ({
     dialog: false,
-    
     dialogDelete: false,
-    search: '',
+    search: "",
     headers: [
-      {
-        text: "ชื่อหมวดหมู่",
-        align: "start",
-        sortable: false,
-        value: "name"
-      },
-     
-      { text: "วันที่เพิ่มหน่วย", value: "data" , sortable: false },
+      { text: "ชื่อหม่วดหมู่", align: "start", value: "cate_name", divider: true },
+      { text: "ID", align: "start", value: "_id", divider: true },
       { text: "Actions", value: "actions", sortable: false }
     ],
-    desserts: [],
+    category: [],
     editedIndex: -1,
-    editedItem: {
-      name: "",
-      data:""
-    
-    },
-    defaultItem: {
-      name: "",
-       data:""
-    }
+    cate: { _id: "", u_name: "" },
+    type: null,
+    deleteId: null
   }),
+
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "แก้ไขหมวดหมู่";
+      return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
     }
   },
   watch: {
@@ -245,61 +154,34 @@ export default {
   },
   methods: {
     initialize() {
-      this.desserts = [
-        {
-          name: "Frozen Yogurt",
-          data:"11 กรกฏาคม 2564"
-        },
-        {
-          name: "Ice cream sandwich",
-       data:"12 กรกฏาคม 2564"
-        },
-        {
-          name: "Eclair",
-           data:"13 กรกฏาคม 2564"
-        },
-        {
-          name: "Cupcake",
-          data:"11 กรกฏาคม 2564"
-        },
-        {
-          name: "Gingerbread",
-          data:"11 กรกฏาคม 2564"
-        },
-        {
-          name: "Jelly bean",
-        data:"11 กรกฏาคม 2564"
-        },
-        {
-          name: "Lollipop",
-       data:"11 กรกฏาคม 2564"
-        },
-        {
-          name: "Honeycomb",
-          data:"11 กรกฏาคม 2564"
-        },
-        {
-          name: "Donut",
-          data:"11 กรกฏาคม 2564"
-        },
-        {
-          name: "KitKat",
-         data:"11 กรกฏาคม 2564"
-        }
-      ];
+      // this.loading = true;
+      // this.$axios.$get("/unit").then(unit => {
+      //   this.unit = unit;
+      // });
+      // this.unit = [];
     },
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+      this.type = "edit";
+      this.cate = item;
+      this.dialog = true;
+    },
+    addItem() {
+      this.type = "add";
+      this.cate = {
+        _id: "",
+        u_name: ""
+      };
       this.dialog = true;
     },
     deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.deleteId = item._id;
+      this.editedIndex = this.category.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
     deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
+      this.category.splice(this.editedIndex, 1);
+      this.$axios.$delete("/category/" + this.deleteId).then(() => {});
       this.closeDelete();
     },
     close() {
@@ -316,14 +198,27 @@ export default {
         this.editedIndex = -1;
       });
     },
+
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+
+      if (this.type === "add") {
+        this.loading = true;
+     
+        this.$emit("addCategory", { ...this.cate });
+        this.close();
       } else {
-        this.desserts.push(this.editedItem);
+        this.loading = true;
+        this.$axios
+          .$put("/category/" + this.cate._id, this.cate)
+          .then(() => {
+            this.close();
+          })
+          .catch(e => {
+            console.log(e);
+          });
       }
-      this.close();
     }
-  }
+  },
+  props:['category']
 };
 </script>

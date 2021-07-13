@@ -26,7 +26,7 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="coupon" :search="search" :items-per-page="15">
+      <v-data-table :headers="headers" :items="customer" :search="search" :items-per-page="15">
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
             <v-card>
@@ -38,62 +38,13 @@
 
               <v-card-text>
                 <v-container>
-            
-                   <v-row>
+                  <v-row>
                     <v-col cols="12"> </v-col>
-
-                    <v-col cols="12" md="6" class="mt-n7">
+                    <v-col cols="12" class="mt-n7">
                       <v-text-field
                         outlined
-                        label="ชื่อคูปอง"
-                        v-model="coupone.codename"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ผู้ร้องออกรหัสคูปอง"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="พนักงานที่ทำการขอ"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="วันหมดอายุคูปอง"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ส่วนลดในคูปอง"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="จำคูปองที่สามารถใช้ได้"
-                        required
-                        color="#1D1D1D"
+                    
+                        label="ชื่อ"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -174,17 +125,21 @@ export default {
     dialogDelete: false,
     search: "",
     headers: [
-      { text: "ชื่อหม่วดหมู่", align: "start", value: "codename", divider: true },
-      { text: "อนุญาตโดย", align: "start", value: "ref_emp_id_by", divider: true },
-      { text: "พนักงานที่ออก", align: "start", value: "ref_emp_id", divider: true },
-      { text: "วันหมดอายุ", align: "start", value: "exp", divider: true },
-      { text: "ส่วนลด % ", align: "start", value: "discount", divider: true },
-       { text: "จำนวลผู้ใช้คูปอง", align: "start", value: "num_use", divider: true },
+      { text: "ชื่อหม่วดหมู่", align: "start", value: "pname" },
+      { text: "ชื่อ", align: "start", value: "fname" },
+      { text: "นามสกุล", align: "start", value: "lname"},
+      { text: "วันเกิด", align: "start", value: "birthday"},
+      { text: "วันเกิด", align: "start", value: "tel"},
+      { text: "เบอร์โทร", align: "start", value: "tel"},
+      { text: "อีเมล์", align: "start", value: "email"},
+      { text: "ที่อยู่", align: "start", value: "address"},
+      { text: "ระดับ", align: "start", value: "ref_level_id.level_name"},
+       { text: "แต้ม", align: "start", value: "point"},
       { text: "Actions", value: "actions", sortable: false }
     ],
-    coupon: [],
+    customer: [],
     editedIndex: -1,
-    coupone: { _id: "", codename: "" },
+    customer: { _id: "", pname: "" },
     type: null,
     deleteId: null
   }),
@@ -215,12 +170,12 @@ export default {
     },
     editItem(item) {
       this.type = "edit";
-      this.coupone = item;
+      this.cate = item;
       this.dialog = true;
     },
     addItem() {
       this.type = "add";
-      this.coupone = {
+      this.cate = {
         _id: "",
         u_name: ""
       };
@@ -228,13 +183,13 @@ export default {
     },
     deleteItem(item) {
       this.deleteId = item._id;
-      this.editedIndex = this.coupon.indexOf(item);
+      this.editedIndex = this.category.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
     deleteItemConfirm() {
-      this.coupon.splice(this.editedIndex, 1);
-      this.$axios.$delete("/coupon/" + this.deleteId).then(() => {});
+      this.category.splice(this.editedIndex, 1);
+      this.$axios.$delete("/category/" + this.deleteId).then(() => {});
       this.closeDelete();
     },
     close() {
@@ -257,12 +212,12 @@ export default {
       if (this.type === "add") {
         this.loading = true;
      
-        this.$emit("addCoupon", { ...this.coupone });
+        this.$emit("addCategory", { ...this.cate });
         this.close();
       } else {
         this.loading = true;
         this.$axios
-          .$put("/coupon/" + this.coupone._id, this.coupone)
+          .$put("/category/" + this.cate._id, this.cate)
           .then(() => {
             this.close();
           })
@@ -272,6 +227,6 @@ export default {
       }
     }
   },
-  props:['coupon']
+  props:['customer']
 };
 </script>

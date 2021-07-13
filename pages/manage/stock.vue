@@ -1,24 +1,18 @@
-<template>
-
-  
-   <stock />
-   
-
-
+<template> 
+   <stock :stock ="stock" />
 </template>
-
 <script>
 import stock from '@/components/manage/stock.vue'
 
 export default {
-  components:{ 
-     stock ,
-   
-     }
+     async asyncData(context) {
+    const stock = await context.$axios.$get("/stock");
 
+    console.log(stock);
+    return { stock };
+  },
+  components:{ 
+     stock ,  
+     }
 }
 </script>
-
-<style>
-
-</style>

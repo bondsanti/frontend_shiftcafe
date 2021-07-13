@@ -81,12 +81,12 @@ export default {
         {
           icon: "mdi-clipboard account outline",
           title: "จัดข้อมูลสมาชิก",
-          to: "/manage/customers"
+          to: "/manage/customer"
         },
         {
           icon:"mdi-barley ",
           title:"จัดการหน่วยนับ",
-          to:"/manage/manageunitsmenu"
+          to:"/manage/unit"
         },
            {
           icon:"mdi-food-fork-drink  ",
@@ -116,6 +116,12 @@ export default {
           icon:"mdi-file-powerpoint-box",
           title:"จัดการแต้ม",
           to:"/manage/pointmanage"
+        }
+        ,
+           {
+          icon:"mdi-ticket-percent-outline ",
+          title:"จัดการคูปอง",
+          to:"/manage/coupon"
         }
       ],
       miniVariant: false,

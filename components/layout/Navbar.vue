@@ -34,7 +34,7 @@
       <v-btn icon @click="logout">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-title>{{ $store.state.displayName }}</v-toolbar-title>
       <v-avatar size="36px" class="ml-2">
         <img
           alt="Avatar"
@@ -84,38 +84,34 @@ export default {
           to: "/manage/customer"
         },
         {
-          icon:"mdi-barley ",
-          title:"จัดการหน่วยนับ",
-          to:"/manage/unit"
+          icon: "mdi-barley ",
+          title: "จัดการหน่วยนับ",
+          to: "/manage/manageunitsmenu"
         },
-           {
-          icon:"mdi-food-fork-drink  ",
-          title:"จัดหมวดหมู่",
-          to:"/manage/category"
-        }
-        ,
-           {
-          icon:"mdi-notebook-edit-outline",
-          title:"จัดการสินค้า",
-          to:"/manage/product"
-        }
-        ,
-           {
-          icon:"mdi-ticket-account",
-          title:"จัดระดับสมาขิก",
-          to:"/manage/levelmember"
-        }
-          ,
-           {
-          icon:"mdi-card-account-details-outline ",
-          title:"จัดการพนังงาน",
-          to:"/manage/employee"
-        }
-         ,
-           {
-          icon:"mdi-file-powerpoint-box",
-          title:"จัดการแต้ม",
-          to:"/manage/pointmanage"
+        {
+          icon: "mdi-food-fork-drink  ",
+          title: "จัดหมวดหมู่",
+          to: "/manage/category"
+        },
+        {
+          icon: "mdi-notebook-edit-outline",
+          title: "จัดการสินค้า",
+          to: "/manage/product"
+        },
+        {
+          icon: "mdi-ticket-account",
+          title: "จัดระดับสมาขิก",
+          to: "/manage/levelmember"
+        },
+        {
+          icon: "mdi-card-account-details-outline ",
+          title: "จัดการพนังงาน",
+          to: "/manage/employee"
+        },
+        {
+          icon: "mdi-file-powerpoint-box",
+          title: "จัดการแต้ม",
+          to: "/manage/pointmanage"
         }
         ,
            {

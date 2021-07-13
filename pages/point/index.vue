@@ -1,82 +1,24 @@
 <template>
-   <div class="my-5">
-    <v-card class="py-5 px-5" color="grey darken-3">
+  <div class="" style="height: 100%">
+    <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
       <v-row>
         <v-col cols="12" xs="12" sm="12" md="3">
           <MenuProfile />
         </v-col>
+
         <v-col xs="12" sm="12" md="9" class="">
-          <h2 class="text-left white--text mb-2">ประวัติการได้พอยท์</h2>
-          <v-text-field
-            dense
-            placeholder="ค้นหา"
-            solo
-            v-model="search"
-          ></v-text-field>
-          <v-row class="">
-            <v-col
-              v-for="(rows, dealers) in visiblePages"
-              :key="dealers"
-              sm="12"
-              md="4"
-              cols="12"
-              class="mt-n2"
-            >
-              <v-card class="mx-auto">
-                <v-card-title>
-                  <span class="mt-n2"
-                    >Order ID <font class="red_fix--text">11001441</font>
-
-                  
-                  </span>
-                </v-card-title>
-                <v-row :align="align" no-gutters class="mt-n5">
-                  <v-col class="text-caption">
-                    <v-card class="pa-2" outlined tile color="red lighten-4">
-                      วันที่ซื้อ
-                      <font class="red_fix--text">{{ rows.datedue }}</font>
-                    </v-card>
-                  </v-col>
-
-                  <v-col class="text-caption">
-                    <v-card class="pa-2" outlined tile color="red lighten-4">
-                      พอยท์ที่ได้
-                      <font class="red_fix--text">{{ rows.dateorder }}</font>
-                    </v-card>
-                  </v-col>
-                </v-row>
-
-                <v-card-actions>
-                  <v-list-item class="grow ml-n3">
-                    <v-list-item-avatar
-                      color=""
-                      v-if="$vuetify.breakpoint.smAndUp"
-                    >
-                      <v-img
-                        class="elevation-6"
-                        alt=""
-                      
-                      ></v-img>
-                    </v-list-item-avatar>
-
-                    <v-row justify="end">
-                      <v-btn outlined  color="red_fix" text :to="rows.url">
-                        ดูรายละเอียด
-                      </v-btn>
-                    </v-row>
-                  </v-list-item>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-          </v-row>
-          <div class="text-center">
-            <v-pagination
-              v-model="currentPage"
-              :length="Math.ceil(this.dealers.length / this.perPage)"
-              circle
-              class="mt-5"
-            ></v-pagination>
-          </div>
+          <v-card class="px-6 py-5 mb-5">
+            <div class="text-center">
+              <h2 class="">รายการประวัติพอยท์ของฉัน</h2>
+              <v-divider class="mt-3 mb-2"></v-divider>
+            </div>
+            <v-data-table
+              :headers="headers"
+              :items="pointItems"
+              :items-per-page="10"
+              class="mb-n5"
+            ></v-data-table>
+          </v-card>
         </v-col>
       </v-row>
     </v-card>
@@ -84,48 +26,125 @@
 </template>
 
 <script>
-import MenuProfile from '~/components/memberLayout/MenuProfile'
+import MenuProfile from "~/components/memberLayout/MenuProfile";
 export default {
- layout:"layoutMember",
+  layout: "layoutMember",
   data() {
     return {
-      search: '',
-      currentPage: 1,
-      perPage: 6,
-      dealers: [
+      headers: [
         {
-          name: 'โคตรรวย',
-          url: '/members/history_buy_detail',
-          datedue: '16/2/64',
-          dateorder: '+10 พอยท์',
+          text: "id",
+          align: "start",
+          sortable: false,
+          value: "orderid"
         },
+        { text: "รายการ", value: "name" },
+        { text: "วันที่", value: "datetime" },
+        { text: "จำนวน", value: "point" },
+        { text: "คงเหลือ", value: "pointTotal" }
       ],
-    }
+      pointItems: [
+        {
+          orderid: "214001",
+          name: "อเมริการโน",
+          point: 10,
+          pointTotal: 20,
+          datetime: "13/7/2564 13:00"
+        },
+        {
+          orderid: "214041",
+          name: "ชาเขียว",
+          point: 10,
+          pointTotal: 30,
+          datetime: "25/7/2564 17:00"
+        },
+        {
+          orderid: "215001",
+          name: "ช้าวผัด",
+          point: 15,
+          pointTotal: 40,
+          datetime: "1/8/2564 11:35"
+        },
+        {
+          orderid: "215010",
+          name: "อเมริการโน",
+          point: 10,
+          pointTotal: 50,
+          datetime: "11/8/2564 13:00"
+        },
+        {
+          orderid: "215055",
+          name: "อเมริการโน",
+          point: 10,
+          pointTotal: 60,
+          datetime: "19/8/2564 13:00"
+        },
+        {
+          orderid: "215055",
+          name: "อเมริการโน",
+          point: 10,
+          pointTotal: 70,
+          datetime: "19/8/2564 13:00"
+        },
+        {
+          orderid: "215055",
+          name: "อเมริการโน",
+          point: 10,
+          pointTotal: 80,
+          datetime: "19/8/2564 13:00"
+        },
+        {
+          orderid: "215055",
+          name: "อเมริการโน",
+          point: 10,
+          pointTotal: 90,
+          datetime: "19/8/2564 13:00"
+        },
+        {
+          orderid: "215055",
+          name: "อเมริการโน",
+          point: 10,
+          pointTotal: 80,
+          datetime: "19/8/2564 13:00"
+        },
+        {
+          orderid: "215055",
+          name: "อเมริการโน",
+          point: 10,
+          pointTotal: 90,
+          datetime: "19/8/2564 13:00"
+        },
+        {
+          orderid: "215055",
+          name: "อเมริการโน",
+          point: 10,
+          pointTotal: 80,
+          datetime: "19/8/2564 13:00"
+        },
+        {
+          orderid: "215055",
+          name: "อเมริการโน",
+          point: 10,
+          pointTotal: 90,
+          datetime: "19/8/2564 13:00"
+        }
+      ]
+    };
   },
-  computed: {
-    visiblePages() {
-      if (this.search) {
-        return this.dealers.filter((rows) => {
-          return rows.name.toLowerCase().includes(this.search.toLowerCase())
-        })
-      } else {
-        return this.dealers.slice(
-          (this.currentPage - 1) * this.perPage,
-          this.currentPage * this.perPage
-        ) //แบ่งหน้า
-        //return this.dealers;
-      }
-    },
-  },
+
   components: {
-    MenuProfile,
-  },
-}
+    MenuProfile
+  }
+};
 </script>
 
 <style>
-.text-online {
+.text-plus {
   color: green;
+  font-size: 14px;
+}
+.text-minus {
+  color: red;
   font-size: 14px;
 }
 </style>

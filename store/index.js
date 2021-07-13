@@ -1,17 +1,18 @@
-export const state = () => ({
-  title: 'SHIFT CAFE',
-  displayName: 'Long2'
-})
+import Vuex from 'vuex'
 
-export const mutations = () => ({
-  setDisplayName (state, user) {
-    state.setDisplayName = user
-  }
-})
+const createStore = () => {
+  return new Vuex.Store({
+    state: {},
+    mutations: {
+      setUser (state, user) {}
+    },
+    actions: {},
+    getters: {
+      displayName (state) {
+        return state.auth.user.fname + ' ' + state.auth.user.fname
+      }
+    }
+  })
+}
 
-export const getters = () => ({
-  displayName (state) {
-    return state.displayName
-  }
-})
-export const actions = () => ({})
+export default createStore

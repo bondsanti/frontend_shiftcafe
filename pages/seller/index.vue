@@ -20,10 +20,12 @@
                   height="20"
                   dense
                   elevation="0"
+                  v-model="keyword"
+                  @keypress="searchProduct"
                 ></v-text-field>
                 <!-- </v-col> -->
                 <!-- <v-col cols="1" sm="1" md="1"> -->
-                <v-btn fab dark small elevation="0">
+                <v-btn fab dark small elevation="0" @click="searchProduct">
                   <v-icon>mdi-magnify</v-icon>
                 </v-btn>
               </div>
@@ -157,7 +159,7 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row justify="center">
+    <!-- <v-row justify="center">
       <v-dialog
         v-model="dialog"
         fullscreen
@@ -282,42 +284,51 @@
           </div>
         </v-card>
       </v-dialog>
-    </v-row>
+    </v-row> -->
+    <ConfirmOrder
+      :dialog="dialog"
+      :orders="orders"
+      :subtotal="subTotal"
+      @closeDialog="dialog = false"
+      :customers="customers"
+    />
   </div>
 </template>
 
 <script>
 import Product from "@/components/seller/Product.vue";
 import Category from "@/components/seller/Category.vue";
+import ConfirmOrder from "@/components/seller/confirmOrder.vue";
 
 export default {
+  middleware: ["auth", "check"],
   async asyncData(context) {
-    const [products, categories] = await Promise.all([
+    const [products, categories, customers] = await Promise.all([
       context.$axios.$get("/product"),
-      context.$axios.$get("/category")
+      context.$axios.$get("/category"),
+      context.$axios.$get("/customer")
     ]);
     //const products = await context.$axios.$get("/product");
     //console.log(products);
-    //console.log(categories);
-    return { products, categories, product2: products };
+    //console.log(customers);
+    return { products, categories, product2: products, customers };
   },
   components: {
     Product,
-    Category
+    Category,
+    ConfirmOrder
   },
   data: () => ({
     cateName: "Coffee",
     orders: [],
     dialog: false,
-    notifications: false,
-    sound: true,
-    widgets: false,
     items: ["foo", "bar", "fizz", "buzz"],
     row: null,
     value: null,
     cateId: "",
     product2: null,
-    subTotal: 0
+    subTotal: 0,
+    keyword: ""
   }),
   head() {
     return {
@@ -326,10 +337,12 @@ export default {
   },
   methods: {
     changCate(cate) {
+      console.log(cate);
       this.product2 = this.products;
+      console.log(this.product2[0]);
       this.cateId = cate._id;
       this.product2 = this.product2.filter(
-        pro => pro.ref_cate_id._id == this.cateId
+        pro => pro.ref_cate_id._id === this.cateId
       );
       this.cateName = cate.cate_name;
     },
@@ -387,10 +400,24 @@ export default {
     clearOrder() {
       this.orders = [];
       this.subTotal = 0;
+    },
+    searchProduct() {
+      // setTimeout(
+      //   (this.product2 = this.products.find(
+      //     pro => pro.product_name === this.keyword
+      //   )),
+      //   400
+      // );
+      this.product2 = [];
+      for (let j in this.products) {
+        if (this.products[j].product_name.includes(this.keyword)) {
+          this.product2.push(this.products[j]);
+        }
+      }
     }
   },
   created(context) {
-    console.log(this.$store.state.auth.user);
+    // console.log(this.$store.state.auth.user);
   }
 };
 </script>

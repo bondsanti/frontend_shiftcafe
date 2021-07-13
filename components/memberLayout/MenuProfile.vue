@@ -1,11 +1,12 @@
 <template>
-  <div color="#ededed">
+
+  <div class="my-5 ma-2">
     <div class="text-center mb-5">
-      <v-card class="mx-auto rounded-xl">
+     
         <v-img height="100%" src="classic.png">
           <v-row align="end">
             <v-col align-self="start" class="pa-6" cols="4">
-              <v-avatar class="profile" size="120">
+              <v-avatar class="profile" size="100">
                 <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
               </v-avatar>
             </v-col>
@@ -16,7 +17,7 @@
             </v-col>
           </v-row>
         </v-img>
-      </v-card>
+      
       <!--<v-avatar size="180" style="border: 4px solid #ffffff">
         <img :src="account.avatar_img" />
       </v-avatar>-->
@@ -49,29 +50,34 @@
       </v-list>
     </v-card>
   </div>
+
+
 </template>
 <script>
 export default {
+   layout:"layoutMember",
   data() {
     return {
       selectedItem: 0,
       knowledge: 33,
       items: [
-        { text: "ข้อมูลส่วนตัว", icon: "mdi-account", to: "/members/profile" },
+        { text: "ข้อมูลส่วนตัว", 
+        icon: "mdi-account",
+         to: "/member" },
         {
           text: "พอยท์",
-          icon: "mdi-checkbook",
-          to: "/members/bank_account"
+          icon: "mdi-gift",
+          to: "/point"
         },
         {
           text: "คูปอง",
-          icon: "mdi-account-group",
-          to: "/members/dealers"
+          icon: "mdi-checkbook",
+          to: "/member/coupon"
         },
         {
           text: "ประวัติการสั่งซื้อ",
           icon: "mdi-history",
-          to: "/members/history_buy"
+          to: "/member/history_buy"
         }
       ],
       account: {

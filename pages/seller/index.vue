@@ -113,29 +113,23 @@
             >
           </div>
           <v-spacer></v-spacer>
+
           <div
-            class="d-flex flex-row justify-space-between mr-4 ml-4 mb-1 mt-10"
-          >
-            <h3 class="d-flex flex-column">Discount (%)</h3>
-            <h3 class="d-flex flex-column">0</h3>
-          </div>
-          <div
-            class="d-flex flex-row justify-space-between mr-4 ml-4 mb-1 mt-0"
-          >
-            <h3 class="d-flex flex-column">Sub Total</h3>
-            <h3 class="d-flex flex-column">{{ subTotal }}</h3>
-          </div>
-          <div
-            class="d-flex flex-row justify-space-between mr-4 ml-4 mb-6 mt-0"
-          >
-            <h3 class="d-flex flex-column">Tax (%)</h3>
-            <h3 class="d-flex flex-column">7</h3>
-          </div>
-          <div
-            class="d-flex flex-row justify-space-between mb-4 mr-4 ml-4 mt-0"
+            class="d-flex flex-row justify-space-between mb-0 mr-4 ml-4 mt-16"
           >
             <h2 class="d-flex flex-column">Total</h2>
-            <h2 class="d-flex flex-column info--text">{{ subTotal }}</h2>
+            <h2 class="d-flex flex-column info--text">
+              {{ formatPrice(subTotal) }}
+            </h2>
+          </div>
+          <div
+            class="d-flex flex-row justify-space-between mb-4 mr-4 ml-4 mt-0 align-center"
+          >
+            <h4 class="mr-5">ประเภทคำสั่งซื้อ</h4>
+            <v-radio-group v-model="type_order" row>
+              <v-radio label="ทานที่ร้าน" value="1"></v-radio>
+              <v-radio label="กลับบ้าน" value="2"></v-radio>
+            </v-radio-group>
           </div>
         </v-card>
         <v-btn
@@ -144,153 +138,106 @@
           x-large
           block
           color="info"
-          @click="dialog = true"
-          >Pay ({{ subTotal }})</v-btn
+          @click="holdDl = true"
+          >ชำระเงิน ({{ formatPrice(subTotal) }} ฿)</v-btn
         >
-        <v-row class="mt-2">
+        <div class="d-flex flex-row">
           <v-col cols="6">
             <v-btn rounded large block outlined color="red" @click="clearOrder"
               >Cancel Order</v-btn
             >
           </v-col>
           <v-col cols="6">
-            <v-btn rounded large block outlined color="info">Hold Order</v-btn>
+            <v-btn
+              rounded
+              large
+              block
+              outlined
+              color="info"
+              @click="confirmOrder"
+              ><v-chip class="mr-4" color="info" text-color="white">
+                {{ orderOnDatabase.length }}
+              </v-chip>
+              จอง/พัก</v-btn
+            >
           </v-col>
-        </v-row>
+        </div>
       </v-col>
     </v-row>
-    <!-- <v-row justify="center">
+    <v-row class="justify-center">
+      <v-dialog v-model="orderDl" max-width="500px">
+        <v-card>
+          <v-form v-model="valid" ref="form">
+            <v-card-title>
+              โปรดกรอกชื่อลูกค้า
+            </v-card-title>
+            <v-card-text>
+              <v-text-field
+                :rules="rules"
+                autofocus
+                v-model="bill_name"
+              ></v-text-field>
+            </v-card-text>
+          </v-form>
+          <v-card-actions>
+            <v-btn color="primary" @click="confirmOrder" :disabled="!valid">
+              บันทึกคำสั่งซื้อ
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <v-row class="justify-center" v-model="holdDl">
       <v-dialog
-        v-model="dialog"
-        fullscreen
-        hide-overlay
         transition="dialog-bottom-transition"
+        v-model="holdDl"
+        max-width="1000"
       >
         <v-card>
-          <v-toolbar dark color="primary">
-            <v-btn icon dark @click="dialog = false">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-            <v-toolbar-title>ยืนยันการชำระเงิน</v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-toolbar-items>
-              <v-btn dark text @click="dialog = false">
-                บันทึก
-              </v-btn>
-            </v-toolbar-items>
-          </v-toolbar>
-          <div class="d-flex flex-row flex-wrap">
-            <v-col cols="12" md="6">
-              <v-row class="ma-4">
-                <v-col>
-                  <v-row align="center">
-                    <h2 class="mr-5">ประเภทลูกค้า</h2>
-                    <v-radio-group v-model="row" row>
-                      <v-radio label="ทั่วไป" value="guest"></v-radio>
-                      <v-radio label="สมาชิก" value="member"></v-radio>
-                    </v-radio-group>
-                  </v-row>
-                  <v-autocomplete
-                    v-model="value"
-                    chips
-                    clearable
-                    label="ค้นหาข้อมูลลูกค้า"
-                    :items="items"
-                    v-if="row === 'member'"
-                  ></v-autocomplete>
-                </v-col>
-              </v-row>
-              <v-divider></v-divider>
-              <v-row class="ma-3" align="center">
-                <h2 class="d-flex mr-5">ประเภทการสั่งอาหาร</h2>
-                <v-radio-group v-model="row" row class="d-flex">
-                  <v-radio label="ทานที่ร้าน" value="1"></v-radio>
-                  <v-radio label="กลับบ้าน" value="2"></v-radio>
-                  <v-radio label="Delivery" value="3"></v-radio>
-                </v-radio-group>
-              </v-row>
-              <v-divider></v-divider>
-              <v-row class="ma-4">
-                <v-col>
-                  <v-row align="center">
-                    <h2 class="mr-5">ช่องทางการชำระเงิน</h2>
-                    <v-radio-group v-model="row" row>
-                      <v-radio label="เงินสด" value="guest"></v-radio>
-                      <v-radio label="โอนผ่านธนาคาร" value="member"></v-radio>
-                    </v-radio-group>
-                  </v-row>
-                  <v-autocomplete
-                    v-model="value"
-                    chips
-                    clearable
-                    label="เลือกธนาคาร"
-                    :items="items"
-                    v-if="row === 'member'"
-                  ></v-autocomplete>
-                </v-col>
-              </v-row>
-              <v-row class="ma-3" align="center">
-                <h2 class="d-flex mr-5">การชำระเงิน</h2>
-                <v-radio-group v-model="row" row class="d-flex">
-                  <v-radio label="รอชำระเงิน" value="0"></v-radio>
-                  <v-radio label="ชำระเงินแล้ว" value="1"></v-radio>
-                </v-radio-group>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <v-btn rounded large block color="red" dark
-                    >ยกเลิกออเดอร์</v-btn
-                  >
-                </v-col>
-                <v-col>
-                  <v-btn rounded large block color="info"
-                    >พิมใบเสร็จรับเงิน</v-btn
-                  >
-                </v-col>
-              </v-row>
-            </v-col>
-            <v-col cols="12" md="6">
-              <v-row class="justify-space-between ma-2 mx-14">
-                <h1>ชื่ออาหาร</h1>
-                <h1>จำนวน</h1>
-                <h1>ราคา</h1>
-              </v-row>
-              <v-row
-                class="justify-space-between ma-1 mx-16"
-                v-for="order in orders"
-                :key="order.name"
-              >
-                <h3>{{ order.name }}</h3>
-                <h3>{{ order.qty }}</h3>
-                <h3>{{ order.price }}</h3>
-              </v-row>
-              <v-row class="justify-space-between ma-1 mx-16 mt-14">
-                <h2>ส่วนลด (%)</h2>
-                <h2>5</h2>
-              </v-row>
-              <v-row class="justify-space-between ma-1 mx-16 ">
-                <h2>ราคา</h2>
-                <h2>{{ subTotal }}</h2>
-              </v-row>
-              <v-row class="justify-space-between ma-1 mx-16 ">
-                <h2>ภาษี</h2>
-                <h2>5</h2>
-              </v-row>
-              <v-row class="justify-space-between ma-1 mx-16 ">
-                <h2>ราคาสุทธิ</h2>
-                <h2>{{ subTotal }}</h2>
-              </v-row>
+          <v-toolbar color="primary" dark>พักการขาย</v-toolbar>
+          <div class="d-flex flex-row mb-3 ">
+            <v-col cols="3"><h3>ชื่อบิล</h3></v-col>
+            <v-col cols="3"><h3>เวลา</h3></v-col>
+            <v-col cols="2"><h3>รายการ</h3></v-col>
+            <v-col cols="2"><h3>รวมทั้งสิ้น</h3></v-col>
+            <v-col cols="2"><h3>จัดการ</h3></v-col>
+          </div>
+          <div
+            class="d-flex flex-row m-2"
+            v-for="(order2, i) in orderOnDatabase"
+            :key="i"
+          >
+            <v-col cols="3">{{ order2.bill_name }}</v-col>
+            <v-col cols="3">{{ order2.datetime }}</v-col>
+            <v-col cols="2">{{ order2.list_product.length }}</v-col>
+            <v-col cols="2">{{ order2.total_price }} ฿</v-col>
+            <v-col cols="2">
+              <div class="d-flex flex-row ">
+                <v-btn small fab
+                  ><v-icon color="info" @click="viewOrder(i)"
+                    >mdi-eye</v-icon
+                  ></v-btn
+                >
+                <v-btn small fab class="ml-3"
+                  ><v-icon color="teal">mdi-printer</v-icon></v-btn
+                >
+                <v-btn small fab class="ml-3"
+                  ><v-icon color="red">mdi-close</v-icon></v-btn
+                >
+              </div>
             </v-col>
           </div>
         </v-card>
       </v-dialog>
-    </v-row> -->
+    </v-row>
+
     <ConfirmOrder
       :dialog="dialog"
       :orders="orders"
       :subtotal="subTotal"
       @closeDialog="dialog = false"
       :customers="customers"
+      @addCus="refreshUser"
     />
   </div>
 </template>
@@ -302,16 +249,29 @@ import ConfirmOrder from "@/components/seller/confirmOrder.vue";
 
 export default {
   middleware: ["auth", "check"],
+  layout: "layoutCashier",
   async asyncData(context) {
-    const [products, categories, customers] = await Promise.all([
+    const [
+      products,
+      categories,
+      customers,
+      orderOnDatabase
+    ] = await Promise.all([
       context.$axios.$get("/product"),
       context.$axios.$get("/category"),
-      context.$axios.$get("/customer")
+      context.$axios.$get("/customer"),
+      context.$axios.$get("/order")
     ]);
     //const products = await context.$axios.$get("/product");
     //console.log(products);
     //console.log(customers);
-    return { products, categories, product2: products, customers };
+    return {
+      products,
+      categories,
+      product2: products,
+      customers,
+      orderOnDatabase
+    };
   },
   components: {
     Product,
@@ -322,13 +282,20 @@ export default {
     cateName: "Coffee",
     orders: [],
     dialog: false,
-    items: ["foo", "bar", "fizz", "buzz"],
     row: null,
     value: null,
     cateId: "",
     product2: null,
     subTotal: 0,
-    keyword: ""
+    keyword: "",
+    customers: [],
+    orderDl: false,
+    holdDl: false,
+    type_order: "1",
+    bill_name: "",
+    orderOnDatabase: [],
+    valid: true,
+    rules: [value => !!value || "โปรดกรอกชื่อบิล"]
   }),
   head() {
     return {
@@ -348,6 +315,7 @@ export default {
     },
     addOrder(product) {
       const orderObj = {
+        ref_pro_id: product._id,
         name: product.product_name,
         qty: 1,
         price: product.price
@@ -358,16 +326,16 @@ export default {
           this.orders[i].qty++;
           this.orders[i].price =
             parseInt(this.orders[i].price) + parseInt(orderObj.price);
-          setTimeout(this.totalPrice, 500);
+          setTimeout(this.totalPrice, 300);
           return;
         }
       }
       this.orders.push(orderObj);
-      setTimeout(this.totalPrice, 500);
+      setTimeout(this.totalPrice, 300);
     },
     deleteOrder(i) {
       this.orders.splice(i, 1);
-      setTimeout(this.totalPrice, 500);
+      setTimeout(this.totalPrice, 300);
     },
     addQty(i) {
       const product = this.products.filter(
@@ -376,7 +344,7 @@ export default {
       this.orders[i].qty++;
       this.orders[i].price =
         parseInt(this.orders[i].price) + parseInt(product[0].price);
-      setTimeout(this.totalPrice, 500);
+      setTimeout(this.totalPrice, 300);
     },
     deleteQty(i) {
       const product = this.products.filter(
@@ -387,7 +355,7 @@ export default {
         this.orders[i].price =
           parseInt(this.orders[i].price) - parseInt(product[0].price);
       }
-      setTimeout(this.totalPrice, 500);
+      setTimeout(this.totalPrice, 300);
     },
     totalPrice() {
       let subTotal = 0;
@@ -402,18 +370,60 @@ export default {
       this.subTotal = 0;
     },
     searchProduct() {
-      // setTimeout(
-      //   (this.product2 = this.products.find(
-      //     pro => pro.product_name === this.keyword
-      //   )),
-      //   400
-      // );
       this.product2 = [];
       for (let j in this.products) {
         if (this.products[j].product_name.includes(this.keyword)) {
           this.product2.push(this.products[j]);
         }
       }
+    },
+    formatPrice(value2) {
+      const value = parseInt(value2);
+      let val = (value / 1).toFixed(2).replace(",", ".");
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+    async refreshUser() {
+      this.customers = await this.$axios.$get("/customer");
+      this.orderOnDatabase = await this.$axios.$get("/order");
+    },
+    async confirmOrder() {
+      //this.$refs.form.validate();
+      // let proArr = [];
+      // for (let i in this.orders) {
+      //   let proObj = {
+      //     ref_pro_id: this.orders[i]._id,
+      //     qty: this.orders[i].qty
+      //   };
+      //   proArr.push(proObj);
+      // }
+
+      if (this.orders.length === 0) {
+        this.orderDl = true;
+      } else {
+        this.holdDl = true;
+      }
+
+      // const preOrder = {
+      //   list_product: this.orders,
+      //   type_order: this.type_order,
+      //   total_price: this.subTotal,
+      //   bill_name: this.bill_name
+      // };
+      // //console.log(preOrder);
+      // const res = await this.$axios.post("/order", preOrder);
+      // if (res.status === 200) {
+      //   this.refreshUser();
+      //   this.orders = [];
+      //   this.subTotal = 0;
+      //   this.bill_name = "";
+      //   this.orderDl = false;
+      // } else {
+      //   alert(res.data.message);
+      // }
+    },
+    viewOrder(i) {
+      this.orders = this.orderOnDatabase[i].list_product;
+      setTimeout(this.totalPrice, 200);
     }
   },
   created(context) {

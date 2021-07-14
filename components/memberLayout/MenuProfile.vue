@@ -45,6 +45,16 @@
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
+        <v-list-item-group @click.native="logout">
+          <v-list-item>
+            <v-list-item-icon>
+              <v-icon>mdi-logout</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title>ออกจากระบบ</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
       </v-list>
     </v-card>
 
@@ -75,9 +85,9 @@
   </div>
 </template>
 <script>
-import Footer from "../layout/Footer.vue";
+//import Footer from "../layout/Footer.vue";
 export default {
-  components: { Footer },
+  //components: { Footer },
   layout: "layoutMember",
   data() {
     return {
@@ -99,17 +109,18 @@ export default {
           text: "ประวัติการสั่งซื้อ",
           icon: "mdi-history",
           to: "/history_buy"
-        },
-        {
-          text: "ออกระบบ",
-          icon: "mdi-logout",
-          to: "/logout"
         }
       ],
       account: {
         avatar_img: "https://cdn.vuetifyjs.com/images/john.jpg"
       }
     };
+  },
+  methods: {
+    async logout() {
+      await this.$auth.logout();
+      this.$router.push("/login");
+    }
   }
 };
 </script>

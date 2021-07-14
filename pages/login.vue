@@ -94,7 +94,7 @@ export default {
       this.$auth.loginWith("local", payload).then(res => {
         console.log(res);
         if (res.status === 200) {
-          this.$router.push("/seller");
+          this.$router.push("/");
         } else {
           this.snackbar = true;
           this.error = res.data.message;

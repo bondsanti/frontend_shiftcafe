@@ -74,47 +74,11 @@ export default {
         },
         {
           icon: "mdi-fridge-industrial-outline",
-          title: "จัดการstock",
-          to: "/manage/stock"
-        },
-        {
-          icon: "mdi-clipboard account outline",
-          title: "จัดข้อมูลสมาชิก",
-          to: "/manage/customers"
-        },
-        {
-          icon: "mdi-barley ",
-          title: "จัดการหน่วยนับ",
-          to: "/manage/manageunitsmenu"
-        },
-        {
-          icon: "mdi-food-fork-drink  ",
-          title: "จัดหมวดหมู่",
-          to: "/manage/category"
-        },
-        {
-          icon: "mdi-notebook-edit-outline",
-          title: "จัดการสินค้า",
-          to: "/manage/product"
-        },
-        {
-          icon: "mdi-ticket-account",
-          title: "จัดระดับสมาขิก",
-          to: "/manage/levelmember"
-        },
-        {
-          icon: "mdi-card-account-details-outline ",
-          title: "จัดการพนังงาน",
-          to: "/manage/employee"
-        },
-        {
-          icon: "mdi-file-powerpoint-box",
-          title: "จัดการแต้ม",
-          to: "/manage/pointmanage"
+          title: "จัดการ stock",
+          to: "/seller/stock"
         }
       ],
-      miniVariant: false,
-      title: "admin"
+      miniVariant: false
     };
   },
   methods: {

@@ -12,7 +12,7 @@
               v-on="on"
               @click="addItem"
             >
-              <v-icon left> mdi-food-fork-drink </v-icon> จัดหมวดหมู่
+              <v-icon left> mdi-ticket-percent-outline</v-icon> จัดหมวดหมู่
             </v-btn>
           </template>
         </v-dialog>
@@ -32,7 +32,7 @@
             <v-card>
               <v-card-title>
                 <span class="text-h5"
-                  ><v-icon left> mdi-food-fork-drink </v-icon> {{ formTitle }}</span
+                  ><v-icon left> mdi-ticket-percent-outline </v-icon> {{ formTitle }}</span
                 >
               </v-card-title>
 
@@ -53,36 +53,54 @@
                     </v-col>
 
                     <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ผู้ร้องออกรหัสคูปอง"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-
+                       
+                    <v-text-field
+                      label="ผู้ออก"
+                      :items="useronline.flat()"
+                      outlined
+                      color="#1D1D1D"
+                        item-text="name"        
+                       item-value="_id"
+                      v-model="coupone.ref_emp_id_by"
+                       
+                    ></v-text-field>
+                  </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                       
+                    <v-select 
+                      label="พนัก"
+                      outlined
+                      color="#1D1D1D"
+                        item-text="name"        
+                       item-value="_id"
+                      :items="Empname.flat()"
+                    ></v-select>
+                  </v-col>
+                    
                     <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
+                      <!-- <v-text-field
                         outlined
-                        label="พนักงานที่ทำการขอ"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
+                          type="date"
                         label="วันหมดอายุคูปอง"
+                        v-model="coupon.exp"
                         required
                         color="#1D1D1D"
-                      ></v-text-field>
+                      ></v-text-field> -->
+                       <v-text-field
+                          type="date"
+                          v-model="coupone.exp"
+                          label="exp"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="6" class="mt-n7">
                       <v-text-field
                         outlined
                         label="ส่วนลดในคูปอง"
+                         v-model="coupone.discount"
                         required
                         color="#1D1D1D"
                       ></v-text-field>
@@ -92,6 +110,7 @@
                       <v-text-field
                         outlined
                         label="จำคูปองที่สามารถใช้ได้"
+                        v-model="coupone.num_use"
                         required
                         color="#1D1D1D"
                       ></v-text-field>
@@ -103,14 +122,14 @@
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-food-off
+                    mdi-ticket-percent-outline
                   </v-icon>
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn class="ma-1" color="info" @click="save">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-food-fork-drink
+                   mdi-ticket-percent-outline
                   </v-icon>
                   เพิ่มข้อมูล
                 </v-btn>
@@ -126,11 +145,11 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-food-off </v-icon
+                    mdi-ticket-percent-outline </v-icon
                   >ยกเลิก</v-btn
                 >
                 <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
-                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
+                  <v-icon aria-hidden="false" class="mx-4"> mdi-ticket-percent-outline</v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -141,7 +160,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-             mdi-food-fork-drink
+            mdi-ticket-percent-outline
             </v-icon>
             แก้ไข
           </v-btn>
@@ -152,11 +171,15 @@
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-              mdi-food-off
+              mdi-ticket-percent-outline
             </v-icon>
             ลบ
           </v-btn>
         </template>
+        <template v-slot:[`item.exp`]="{ item }">
+          <span>{{ item.exp | moment }}</span>
+        </template>
+
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -168,11 +191,15 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
     search: "",
+    Empname:[],
+    useronline:[],
+    user:[],
     headers: [
       { text: "ชื่อหม่วดหมู่", align: "start", value: "codename", divider: true },
       { text: "อนุญาตโดย", align: "start", value: "ref_emp_id_by", divider: true },
@@ -184,7 +211,7 @@ export default {
     ],
     coupon: [],
     editedIndex: -1,
-    coupone: { _id: "", codename: "" },
+    coupone: { _id: "", codename: "",ref_emp_id_by:"",ref_emp_id:" ",exp:" " ,num_use:" "},
     type: null,
     deleteId: null
   }),
@@ -208,11 +235,12 @@ export default {
   methods: {
     initialize() {
       // this.loading = true;
-      // this.$axios.$get("/unit").then(unit => {
-      //   this.unit = unit;
+      //  this.$axios.$get("/authen/user").then(user => {
+      //   this.user = user;
       // });
-      // this.unit = [];
-    },
+      // this.user = [];
+
+     },
     editItem(item) {
       this.type = "edit";
       this.coupone = item;
@@ -257,7 +285,7 @@ export default {
       if (this.type === "add") {
         this.loading = true;
      
-        this.$emit("addCoupon", { ...this.coupone });
+        this.$emit("addCoupon", { ...this.coupone});
         this.close();
       } else {
         this.loading = true;
@@ -270,8 +298,55 @@ export default {
             console.log(e);
           });
       }
+    },
+  toBuddhistYear(moment, format) {
+      var christianYear = moment.format('YYYY')
+      var buddhishYear = (parseInt(christianYear) + 543).toString()
+      return moment
+        .format(
+          format
+            .replace('YYYY', buddhishYear)
+            .replace('YY', buddhishYear.substring(2, 4))
+        )
+        .replace(christianYear, buddhishYear)
+    },
+      filters: {
+    moment: function(date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("Do MMMM YYYY");
     }
   },
-  props:['coupon']
+
+       improveEmp() {
+      for (let i in this.employee) {
+        let Emp = {
+          _id: this.employee[i]._id,
+          name: this.employee[i].fname + " " + this.employee[i].lname
+        };
+        this.Empname.push(Emp);
+      }
+    },
+    
+     improveUsers() {
+      for (let i in this.user) {
+        let use = {
+          _id: this.user[i]._id,
+          name: this.user[i].fname + " " + this.user[i].lname
+          
+        };
+        this.useronline .push(use);
+        
+      }
+    }
+    
+  },
+  
+  props:['coupon','employee','user'],
+   created() {
+    this.improveEmp();
+    this.improveUsers();
+   }
 };
 </script>

@@ -169,6 +169,7 @@
 <script>
 import milkShake from "@/assets/milkshake.svg";
 export default {
+  layout: "layoutCashier",
   components: {
     milkShake
   },

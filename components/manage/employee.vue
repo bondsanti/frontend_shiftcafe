@@ -1,160 +1,90 @@
 <template>
   <div class="ma-3">
-    <v-card class="mx-auto mt-6 py-3" elevaation="5" justify-centaer>
-      <v-card-text class="px-0 pb-0">
-        <v-card-title>
-          <v-dialog v-model="dialognew" max-width="800px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark class="mr-5" v-bind="attrs" v-on="on">
-                <v-icon left> mdi-account-box </v-icon> จัดการพนังงาน
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="text-h5"
-                  ><v-icon left> mdi-account-box </v-icon> จัดการพนังงาน</span
-                >
-              </v-card-title>
+    <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
+      <v-card-title>
+        <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="primary"
+              dark
+              class="mr-5"
+              v-bind="attrs"
+              v-on="on"
+              @click="addItem"
+            >
+              <v-icon left> mdi-account-outline  </v-icon> จัดการสมาชิก
+            </v-btn>
+          </template>
+        </v-dialog>
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="ค้นหา"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
 
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12">
-                      <v-select
-                        label="คำนำหน้า"
-                        outlined
-                        color="#1D1D1D"
-                        :items="items"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        label="ชื่อ"
-                        outlined
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="นามสกุล"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12"  md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="วันเกิด"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-            <v-col cols="12"  md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="เลขบัตรประชาชน"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="เบอร์โทร"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="อีเมล์"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-textarea
-                        color="#1D1D1D"
-                        outlined
-                        name=""
-                        label="ที่อยู่"
-                      ></v-textarea>
-                    </v-col>
-                     <v-col cols="12">
-                        <v-select
-                          label="ระดับ"
-                          outlined
-                          color="#1D1D1D"
-                          :items="ref_id_role_position"
-                          v-model="emp.ref_id_roleposition"
-                        ></v-select>
-                        
-                      </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-       <v-card-actions>
-              <v-btn class="ma-1" color="primary" dark @click="close">
-                <v-icon aria-hidden="false" class="mx-2">
-                  mdi-account-box 
-                </v-icon>
-                ยกเลิก
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn class="ma-1" color="info" @click="save">
-                <v-icon aria-hidden="false" class="mx-2">
-                  mdi-account-box
-                </v-icon>
-                เพิ่มข้อมูล
-              </v-btn>
-            </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-spacer></v-spacer>
-
-          <v-text-field
-            v-model="search"
-            append-icon="mdi-magnify"
-            label="ค้นหา"
-            single-line
-            hide-details
-          ></v-text-field>
-        </v-card-title>
-        <v-data-table :headers="headers" :items="desserts" :search="search">
-          <template v-slot:[`item.img`]="{}">
+      <v-data-table :headers="headers" :items="employee" :search="search" :items-per-page="30">
+           <template v-slot:[`item.img`]="{}">
             <img
               src="@/assets/img/photo-2.jpg"
               class="mt-2 mb-2 rounded-circle"
               aspect-ratio="1"
-              style="width: 50px; height: 50px"
+              style="width: 60px; height: 60px"
             />
           </template>
-          <template v-slot:top color="indig">
-            <v-spacer></v-spacer>
-            <v-dialog v-model="dialog" max-width="600px">
-              <v-card>
-                <v-card-title>
-                  <span class="text-h5 post-content">{{ formTitle }}</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container>
-                    <v-row>
+        <template v-slot:top>
+          <v-dialog v-model="dialog" max-width="800px">
+            <v-card>
+              <v-card-title>
+                <span class="text-h5"
+                  ><v-icon left> mdi-clipboard-account-outline  </v-icon> จัดการสมาชิก(เพิ่มข้อมูล / แก้ไขข้อมูล)</span
+                >
+              </v-card-title>
+
+              <v-card-text>
+                <v-form v-model="valid" ref="form">
+                <v-container>
+                   <v-row>
                       <v-col cols="12">
                         <v-select
                           label="คำนำหน้า"
                           outlined
                           color="#1D1D1D"
-                          :items="items"
-                          v-model="emp.pname"
+                          :items="pnamesec"
+                          v-model="employeeitme.pname"
+                          :rules="requiredRules"
                         ></v-select>
+                      </v-col>
+                            <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="employeeitme.username"
+                          :rules="requiredRules"
+                          label="username"
+                          type="username"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
-                          v-model="emp.fname"
+                          v-model="employeeitme.password"
+                          :rules="requiredRules"
+                          label="password"
+                          type="password"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+          
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="employeeitme.fname"
+                          :rules="requiredRules"
                           label="ชื่อ"
                           outlined
                           required
@@ -163,71 +93,63 @@
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
-                          v-model="emp.lname"
+                          v-model="employeeitme.lname"
+                          :rules="requiredRules"
                           label="นามสกุล"
                           outlined
                           required
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                     <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="emp.username"
-                          label="username"
-                          outlined
-                          required
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col> 
-                       <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="emp.password"
-                          label="password"
-                          outlined
-                          required
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col> 
+          
                       <v-col cols="12" sm="6">
                         <v-text-field
+                          v-model="employeeitme.birthday"
+                          :rules="requiredRules"
                           type="date"
-                          v-model="emp.birthday"
-                          label="birthday"
+                          label="วันเกิด"
                           outlined
                           required
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                         <v-col cols="12" sm="6">
+                          <v-col cols="12" sm="6">
                         <v-text-field
-                          v-model="emp.idcard"
+                          v-model="employeeitme.idcard"
+                          :rules="numberRules"
+                          type="number"
                           label="เลขบัตรประจำตัวประชาชน"
                           outlined
                           required
                           color="#1D1D1D"
                         ></v-text-field>
-                      </v-col>
+                      </v-col> 
                       <v-col cols="12" sm="6">
                         <v-text-field
-                          v-model="emp.tel"
-                          label="เบอร์โทรติดต่อ"
+                          v-model="employeeitme.tel"
+                          :rules="numberRules"
+                          label="เบอร์โทรติดต่อ" 
                           outlined
+                           type="number"
                           required
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
-                          v-model="emp.email"
-                          label="e-mail"
+                          v-model="employeeitme.email"
+                          label="อีเมล"
+                          :rules="emailRules"
                           outlined
+                       
                           required
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
-                          v-model="emp.address"
+                          v-model="employeeitme.address"
+                          :rules="requiredRules"
                           label="ที่อยู่"
                           outlined
                           required
@@ -236,133 +158,137 @@
                       </v-col>
                        <v-col cols="12" sm="6">
                         <v-select
-                          label="ระดับ"
+                          label="ตำแหน่งงาน"
                           outlined
                           color="#1D1D1D"
-                          :items="ref_id_role_position"
-                          v-model="emp.ref_id_roleposition"
+                          item-text="name"
+                        item-value="_id"
+                          :items="roleitme.flat()"
+                          v-model="employeeitme.ref_id_role"
+                          :rules="requiredRules"
                         ></v-select>
-                        
                       </v-col>
-                          
                     </v-row>
-                  </v-container>
-                </v-card-text>
+                </v-container>
+                </v-form>
+              </v-card-text>
 
-                      <v-card-actions>
-              <v-btn class="ma-1" color="primary" dark @click="close">
-                <v-icon aria-hidden="false" class="mx-2">
-                   mdi-account-box
-                </v-icon>
-                ยกเลิก
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn class="ma-1" color="info" @click="save">
-                <v-icon aria-hidden="false" class="mx-2">
-                   mdi-account-box
-                </v-icon>
-                บันทึก
-              </v-btn>
-            </v-card-actions>
-                
-              </v-card>
-            </v-dialog>
-            <v-dialog v-model="dialogDelete" max-width="280px">
-              <v-card>
-                <v-card-title class="text-h5">คุณต้องการลบหรือไม่</v-card-title>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="blue darken-1" text @click="closeDelete"
-                    >Cancel</v-btn
-                  >
-                  <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                    >OK</v-btn
-                  >
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </template>
-          <template v-slot:[`item.actions`]="{ item }">
-            <v-btn small class="mr-2" color="warning" @click="editItem(item)">
-               <v-icon aria-hidden="false" class="mx-2">
-                    mdi-account-box
-                </v-icon>
-              แก้ไข
-              
-            </v-btn>
-            <v-btn small class="mr-2" color="error" @click="deleteItem(item)">
-               <v-icon aria-hidden="false" class="mx-2">
-                    mdi-account-box
-                </v-icon>
-              ลบ
-            </v-btn>
-          </template>
+              <v-card-actions>
+                <v-btn class="ma-1" color="primary" dark @click="close">
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-food-off
+                  </v-icon>
+                  ยกเลิก
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn class="ma-1" color="info" :disabled="!valid" @click="save">
+                  <v-icon aria-hidden="false" class="mx-2">
 
-          <template v-slot:[`item.birthday`]="{ item }">
-            <span>{{ item.birthday | moment }}</span>
-          </template>
-          <template v-slot:no-data>
-            <v-btn color="primary" @click="initialize"> Reset </v-btn>
-          </template>
-        </v-data-table>
-      </v-card-text>
+                    mdi-food-fork-drink
+                  </v-icon>
+                  เพิ่มข้อมูล
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="dialogDelete" max-width="270px">
+            <v-card>
+              <v-card-title class="text-h5 white--text  primary">
+                แน่ใจแล้วใช่มั้ยที่จะลบ
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="info" class="ma-2" @click="closeDelete">
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-food-off </v-icon
+                  >ยกเลิก</v-btn
+                >
+                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
+                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
+                  >ลบ</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-btn class="mr2" color="warning" @click="editItem(item)">
+            <v-icon aria-hidden="false" class="mx-2">
+             mdi-food-fork-drink
+            </v-icon>
+            แก้ไข
+          </v-btn>
+          <v-btn
+            rounded-lx
+            class="mr-2"
+            color="error"
+            @click="deleteItem(item)"
+          >
+            <v-icon dark class="mx-2">
+              mdi-food-off
+            </v-icon>
+            ลบ
+          </v-btn>
+        </template>
+        <template v-slot:no-data>
+          <v-btn color="primary" @click="initialize">
+            Reset
+          </v-btn>
+        </template>
+      </v-data-table>
     </v-card>
   </div>
 </template>
+
 <script>
-import moment from "moment";
 export default {
-  middleware: "auth",
-  async asyncData({ $axios }) {
-    //  const emp = await $axios.$get('/api/employee')
-    //  console.log(emp)
-  },
   data: () => ({
-    loading: false,
-    search: "",
-    // loading: true,
     dialog: false,
     dialogDelete: false,
-    items: ["นาย", "นาง", "นางสาว"],
-    level: ["classic", "silver", "gold","platinum "],
-    ref_id_role_position:["ref_id_role.position"],
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    valid: true,
+    search: "",
+    roleitme:[],
+    pnamesec: ["นาย", "นาง", "นางสาว"],
+    ref_level_id:[{text: "classic",value:"60e439b7c7d6ae35548c7b62"},
+                  {text: "silver",value:"60e43a3dc7d6ae35548c7b66"},
+                  {text: "gold",value:"60f016e0cd19bf679382204c"},
+                  {text: "platinum",value:"60e5736b2254f6410c719874"}],
     headers: [
-      { text: "อวตาร", sortable: false, value: "img" },
-      { text: "คำนำหน้า",sortable: false, value: "pname" },
-      { text: "ชื่อจริง", sortable: false,value: "fname" },
-      { text: "นามสกุล", sortable: false,value: "lname" },
-      { text: "เลขบัครประขาชน", sortable: false,value: "idcard" },
-      { text: "วันเกิด ",sortable: false, value: "birthday" },
-      { text: "เบอร์โทร ",sortable: false, value: "tel" },
-      { text: "อีเมล์",sortable: false, value: "email" },
-      { text: "ที่อยู่",sortable: false, value: "address" },
-      { text: "ระดับสมาชิก",sortable: false, value: "ref_id_role.position" },
-      { text: "ชื่อใข้งานเข้าระบบ",sortable: false, value: "username" },
-      { text: "ดำเนินการ", value: "actions", sortable: false }
+      { text: "ภาพ", sortable: false, value: "img" },
+      { text: "ชื่อใช้เข้าระบบ", align: "start", value: "username" },
+      { text: "ตำแหน่ง", align: "start", value: "ref_id_role.position" },
+      { text: "เลขบัตรประชาชน", align: "start", value: "idcard" },
+      { text: "คำนำหน้า", align: "start", value: "pname" },
+      { text: "ชื่อ", align: "start", value: "fname" },
+      { text: "นามสกุล", align: "start", value: "lname"},
+      { text: "วันเกิด", align: "start", value: "birthday"},
+      { text: "เบอร์โทร", align: "start", value: "tel"},    
+      { text: "อีเมล์", align: "start", value: "email"},
+      { text: "ที่อยู่", align: "start", value: "address"},
+      { text: "Actions", value: "actions", sortable: false }
     ],
-
-    desserts: [],
-
     editedIndex: -1,
-    emp: {
-      _id: "",
-      pname: "",
-      fname: "",
-      lname: "",
-      birthday: "",
-      tel: "",
-      email: "",
-      address: "",
-      level: "",
-      point: ""
-    },
+    employeeitme: { _id: "" ,username:"",password:"", pname: "" ,ref_id_role:"" ,idcard:" ",fname:"",lname:"",birthday:"",tel:" ",email:"",address:""},
     type: null,
-    deleteId: null
+    deleteId: null,
+    requiredRules: [(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!"],
+    emailRules: [
+			(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+			(v) =>
+				!v ||
+				/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+				"โปรใส่อีเมลให้ถูกต้อง"
+		],
+    numberRules: [
+			(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+			(v) => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
+		]
   }),
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "แก้ไขสมาชิก" : "แก้ไขสมาชิก";
+    return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
     }
   },
   watch: {
@@ -374,81 +300,65 @@ export default {
     }
   },
   created() {
-    this.initialize();
+  this.improverole();
   },
+  
   methods: {
-    initialize() {
-      this.loading = true;
-      this.$axios.$get("/employee").then(desserts => {
-        this.desserts = desserts;
-      });
-      this.desserts = [];
-    },
     editItem(item) {
-      // this.editedIndex = this.desserts.indexOf(item)
-      // this.editedItem = Object.assign({}, item)
       this.type = "edit";
-      this.emp = item;
+      this.employeeitme = item;
+      this.dialog = true;
+    },
+    addItem() {
+      this.type = "add";
+      this.employeeitme = { _id: "" ,username:"",password:"", pname: "" ,ref_id_role:"" ,idcard:" ",fname:"",lname:"",birthday:"",tel:" ",email:"",address:"" };
       this.dialog = true;
     },
     deleteItem(item) {
       this.deleteId = item._id;
-      this.editedIndex = this.desserts.indexOf(item);
+      this.editedIndex = this.employee.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
-
     deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
-      this.$axios
-        .$delete("/api/employee/" + this.deleteId)
-        .then(() => {
-          this.closeDelete();
-        })
-        .catch(e => {
-          console.log(e);
-        });
+      this.employee.splice(this.editedIndex, 1);
+      this.$axios.$delete("/employee/" + this.deleteId).then(() => {});
       this.closeDelete();
     },
-
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
+      this.editedItem = Object.assign({}, this.defaultItem);
+      this.editedIndex = -1;
       });
     },
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
+      this.editedItem = Object.assign({}, this.defaultItem);
+      this.editedIndex = -1;
       });
     },
+  improverole() {
+      for (let i in this.role) {
+        let roles = {
+          _id: this.role[i]._id,
+          name: this.role[i].position
+        };
+        this.roleitme.push(roles);
+      }
+    },
     save() {
-      // if (this.editedIndex > -1) {
-      //   Object.assign(this.desserts[this.editedIndex], this.editedItem)
-      // } else {
-      //   this.desserts.push(this.editedItem)
-      // }
-      if (this.type === "add") {
+        this.$refs.form.validate();
+        if (this.type === "add") {
         this.loading = true;
-        this.$axios
-          .$post("/api/employee", {
-            ...this.emp,
-            ref_id_role: "60e274847a205d160021ffbe",
-            idcard: "123654789"
-          })
-          .then(() => {
-            this.close();
-          })
-          .catch(e => {
-            console.log(e);
-          });
+     
+        this.$emit("addEmployee", { ...this.employeeitme });
+        this.close();
       } else {
         this.loading = true;
         this.$axios
-          .$put("/api/employee/" + this.emp._id, this.emp)
+          .$put("/employee/" + this.employeeitme._id, this.employeeitme)
           .then(() => {
             this.close();
           })
@@ -456,65 +366,8 @@ export default {
             console.log(e);
           });
       }
-      this.close();
-    },
-    toBuddhistYear(moment, format) {
-      var christianYear = moment.format("YYYY");
-      var buddhishYear = (parseInt(christianYear) + 543).toString();
-      return moment
-        .format(
-          format
-            .replace("YYYY", buddhishYear)
-            .replace("YY", buddhishYear.substring(2, 4))
-        )
-        .replace(christianYear, buddhishYear);
-    },
-    addEmp() {
-      this.type = "add";
-      this.emp = {
-        _id: "",
-        username: "",
-        password: "",
-        idcard: "",
-        pname: "",
-        fname: "",
-        lname: "",
-        birthday: "",
-        tel: "",
-        email: "",
-        address: ""
-      };
-      this.dialog = true;
     }
   },
-  filters: {
-    moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
-
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("Do MMMM YYYY");
-    }
-  }
+  props:['employee','role']
 };
 </script>
-<style>
-.scroll::-webkit-scrollbar {
-  width: 17px;
-}
-
-.scroll::-webkit-scrollbar-track {
-  background: #ededed;
-  border-left: 1px solid #ededed;
-  border-radius: 10px;
-}
-
-.scroll::-webkit-scrollbar-thumb {
-  background: #b0b0b0;
-  border: solid 3px #e6e6e6;
-  border-radius: 7px;
-}
-
-.scroll::-webkit-scrollbar-thumb:hover {
-  background: black;
-}
-</style>

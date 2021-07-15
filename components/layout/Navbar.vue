@@ -53,24 +53,9 @@ export default {
       fixed: false,
       items: [
         {
-          icon: "mdi-apps",
-          title: "ขาย",
-          to: "/seller"
-        },
-        {
-          icon: "mdi-cash-register",
-          title: "เงินทอน",
-          to: "/seller/cashdraw"
-        },
-        {
-          icon: "mdi-account",
-          title: "ลงทะเบียนสมาชิก",
-          to: "/seller/register"
-        },
-        {
-          icon: "mdi-gift",
-          title: "แลก Point",
-          to: "/seller/point"
+          icon: "mdi-home",
+          title: "หน้าหลัก",
+          to: "/manage/"
         },
         {
           icon: "mdi-fridge-industrial-outline",

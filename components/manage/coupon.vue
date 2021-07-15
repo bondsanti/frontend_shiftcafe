@@ -176,9 +176,7 @@
             ลบ
           </v-btn>
         </template>
-        <template v-slot:[`item.exp`]="{ item }">
-          <span>{{ item.exp | moment }}</span>
-        </template>
+      
 
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
@@ -199,7 +197,6 @@ export default {
     search: "",
     Empname:[],
     useronline:[],
-    user:[],
     headers: [
       { text: "ชื่อหม่วดหมู่", align: "start", value: "codename", divider: true },
       { text: "อนุญาตโดย", align: "start", value: "ref_emp_id_by", divider: true },
@@ -209,7 +206,6 @@ export default {
        { text: "จำนวลผู้ใช้คูปอง", align: "start", value: "num_use", divider: true },
       { text: "Actions", value: "actions", sortable: false }
     ],
-    coupon: [],
     editedIndex: -1,
     coupone: { _id: "", codename: "",ref_emp_id_by:"",ref_emp_id:" ",exp:" " ,num_use:" "},
     type: null,
@@ -310,14 +306,7 @@ export default {
         )
         .replace(christianYear, buddhishYear)
     },
-      filters: {
-    moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
 
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("Do MMMM YYYY");
-    }
-  },
 
        improveEmp() {
       for (let i in this.employee) {

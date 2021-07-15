@@ -1,18 +1,28 @@
 <template>
-  <levelmember />
+  <levelmember :levelmember="levelmember" @addlevelmember="addlevelmember" />
 </template>
 
 <script>
-import levelmember from '@/components/manage/levelmember.vue'
+import levelmember from "@/components/manage/levelmember.vue";
 export default {
-   components:{ 
-     levelmember ,
-   
-     }
-
-}
+  async asyncData(context) {
+    const levelmember = await context.$axios.$get("/level-member");
+    console.log(levelmember);
+    return { levelmember };
+  },
+  components: {
+    levelmember
+  },
+  methods: {
+    async addlevelmember(datalevelmember) {
+      await this.$axios.$post("/level-member", datalevelmember);
+      this.levelmember = await this.$axios.$get("/level-member");
+    }
+  },
+  data: () => ({
+    levelmember: []
+  })
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

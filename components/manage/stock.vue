@@ -2,90 +2,21 @@
   <div class="ma-3">
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
-        <v-dialog v-model="dialogadd" max-width="500px">
+        <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mr-5" v-bind="attrs" v-on="on">
-              <v-icon left> mdi-fridge-industrial-outline  </v-icon> จัดการstock
+            <v-btn
+              color="primary"
+              dark
+              class="mr-5"
+              v-bind="attrs"
+              v-on="on"
+              @click="addItem"
+            >
+              <v-icon left> mdi-barley </v-icon> จัดการหน่วยนับ
             </v-btn>
           </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5"
-                ><v-icon left> mdi-fridge-industrial-outline  </v-icon> เพิ่มการstock</span
-              >
-            </v-card-title>
-
-            <v-card-text>
-              <v-container>
-                 <v-row>
-                  <v-col cols="12">
-                    <v-select
-                      label="รายการอาหาร"
-                      outlined
-                      color="#1D1D1D"
-                      :items="items"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="6" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="จำนวลอาหารที่พร้อมขาย"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                    
-                  </v-col>
-                   
-                  <v-col cols="12" md="6" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="ให้แจ้งเตื่อนเมื่่อใกล้หมด"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-select
-                      outlined
-                      label="หน่วย"
-                      required
-                      color="#1D1D1D"
-                      :items="items"
-                    >  </v-select>
-                    
-                  </v-col>
-                  <v-col cols="12" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="วันที่ลงข้อมูล"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-
-             <v-card-actions>
-              <v-btn class="ma-1" color="primary" dark @click="close">
-                <v-icon aria-hidden="false" class="mx-2">
-                 mdi-fridge-industrial-off-outline  
-                </v-icon>
-                ยกเลิก
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn class="ma-1" color="info" @click="save">
-                <v-icon aria-hidden="false" class="mx-2">
-                  mdi-fridge-industrial-alert-outline  
-                </v-icon>
-                เพิ่มข้อมูล
-              </v-btn>
-            </v-card-actions>
-          </v-card>
         </v-dialog>
-
         <v-spacer></v-spacer>
-
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -99,141 +30,119 @@
         :headers="headers"
         :items="stock"
         :search="search"
-       
+        :items-per-page="15"
       >
+      <template v-slot:[`item.img`]="{ item }">
+          <img
+            :src="'https://api.shift-cafe.com/' + item.img"
+            class="mt-2 mb-2 rounded-xl"
+            aspect-ratio="1"
+            style="width: 150px; height: 150px"
+          />
+        </template>
         <template v-slot:top>
-          
-            <v-dialog v-model="dialog" max-width="500px">
-              <v-card>
-                <v-card-title>
+          <v-dialog v-model="dialog" max-width="500px">
+            <v-card>
+              <v-card-title>
+                <span class="text-h5"
+                  ><v-icon left> mdi-barley </v-icon> {{ formTitle }}</span
+                >
+              </v-card-title>
 
-                     <span class="text-h5"
-                ><v-icon left>  mdi-fridge-industrial-outline </v-icon> {{ formTitle }}</span
-              >
-                  
-                </v-card-title>
-
-                <v-card-text>
-                  <v-container>
-                   <v-row>
-                  <v-col cols="12">
-                    <v-select
-                      label="รายการอาหาร"
-                        v-model="editedItem.name"
-                      outlined
-                      color="#1D1D1D"
-                      :items="items"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="12" md="6" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="จำนวลอาหารที่พร้อมขาย"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                    
-                  </v-col>
-            
-                  <v-col cols="12" md="6" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="ให้แจ้งเตื่อนเมื่่อใกล้หมด"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12"> </v-col>
                     <v-col cols="12" class="mt-n7">
                       <v-select
-                      outlined
-                      label="หน่วย"
-                      required
-                      color="#1D1D1D"
-                      :items="items"
-                    >  </v-select>
-                    
-                  </v-col>
-                  <v-col cols="12" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="วันที่ลงข้อมูล"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                  </v-container>
-                </v-card-text>
+                        label="ประเภท"
+                        outlined
+                        color="#1D1D1D"
+                        item-text="name"
+                        item-value="_id"
+                        :items="productitme.flat()"
+                        v-model="stockitme.ref_pro_id"
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12" md="6" class="mt-n7">
+                      <v-text-field
+                        outlined
+                        label="จำนวลอาหารที่พร้อมขาย"
+                        v-model="stockitme.qty_max"
+                        required
+                        color="#1D1D1D"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6" class="mt-n7">
+                      <v-text-field
+                        outlined
+                        label="ให้แจ้งเตื่อนเมื่่อใกล้หมด"
+                        v-model="stockitme.qty_min"
+                        required
+                        color="#1D1D1D"
+                      ></v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
 
-                
-
-                 <v-card-actions>
-              <v-btn class="ma-1" color="primary" dark @click="close">
-                <v-icon aria-hidden="false" class="mx-2">
-                    mdi-fridge-industrial-off-outline 
-                </v-icon>
-                ยกเลิก
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn class="ma-1" color="info" @click="save">
-                <v-icon aria-hidden="false" class="mx-2">
-                   mdi-fridge-industrial-alert -outline
-                </v-icon>
-                เพิ่มข้อมูล
-              </v-btn>
-            </v-card-actions>
-
-
-                
-              </v-card>
-            </v-dialog>
-            <v-dialog v-model="dialogDelete" max-width="270px">
-              <v-card>
-                <v-card-title class="text-h5 white--text  primary"
-                  >
-                  
-                  แน่ใจแล้วใช่มั้ยที่จะลบ
-                  
-                  </v-card-title
+              <v-card-actions>
+                <v-btn class="ma-1" color="primary" dark @click="close">
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-barley-off
+                  </v-icon>
+                  ยกเลิก
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn class="ma-1" color="info" @click="save">
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-barley
+                  </v-icon>
+                  เพิ่มข้อมูล
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="dialogDelete" max-width="270px">
+            <v-card>
+              <v-card-title class="text-h5 white--text  primary">
+                แน่ใจแล้วใช่มั้ยที่จะลบ
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="info" class="ma-2" @click="closeDelete">
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-barley-off </v-icon
+                  >ยกเลิก</v-btn
                 >
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn color="info" class="ma-2" @click="closeDelete"
-                    > <v-icon aria-hidden="false" class="mx-2">
-                  mdi-fridge-industrial-alert-outline
-                </v-icon>ยกเลิก</v-btn
-                  >
-                  <v-btn color="primary"  class="ma-2"  @click="deleteItemConfirm"
-                    > <v-icon aria-hidden="false" class="mx-4">
-                   mdi-fridge-industrial-off-outline
-                </v-icon>ลบ</v-btn
-                  >
-                  <v-spacer></v-spacer>
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          
+                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
+                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
+                  >ลบ</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </template>
-         
-             <template v-slot:[`item.actions`]="{ item }">
-                  <v-btn class="mr-2" color="warning" @click="editItem(item)">
-                    <v-icon aria-hidden="false" class="mx-2">
-                        mdi-fridge-industrial-outline
-                    </v-icon>
-                    แก้ไข
-                  </v-btn>
-                  <v-btn
-                    rounded-lx
-                    class="mr-2"
-                    color="error"
-                    @click="deleteItem(item)"
-                  >
-                    <v-icon dark class="mx-2">
-                       mdi-fridge-industrial-off-outline 
-                    </v-icon>
-                    ลบ
-                  </v-btn>
-                </template>
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-btn class="mr2" color="warning" @click="editItem(item)">
+            <v-icon aria-hidden="false" class="mx-2">
+              mdi-barley
+            </v-icon>
+            แก้ไข
+          </v-btn>
+          <v-btn
+            rounded-lx
+            class="mr-2"
+            color="error"
+            @click="deleteItem(item)"
+          >
+            <v-icon dark class="mx-2">
+              mdi-barley-off
+            </v-icon>
+            ลบ
+          </v-btn>
+        </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -241,36 +150,39 @@
         </template>
       </v-data-table>
     </v-card>
-   </div >
+  </div>
 </template>
 
 <script>
 export default {
   data: () => ({
     dialog: false,
-    
     dialogDelete: false,
-    search: '',
+    search: "",
+    productitme: [],
     headers: [
-      {text: "รายการสิ้นค้า", align: "start", sortable: false, value: "ref_pro_id" },
-      { text: "จำนวลที่พร้อมขาย", value: "qty_max", sortable: false  },
-      { text: "ให้แจ้งเตื่อนเมื่อใกล้หมด", value: "qty_min" , sortable: false },
-      { text: "วันที่เพิ่มหน่วย", value: "datetime", sortable: false  },
-      { text: "ดำเนินการ", value: "actions", sortable: false } ],
-    desserts: [],
+      { text: "ชื่อสิ้นค้า", align: "start", value: "ref_pro_id" },
+      { text: "ให้แจ้งเตื่อนเมื่่อใกล้หมด", align: "start", value: "qty_min" },
+      { text: "จำนวลอาหารที่พร้อมขาย", align: "start", value: "qty_max" },
+      { text: "พนักงานที่แก้ไข", align: "start", value: "ref_emp_id" },
+      { text: "วันที่", align: "start", value: "datetime" },
+      { text: "หมายเหตุ", value: "actions", sortable: false }
+    ],
     editedIndex: -1,
-    editedItem: {  name: "", data:""
-
+    stockitme: {
+      _id: " ",
+      ref_pro_id: " ",
+      qty_min: "",
+      qty_max: "",
+      ref_emp_id: ""
     },
-    defaultItem: {
-      name: "",
-       data:""
-    }
+    type: null,
+    deleteId: null
   }),
-  props:['stock'],
+
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "แก้หนวยนับ";
+      return this.editedIndex === -1 ? "จัดการstock " : "จัดการstock ";
     }
   },
   watch: {
@@ -282,105 +194,48 @@ export default {
     }
   },
   created() {
-    this.initialize();
+    this.improveproduct();
+  },
+  mounted() {
+    this.getProduct();
   },
   methods: {
-    initialize() {
-      this.desserts = [
-       {
-          name: "โยเกริตแช่แข็ง",
-          calories: 159,
-          fat: "10",
-          units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
-        },
-        {
-          name: "แซนวิชไอศกรีม",
-          calories: 237,
-          fat: "10",
-          units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
-        },
-        {
-          name: "Eclair",
-          calories: 262,
-          fat: "10",
-          units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
-        },
-        {
-          name: "คัพเค้ก",
-          calories: 305,
-          fat: "10",
-          units: "ขิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
-        },
-        {
-          name: "ขนมปังปิง",
-          calories: 356,
-          fat: "10",
-          units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
-        },
-        {
-          name: "เนยถั่วและเยลลี่",
-          calories: 175,
-          fat: "10",
-          units: "ชุด"
-          ,
-          data:"13 กรกฏาคม 2564"
-        },
-        {
-          name: "อมยิ้ม",
-          calories: 192,
-        fat: "10",
-          units: "อัน"
-          ,
-          data:"13 กรกฏาคม 2564"
-        },
-        {
-          name: "รังฝึ้งสด",
-          calories: 408,
-          fat: "10",
-          units: "อัน",
-          data:"13 กรกฏาคม 2564"
-
-        },
-        {
-          name: "โดนัท",
-          calories: 452,
-          fat: "10",
-         units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
-        },
-        {
-          name: "คิทแคท",
-          calories: 518,
-         fat: "10",
-          units: "ชิ้น"
-          ,
-          data:"13 กรกฏาคม 2564"
-        }
-      ];
+    getProduct() {
+      this.$axios
+        .get(`/product/`)
+        .then(res => {
+          this.categories = res.data.data;
+          console.log(get);
+        })
+        .catch(error => {
+          console.log(error.response);
+        });
     },
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+      this.type = "edit";
+      this.stockitme = item;
+      this.dialog = true;
+    },
+    addItem() {
+      this.type = "add";
+      this.stockitme = {
+        _id: " ",
+        ref_pro_id: " ",
+        qty_min: "",
+        qty_max: "",
+        ref_emp_id: ""
+      };
       this.dialog = true;
     },
     deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.deleteId = item._id;
+      this.editedIndex = this.stock.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
     deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
+      this.stock.splice(this.editedIndex, 1);
+      this.$axios.$delete("/stock/" + this.deleteId).then(() => {});
       this.closeDelete();
     },
     close() {
@@ -397,14 +252,35 @@ export default {
         this.editedIndex = -1;
       });
     },
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
-      } else {
-        this.desserts.push(this.editedItem);
+    improveproduct() {
+      for (let i in this.product) {
+        let prod = {
+          _id: this.product[i]._id,
+          name: this.product[i].product_name
+        };
+        this.productitme.push(prod);
       }
-      this.close();
+    },
+    save() {
+      
+      if (this.type === "add") {
+        this.loading = true;
+        
+        this.$emit("addStock", { ...this.stockitme });
+        this.close();
+      } else {
+        this.loading = true;
+        this.$axios
+          .$put("/stock/" + this.stockitme._id, this.stockitme)
+          .then(() => {
+            this.close();
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      }
     }
-  }
+  },
+  props: ["stock", "product"]
 };
 </script>

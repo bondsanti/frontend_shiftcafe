@@ -54,8 +54,9 @@ module.exports = {
   ],
 
   axios: {
-    //baseURL: 'https://api.shift-cafe.com/api'
     baseURL: 'https://api.shift-cafe.com/api'
+    //  http://localhost:5555/api
+    // 'https://api.shift-cafe.com/api'
   },
 
   auth: {

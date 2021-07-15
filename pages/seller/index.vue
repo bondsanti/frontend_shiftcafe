@@ -123,13 +123,10 @@
             </h2>
           </div>
           <div
-            class="d-flex flex-row justify-space-between mb-4 mr-4 ml-4 mt-0 align-center"
+            v-if="bill_name"
+            class="d-flex flex-row justify-space-between  mx-4 mt-2 mb-2"
           >
-            <h4 class="mr-5">ประเภทคำสั่งซื้อ</h4>
-            <v-radio-group v-model="type_order" row>
-              <v-radio label="ทานที่ร้าน" value="1"></v-radio>
-              <v-radio label="กลับบ้าน" value="2"></v-radio>
-            </v-radio-group>
+            <h3>ชื่อบิล {{ bill_name }}</h3>
           </div>
         </v-card>
         <v-btn
@@ -138,7 +135,7 @@
           x-large
           block
           color="info"
-          @click="holdDl = true"
+          @click="dialog = true"
           >ชำระเงิน ({{ formatPrice(subTotal) }} ฿)</v-btn
         >
         <div class="d-flex flex-row">
@@ -180,7 +177,11 @@
             </v-card-text>
           </v-form>
           <v-card-actions>
-            <v-btn color="primary" @click="confirmOrder" :disabled="!valid">
+            <v-btn
+              color="primary"
+              @click="addOrderToDatabase"
+              :disabled="!valid"
+            >
               บันทึกคำสั่งซื้อ
             </v-btn>
           </v-card-actions>
@@ -221,7 +222,7 @@
                 <v-btn small fab class="ml-3"
                   ><v-icon color="teal">mdi-printer</v-icon></v-btn
                 >
-                <v-btn small fab class="ml-3"
+                <v-btn small fab class="ml-3" @click="deleteOrderOnDatabase(i)"
                   ><v-icon color="red">mdi-close</v-icon></v-btn
                 >
               </div>
@@ -238,6 +239,8 @@
       @closeDialog="dialog = false"
       :customers="customers"
       @addCus="refreshUser"
+      :idOrder="idForEditOrder"
+      @clearOrder="clearOrder"
     />
   </div>
 </template>
@@ -255,12 +258,14 @@ export default {
       products,
       categories,
       customers,
-      orderOnDatabase
+      orderOnDatabase,
+      bank
     ] = await Promise.all([
       context.$axios.$get("/product"),
       context.$axios.$get("/category"),
       context.$axios.$get("/customer"),
-      context.$axios.$get("/order")
+      context.$axios.$get("/order-hold"),
+      context.$axios.$get("/bank")
     ]);
     //const products = await context.$axios.$get("/product");
     //console.log(products);
@@ -270,7 +275,8 @@ export default {
       categories,
       product2: products,
       customers,
-      orderOnDatabase
+      orderOnDatabase,
+      bank
     };
   },
   components: {
@@ -292,10 +298,11 @@ export default {
     orderDl: false,
     holdDl: false,
     type_order: "1",
-    bill_name: "",
+    bill_name: null,
     orderOnDatabase: [],
     valid: true,
-    rules: [value => !!value || "โปรดกรอกชื่อบิล"]
+    rules: [value => !!value || "โปรดกรอกชื่อบิล"],
+    idForEditOrder: null
   }),
   head() {
     return {
@@ -368,6 +375,9 @@ export default {
     clearOrder() {
       this.orders = [];
       this.subTotal = 0;
+      this.bill_name = null;
+      this.idForEditOrder = null;
+      this.refreshUser();
     },
     searchProduct() {
       this.product2 = [];
@@ -384,46 +394,62 @@ export default {
     },
     async refreshUser() {
       this.customers = await this.$axios.$get("/customer");
-      this.orderOnDatabase = await this.$axios.$get("/order");
+      this.orderOnDatabase = await this.$axios.$get("/order-hold");
+    },
+    async addOrderToDatabase() {
+      const preOrder = {
+        list_product: this.orders,
+        type_order: this.type_order,
+        total_price: this.subTotal,
+        bill_name: this.bill_name
+      };
+      //console.log(preOrder);
+      const res = await this.$axios.post("/order", preOrder);
+      if (res.status === 200) {
+        this.refreshUser();
+        this.orders = [];
+        this.subTotal = 0;
+        this.bill_name = null;
+        this.orderDl = false;
+      } else {
+        alert(res.data.message);
+      }
     },
     async confirmOrder() {
-      //this.$refs.form.validate();
-      // let proArr = [];
-      // for (let i in this.orders) {
-      //   let proObj = {
-      //     ref_pro_id: this.orders[i]._id,
-      //     qty: this.orders[i].qty
-      //   };
-      //   proArr.push(proObj);
-      // }
-
-      if (this.orders.length === 0) {
+      if (this.bill_name === null && this.orders.length > 1) {
+        //this.$refs.form.validate();
         this.orderDl = true;
-      } else {
-        this.holdDl = true;
+      } else if (this.bill_name !== null || this.orders.length === 0) {
+        if (this.idForEditOrder) {
+          this.$axios.$put("/order/" + this.idForEditOrder, {
+            list_product: this.orders,
+            type_order: this.type_order,
+            total_price: this.subTotal,
+            bill_name: this.bill_name
+          });
+          this.holdDl = true;
+          this.bill_name = null;
+          this.orders = [];
+          this.subTotal = 0;
+          this.idForEditOrder = null;
+        } else {
+          this.holdDl = true;
+        }
       }
-
-      // const preOrder = {
-      //   list_product: this.orders,
-      //   type_order: this.type_order,
-      //   total_price: this.subTotal,
-      //   bill_name: this.bill_name
-      // };
-      // //console.log(preOrder);
-      // const res = await this.$axios.post("/order", preOrder);
-      // if (res.status === 200) {
-      //   this.refreshUser();
-      //   this.orders = [];
-      //   this.subTotal = 0;
-      //   this.bill_name = "";
-      //   this.orderDl = false;
-      // } else {
-      //   alert(res.data.message);
-      // }
     },
     viewOrder(i) {
+      console.log(this.orderOnDatabase[i]);
       this.orders = this.orderOnDatabase[i].list_product;
+      this.bill_name = this.orderOnDatabase[i].bill_name;
+      this.type_order = this.orderOnDatabase[i].type_order;
+      this.idForEditOrder = this.orderOnDatabase[i]._id;
       setTimeout(this.totalPrice, 200);
+      this.holdDl = false;
+    },
+    deleteOrderOnDatabase(i) {
+      this.$axios.$delete("/order/" + this.orderOnDatabase[i]._id).then(() => {
+        this.orderOnDatabase.splice(i, 1);
+      });
     }
   },
   created(context) {

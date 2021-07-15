@@ -2,72 +2,21 @@
   <div class="ma-3">
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
-        <v-dialog v-model="dialogadd" max-width="600px">
+        <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mr-5" v-bind="attrs" v-on="on">
-              <v-icon left> mdi-ticket-account </v-icon> จัดการระดับสมาชิก
+            <v-btn
+              color="primary"
+              dark
+              class="mr-5"
+              v-bind="attrs"
+              v-on="on"
+              @click="addItem"
+            >
+              <v-icon left> mdi-ticket-account </v-icon> จัดการข้อมูล
             </v-btn>
           </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5"
-                ><v-icon left> mdi-ticket-account</v-icon>
-                เพิ่มการระดับสมาชิก</span
-              >
-            </v-card-title>
-
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12"> </v-col>
-
-                  <v-col cols="12" md="6" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="ระดับสมาขิก"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-
-                  <v-col cols="12" md="6" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="ส่วนลด"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-                <v-alert text prominent type="error" icon="mdi-alert"
-                  ><span>0 = classic</span>
-                  <span>1 = silver</span>
-                  <span>2 = gold</span>
-                  <span>3 = platinum </span>
-                </v-alert>
-              </v-container>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn class="ma-1" color="primary" dark @click="close">
-                <v-icon aria-hidden="false" class="mx-2">
-                  mdi-ticket-account
-                </v-icon>
-                ยกเลิก
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn class="ma-1" color="info" @click="save">
-                <v-icon aria-hidden="false" class="mx-2">
-                  mdi-ticket-account
-                </v-icon>
-                เพิ่มข้อมูล
-              </v-btn>
-            </v-card-actions>
-          </v-card>
         </v-dialog>
-
         <v-spacer></v-spacer>
-
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
@@ -77,8 +26,8 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="desserts" :search="search">
-        <template v-slot:[`item.img`]="{}">
+      <v-data-table :headers="headers" :items="levelmember" :search="search" :items-per-page="15">
+            <template v-slot:[`item.img`]="{}">
           <img
             src="@/assets/img/lv-4.jpeg"
             class="mt-2 mb-2 rounded-lg"
@@ -87,12 +36,11 @@
           />
         </template>
         <template v-slot:top>
-          <v-dialog v-model="dialog" max-width="600px">
+          <v-dialog v-model="dialog" max-width="500px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
-                  ><v-icon left> mdi-ticket-account </v-icon>
-                  {{ formTitle }}</span
+                  ><v-icon left> mdi-ticket-account </v-icon> {{ formTitle }}</span
                 >
               </v-card-title>
 
@@ -100,47 +48,35 @@
                 <v-container>
                   <v-row>
                     <v-col cols="12"> </v-col>
-
-                    <v-col cols="12" md="6" class="mt-n7">
+                    <v-col cols="12" class="mt-n7">
                       <v-text-field
                         outlined
-                        label="ระดับสมาขิก"
-                        v-model="editedItem.level_name"
-                        required
-                        color="#1D1D1D"
+                        v-model="levelmemberitme.level_name"
+                        label="ชื่อระดับสมาชิก"
                       ></v-text-field>
                     </v-col>
-
-                    <v-col cols="12" md="6" class="mt-n7">
+                       <v-col cols="12" class="mt-n7">
                       <v-text-field
                         outlined
+                        v-model="levelmemberitme.discount"
                         label="ส่วนลด"
-                        v-model="editedItem.discount"
-                        required
-                        color="#1D1D1D"
                       ></v-text-field>
                     </v-col>
                   </v-row>
-                  <v-alert text prominent type="error" icon="mdi-alert"
-                    ><span>0 = classic</span>
-                    <span>1 = silver</span>
-                    <span>2 = gold</span>
-                    <span>3 = platinum </span>
-                  </v-alert>
                 </v-container>
               </v-card-text>
 
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-ticket-account
+                    mdi-barley-off
                   </v-icon>
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn class="ma-1" color="info" @click="save">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-ticket-account
+                    mdi-barley
                   </v-icon>
                   เพิ่มข้อมูล
                 </v-btn>
@@ -156,12 +92,11 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-ticket-account </v-icon
+                    mdi-barley-off </v-icon
                   >ยกเลิก</v-btn
                 >
                 <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
-                  <v-icon aria-hidden="false" class="mx-4">
-                    mdi-ticket-account </v-icon
+                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -170,20 +105,20 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn   class="mr-2"  color="warning" @click="editItem(item)">
+          <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-              mdi-ticket-account
+              mdi-barley
             </v-icon>
             แก้ไข
           </v-btn>
           <v-btn
             rounded-lx
-            class="mr-2 "
+            class="mr-2"
             color="error"
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-              mdi-ticket-account
+              mdi-barley-off
             </v-icon>
             ลบ
           </v-btn>
@@ -202,33 +137,24 @@
 export default {
   data: () => ({
     dialog: false,
-
     dialogDelete: false,
     search: "",
     headers: [
-      { text: "ภาพ", sortable: false, value: "img" },
-      { text: "ระดับ level-member ", sortable: false, value: "level_name" },
-      { text: "ส่วนลด", sortable: false, value: "discount" },
-      { text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
-      { text: "ดำเนินการ", value: "actions", sortable: false }
+       { text: "ภาพ", sortable: false, value: "img" },
+      { text: "ชื่อหม่วดหมู่", align: "start", value: "level_name",  },
+      //{ text: "ID", align: "start", value: "_id", divider: true },
+      { text: "ส่วนลด", align: "start", value: "discount",  },
+      { text: "Actions", value: "actions", sortable: false }
     ],
-    desserts: [],
     editedIndex: -1,
-    editedItem: {
-      level_name: "",
-      discount: "",
-      img: ""
-    },
-    defaultItem: {
-      level_name: "",
-      discount: "",
-      img: "",
-      data: " "
-    }
+    levelmemberitme: { _id: "", level_name: "" ,discount:" "},
+    type: null,
+    deleteId: null
   }),
+
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "ระดับสมาชิก";
+      return this.editedIndex === -1 ? "จัดการข้อมูล " : "จัดการข้อมูล ";
     }
   },
   watch: {
@@ -244,34 +170,33 @@ export default {
   },
   methods: {
     initialize() {
-      this.desserts = [
-        {
-          level_name: "platinum ",
-
-          discount: "10%",
-
-          data: "11 กรกฏาคม 2564"
-        },
-        {
-          level_name: "platinum",
-          discount: "10%",
-
-          data: "12 กรกฏาคม 2564"
-        }
-      ];
+      // this.loading = true;
+      // this.$axios.$get("/unit").then(unit => {
+      //   this.unit = unit;
+      // });
+      // this.unit = [];
     },
     editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
+      this.type = "edit";
+      this.levelmemberitme = item;
+      this.dialog = true;
+    },
+    addItem() {
+      this.type = "add";
+      this.levelmemberitme = {
+        _id: "", level_name: "" ,discount:" "
+      };
       this.dialog = true;
     },
     deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
+      this.deleteId = item._id;
+      this.editedIndex = this.levelmember.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
     deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
+      this.levelmember.splice(this.editedIndex, 1);
+      this.$axios.$delete("/level-member/" + this.deleteId).then(() => {});
       this.closeDelete();
     },
     close() {
@@ -288,14 +213,27 @@ export default {
         this.editedIndex = -1;
       });
     },
+
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+
+      if (this.type === "add") {
+        this.loading = true;
+     
+        this.$emit("addlevelmember", { ...this.levelmemberitme });
+        this.close();
       } else {
-        this.desserts.push(this.editedItem);
+        this.loading = true;
+        this.$axios
+          .$put("/level-member/" + this.levelmemberitme._id, this.levelmemberitme)
+          .then(() => {
+            this.close();
+          })
+          .catch(e => {
+            console.log(e);
+          });
       }
-      this.close();
     }
-  }
+  },
+  props:['levelmember']
 };
 </script>

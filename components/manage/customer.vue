@@ -12,7 +12,7 @@
               v-on="on"
               @click="addItem"
             >
-              <v-icon left> mdi-food-fork-drink </v-icon> จัดหมวดหมู่
+              <v-icon left> mdi-account-outline  </v-icon> จัดการสมาชิก
             </v-btn>
           </template>
         </v-dialog>
@@ -26,29 +26,140 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="customer" :search="search" :items-per-page="15">
+      <v-data-table :headers="headers" :items="customer" :search="search" :items-per-page="5">
+           <template v-slot:[`item.img`]="{}">
+            <img
+              src="@/assets/img/photo-2.jpg"
+              class="mt-2 mb-2 rounded-circle"
+              aspect-ratio="1"
+              style="width: 50px; height: 50px"
+            />
+          </template>
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
-                  ><v-icon left> mdi-food-fork-drink </v-icon> {{ formTitle }}</span
+                  ><v-icon left> mdi-clipboard-account-outline  </v-icon> จัดการสมาชิก(เพิ่มข้อมูล / แก้ไขข้อมูล)</span
                 >
               </v-card-title>
 
               <v-card-text>
+                <v-form v-model="valid" ref="form">
                 <v-container>
-                  <v-row>
-                    <v-col cols="12"> </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-text-field
-                        outlined
-                    
-                        label="ชื่อ"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
+                   <v-row>
+                      <v-col cols="12">
+                        <v-select
+                          label="คำนำหน้า"
+                          outlined
+                          color="#1D1D1D"
+                          :items="pnamesec"
+                          v-model="customerItme.pname"
+                          :rules="requiredRules"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="customerItme.fname"
+                          :rules="requiredRules"
+                          label="ชื่อ"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="customerItme.lname"
+                          :rules="requiredRules"
+                          label="นามสกุล"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+          
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="customerItme.birthday"
+                          :rules="requiredRules"
+                          type="date"
+                          label="วันเกิด"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                         <!-- <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="customerItme.idcard"
+                          :rules="numberRules"
+                          type="number"
+                          label="เลขบัตรประจำตัวประชาชน"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col> -->
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="customerItme.tel"
+                          :rules="numberRules"
+                          label="เบอร์โทรติดต่อ" 
+                          outlined
+                           type="number"
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="customerItme.email"
+                          label="อีเมล"
+                          :rules="emailRules"
+                          outlined
+                       
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="customerItme.address"
+                          :rules="requiredRules"
+                          label="ที่อยู่"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                       <v-col cols="12" sm="6">
+                        <v-select
+                          label="ระดับ"
+                          outlined
+                          color="#1D1D1D"
+                          
+                           v-model="customerItme.ref_level_id"
+                          :items="ref_level_id"
+                          :rules="requiredRules"
+                        ></v-select>
+                        
+                      </v-col>
+                            <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="customerItme.point"
+                          :rules="numberRules"
+                          type="number"
+                          label="แต้ม"
+                          outlined
+                          required
+                           value="10.00"
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
                 </v-container>
+                </v-form>
               </v-card-text>
 
               <v-card-actions>
@@ -59,8 +170,9 @@
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" @click="save">
+                <v-btn class="ma-1" color="info" :disabled="!valid" @click="save">
                   <v-icon aria-hidden="false" class="mx-2">
+
                     mdi-food-fork-drink
                   </v-icon>
                   เพิ่มข้อมูล
@@ -123,30 +235,47 @@ export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+     valid: true,
     search: "",
+    pnamesec: ["นาย", "นาง", "นางสาว"],
+    ref_level_id:[{text: "classic",value:"60e439b7c7d6ae35548c7b62"},
+                  {text: "silver",value:"60e43a3dc7d6ae35548c7b66"},
+                  {text: "gold",value:"60f016e0cd19bf679382204c"},
+                  {text: "platinum",value:"60e5736b2254f6410c719874"}],
     headers: [
-      { text: "ชื่อหม่วดหมู่", align: "start", value: "pname" },
+      { text: "ภาพ", sortable: false, value: "img" },
+      { text: "คำนำหน้า", align: "start", value: "pname" },
       { text: "ชื่อ", align: "start", value: "fname" },
       { text: "นามสกุล", align: "start", value: "lname"},
       { text: "วันเกิด", align: "start", value: "birthday"},
-      { text: "วันเกิด", align: "start", value: "tel"},
-      { text: "เบอร์โทร", align: "start", value: "tel"},
+      { text: "เบอร์โทร", align: "start", value: "tel"},    
       { text: "อีเมล์", align: "start", value: "email"},
       { text: "ที่อยู่", align: "start", value: "address"},
       { text: "ระดับ", align: "start", value: "ref_level_id.level_name"},
-       { text: "แต้ม", align: "start", value: "point"},
-      { text: "Actions", value: "actions", sortable: false }
+      { text: "แต้ม", align: "start", value: "point"},
+      { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
-    customer: [],
     editedIndex: -1,
-    customer: { _id: "", pname: "" },
+    customerItme: { _id: "", pname: "" ,fname:"",lname:"",birthday:"",tel:" ",email:"",address:"",ref_level_id:"",point:"0"},
     type: null,
-    deleteId: null
+    deleteId: null,
+    requiredRules: [(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!"],
+    emailRules: [
+			(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+			(v) =>
+				!v ||
+				/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+				"โปรใส่อีเมลให้ถูกต้อง"
+		],
+    numberRules: [
+			(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+			(v) => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
+		]
   }),
-
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
+    return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
     }
   },
   watch: {
@@ -158,66 +287,57 @@ export default {
     }
   },
   created() {
-    this.initialize();
+   
   },
+  
   methods: {
-    initialize() {
-      // this.loading = true;
-      // this.$axios.$get("/unit").then(unit => {
-      //   this.unit = unit;
-      // });
-      // this.unit = [];
-    },
     editItem(item) {
       this.type = "edit";
-      this.cate = item;
+      this.customerItme = item;
       this.dialog = true;
     },
     addItem() {
       this.type = "add";
-      this.cate = {
-        _id: "",
-        u_name: ""
-      };
+      this.customerItme = { _id: "", pname: "" ,fname:"",lname:"",birthday:"",tel:" ",email:"",address:"",ref_level_id:"",point:"0" };
       this.dialog = true;
     },
     deleteItem(item) {
       this.deleteId = item._id;
-      this.editedIndex = this.category.indexOf(item);
+      this.editedIndex = this.customer.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
     deleteItemConfirm() {
-      this.category.splice(this.editedIndex, 1);
-      this.$axios.$delete("/category/" + this.deleteId).then(() => {});
+      this.customer.splice(this.editedIndex, 1);
+      this.$axios.$delete("/customer/" + this.deleteId).then(() => {});
       this.closeDelete();
     },
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
+      this.editedItem = Object.assign({}, this.defaultItem);
+      this.editedIndex = -1;
       });
     },
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
+      this.editedItem = Object.assign({}, this.defaultItem);
+      this.editedIndex = -1;
       });
     },
 
     save() {
-
-      if (this.type === "add") {
+        this.$refs.form.validate();
+        if (this.type === "add") {
         this.loading = true;
      
-        this.$emit("addCategory", { ...this.cate });
+        this.$emit("addCustomer", { ...this.customerItme });
         this.close();
       } else {
         this.loading = true;
         this.$axios
-          .$put("/category/" + this.cate._id, this.cate)
+          .$put("/customer/" + this.customerItme._id, this.customerItme)
           .then(() => {
             this.close();
           })

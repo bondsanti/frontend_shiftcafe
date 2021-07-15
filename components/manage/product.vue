@@ -32,9 +32,9 @@
         :search="search"
         :items-per-page="15"
       >
-        <template v-slot:[`item.img`]="{ item }">
+       <template v-slot:[`item.img`]="{ item }">
           <img
-            :src="getProductImage(item)"
+            :src="'https://api.shift-cafe.com/' + item.img"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
             style="width: 150px; height: 150px"
@@ -224,10 +224,10 @@ export default {
       { text: "ราคาต้นทุน", sortable: false, value: "price_cost" },
       { text: "ราคา", sortable: false, value: "price" },
       { text: "สต็อก", sortable: false, value: "stock" },
+     // { text: "id", sortable: false, value: "_id" },
       { text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
       { text: "Actions", value: "actions", sortable: false }
     ],
-    product: [],
     editedIndex: -1,
     productsItem: {
       product_name: "",

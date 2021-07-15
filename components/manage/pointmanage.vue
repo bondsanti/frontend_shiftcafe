@@ -2,7 +2,7 @@
    <div class="ma-3">
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
-        <v-dialog v-model="dialogadd" max-width="500px">
+        <v-dialog v-model="dialog" max-width="500px">
             
           <template v-slot:activator="{ on, attrs }">
               <v-card color="primary" dark class="mr-5 mb-4" >
@@ -209,10 +209,11 @@ export default {
     dialogDelete: false,
     search: '',
     headers: [
-      {text: "ชื่อลูกค้า", align: "start",sortable: false,value: "ref_cus_id" },
+      {text: "แต้มให้ลูกค้าชื่อ", align: "start",sortable: false,value: "ref_cus_id" },
+       { text: "ชื่อพนักงานที่จัดการ", sortable: false, value: "ref_emp_id" },
       {text: "แต้ม", align: "start",sortable: false,value: "point" },
        {text: "สถานะ", align: "start",sortable: false,value: "status" },
-      { text: "ชื่อพนักงานที่จัดการ", sortable: false, value: "ref_emp_id" },
+     
        { text: "วันทีเพิ่มลดแต้ม",sortable: false, value: "data" },
     //   { text: "Actions", value: "actions", sortable: false }
     ],

@@ -27,6 +27,14 @@
       </v-card-title>
 
       <v-data-table :headers="headers" :items="category" :search="search" :items-per-page="15">
+        <template v-slot:[`item.img`]="{}">
+            <img
+              src="@/assets/img/photo-4.jpg"
+              class="mt-2 mb-2 rounded-lg"
+              aspect-ratio="1"
+              style="width: 150px; height: 150px"
+            />
+          </template>
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
             <v-card>
@@ -125,11 +133,11 @@ export default {
     dialogDelete: false,
     search: "",
     headers: [
-      { text: "ชื่อหม่วดหมู่", align: "start", value: "cate_name", divider: true },
-      { text: "ID", align: "start", value: "_id", divider: true },
+      { text: "ภาพ", sortable: false, value: "img" },
+      { text: "ชื่อหม่วดหมู่", align: "start", value: "cate_name"},
+     // { text: "ID", align: "start", value: "_id", divider: true },
       { text: "Actions", value: "actions", sortable: false }
     ],
-    category: [],
     editedIndex: -1,
     cate: { _id: "", u_name: "" },
     type: null,

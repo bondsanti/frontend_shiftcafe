@@ -3,7 +3,7 @@
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
       <v-row>
         <v-col cols="12" xs="12" sm="12" md="3">
-          <MenuProfile />
+          <MenuProfile :loadData="loadData" />
         </v-col>
 
         <v-col xs="12" sm="12" md="9" class="">
@@ -14,10 +14,30 @@
             </div>
             <v-data-table
               :headers="headers"
-              :items="pointItems"
+              :items="historyBuy"
               :items-per-page="10"
+              :sort-by="['datetime']"
+              :sort-desc="[true, false]"
               class="mb-n5"
-            ></v-data-table>
+            >
+              <template v-slot:[`item.datetime`]="{ item }">
+                <span>{{ item.datetime | moment }}</span>
+              </template>
+              <template v-slot:[`item.type_payment`]="{ item }">
+                <v-chip :color="getColor(item.type_payment)" dark small>
+                  {{ item.type_payment }}
+                </v-chip>
+              </template>
+              <template v-slot:[`item.total_price`]="{ item }">
+                {{ formatPrice(item.total_price) }}
+              </template>
+              <template v-slot:[`item.discount_price`]="{ item }">
+                {{ formatPrice(item.discount_price) }}
+              </template>
+              <template v-slot:[`item.net_price`]="{ item }">
+                {{ formatPrice(item.net_price) }}
+              </template>
+            </v-data-table>
           </v-card>
         </v-col>
       </v-row>
@@ -26,6 +46,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import MenuProfile from "~/components/memberLayout/MenuProfile";
 export default {
   layout: "layoutMember",
@@ -33,105 +54,49 @@ export default {
     return {
       headers: [
         {
-          text: "หมายเลขบิล",
+          text: "วัน เวลา",
           align: "start",
-          sortable: false,
-          value: "orderid"
+          sortable: true,
+          value: "datetime"
         },
-        { text: "วันที่", value: "datetime" },
-        { text: "ประเภทรายการ", value: "typeOrder" },
-        { text: "ส่วนลด", value: "discount" },
-        { text: "ยอดสิทธิ", value: "total_amout" }
+        { text: "ประเภทชำระ", value: "type_payment" },
+        { text: "ราคา", value: "total_price" },
+        { text: "ส่วนลด", value: "discount_price" },
+        { text: "ยอดสิทธิ", value: "net_price" },
+        { text: "ได้พอยท์", value: "ref_point_pay_id.point" }
       ],
-      pointItems: [
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214001",
-          typeOrder: "ทานที่ร้าน",
-          discount: 0,
-          total_amout: 100,
-          datetime: "13/7/2564 13:00"
-        }
-      ]
+      historyBuy: []
     };
   },
-
+  methods: {
+    formatPrice(total_price, discount_price, net_price) {
+      const value = parseInt(total_price, discount_price, net_price);
+      let val = (value / 1).toFixed(2).replace(",", ".");
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+    getColor(type_payment) {
+      if (type_payment === "cash") return "green";
+      else return "red";
+    }
+  },
+  async asyncData(context) {
+    const loadData = await context.$axios.$get(
+      "/customer/" + context.$auth.user._id
+    );
+    const historyBuy = await context.$axios.$get(
+      "/payment/customer/" + context.$auth.user._id
+    );
+    //console.log(histortBuy);
+    //console.log(context.$auth.user);
+    return { loadData, historyBuy };
+  },
+  filters: {
+    moment: function(date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("D/MM/YY H:mm");
+    }
+  },
   components: {
     MenuProfile
   }

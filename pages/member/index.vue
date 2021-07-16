@@ -3,7 +3,7 @@
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
       <v-row>
         <v-col cols="12" xs="12" sm="12" md="3">
-          <MenuProfile />
+          <MenuProfile :loadData="loadData" />
         </v-col>
         <v-col cols="12" xs="12" sm="12" md="9">
           <v-card class="px-6 py-5">
@@ -24,7 +24,49 @@
                 class="flex-grow-1 flex-shrink-0"
               >
                 <h4 class="pa-2 text-truncate" outlined tile>
-                  60e55165fc99f20f4c3a7810
+                  {{ loadData._id }}
+                </h4>
+              </v-col>
+            </v-row>
+            <v-row no-gutters style="flex-wrap: nowrap">
+              <v-col
+                cols="6"
+                class="flex-grow-0 flex-shrink-0 text-right text-red"
+              >
+                <h4 class="pa-2 " outlined tile>
+                  <v-icon color="red darken-3" dense>mdi-lock </v-icon>
+                  username
+                </h4>
+              </v-col>
+              <v-col
+                cols="6"
+                style="min-width: 100px; max-width: 100%"
+                class="flex-grow-1 flex-shrink-0"
+              >
+                <h4 class="pa-2 text-truncate text-red" outlined tile>
+                  {{ loadData.tel }}
+                </h4>
+              </v-col>
+            </v-row>
+            <v-row no-gutters style="flex-wrap: nowrap">
+              <v-col
+                cols="6"
+                class="flex-grow-0 flex-shrink-0 text-right text-red"
+              >
+                <h4 class="pa-2 " outlined tile>
+                  <v-icon color="red darken-3" dense
+                    >mdi-lock-open-variant
+                  </v-icon>
+                  password
+                </h4>
+              </v-col>
+              <v-col
+                cols="6"
+                style="min-width: 100px; max-width: 100%"
+                class="flex-grow-1 flex-shrink-0"
+              >
+                <h4 class="pa-2 text-truncate text-red" color="" outlined tile>
+                  {{ loadData.tel }}
                 </h4>
               </v-col>
             </v-row>
@@ -41,7 +83,7 @@
                 class="flex-grow-1 flex-shrink-0"
               >
                 <h4 class="pa-2 text-truncate" outlined tile>
-                  Santi Chooprayoon
+                  {{ loadData.pname }} {{ loadData.fname }} {{ loadData.lname }}
                 </h4>
               </v-col>
             </v-row>
@@ -58,7 +100,7 @@
                 class="flex-grow-1 flex-shrink-0"
               >
                 <h4 class="pa-2 text-truncate" outlined tile>
-                  21/12/2536
+                  {{ loadData.birthday | moment }}
                 </h4>
               </v-col>
             </v-row>
@@ -75,7 +117,7 @@
                 class="flex-grow-1 flex-shrink-0"
               >
                 <h4 class="pa-2 text-truncate" outlined tile>
-                  0613299642
+                  {{ loadData.tel }}
                 </h4>
               </v-col>
             </v-row>
@@ -92,12 +134,22 @@
                 class="flex-grow-1 flex-shrink-0"
               >
                 <h4 class="pa-2 text-truncate" outlined tile>
-                  Santi.chpy@gmail.com
+                  {{ loadData.email }}
                 </h4>
               </v-col>
             </v-row>
 
-            <v-divider class="mt-3 mb-5"></v-divider>
+            <v-divider class="mt-3"></v-divider>
+            <v-card-text>
+              <div class="text-center grey lighten-5 mb-n5">
+                คุณเป็นสมาชิกมาแล้ว
+                <font color="#1976D2">
+                  {{ getAgeDate(loadData.datetime) }}</font
+                >
+                วัน
+                <br />
+              </div>
+            </v-card-text>
           </v-card>
         </v-col>
       </v-row>
@@ -106,11 +158,41 @@
 </template>
 
 <script>
+import moment from "moment";
 import MenuProfile from "~/components/memberLayout/MenuProfile";
 export default {
   layout: "layoutMember",
+
   components: {
     MenuProfile
+  },
+  async asyncData(context) {
+    const loadData = await context.$axios.$get(
+      "/customer/" + context.$auth.user._id
+    );
+    console.log(loadData);
+    //console.log(context.$auth.user);
+    return { loadData };
+  },
+
+  methods: {
+    getAgeDate(date) {
+      const futureDate = moment()
+        .date(Number)
+        .format("YYYY/MM/D");
+      //console.log(startDate);
+      const endDate = moment(date).format("YYYY/MM/D");
+      const diffInDays = moment(futureDate).diff(moment(endDate), "days");
+
+      return diffInDays;
+    }
+  },
+  filters: {
+    moment: function(date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("D/MM/YY");
+    }
   }
 };
 </script>
@@ -120,5 +202,8 @@ export default {
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   background-color: rgba(255, 255, 255, 0.4);
+}
+.text-red {
+  color: #c62828;
 }
 </style>

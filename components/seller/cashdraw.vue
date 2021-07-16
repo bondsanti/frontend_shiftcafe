@@ -79,6 +79,7 @@
             {{ item.type }}
           </v-chip>
         </template>
+        
         <template v-slot:[`item.datetime`]="{ item }">
           <span>{{ item.datetime | moment }}</span>
         </template>

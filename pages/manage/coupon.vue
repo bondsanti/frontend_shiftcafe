@@ -14,7 +14,7 @@ export default {
     ]);
     //const products = await context.$axios.$get("/product");
     //console.log(products);
-    console.log(user);
+   // console.log(user);
     return { coupon, employee, user };
   },
   components: {

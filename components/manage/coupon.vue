@@ -45,7 +45,7 @@
                     <v-col cols="12" md="6" class="mt-n7">
                       <v-text-field
                         outlined
-                        label="ชื่อคูปอง"
+                        label="คนออก"
                         v-model="coupone.codename"
                         required
                         color="#1D1D1D"
@@ -54,38 +54,32 @@
 
                     <v-col cols="12" md="6" class="mt-n7">
                        
-                    <v-text-field
-                      label="ผู้ออก"
-                      :items="useronline.flat()"
+                  <v-select 
+                      label=" ชื่อคูปอง"
                       outlined
                       color="#1D1D1D"
                         item-text="name"        
                        item-value="_id"
-                      v-model="coupone.ref_emp_id_by"
                        
-                    ></v-text-field>
+                          v-model="coupone.ref_emp_id_by"
+                       :items="useronline.flat()"
+                     
+                    ></v-select>
                   </v-col>
                       <v-col cols="12" md="6" class="mt-n7">
                        
                     <v-select 
-                      label="พนัก"
+                      label="ออกให้"
                       outlined
                       color="#1D1D1D"
-                        item-text="name"        
-                       item-value="_id"
+                      item-text="name"        
+                      item-value="_id"
                       :items="Empname.flat()"
+                   v-model="coupone.ref_emp_id"
                     ></v-select>
                   </v-col>
                     
                     <v-col cols="12" md="6" class="mt-n7">
-                      <!-- <v-text-field
-                        outlined
-                          type="date"
-                        label="วันหมดอายุคูปอง"
-                        v-model="coupon.exp"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field> -->
                        <v-text-field
                           type="date"
                           v-model="coupone.exp"
@@ -189,7 +183,6 @@
 </template>
 
 <script>
-import moment from "moment";
 export default {
   data: () => ({
     dialog: false,
@@ -199,15 +192,16 @@ export default {
     useronline:[],
     headers: [
       { text: "ชื่อหม่วดหมู่", align: "start", value: "codename", divider: true },
-      { text: "อนุญาตโดย", align: "start", value: "ref_emp_id_by", divider: true },
-      { text: "พนักงานที่ออก", align: "start", value: "ref_emp_id", divider: true },
+     
+      { text: "ออกให้พนักงาน", align: "start", value: "ref_emp_id", divider: true },
+       { text: " คนออกคูปอง", align: "start", value: "ref_emp_id_by", divider: true },
       { text: "วันหมดอายุ", align: "start", value: "exp", divider: true },
       { text: "ส่วนลด % ", align: "start", value: "discount", divider: true },
        { text: "จำนวลผู้ใช้คูปอง", align: "start", value: "num_use", divider: true },
       { text: "Actions", value: "actions", sortable: false }
     ],
     editedIndex: -1,
-    coupone: { _id: "", codename: "",ref_emp_id_by:"",ref_emp_id:" ",exp:" " ,num_use:" "},
+    coupone: { _id: " ", codename: " ",ref_emp_id_by:" ",ref_emp_id:" ",exp:" " ,discount:" ",num_use:" "},
     type: null,
     deleteId: null
   }),
@@ -245,8 +239,7 @@ export default {
     addItem() {
       this.type = "add";
       this.coupone = {
-        _id: "",
-        u_name: ""
+        _id: " ", codename: " ",ref_emp_id_by:" ",ref_emp_id:" ",exp:" " ,discount:" ",num_use:" "
       };
       this.dialog = true;
     },
@@ -295,19 +288,6 @@ export default {
           });
       }
     },
-  toBuddhistYear(moment, format) {
-      var christianYear = moment.format('YYYY')
-      var buddhishYear = (parseInt(christianYear) + 543).toString()
-      return moment
-        .format(
-          format
-            .replace('YYYY', buddhishYear)
-            .replace('YY', buddhishYear.substring(2, 4))
-        )
-        .replace(christianYear, buddhishYear)
-    },
-
-
        improveEmp() {
       for (let i in this.employee) {
         let Emp = {

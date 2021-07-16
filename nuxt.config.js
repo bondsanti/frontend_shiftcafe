@@ -25,6 +25,11 @@ module.exports = {
         href:
           'https://fonts.googleapis.com/css2?family=Mitr&family=Sarabun&display=swap'
       }
+    ],
+    script: [
+      // {
+      //   src: "https://code.jquery.com/jquery-3.5.1.min.js",
+      // },
     ]
   },
 
@@ -54,7 +59,7 @@ module.exports = {
   ],
 
   axios: {
-    baseURL: 'https://api.shift-cafe.com/api'
+    baseURL: 'http://localhost:5555/api'
     //  http://localhost:5555/api
     // 'https://api.shift-cafe.com/api'
   },

@@ -41,7 +41,11 @@
                     <v-col>
                       <v-row align="center">
                         <h2 class="mr-5">ประเภทลูกค้า</h2>
-                        <v-radio-group v-model="cus_type" row>
+                        <v-radio-group
+                          v-model="cus_type"
+                          row
+                          @change="checkDiscountType"
+                        >
                           <v-radio label="ทั่วไป" value="guest"></v-radio>
                           <v-radio label="สมาชิก" value="member"></v-radio>
                         </v-radio-group>
@@ -55,6 +59,7 @@
                         item-value="_id"
                         item-text="name"
                         v-if="cus_type === 'member'"
+                        @change="checkDiscountType"
                       ></v-autocomplete>
                     </v-col>
                   </v-row>
@@ -62,7 +67,11 @@
                     <v-col>
                       <v-row align="center">
                         <h2 class="mr-5">ส่วนลด</h2>
-                        <v-radio-group v-model="discount_type" row>
+                        <v-radio-group
+                          v-model="discount_type"
+                          row
+                          @change="checkDiscountType"
+                        >
                           <v-radio label="บัตรสมาชิก" value="member"></v-radio>
                           <v-radio label="ส่วนลด (%)" value="coupong"></v-radio>
                         </v-radio-group>
@@ -92,7 +101,11 @@
                     <v-col>
                       <v-row align="center">
                         <h2 class="mr-5">ช่องทางการชำระเงิน</h2>
-                        <v-radio-group v-model="bank" row>
+                        <v-radio-group
+                          v-model="bank"
+                          row
+                          @change="checkTypePayment"
+                        >
                           <v-radio label="เงินสด" value="cash"></v-radio>
                           <v-radio
                             label="โอนผ่านธนาคาร"
@@ -101,22 +114,18 @@
                         </v-radio-group>
                       </v-row>
                       <v-autocomplete
-                        v-model="value"
+                        v-model="bank_id"
                         chips
                         clearable
                         label="เลือกธนาคาร"
-                        :items="customers._id"
+                        :items="bank2"
+                        item-text="bank_name"
+                        item-value="_id"
                         v-if="bank === 'transfer'"
                       ></v-autocomplete>
                     </v-col>
                   </v-row>
-                  <v-row class="ma-3" align="center">
-                    <h2 class="d-flex mr-5">การชำระเงิน</h2>
-                    <v-radio-group v-model="status" row class="d-flex">
-                      <v-radio label="รอชำระเงิน" value="0"></v-radio>
-                      <v-radio label="ชำระเงินแล้ว" value="1"></v-radio>
-                    </v-radio-group>
-                  </v-row>
+
                   <v-row class="ma-3" align="center">
                     <h2 class="d-flex mr-5">ภาษี</h2>
                     <v-radio-group
@@ -131,7 +140,7 @@
                   </v-row>
                   <v-row>
                     <v-col>
-                      <v-btn rounded large block color="red" dark
+                      <v-btn rounded large block color="red" dark @click="print"
                         >ยกเลิกออเดอร์</v-btn
                       >
                     </v-col>
@@ -184,7 +193,7 @@
                   </v-row>
                   <v-row class="justify-space-between ma-1 mx-16 ">
                     <h2>ภาษี</h2>
-                    <h2>7 %</h2>
+                    <h2>{{ tax }} %</h2>
                   </v-row>
                   <v-row class="justify-space-between ma-1 mx-16 ">
                     <h2>ราคาสุทธิ</h2>
@@ -332,6 +341,17 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+              <v-row class="justify-center" v-if="error2">
+                <v-alert
+                  color="red"
+                  dark
+                  icon="mdi-alert-circle"
+                  border="left"
+                  prominent
+                >
+                  ยอดเงินที่รับมาไม่พอ
+                </v-alert>
+              </v-row>
             </v-container>
           </v-card-text>
           <v-card-actions>
@@ -350,14 +370,11 @@
 </template>
 <script>
 export default {
-  async asyncData(conntext) {
-    // const [customers] = await Promise.all([context.$axios.$get("/category")]);
-    // return { customers };
-  },
-  props: ["orders", "subtotal", "dialog", "customers", "idOrder"],
+  props: ["orders", "subtotal", "dialog", "customers", "idOrder", "bank2"],
   data: () => ({
     items: ["นาย", "นาง", "น.ส.", "ด.ช.", "ด.ญ"],
     items2: [
+      { value: 0, name: "0 %" },
       { value: 3, name: "3 %" },
       { value: 6, name: "6 %" },
       { value: 9, name: "9 %" },
@@ -365,12 +382,11 @@ export default {
       { value: 15, name: "15 %" },
       { value: 18, name: "18 %" }
     ],
-    cus_type: "member",
-    discount_type: "member",
+    cus_type: "guest",
+    discount_type: "coupong",
     type_order: "1",
     bank: "cash",
-    status: "0",
-    cusId: "",
+    cusId: "60f03e6f4700ae6968dd9e87",
     customers2: [],
     tab: "tab-1",
     cus: {
@@ -384,6 +400,7 @@ export default {
       ref_level_id: "60e439b7c7d6ae35548c7b62"
     },
     valid: true,
+
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     telRules: [
       v => !!v || "โปรดกรอกข้อมูลให้ครบถ้วน",
@@ -392,11 +409,14 @@ export default {
     ],
     dialog2: false,
     error: null,
+    error2: false,
     vat: "1",
-    coupon: 3,
+    coupon: 0,
     checkout: false,
     receive: "",
-    withdraw: ""
+    withdraw: "",
+    bank_id: null,
+    tax: 0
   }),
   methods: {
     closeDialog() {
@@ -438,40 +458,37 @@ export default {
     thinkPrice() {
       if (this.cus_type === "member") {
         if (this.vat === "1") {
+          this.tax = 0;
           return this.subtotal - (this.subtotal * this.coupon) / 100;
         } else {
+          this.tax = 7;
           let net =
-            (this.subtotal * 7) / 100 +
+            (this.subtotal * this.tax) / 100 +
             this.subtotal -
             (this.subtotal * this.coupon) / 100;
           return net;
         }
       } else {
         if (this.vat === "1") {
+          this.tax = 0;
           return this.subtotal;
         } else {
-          return (this.subtotal * 7) / 100 + this.subtotal;
+          this.tax = 7;
+          return (this.subtotal * this.tax) / 100 + this.subtotal;
         }
       }
     },
     async save() {
+      //this.$refs.form2.validate();
       //this.checkout = true;
-      console.log(this.idOrder);
+      const prePayment = this.checkTypePayment();
+      //console.log({ ...prePayment, ref_order_id: "11111111" });
       if (this.idOrder !== null) {
-        const newPayment = {
-          ref_order_id: this.idOrder,
-          ref_cus_id: this.cusId,
-          type_payment: this.bank,
-          receive_money: this.receive,
-          withdraw_money: this.withdraw,
-          pure_price: this.subtotal,
-          type_order: this.type_order,
-          net_price: this.thinkPrice(this.subtotal)
-        };
-        this.$axios.$post("/payment", newPayment).then(res => {
+        const newPayment = { ...prePayment, ref_order_id: this.idOrder };
+        this.$axios.$post("/payment", newPayment).then(() => {
           this.checkout = false;
         });
-        //console.log(newPayment);
+        console.log(newPayment);
       } else {
         const newOrder = {
           status: 1,
@@ -482,30 +499,131 @@ export default {
         };
         const order = await this.$axios.$post("/order", newOrder);
         //console.log(order.data);
-        const newPayment = {
-          ref_order_id: order.data._id,
+        const newPayment = { ...prePayment, ref_order_id: order.data._id };
+        this.$axios.$post("/payment", newPayment).then(() => {
+          this.checkout = false;
+        });
+        console.log(newPayment);
+      }
+      this.$emit("closeDialog");
+      this.$emit("clearOrder");
+      this.receive = "";
+      this.withdraw = "";
+    },
+    calMoney() {
+      const netPrice = Math.floor(this.thinkPrice(this.subtotal));
+
+      if (this.receive < netPrice) {
+        this.error2 = true;
+        this.withdraw = "";
+      } else {
+        this.withdraw = parseInt(this.receive) - netPrice;
+        this.error2 = false;
+      }
+    },
+    async checkDiscountType() {
+      if (this.discount_type === "member" && this.cus_type === "member") {
+        const res = await this.$axios.$get("/customer/" + this.cusId);
+        //console.log(res);
+        this.coupon = res.ref_level_id.discount;
+      } else {
+        this.coupon = 0;
+      }
+    },
+    checkTypePayment() {
+      if (this.bank === "cash") {
+        this.bank_id = null;
+        const newPayment1 = {
           ref_cus_id: this.cusId,
           type_payment: this.bank,
           receive_money: this.receive,
           withdraw_money: this.withdraw,
-          pure_price: this.subtotal,
           type_order: this.type_order,
-          net_price: this.thinkPrice(this.subtotal)
+          total_price: this.subtotal,
+          discount_price: Math.round((this.subtotal * this.coupon) / 100),
+          after_discount: Math.round(
+            this.subtotal - [(this.subtotal * this.coupon) / 100]
+          ),
+          vat_price: Math.round((this.subtotal * this.tax) / 100),
+          after_vat: Math.round(
+            (this.subtotal * this.tax) / 100 + this.subtotal
+          ),
+          net_price: Math.round(this.thinkPrice(this.subtotal))
         };
-        this.$axios.$post("/payment", newPayment).then(() => {
-          this.checkout = false;
-        });
+        return newPayment1;
+      } else {
+        const newPayment2 = {
+          ref_cus_id: this.cusId,
+          ref_bank_id: this.bank_id,
+          type_payment: this.bank,
+          receive_money: this.receive,
+          withdraw_money: this.withdraw,
+          type_order: this.type_order,
+          total_price: this.subtotal,
+          discount_price: Math.round((this.subtotal * this.coupon) / 100),
+          after_discount: Math.round(
+            this.subtotal - [(this.subtotal * this.coupon) / 100]
+          ),
+          vat_price: Math.round((this.subtotal * this.tax) / 100),
+          after_vat: Math.round(
+            (this.subtotal * this.tax) / 100 + this.subtotal
+          ),
+          net_price: Math.round(this.thinkPrice(this.subtotal))
+        };
+        return newPayment2;
       }
-      this.$emit("closeDialog");
-      this.$emit("clearOrder");
     },
-    calMoney() {
-      this.withdraw =
-        parseInt(this.receive) - Math.floor(this.thinkPrice(this.subtotal));
+    print() {
+      var WinPrint = window.open(
+        "",
+        "",
+        "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
+      );
+      WinPrint.document.write("<h3>SHIFT restaurant</h3>");
+      WinPrint.document.write(
+        "<table border=0 style='width: 100%;font-size: 0.5em;'>"
+      );
+      WinPrint.document.write(
+        "<tr><th width='1000px' style='padding-right:60px'>รายการ</th><th width='100px' style='padding-right:30px'>จำนวน</th><th width='100px'>ราคา</th></tr>"
+      );
+
+      for (let i in this.orders) {
+        WinPrint.document.write("<tr>");
+        WinPrint.document.write(
+          `<td>${this.orders[i].name}</td><td style='padding-left:20px'>${this.orders[i].qty}</td><td>${this.orders[i].price} ฿</td>`
+        );
+        WinPrint.document.write("</tr>");
+      }
+
+      WinPrint.document.write("</table>");
+      WinPrint.document.write(
+        "<table style='margin-top:20px;font-size: 0.6em;'>"
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' style='padding-right:60px'>อาหารเครื่องดื่ม</th><th width='100px'>${this.subtotal}</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' style='padding-right:60px'>ยอดรวมสุทธิ</th><th width='100px'>${Math.round(
+          this.thinkPrice(this.subtotal)
+        )}</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' style='padding-right:60px'>เงินสดรับมา</th><th width='100px'>${this.receive}</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' style='padding-right:60px'>เงินทอน</th><th width='100px'>${this.withdraw}</th></tr>`
+      );
+      WinPrint.document.write("</table>");
+
+      WinPrint.document.close();
+      WinPrint.focus();
+      WinPrint.print();
+      WinPrint.close();
     }
   },
   created() {
     this.improveCus();
+    //console.log(this.bank2);
   }
 };
 </script>

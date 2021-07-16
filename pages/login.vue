@@ -92,7 +92,7 @@ export default {
       };
 
       this.$auth.loginWith("local", payload).then(res => {
-        console.log(res);
+        //console.log(res);
         if (res.status === 200) {
           this.$router.push("/");
         } else {

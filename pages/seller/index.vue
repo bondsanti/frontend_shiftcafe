@@ -241,6 +241,7 @@
       @addCus="refreshUser"
       :idOrder="idForEditOrder"
       @clearOrder="clearOrder"
+      :bank2="bank"
     />
   </div>
 </template>
@@ -311,9 +312,9 @@ export default {
   },
   methods: {
     changCate(cate) {
-      console.log(cate);
+      //console.log(cate);
       this.product2 = this.products;
-      console.log(this.product2[0]);
+      //console.log(this.product2[0]);
       this.cateId = cate._id;
       this.product2 = this.product2.filter(
         pro => pro.ref_cate_id._id === this.cateId
@@ -438,7 +439,7 @@ export default {
       }
     },
     viewOrder(i) {
-      console.log(this.orderOnDatabase[i]);
+      // console.log(this.orderOnDatabase[i]);
       this.orders = this.orderOnDatabase[i].list_product;
       this.bill_name = this.orderOnDatabase[i].bill_name;
       this.type_order = this.orderOnDatabase[i].type_order;

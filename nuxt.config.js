@@ -59,7 +59,7 @@ module.exports = {
   ],
 
   axios: {
-    baseURL: 'http://localhost:5555/api'
+    baseURL: 'https://api.shift-cafe.com/api'
     //  http://localhost:5555/api
     // 'https://api.shift-cafe.com/api'
   },

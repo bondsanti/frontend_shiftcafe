@@ -3,11 +3,23 @@
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
       <v-row>
         <v-col cols="12" xs="12" sm="12" md="3">
-          <MenuProfile />
+          <MenuProfile :loadData="loadData" />
         </v-col>
 
         <v-col xs="12" sm="12" md="9" class="">
-          <v-card class="px-6 py-5 mb-5">
+          <v-row class="">
+            <v-col
+              v-for="(rows, dealers) in 3"
+              :key="dealers"
+              sm="12"
+              md="4"
+              cols="12"
+              class="mt-n2"
+            >
+              <v-card class="rounded-xl"> </v-card>
+            </v-col>
+          </v-row>
+          <v-card class="px-6 py-5 mb-5 mt-5">
             <div class="text-center">
               <h2 class="">รายการประวัติพอยท์ของฉัน</h2>
               <v-divider class="mt-3 mb-2"></v-divider>
@@ -29,6 +41,7 @@
 import MenuProfile from "~/components/memberLayout/MenuProfile";
 export default {
   layout: "layoutMember",
+
   data() {
     return {
       headers: [
@@ -50,88 +63,18 @@ export default {
           point: 10,
           pointTotal: 20,
           datetime: "13/7/2564 13:00"
-        },
-        {
-          orderid: "214041",
-          name: "ชาเขียว",
-          point: 10,
-          pointTotal: 30,
-          datetime: "25/7/2564 17:00"
-        },
-        {
-          orderid: "215001",
-          name: "ช้าวผัด",
-          point: 15,
-          pointTotal: 40,
-          datetime: "1/8/2564 11:35"
-        },
-        {
-          orderid: "215010",
-          name: "อเมริการโน",
-          point: 10,
-          pointTotal: 50,
-          datetime: "11/8/2564 13:00"
-        },
-        {
-          orderid: "215055",
-          name: "อเมริการโน",
-          point: 10,
-          pointTotal: 60,
-          datetime: "19/8/2564 13:00"
-        },
-        {
-          orderid: "215055",
-          name: "อเมริการโน",
-          point: 10,
-          pointTotal: 70,
-          datetime: "19/8/2564 13:00"
-        },
-        {
-          orderid: "215055",
-          name: "อเมริการโน",
-          point: 10,
-          pointTotal: 80,
-          datetime: "19/8/2564 13:00"
-        },
-        {
-          orderid: "215055",
-          name: "อเมริการโน",
-          point: 10,
-          pointTotal: 90,
-          datetime: "19/8/2564 13:00"
-        },
-        {
-          orderid: "215055",
-          name: "อเมริการโน",
-          point: 10,
-          pointTotal: 80,
-          datetime: "19/8/2564 13:00"
-        },
-        {
-          orderid: "215055",
-          name: "อเมริการโน",
-          point: 10,
-          pointTotal: 90,
-          datetime: "19/8/2564 13:00"
-        },
-        {
-          orderid: "215055",
-          name: "อเมริการโน",
-          point: 10,
-          pointTotal: 80,
-          datetime: "19/8/2564 13:00"
-        },
-        {
-          orderid: "215055",
-          name: "อเมริการโน",
-          point: 10,
-          pointTotal: 90,
-          datetime: "19/8/2564 13:00"
         }
       ]
     };
   },
-
+  async asyncData(context) {
+    const loadData = await context.$axios.$get(
+      "/customer/" + context.$auth.user._id
+    );
+    console.log(loadData);
+    //console.log(context.$auth.user);
+    return { loadData };
+  },
   components: {
     MenuProfile
   }

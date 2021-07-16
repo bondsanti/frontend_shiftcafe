@@ -3,15 +3,15 @@
     <div class="text-center mb-5">
       <v-img height="100%" src="classic.png">
         <v-row align="end">
-          <v-col align-self="start" class="pa-6" cols="4">
+          <v-col align-self="start" class="pa-6" cols="3">
             <v-avatar class="profile" size="100">
               <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
             </v-avatar>
           </v-col>
-          <v-col align-self="start" class="pa-5 mt-10 " cols="8">
-            <v-list-item-subtitle class="white--text text-uppercase">
-              Mr. Santi Chooprayoon</v-list-item-subtitle
-            >
+          <v-col align-self="start" class="pa-5 mt-10 " cols="9">
+            <h4 class="award1 pa-2 text-truncate text-uppercase" outlined tile>
+              {{ loadData.fname }} {{ loadData.lname }}
+            </h4>
           </v-col>
         </v-row>
       </v-img>
@@ -25,12 +25,12 @@
         color="amber"
         class="mt-5 rounded-xl"
       >
-        <strong>{{ Math.ceil(knowledge) }}%</strong>
+        <strong class="text-right">{{ Math.ceil(knowledge) }}%</strong>
       </v-progress-linear>
     </div>
-
-    <v-card class="mx-auto hidden-xs-and-up">
-      <v-list flat>
+    <!--d-none d-sm-flex d-md-flex d-lg-flex-->
+    <v-card class="mx-auto hidden-xs-and-down hidden-sm-and-down">
+      <v-list mandatory>
         <h4 class="text-center pa-2">
           สวัสดี คุณ : <span class="red_fix--text"> Santi</span>
         </h4>
@@ -57,11 +57,10 @@
         </v-list-item-group>
       </v-list>
     </v-card>
-
     <v-bottom-navigation
       color="error"
       fixed
-      class="hidden-lg-and-up"
+      class="hidden-lg-and-up hidden-md-and-up"
       shift
       small
     >
@@ -81,6 +80,10 @@
         <span>ประวัติ</span>
         <v-icon>mdi-history</v-icon>
       </v-btn>
+      <v-btn @click.native="logout">
+        <span>ออก</span>
+        <v-icon>mdi-logout</v-icon>
+      </v-btn>
     </v-bottom-navigation>
   </div>
 </template>
@@ -89,8 +92,10 @@
 export default {
   //components: { Footer },
   layout: "layoutMember",
+  props: ["loadData"],
   data() {
     return {
+      //loadData: [],
       selectedItem: 0,
       knowledge: 33,
       items: [
@@ -116,6 +121,7 @@ export default {
       }
     };
   },
+
   methods: {
     async logout() {
       await this.$auth.logout();
@@ -124,3 +130,33 @@ export default {
   }
 };
 </script>
+<style scoped>
+.award1 {
+  font-size: 25px;
+  letter-spacing: 0.15em;
+  line-height: 1.3;
+  color: #d4af37;
+  font-weight: 700;
+  background: -webkit-linear-gradient(
+    -90deg,
+    #d5ab61 10%,
+    #f8f4e5 52%,
+    #faf9f8 52%,
+    #d5ab61 80%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.border-gradient {
+  border: 10px solid;
+  border-image-slice: 1;
+  border-width: 5px;
+}
+.border-gradient-purple {
+  border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+}
+.border-gradient-green {
+  border-image-source: linear-gradient(to left, #00c853, #b2ff59);
+}
+</style>

@@ -3,7 +3,7 @@
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
       <v-row>
         <v-col cols="12" xs="12" sm="12" md="3">
-          <MenuProfile />
+          <MenuProfile :loadData="loadData" />
         </v-col>
         <v-col xs="12" sm="12" md="9" class="">
           <h2 class="text-left mb-2">คูปอง</h2>
@@ -130,6 +130,14 @@ export default {
         //return this.dealers;
       }
     }
+  },
+  async asyncData(context) {
+    const loadData = await context.$axios.$get(
+      "/customer/" + context.$auth.user._id
+    );
+    console.log(loadData);
+    //console.log(context.$auth.user);
+    return { loadData };
   },
   components: {
     MenuProfile

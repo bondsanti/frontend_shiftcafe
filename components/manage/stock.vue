@@ -12,7 +12,7 @@
               v-on="on"
               @click="addItem"
             >
-              <v-icon left> mdi-barley </v-icon> จัดการหน่วยนับ
+              <v-icon left> mdi-fridge-industrial-outline </v-icon> จัดการstock
             </v-btn>
           </template>
         </v-dialog>
@@ -42,13 +42,13 @@
         </template>
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
+              <v-form v-model="valid" ref="form">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
-                  ><v-icon left> mdi-barley </v-icon> {{ formTitle }}</span
+                  ><v-icon left> mdi-fridge-industrial-outline </v-icon> {{ formTitle }}</span
                 >
               </v-card-title>
-
               <v-card-text>
                 <v-container>
                   <v-row>
@@ -62,6 +62,9 @@
                         item-value="_id"
                         :items="productitme.flat()"
                         v-model="stockitme.ref_pro_id"
+                         :rules="requiredRules"
+                        
+                        required
                       ></v-select>
                     </v-col>
                     <v-col cols="12" md="6" class="mt-n7">
@@ -69,7 +72,9 @@
                         outlined
                         label="จำนวลอาหารที่พร้อมขาย"
                         v-model="stockitme.qty_max"
+                        :rules="nameRules"
                         required
+                        type="numbar"
                         color="#1D1D1D"
                       ></v-text-field>
                     </v-col>
@@ -78,6 +83,7 @@
                         outlined
                         label="ให้แจ้งเตื่อนเมื่่อใกล้หมด"
                         v-model="stockitme.qty_min"
+                        :rules="nameRules"
                         required
                         color="#1D1D1D"
                       ></v-text-field>
@@ -94,14 +100,15 @@
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" @click="save">
+                <v-btn class="ma-1" color="info" @click="save" :disabled="!valid">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-barley
+                     mdi-content-save 
                   </v-icon>
                   เพิ่มข้อมูล
                 </v-btn>
               </v-card-actions>
             </v-card>
+            </v-form>
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="270px">
             <v-card>
@@ -122,12 +129,13 @@
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
+            
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-              mdi-barley
+             mdi-pencil
             </v-icon>
             แก้ไข
           </v-btn>
@@ -138,11 +146,27 @@
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-              mdi-barley-off
+               mdi-delete
             </v-icon>
             ลบ
           </v-btn>
+          
+         </template>
+            <template v-slot:[`item.datetime`]="{ item }">
+          <span>{{ item.datetime | moment }}</span>
         </template>
+         <template v-slot:[`item.qty_min`]="{ item }">
+          <v-chip :color="getColor(item.qty_min)" dark small>
+            {{ item.qty_min }}
+          </v-chip>
+        </template>
+
+         <template v-slot:[`item.qty_max`]="{ item }">
+          <v-chip :color="getColormax(item.qty_max)" dark small>
+            {{ item.qty_max }}
+          </v-chip>
+        </template>
+
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -154,11 +178,14 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
     search: "",
+    select: null,
+     valid: true,
     productitme: [],
     headers: [
       { text: "ชื่อสิ้นค้า", align: "start", value: "ref_pro_id" },
@@ -177,12 +204,25 @@ export default {
       ref_emp_id: ""
     },
     type: null,
-    deleteId: null
+    deleteId: null,
+    requiredRules: [(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!"],
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    nameRules: [
+        v => !!v || 'โปรใส่เป็นตัวเลข',
+        v => (v && v.length <= 3) || 'โปรดกรองข้อมูล',
+      ],
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "จัดการstock " : "จัดการstock ";
+      return this.editedIndex === -1 ? "จัดการข้อมมูล " : "จัดการข้อมูล ";
+    }
+  },
+    filters: {
+    moment: function(date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("D/MM/YY");
     }
   },
   watch: {
@@ -261,8 +301,21 @@ export default {
         this.productitme.push(prod);
       }
     },
+     getColor(qty_min) {
+      if (qty_min > "20" ) return "green";
+       else if (qty_min > "10") return 'orange'
+       else return 'red'
+
+    },
+        getColormax(qty_max) {
+      if (qty_max > "99" ) return "green";
+       else if (qty_max >= "19") return 'orange'
+       else return 'red'
+
+    },
+    
     save() {
-      
+       this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
         

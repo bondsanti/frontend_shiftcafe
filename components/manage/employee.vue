@@ -308,6 +308,7 @@ export default {
       this.type = "edit";
       this.employeeitme = item;
       this.dialog = true;
+      this.improverole;
     },
     addItem() {
       this.type = "add";
@@ -358,7 +359,7 @@ export default {
       } else {
         this.loading = true;
         this.$axios
-          .$put("/employee/" + this.employeeitme._id, this.employeeitme)
+          .$put("/employee/" + this.employeeitme._id, this.employeeitme ,this.improverole )
           .then(() => {
             this.close();
           })

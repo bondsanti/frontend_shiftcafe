@@ -12,7 +12,7 @@
               v-on="on"
               @click="addItem"
             >
-              <v-icon left> mdi-account-outline  </v-icon> จัดการสมาชิก
+              <v-icon left> mdi-account-plus </v-icon> ลงทะเบียนสมาชิก
             </v-btn>
           </template>
         </v-dialog>
@@ -26,28 +26,34 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="customer" :search="search" :items-per-page="5">
-           <template v-slot:[`item.img`]="{}">
-            <img
-              src="@/assets/img/photo-2.jpg"
-              class="mt-2 mb-2 rounded-circle"
-              aspect-ratio="1"
-              style="width: 50px; height: 50px"
-            />
-          </template>
+      <v-data-table
+        :headers="headers"
+        :items="customer"
+        :search="search"
+        :items-per-page="5"
+      >
+        <template v-slot:[`item.img`]="{}">
+          <img
+            src="@/assets/img/photo-2.jpg"
+            class="mt-2 mb-2 rounded-circle"
+            aspect-ratio="1"
+            style="width: 50px; height: 50px"
+          />
+        </template>
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
-                  ><v-icon left> mdi-clipboard-account-outline  </v-icon> จัดการสมาชิก(เพิ่มข้อมูล / แก้ไขข้อมูล)</span
+                  ><v-icon left> mdi-clipboard-account-outline </v-icon>
+                  จัดการสมาชิก(เพิ่มข้อมูล / แก้ไขข้อมูล)</span
                 >
               </v-card-title>
 
               <v-card-text>
                 <v-form v-model="valid" ref="form">
-                <v-container>
-                   <v-row>
+                  <v-container>
+                    <v-row>
                       <v-col cols="12">
                         <v-select
                           label="คำนำหน้า"
@@ -78,7 +84,7 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-          
+
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.birthday"
@@ -90,7 +96,7 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                         <!-- <v-col cols="12" sm="6">
+                      <!-- <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.idcard"
                           :rules="numberRules"
@@ -105,9 +111,9 @@
                         <v-text-field
                           v-model="customerItme.tel"
                           :rules="numberRules"
-                          label="เบอร์โทรติดต่อ" 
+                          label="เบอร์โทรติดต่อ"
                           outlined
-                           type="number"
+                          type="number"
                           required
                           color="#1D1D1D"
                         ></v-text-field>
@@ -118,7 +124,6 @@
                           label="อีเมล"
                           :rules="emailRules"
                           outlined
-                       
                           required
                           color="#1D1D1D"
                         ></v-text-field>
@@ -133,19 +138,19 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                       <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6">
                         <v-select
                           label="ระดับ"
                           outlined
                           color="#1D1D1D"
-                          
-                           v-model="customerItme.ref_level_id"
-                          :items="ref_level_id"
+                          item-text="name"
+                          item-value="_id"
+                          v-model="customerItme.ref_level_id"
+                          :items="level"
                           :rules="requiredRules"
                         ></v-select>
-                        
                       </v-col>
-                            <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.point"
                           :rules="numberRules"
@@ -153,29 +158,33 @@
                           label="แต้ม"
                           outlined
                           required
-                           value="10.00"
+                          value="10.00"
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
                     </v-row>
-                </v-container>
+                  </v-container>
                 </v-form>
               </v-card-text>
 
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-food-off
+                    mdi-close-box
                   </v-icon>
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" :disabled="!valid" @click="save">
+                <v-btn
+                  class="ma-1"
+                  color="info"
+                  :disabled="!valid"
+                  @click="save"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
-
-                    mdi-food-fork-drink
+                    mdi-content-save
                   </v-icon>
-                  เพิ่มข้อมูล
+                  บันทึกข้อมูลลูกค้า
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -204,9 +213,9 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-             mdi-food-fork-drink
+              mdi-pencil-plus
             </v-icon>
-            แก้ไข
+            แก้ไขมูลสมาชิก
           </v-btn>
           <v-btn
             rounded-lx
@@ -215,14 +224,20 @@
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-              mdi-food-off
+              mdi-delete-forever
             </v-icon>
-            ลบ
+            ลบข้อมูลสมาชิก
           </v-btn>
+        </template>
+          <template v-slot:[`item.fname`]="{ item }">
+          {{ item.pname }} - {{ item.fname }} - {{ item.lname }}
+        </template>
+        <template v-slot:[`item.birthday`]="{ item }">
+          <span>{{ item.birthday | moment }}</span>
         </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
-            Reset
+            Reset(ข้อมูลไม่โหลด)
           </v-btn>
         </template>
       </v-data-table>
@@ -231,51 +246,60 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
-     valid: true,
+    valid: true,
     search: "",
     pnamesec: ["นาย", "นาง", "นางสาว"],
-    ref_level_id:[{text: "classic",value:"60e439b7c7d6ae35548c7b62"},
-                  {text: "silver",value:"60e43a3dc7d6ae35548c7b66"},
-                  {text: "gold",value:"60f016e0cd19bf679382204c"},
-                  {text: "platinum",value:"60e5736b2254f6410c719874"}],
+    level: [],
     headers: [
       { text: "ภาพ", sortable: false, value: "img" },
-      { text: "คำนำหน้า", align: "start", value: "pname" },
-      { text: "ชื่อ", align: "start", value: "fname" },
-      { text: "นามสกุล", align: "start", value: "lname"},
-      { text: "วันเกิด", align: "start", value: "birthday"},
-      { text: "เบอร์โทร", align: "start", value: "tel"},    
-      { text: "อีเมล์", align: "start", value: "email"},
-      { text: "ที่อยู่", align: "start", value: "address"},
-      { text: "ระดับ", align: "start", value: "ref_level_id.level_name"},
-      { text: "แต้ม", align: "start", value: "point"},
+       { text: "ชื่อสมาชิก", align: "start", value: "fname" },
+     // { text: "ชื่อ", align: "start", value: "fname" },
+      //{ text: "นามสกุล", align: "start", value: "lname" },
+      { text: "วันเกิด", align: "start", value: "birthday" },
+      { text: "เบอร์โทร", align: "start", value: "tel" },
+      { text: "อีเมล์", align: "start", value: "email" },
+      { text: "ที่อยู่", align: "start", value: "address" },
+      { text: "ระดับ", align: "start", value: "ref_level_id.level_name" },
+      { text: "แต้ม", align: "start", value: "point" },
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
-    customerItme: { _id: "", pname: "" ,fname:"",lname:"",birthday:"",tel:" ",email:"",address:"",ref_level_id:"",point:"0"},
+    customerItme: {
+      _id: "",
+      pname: "",
+      fname: "",
+      lname: "",
+      birthday: "",
+      tel: " ",
+      email: "",
+      address: "",
+      ref_level_id: "",
+      point: "0"
+    },
     type: null,
     deleteId: null,
-    requiredRules: [(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!"],
+    requiredRules: [v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!"],
     emailRules: [
-			(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
-			(v) =>
-				!v ||
-				/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-				"โปรใส่อีเมลให้ถูกต้อง"
-		],
+      v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+      v =>
+        !v ||
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+        "โปรใส่อีเมลให้ถูกต้อง"
+    ],
     numberRules: [
-			(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
-			(v) => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
-		]
+      v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+      v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
+    ]
   }),
   computed: {
     formTitle() {
-    return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
+      return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
     }
   },
   watch: {
@@ -287,10 +311,21 @@ export default {
     }
   },
   created() {
-   
+    this.improveLvmb();
   },
-  
+
   methods: {
+    toBuddhistYear(moment, format) {
+      var christianYear = moment.format("YYYY");
+      var buddhishYear = (parseInt(christianYear) + 543).toString();
+      return moment
+        .format(
+          format
+            .replace("YYYY", buddhishYear)
+            .replace("YY", buddhishYear.substring(2, 4))
+        )
+        .replace(christianYear, buddhishYear);
+    },
     editItem(item) {
       this.type = "edit";
       this.customerItme = item;
@@ -298,7 +333,18 @@ export default {
     },
     addItem() {
       this.type = "add";
-      this.customerItme = { _id: "", pname: "" ,fname:"",lname:"",birthday:"",tel:" ",email:"",address:"",ref_level_id:"",point:"0" };
+      this.customerItme = {
+        _id: "",
+        pname: "",
+        fname: "",
+        lname: "",
+        birthday: "",
+        tel: " ",
+        email: "",
+        address: "",
+        ref_level_id: "",
+        point: "0"
+      };
       this.dialog = true;
     },
     deleteItem(item) {
@@ -315,23 +361,31 @@ export default {
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-      this.editedItem = Object.assign({}, this.defaultItem);
-      this.editedIndex = -1;
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
       });
     },
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
-      this.editedItem = Object.assign({}, this.defaultItem);
-      this.editedIndex = -1;
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
       });
     },
-
+    improveLvmb() {
+      for (let i in this.levelmember) {
+        let Lvmb = {
+          _id: this.levelmember[i]._id,
+          name: this.levelmember[i].level_name
+        };
+        this.level.push(Lvmb);
+      }
+    },
     save() {
-        this.$refs.form.validate();
-        if (this.type === "add") {
+      this.$refs.form.validate();
+      if (this.type === "add") {
         this.loading = true;
-     
+
         this.$emit("addCustomer", { ...this.customerItme });
         this.close();
       } else {
@@ -347,6 +401,14 @@ export default {
       }
     }
   },
-  props:['customer']
+  filters: {
+    moment: function(date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("Do MMMM YYYY");
+    }
+  },
+  props: ["customer", "levelmember"]
 };
 </script>

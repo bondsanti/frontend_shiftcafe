@@ -57,6 +57,11 @@ export default {
           title: "หน้าหลัก",
           to: "/manage/"
         },
+          {
+          icon: "mdi-account-plus ",
+          title: "ลงทะเบียนสมาชิก",
+          to: "/manage/register"
+        },
         {
           icon: "mdi-fridge-industrial-outline",
           title: "จัดการstock",

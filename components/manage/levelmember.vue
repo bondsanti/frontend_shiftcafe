@@ -32,7 +32,7 @@
             src="@/assets/img/lv-4.jpeg"
             class="mt-2 mb-2 rounded-lg"
             aspect-ratio="1"
-            style="width: 180px; height: 120px"
+            style="width: 100px; height: 70px"
           />
         </template>
         <template v-slot:top>

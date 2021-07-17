@@ -5,6 +5,7 @@
 <script>
 import category from "@/components/manage/category.vue";
 export default {
+middleware: ["auth", "check"],
   async asyncData(context) {
     const category = await context.$axios.$get("/category");
     //console.log(unit);

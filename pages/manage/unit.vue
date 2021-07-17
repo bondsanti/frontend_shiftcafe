@@ -5,6 +5,7 @@
 <script>
 import unit from "@/components/manage/unit.vue";
 export default {
+  middleware: ["auth", "check"],  
   async asyncData(context) {
     const unit = await context.$axios.$get("/unit");
     //console.log(unit);

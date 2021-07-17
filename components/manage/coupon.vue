@@ -170,7 +170,9 @@
             ลบ
           </v-btn>
         </template>
-      
+              <template v-slot:[`item.exp`]="{ item }">
+          <span>{{ item.exp | moment }}</span>
+        </template>
 
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
@@ -183,6 +185,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data: () => ({
     dialog: false,
@@ -209,6 +212,13 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
+    }
+  },
+   filters: {
+    moment: function(date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("D/MM/YY");
     }
   },
   watch: {

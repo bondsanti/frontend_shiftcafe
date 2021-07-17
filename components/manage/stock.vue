@@ -95,7 +95,7 @@
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-barley-off
+                    mdi-close-box
                   </v-icon>
                   ยกเลิก
                 </v-btn>
@@ -119,11 +119,11 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-barley-off </v-icon
+                    mdi-close-box 	 </v-icon
                   >ยกเลิก</v-btn
                 >
                 <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
-                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
+                  <v-icon aria-hidden="false" class="mx-4"> mdi-delete-forever </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -135,9 +135,9 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-             mdi-pencil
+              mdi-pencil-plus 
             </v-icon>
-            แก้ไข
+            แก้ไขข้อมูลSTOCK
           </v-btn>
           <v-btn
             rounded-lx
@@ -146,9 +146,9 @@
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-               mdi-delete
+               mdi-delete-forever
             </v-icon>
-            ลบ
+            ลบข้อมูลSTOCK
           </v-btn>
           
          </template>

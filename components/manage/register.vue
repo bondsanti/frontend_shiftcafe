@@ -95,18 +95,7 @@
                           required
                           color="#1D1D1D"
                         ></v-text-field>
-                      </v-col>
-                      <!-- <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="customerItme.idcard"
-                          :rules="numberRules"
-                          type="number"
-                          label="เลขบัตรประจำตัวประชาชน"
-                          outlined
-                          required
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col> -->
+                      </v-col>             
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.tel"
@@ -208,7 +197,7 @@
                   >ยกเลิก</v-btn
                 >
                 <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
-                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
+                  <v-icon aria-hidden="false" class="mx-4"> mdi-delete-foreve </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -239,6 +228,13 @@
             ลบข้อมูลสมาชิก
           </v-btn>
         </template>
+
+        <template v-slot:[`item.birthday`]="{ item }">
+          <span>{{ item.birthday | moment }}</span>
+        </template>
+        <template v-slot:[`item.fname`]="{ item }">
+          {{ item.pname }} - {{ item.fname }} - {{ item.lname }}
+        </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset(ข้อมูลไม่โหลด)
@@ -250,6 +246,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 export default {
   data: () => ({
     dialog: false,
@@ -261,9 +258,10 @@ export default {
     level: [],
     headers: [
       { text: "ภาพ", sortable: false, value: "img" },
-      { text: "คำนำหน้า", align: "start", value: "pname" },
-      { text: "ชื่อ", align: "start", value: "fname" },
-      { text: "นามสกุล", align: "start", value: "lname" },
+      // { text: "คำนำหน้า", align: "start", value: "pname" },
+      // { text: "ชื่อ", align: "start", value: "fname" },
+      // { text: "นามสกุล", align: "start", value: "lname" },
+      { text: "ชื่อสมาชิก", align: "start", value: "fname" },
       { text: "วันเกิด", align: "start", value: "birthday" },
       { text: "เบอร์โทร", align: "start", value: "tel" },
       { text: "อีเมล์", align: "start", value: "email" },
@@ -318,6 +316,19 @@ export default {
   },
 
   methods: {
+      toBuddhistYear(moment, format) {
+      var christianYear = moment.format('YYYY')
+      var buddhishYear = (parseInt(christianYear) + 543).toString()
+      return moment
+        .format(
+          format          
+            .replace('YYYY', buddhishYear)
+            .replace('YY', buddhishYear.substring(2, 4))
+        
+             
+        )
+        .replace(monthNamesThai ,christianYear, buddhishYear)
+    },  
     editItem(item) {
       this.type = "edit";
       this.customerItme = item;
@@ -392,6 +403,14 @@ export default {
           });
       }
     }
+  },
+   filters: {
+    moment: function (date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+
+      var strdate = moment(date).add(543, 'years')
+      return moment(strdate).format('Do MMMM YYYY')
+    },
   },
   props: ["customer", "levelmember"]
 };

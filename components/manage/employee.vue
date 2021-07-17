@@ -12,7 +12,7 @@
               v-on="on"
               @click="addItem"
             >
-              <v-icon left> mdi-account-outline  </v-icon> จัดการสมาชิก
+              <v-icon left> mdi-badge-account-outline  </v-icon> จัดการพนักงาน
             </v-btn>
           </template>
         </v-dialog>
@@ -26,28 +26,34 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="employee" :search="search" :items-per-page="30">
-           <template v-slot:[`item.img`]="{}">
-            <img
-              src="@/assets/img/photo-2.jpg"
-              class="mt-2 mb-2 rounded-circle"
-              aspect-ratio="1"
-              style="width: 60px; height: 60px"
-            />
-          </template>
+      <v-data-table
+        :headers="headers"
+        :items="employee"
+        :search="search"
+        :items-per-page="30"
+      >
+        <template v-slot:[`item.img`]="{}">
+          <img
+            src="@/assets/img/photo-5.jpg"
+            class="mt-2 mb-2 rounded-circle"
+            aspect-ratio="1"
+            style="width: 60px; height: 60px"
+          />
+        </template>
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="800px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
-                  ><v-icon left> mdi-clipboard-account-outline  </v-icon> จัดการสมาชิก(เพิ่มข้อมูล / แก้ไขข้อมูล)</span
+                  ><v-icon left> mdi-badge-account-outline </v-icon>
+                  ข้อมูลพนักงาน</span
                 >
               </v-card-title>
 
               <v-card-text>
                 <v-form v-model="valid" ref="form">
-                <v-container>
-                   <v-row>
+                  <v-container>
+                    <v-row>
                       <v-col cols="12">
                         <v-select
                           label="คำนำหน้า"
@@ -58,7 +64,7 @@
                           :rules="requiredRules"
                         ></v-select>
                       </v-col>
-                            <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="employeeitme.username"
                           :rules="requiredRules"
@@ -80,7 +86,7 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-          
+
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="employeeitme.fname"
@@ -101,7 +107,7 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-          
+
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="employeeitme.birthday"
@@ -113,7 +119,7 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                          <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="employeeitme.idcard"
                           :rules="numberRules"
@@ -123,14 +129,14 @@
                           required
                           color="#1D1D1D"
                         ></v-text-field>
-                      </v-col> 
+                      </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="employeeitme.tel"
                           :rules="numberRules"
-                          label="เบอร์โทรติดต่อ" 
+                          label="เบอร์โทรติดต่อ"
                           outlined
-                           type="number"
+                          type="number"
                           required
                           color="#1D1D1D"
                         ></v-text-field>
@@ -141,7 +147,6 @@
                           label="อีเมล"
                           :rules="emailRules"
                           outlined
-                       
                           required
                           color="#1D1D1D"
                         ></v-text-field>
@@ -156,37 +161,41 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                       <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6">
                         <v-select
                           label="ตำแหน่งงาน"
                           outlined
                           color="#1D1D1D"
                           item-text="name"
-                        item-value="_id"
+                          item-value="_id"
                           :items="roleitme.flat()"
                           v-model="employeeitme.ref_id_role"
                           :rules="requiredRules"
                         ></v-select>
                       </v-col>
                     </v-row>
-                </v-container>
+                  </v-container>
                 </v-form>
               </v-card-text>
 
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-food-off
+                     mdi-close-box 	
                   </v-icon>
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" :disabled="!valid" @click="save">
+                <v-btn
+                  class="ma-1"
+                  color="info"
+                  :disabled="!valid"
+                  @click="save"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
-
-                    mdi-food-fork-drink
+                     mdi-content-save
                   </v-icon>
-                  เพิ่มข้อมูล
+                  บันทึกข้อมูลพนักงาน
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -200,11 +209,11 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-food-off </v-icon
+                     mdi-close-box f </v-icon
                   >ยกเลิก</v-btn
                 >
                 <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
-                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
+                  <v-icon aria-hidden="false" class="mx-4"> mdi-delete-forever</v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -215,9 +224,9 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-             mdi-food-fork-drink
+               mdi-pencil-plus 
             </v-icon>
-            แก้ไข
+            แก้ไขข้อมูลพนักงาน
           </v-btn>
           <v-btn
             rounded-lx
@@ -226,10 +235,16 @@
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-              mdi-food-off
+               mdi-delete-forever
             </v-icon>
-            ลบ
+            ลบข้อมูลพนักงาน
           </v-btn>
+        </template>
+        <template v-slot:[`item.fname`]="{ item }">
+          {{ item.pname }} - {{ item.fname }} - {{ item.lname }}
+        </template>
+        <template v-slot:[`item.birthday`]="{ item }">
+          <span>{{ item.birthday | moment }}</span>
         </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
@@ -242,6 +257,7 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data: () => ({
     dialog: false,
@@ -249,46 +265,55 @@ export default {
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valid: true,
     search: "",
-    roleitme:[],
-    pnamesec: ["นาย", "นาง", "นางสาว"],
-    ref_level_id:[{text: "classic",value:"60e439b7c7d6ae35548c7b62"},
-                  {text: "silver",value:"60e43a3dc7d6ae35548c7b66"},
-                  {text: "gold",value:"60f016e0cd19bf679382204c"},
-                  {text: "platinum",value:"60e5736b2254f6410c719874"}],
+    roleitme: [],
+    pnamesec: ["นาย", "นาง", "นางสาว", "Guest"],
     headers: [
       { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อใช้เข้าระบบ", align: "start", value: "username" },
       { text: "ตำแหน่ง", align: "start", value: "ref_id_role.position" },
       { text: "เลขบัตรประชาชน", align: "start", value: "idcard" },
-      { text: "คำนำหน้า", align: "start", value: "pname" },
-      { text: "ชื่อ", align: "start", value: "fname" },
-      { text: "นามสกุล", align: "start", value: "lname"},
-      { text: "วันเกิด", align: "start", value: "birthday"},
-      { text: "เบอร์โทร", align: "start", value: "tel"},    
-      { text: "อีเมล์", align: "start", value: "email"},
-      { text: "ที่อยู่", align: "start", value: "address"},
-      { text: "Actions", value: "actions", sortable: false }
+      // { text: "คำนำหน้า", align: "start", value: "pname" },
+      { text: "ชื่อสมาชิก", align: "start", value: "fname" },
+      // { text: "นามสกุล", align: "start", value: "lname"},
+      { text: "วันเกิด", align: "start", value: "birthday" },
+      { text: "เบอร์โทร", align: "start", value: "tel" },
+      { text: "อีเมล์", align: "start", value: "email" },
+      { text: "ที่อยู่", align: "start", value: "address" },
+      { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
-    employeeitme: { _id: "" ,username:"",password:"", pname: "" ,ref_id_role:"" ,idcard:" ",fname:"",lname:"",birthday:"",tel:" ",email:"",address:""},
+    employeeitme: {
+      _id: "",
+      username: "",
+      password: "",
+      pname: "",
+      ref_id_role: "",
+      idcard: " ",
+      fname: "",
+      lname: "",
+      birthday: "",
+      tel: " ",
+      email: "",
+      address: ""
+    },
     type: null,
     deleteId: null,
-    requiredRules: [(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!"],
+    requiredRules: [v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!"],
     emailRules: [
-			(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
-			(v) =>
-				!v ||
-				/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-				"โปรใส่อีเมลให้ถูกต้อง"
-		],
+      v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+      v =>
+        !v ||
+        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+        "โปรใส่อีเมลให้ถูกต้อง"
+    ],
     numberRules: [
-			(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
-			(v) => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
-		]
+      v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+      v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
+    ]
   }),
   computed: {
     formTitle() {
-    return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
+      return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
     }
   },
   watch: {
@@ -300,10 +325,21 @@ export default {
     }
   },
   created() {
-  this.improverole();
+    this.improverole();
   },
-  
+
   methods: {
+    toBuddhistYear(moment, format) {
+      var christianYear = moment.format("YYYY");
+      var buddhishYear = (parseInt(christianYear) + 543).toString();
+      return moment
+        .format(
+          format
+            .replace("YYYY", buddhishYear)
+            .replace("YY", buddhishYear.substring(2, 4))
+        )
+        .replace(christianYear, buddhishYear);
+    },
     editItem(item) {
       this.type = "edit";
       this.employeeitme = item;
@@ -312,7 +348,20 @@ export default {
     },
     addItem() {
       this.type = "add";
-      this.employeeitme = { _id: "" ,username:"",password:"", pname: "" ,ref_id_role:"" ,idcard:" ",fname:"",lname:"",birthday:"",tel:" ",email:"",address:"" };
+      this.employeeitme = {
+        _id: "",
+        username: "",
+        password: "",
+        pname: "",
+        ref_id_role: "",
+        idcard: " ",
+        fname: "",
+        lname: "",
+        birthday: "",
+        tel: " ",
+        email: "",
+        address: ""
+      };
       this.dialog = true;
     },
     deleteItem(item) {
@@ -329,18 +378,18 @@ export default {
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-      this.editedItem = Object.assign({}, this.defaultItem);
-      this.editedIndex = -1;
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
       });
     },
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
-      this.editedItem = Object.assign({}, this.defaultItem);
-      this.editedIndex = -1;
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
       });
     },
-  improverole() {
+    improverole() {
       for (let i in this.role) {
         let roles = {
           _id: this.role[i]._id,
@@ -349,17 +398,22 @@ export default {
         this.roleitme.push(roles);
       }
     },
+
     save() {
-        this.$refs.form.validate();
-        if (this.type === "add") {
+      this.$refs.form.validate();
+      if (this.type === "add") {
         this.loading = true;
-     
+
         this.$emit("addEmployee", { ...this.employeeitme });
         this.close();
       } else {
         this.loading = true;
         this.$axios
-          .$put("/employee/" + this.employeeitme._id, this.employeeitme ,this.improverole )
+          .$put(
+            "/employee/" + this.employeeitme._id,
+            this.employeeitme,
+            this.improverole
+          )
           .then(() => {
             this.close();
           })
@@ -369,6 +423,14 @@ export default {
       }
     }
   },
-  props:['employee','role']
+  filters: {
+    moment: function(date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("Do MMMM YYYY");
+    }
+  },
+  props: ["employee", "role"]
 };
 </script>

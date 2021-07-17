@@ -315,61 +315,21 @@
         </v-card>
       </v-dialog>
     </v-row>
-    <v-row justify="center">
-      <v-dialog v-model="checkout" persistent max-width="600px">
-        <v-card>
-          <v-card-title>
-            <span class="text-h5">Check Out</span>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <v-text-field
-                    label="รับเงินมา"
-                    autofocus
-                    outlined
-                    v-model="receive"
-                    @keypress.enter="calMoney"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field
-                    label="เงินทอน"
-                    outlined
-                    v-model="withdraw"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row class="justify-center" v-if="error2">
-                <v-alert
-                  color="red"
-                  dark
-                  icon="mdi-alert-circle"
-                  border="left"
-                  prominent
-                >
-                  ยอดเงินที่รับมาไม่พอ
-                </v-alert>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="checkout = false">
-              Close
-            </v-btn>
-            <v-btn color="blue darken-1" text @click="save">
-              Save
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-row>
+    <Calculator
+      :checkout="checkout"
+      :netPrice="thinkPrice(subtotal)"
+      @closeCheckout="checkout = false"
+      @save="save"
+      :bill="bill"
+    />
   </div>
 </template>
 <script>
+import Calculator from "@/components/seller/Calculator.vue";
 export default {
+  components: {
+    Calculator
+  },
   props: ["orders", "subtotal", "dialog", "customers", "idOrder", "bank2"],
   data: () => ({
     items: ["นาย", "นาง", "น.ส.", "ด.ช.", "ด.ญ"],
@@ -413,10 +373,9 @@ export default {
     vat: "1",
     coupon: 0,
     checkout: false,
-    receive: "",
-    withdraw: "",
     bank_id: null,
-    tax: 0
+    tax: 0,
+    bill: false
   }),
   methods: {
     closeDialog() {
@@ -478,15 +437,18 @@ export default {
         }
       }
     },
-    async save() {
-      //this.$refs.form2.validate();
-      //this.checkout = true;
+    async save(money) {
       const prePayment = this.checkTypePayment();
       //console.log({ ...prePayment, ref_order_id: "11111111" });
       if (this.idOrder !== null) {
-        const newPayment = { ...prePayment, ref_order_id: this.idOrder };
+        const newPayment = {
+          ...prePayment,
+          ref_order_id: this.idOrder,
+          receive: money.receive,
+          withdraw: money.withdraw
+        };
         this.$axios.$post("/payment", newPayment).then(() => {
-          this.checkout = false;
+          this.bill = true;
         });
         console.log(newPayment);
       } else {
@@ -499,28 +461,21 @@ export default {
         };
         const order = await this.$axios.$post("/order", newOrder);
         //console.log(order.data);
-        const newPayment = { ...prePayment, ref_order_id: order.data._id };
+        const newPayment = {
+          ...prePayment,
+          ref_order_id: order.data._id,
+          receive: money.receive,
+          withdraw: money.withdraw
+        };
         this.$axios.$post("/payment", newPayment).then(() => {
-          this.checkout = false;
+          this.bill = true;
         });
         console.log(newPayment);
       }
-      this.$emit("closeDialog");
+      // this.$emit("closeDialog");
       this.$emit("clearOrder");
-      this.receive = "";
-      this.withdraw = "";
     },
-    calMoney() {
-      const netPrice = Math.floor(this.thinkPrice(this.subtotal));
 
-      if (this.receive < netPrice) {
-        this.error2 = true;
-        this.withdraw = "";
-      } else {
-        this.withdraw = parseInt(this.receive) - netPrice;
-        this.error2 = false;
-      }
-    },
     async checkDiscountType() {
       if (this.discount_type === "member" && this.cus_type === "member") {
         const res = await this.$axios.$get("/customer/" + this.cusId);
@@ -536,8 +491,7 @@ export default {
         const newPayment1 = {
           ref_cus_id: this.cusId,
           type_payment: this.bank,
-          receive_money: this.receive,
-          withdraw_money: this.withdraw,
+
           type_order: this.type_order,
           total_price: this.subtotal,
           discount_price: Math.round((this.subtotal * this.coupon) / 100),
@@ -556,8 +510,7 @@ export default {
           ref_cus_id: this.cusId,
           ref_bank_id: this.bank_id,
           type_payment: this.bank,
-          receive_money: this.receive,
-          withdraw_money: this.withdraw,
+
           type_order: this.type_order,
           total_price: this.subtotal,
           discount_price: Math.round((this.subtotal * this.coupon) / 100),

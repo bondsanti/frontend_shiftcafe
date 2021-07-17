@@ -417,7 +417,7 @@ export default {
       }
     },
     async confirmOrder() {
-      if (this.bill_name === null && this.orders.length > 1) {
+      if (this.bill_name === null && this.orders.length >= 1) {
         //this.$refs.form.validate();
         this.orderDl = true;
       } else if (this.bill_name !== null || this.orders.length === 0) {

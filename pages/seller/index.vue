@@ -162,7 +162,7 @@
       </v-col>
     </v-row>
     <v-row class="justify-center">
-      <v-dialog v-model="orderDl" max-width="500px">
+      <v-dialog v-model="orderDl" max-width="500px" persistent>
         <v-card>
           <v-form v-model="valid" ref="form">
             <v-card-title>
@@ -219,7 +219,7 @@
                     >mdi-eye</v-icon
                   ></v-btn
                 >
-                <v-btn small fab class="ml-3"
+                <v-btn small fab class="ml-3" @click="printorder(i)"
                   ><v-icon color="teal">mdi-printer</v-icon></v-btn
                 >
                 <v-btn small fab class="ml-3" @click="deleteOrderOnDatabase(i)"
@@ -264,7 +264,7 @@ export default {
     ] = await Promise.all([
       context.$axios.$get("/product"),
       context.$axios.$get("/category"),
-      context.$axios.$get("/customer"),
+      context.$axios.$get("/customer2"),
       context.$axios.$get("/order-hold"),
       context.$axios.$get("/bank")
     ]);
@@ -394,7 +394,7 @@ export default {
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     async refreshUser() {
-      this.customers = await this.$axios.$get("/customer");
+      this.customers = await this.$axios.$get("/customer2");
       this.orderOnDatabase = await this.$axios.$get("/order-hold");
     },
     async addOrderToDatabase() {
@@ -451,11 +451,91 @@ export default {
       this.$axios.$delete("/order/" + this.orderOnDatabase[i]._id).then(() => {
         this.orderOnDatabase.splice(i, 1);
       });
+    },
+    printorder(i) {
+      this.bill_name = this.orderOnDatabase[i].bill_name;
+      var WinPrint = window.open(
+        "",
+        "",
+        "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
+      );
+      WinPrint.document.write("<table>");
+
+      WinPrint.document.write(
+        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='50px' height='50px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
+      );
+
+      WinPrint.document.write("</table>");
+
+      WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
+
+      WinPrint.document.write(
+        "<tr><th align='left'>บริษัท ชิฟท์ เรสเตอรองต์ จำกัด</th><th style='padding-left:60px'></th></tr>"
+      );
+      WinPrint.document.write(
+        "<tr><th align='left'>ที่อยู่ : 89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท</th><th style='padding-left:60px'></th></tr>"
+      );
+      WinPrint.document.write(
+        "<tr><th align='left'>อำเภอเมือง จังหวัดลำปาง 52000</th><th style='padding-left:60px'></th></tr>"
+      );
+      WinPrint.document.write(
+        "<tr><th align='left'>เบอร์มือถือ : 0917961816</th><th style='padding-left:60px'></th></tr>"
+      );
+      WinPrint.document.write(
+        `<tr><th align='left'>ชื่อบิล : ${this.bill_name}</th><th style='padding-left:60px'></th></tr>`
+      );
+      WinPrint.document.write(
+        "<tr><th align='center'>***สำหรับเรียกเก็บเงินลูกค้า***</th><th style='padding-left:60px'></th></tr>"
+      );
+
+      WinPrint.document.write("</table>");
+
+      WinPrint.document.write(
+        "<table   style='width: 100%;font-size: 0.5em;'>"
+      );
+
+      WinPrint.document.write(
+        "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th><th style='border-bottom: thin dotted;border-top: thin dotted' colspan='2' width='100px'>ราคา</th></tr>"
+      );
+      let subTotal = 0;
+      let list = this.orderOnDatabase[i].list_product;
+
+      for (let j in list) {
+        subTotal = subTotal + parseInt(list[j].price);
+        WinPrint.document.write("<tr style='border-bottom: thin solid'>");
+        WinPrint.document.write(
+          `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
+            list[j].name
+          }</td><td style='padding-left:20px;'>${
+            list[j].qty
+          }</td><td style='padding-left:20px;'>${this.formatPrice(
+            list[j].price
+          )} </td><td style='padding-right:20px;'>฿</td>`
+        );
+        WinPrint.document.write("</tr>");
+      }
+      WinPrint.document.write(
+        "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
+      );
+
+      WinPrint.document.write("</table>");
+      WinPrint.document.write(
+        "<table  style='margin-top:20px;font-size: 0.6em;'>"
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' align=left style='padding-right:60px;'>อาหารเครื่องดื่ม</th><th width='100px'>${this.formatPrice(
+          subTotal
+        )} </th><th>บาท</th></tr>`
+      );
+
+      WinPrint.document.write("</table>");
+
+      WinPrint.document.close();
+      WinPrint.focus();
+      setTimeout(WinPrint.print(), 3000);
     }
   },
-  created(context) {
-    // console.log(this.$store.state.auth.user);
-  }
+  created() {}
 };
 </script>
 

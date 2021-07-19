@@ -36,10 +36,7 @@
       </v-btn>
       <v-toolbar-title>{{ $store.getters["displayName"] }}</v-toolbar-title>
       <v-avatar size="36px" class="ml-2">
-        <img
-          alt="Avatar"
-          src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
-        />
+        <img alt="Avatar" src="profile-user.png" />
       </v-avatar>
     </v-app-bar>
   </div>
@@ -57,7 +54,7 @@ export default {
           title: "หน้าหลัก",
           to: "/manage/"
         },
-          {
+        {
           icon: "mdi-account-plus ",
           title: "ลงทะเบียนสมาชิก",
           to: "/manage/register"
@@ -102,7 +99,7 @@ export default {
           title: "จัดการแต้ม",
           to: "/manage/pointmanage"
         },
-         {
+        {
           icon: "mdi-ticket-percent-outline ",
           title: "จัดการคูปอง",
           to: "/manage/coupon"

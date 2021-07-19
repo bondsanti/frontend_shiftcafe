@@ -1,14 +1,14 @@
-export const state = () => ({})
+export const state = () => ({});
 
-export const mutations = {}
+export const mutations = {};
 
-export const actions = {}
+export const actions = {};
 
 export const getters = {
-  displayName (state) {
-    return state.auth.user.fname + ' ' + state.auth.user.fname
+  displayName(state) {
+    return state.auth.user.fname + " " + state.auth.user.lname;
   },
-  position (state) {
-    return state.auth.user.ref_id_role.position
+  position(state) {
+    return state.auth.user.ref_id_role.position;
   }
-}
+};

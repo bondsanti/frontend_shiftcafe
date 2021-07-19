@@ -14,6 +14,7 @@
                   autofocus
                   outlined
                   v-model="receive"
+                  type="number"
                   @keypress.enter="calMoney"
                 ></v-text-field>
               </v-col>
@@ -135,7 +136,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialog2" persistent max-width="320">
+    <v-dialog v-model="dialog2" persistent max-width="400">
       <v-card>
         <v-card-title class="text-h5">
           พิมพ์ใบเสร็จรับเงินหรือไม่ ?
@@ -143,8 +144,8 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="close">
-            ปิด
+          <v-btn color="green darken-1" text @click="noBill">
+            ไม่พิมพ์ใบเสร็จรับเงิน
           </v-btn>
           <v-btn color="green darken-1" dark @click="save">
             พิมพ์ใบเสร็จรับเงิน
@@ -167,7 +168,6 @@ export default {
   methods: {
     calMoney() {
       const netPrice = Math.round(this.netPrice);
-
       if (this.receive < netPrice) {
         this.error2 = true;
         this.withdraw = "";
@@ -181,24 +181,43 @@ export default {
     closeCheckout() {
       this.$emit("closeCheckout");
     },
+    noBill() {
+      let money = {
+        withdraw: this.withdraw,
+        receive: this.receive,
+        noBill: true
+      };
+      this.$emit("save", money);
+      this.$emit("closeCheckout");
+      this.dialog2 = false;
+    },
     save() {
       let money = {
         withdraw: this.withdraw,
-        receive: this.receive
+        receive: this.receive,
+        noBill: false
       };
       this.$emit("save", money);
+      this.$emit("closeCheckout");
+      this.dialog2 = false;
+      //this.$emit("print", money);
       //this.dialog2 = true;
     },
     silver(value) {
       if (value === "100" || value === "500" || value === "1000") {
-        this.receive = parseInt(this.receive) + parseInt(value);
+        if (this.receive == 0 || this.receive == NaN) {
+          this.receive = 0;
+          this.receive = parseInt(this.receive) + parseInt(value);
+        } else {
+          this.receive = parseInt(this.receive) + parseInt(value);
+        }
       } else {
         this.receive = Math.round(this.netPrice);
       }
       this.calMoney();
     },
     addNum(num) {
-      if (this.receive === 0) {
+      if (this.receive === 0 || this.receive === NaN) {
         this.receive = "";
         this.receive += num;
       } else {
@@ -216,9 +235,6 @@ export default {
       const value = parseInt(value2);
       let val = (value / 1).toFixed(2).replace(",", ".");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    },
-    close() {
-      this.dialog2 = false;
     }
   },
   created() {

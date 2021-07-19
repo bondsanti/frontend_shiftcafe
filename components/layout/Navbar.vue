@@ -59,12 +59,9 @@
       <v-btn icon @click="logout">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
-      <v-toolbar-title>{{ $store.getters["displayName"] }}</v-toolbar-title>
+        <v-toolbar-title>{{ $store.getters["displayName"] }}</v-toolbar-title>
       <v-avatar size="36px" class="ml-2">
-        <img
-          alt="Avatar"
-          src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
-        />
+        <img alt="Avatar" src="profile-user.png" />
       </v-avatar>
     </v-app-bar>
   </div>

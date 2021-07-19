@@ -140,8 +140,17 @@
                   </v-row>
                   <v-row>
                     <v-col>
-                      <v-btn rounded large block color="red" dark @click="print"
+                      <v-btn
+                        rounded
+                        large
+                        block
+                        color="red"
+                        dark
+                        @click="cancelOrder"
                         >ยกเลิกออเดอร์</v-btn
+                      >
+                      <v-btn rounded large block color="red" dark @click="print"
+                        >test print</v-btn
                       >
                     </v-col>
                     <v-col>
@@ -157,7 +166,7 @@
                   </v-row>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-row class=" ma-2 mx-14">
+                  <v-row class="ma-2 mx-14">
                     <v-col cols="6" justify-center>
                       <h1>ชื่ออาหาร</h1>
                     </v-col>
@@ -169,7 +178,7 @@
                     </v-col>
                   </v-row>
                   <div
-                    class="d-flex flex-row  ma-1 mx-16"
+                    class="d-flex flex-row ma-1 mx-16"
                     v-for="order in orders"
                     :key="order.name"
                   >
@@ -187,15 +196,15 @@
                     <h2>ส่วนลด (%)</h2>
                     <h2>{{ coupon }} %</h2>
                   </v-row>
-                  <v-row class="justify-space-between ma-1 mx-16 ">
+                  <v-row class="justify-space-between ma-1 mx-16">
                     <h2>ราคา</h2>
                     <h2>{{ formatPrice(subtotal) }}</h2>
                   </v-row>
-                  <v-row class="justify-space-between ma-1 mx-16 ">
+                  <v-row class="justify-space-between ma-1 mx-16">
                     <h2>ภาษี</h2>
                     <h2>{{ tax }} %</h2>
                   </v-row>
-                  <v-row class="justify-space-between ma-1 mx-16 ">
+                  <v-row class="justify-space-between ma-1 mx-16">
                     <h2>ราคาสุทธิ</h2>
                     <h2>{{ formatPrice(thinkPrice(subtotal)) }} บาท</h2>
                   </v-row>
@@ -320,7 +329,7 @@
       :netPrice="thinkPrice(subtotal)"
       @closeCheckout="checkout = false"
       @save="save"
-      :bill="bill"
+      @print="print"
     />
   </div>
 </template>
@@ -346,7 +355,7 @@ export default {
     discount_type: "coupong",
     type_order: "1",
     bank: "cash",
-    cusId: "60f03e6f4700ae6968dd9e87",
+    cusId: "60f54e73be4bed2c389e3538",
     customers2: [],
     tab: "tab-1",
     cus: {
@@ -360,7 +369,6 @@ export default {
       ref_level_id: "60e439b7c7d6ae35548c7b62"
     },
     valid: true,
-
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     telRules: [
       v => !!v || "โปรดกรอกข้อมูลให้ครบถ้วน",
@@ -375,7 +383,7 @@ export default {
     checkout: false,
     bank_id: null,
     tax: 0,
-    bill: false
+    invoice: null
   }),
   methods: {
     closeDialog() {
@@ -411,29 +419,31 @@ export default {
     },
     formatPrice(value2) {
       const value = parseInt(value2);
-      let val = (value / 1).toFixed(2).replace(",", ".");
+      let val = (value / 1).toFixed(1).replace(",", ".");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     thinkPrice() {
       if (this.cus_type === "member") {
         if (this.vat === "1") {
           this.tax = 0;
-          return this.subtotal - (this.subtotal * this.coupon) / 100;
+          return Math.round(
+            this.subtotal - (this.subtotal * this.coupon) / 100
+          );
         } else {
           this.tax = 7;
           let net =
             (this.subtotal * this.tax) / 100 +
             this.subtotal -
             (this.subtotal * this.coupon) / 100;
-          return net;
+          return Math.round(net);
         }
       } else {
         if (this.vat === "1") {
           this.tax = 0;
-          return this.subtotal;
+          return Math.round(this.subtotal);
         } else {
           this.tax = 7;
-          return (this.subtotal * this.tax) / 100 + this.subtotal;
+          return Math.round((this.subtotal * this.tax) / 100 + this.subtotal);
         }
       }
     },
@@ -444,13 +454,26 @@ export default {
         const newPayment = {
           ...prePayment,
           ref_order_id: this.idOrder,
-          receive: money.receive,
-          withdraw: money.withdraw
+          receive_money: money.receive,
+          withdraw_money: money.withdraw
         };
-        this.$axios.$post("/payment", newPayment).then(() => {
-          this.bill = true;
+        this.$axios.$post("/payment", newPayment).then(pay => {
+          console.log(pay);
+          this.invoice = pay.data.invoice;
+          if (!money.noBill) {
+            this.print(money);
+          }
+          this.$emit("closeDialog");
+          this.$emit("clearOrder");
+          this.checkout = false;
+          this.cus_type = "guest";
+          this.discount_type = "coupong";
+          this.type_order = "1";
+          this.bank = "cash";
+          this.cusId = "60e439b7c7d6ae35548c7b62";
+          this.vat = "1";
         });
-        console.log(newPayment);
+        //console.log(newPayment);
       } else {
         const newOrder = {
           status: 1,
@@ -464,18 +487,28 @@ export default {
         const newPayment = {
           ...prePayment,
           ref_order_id: order.data._id,
-          receive: money.receive,
-          withdraw: money.withdraw
+          receive_money: money.receive,
+          withdraw_money: money.withdraw
         };
-        this.$axios.$post("/payment", newPayment).then(() => {
-          this.bill = true;
+        this.$axios.$post("/payment", newPayment).then(pay => {
+          console.log(pay);
+          this.invoice = pay.data.invoice;
+          if (!money.noBill) {
+            this.print(money);
+          }
+          this.$emit("closeDialog");
+          this.$emit("clearOrder");
+          this.checkout = false;
+          this.cus_type = "guest";
+          this.discount_type = "coupong";
+          this.type_order = "1";
+          this.bank = "cash";
+          this.cusId = "60e439b7c7d6ae35548c7b62";
+          this.vat = "1";
         });
-        console.log(newPayment);
+        //console.log(newPayment);
       }
-      // this.$emit("closeDialog");
-      this.$emit("clearOrder");
     },
-
     async checkDiscountType() {
       if (this.discount_type === "member" && this.cus_type === "member") {
         const res = await this.$axios.$get("/customer/" + this.cusId);
@@ -491,7 +524,7 @@ export default {
         const newPayment1 = {
           ref_cus_id: this.cusId,
           type_payment: this.bank,
-
+          orders: this.orders,
           type_order: this.type_order,
           total_price: this.subtotal,
           discount_price: Math.round((this.subtotal * this.coupon) / 100),
@@ -510,7 +543,7 @@ export default {
           ref_cus_id: this.cusId,
           ref_bank_id: this.bank_id,
           type_payment: this.bank,
-
+          orders: this.orders,
           type_order: this.type_order,
           total_price: this.subtotal,
           discount_price: Math.round((this.subtotal * this.coupon) / 100),
@@ -526,57 +559,105 @@ export default {
         return newPayment2;
       }
     },
-    print() {
+    cancelOrder() {
+      if (this.idOrder !== null) {
+        this.$axios.$delete("/order/" + this.idOrder);
+        this.$emit("clearOrder");
+        this.$emit("closeDialog");
+      } else {
+        this.$emit("clearOrder");
+        this.$emit("closeDialog");
+      }
+    },
+    print(money) {
+      //console.log(__filename);
       var WinPrint = window.open(
         "",
         "",
         "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
       );
-      WinPrint.document.write("<h3>SHIFT restaurant</h3>");
+      WinPrint.document.write("<table>");
       WinPrint.document.write(
-        "<table border=0 style='width: 100%;font-size: 0.5em;'>"
+        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='50px' height='50px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
+      );
+      WinPrint.document.write("</table>");
+      WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
+      WinPrint.document.write(
+        "<tr><th align='left'>บริษัท ชิฟท์ เรสเตอรองต์ จำกัด</th><th style='padding-left:60px'></th></tr>"
       );
       WinPrint.document.write(
-        "<tr><th width='1000px' style='padding-right:60px'>รายการ</th><th width='100px' style='padding-right:30px'>จำนวน</th><th width='100px'>ราคา</th></tr>"
+        "<tr><th align='left'>ที่อยู่ : 89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท</th><th style='padding-left:60px'></th></tr>"
       );
-
+      WinPrint.document.write(
+        "<tr><th align='left'>อำเภอเมือง จังหวัดลำปาง 52000</th><th style='padding-left:60px'></th></tr>"
+      );
+      WinPrint.document.write(
+        "<tr><th align='left'>เบอร์มือถือ : 0917961816</th><th style='padding-left:60px'></th></tr>"
+      );
+      WinPrint.document.write(
+        `<tr><th align='left' >ใบเสร็จรับเงินเลทที่ ${this.invoice}</th></tr>`
+      );
+      WinPrint.document.write("</table>");
+      //WinPrint.document.write("<img src='" + __dirname + "25.png'>");
+      WinPrint.document.write(
+        "<table   style='width: 100%;font-size: 0.5em;'>"
+      );
+      WinPrint.document.write(
+        "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th><th style='border-bottom: thin dotted;border-top: thin dotted' colspan='2' width='100px'>ราคา</th></tr>"
+      );
       for (let i in this.orders) {
-        WinPrint.document.write("<tr>");
+        WinPrint.document.write("<tr style='border-bottom: thin solid'>");
         WinPrint.document.write(
-          `<td>${this.orders[i].name}</td><td style='padding-left:20px'>${this.orders[i].qty}</td><td>${this.orders[i].price} ฿</td>`
+          `<td style='padding-left:20px;'>${parseInt(i) + 1}</td><td >${
+            this.orders[i].name
+          }</td><td style='padding-left:20px;'>${
+            this.orders[i].qty
+          }</td><td style='padding-left:20px;'>${this.formatPrice(
+            this.orders[i].price
+          )} </td><td style='padding-right:20px;'>฿</td>`
         );
         WinPrint.document.write("</tr>");
       }
-
-      WinPrint.document.write("</table>");
       WinPrint.document.write(
-        "<table style='margin-top:20px;font-size: 0.6em;'>"
-      );
-      WinPrint.document.write(
-        `<tr><th width='1000px' style='padding-right:60px'>อาหารเครื่องดื่ม</th><th width='100px'>${this.subtotal}</th></tr>`
-      );
-      WinPrint.document.write(
-        `<tr><th width='1000px' style='padding-right:60px'>ยอดรวมสุทธิ</th><th width='100px'>${Math.round(
-          this.thinkPrice(this.subtotal)
-        )}</th></tr>`
-      );
-      WinPrint.document.write(
-        `<tr><th width='1000px' style='padding-right:60px'>เงินสดรับมา</th><th width='100px'>${this.receive}</th></tr>`
-      );
-      WinPrint.document.write(
-        `<tr><th width='1000px' style='padding-right:60px'>เงินทอน</th><th width='100px'>${this.withdraw}</th></tr>`
+        "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
       );
       WinPrint.document.write("</table>");
-
+      WinPrint.document.write(
+        "<table  style='margin-top:20px;font-size: 0.6em;'>"
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' align=left style='padding-right:60px;'>อาหารเครื่องดื่ม</th><th width='100px'>${this.formatPrice(
+          this.subtotal
+        )} </th><th>บาท</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' align=left style='padding-right:60px'>ยอดรวมสุทธิ</th><th width='100px'>${this.formatPrice(
+          Math.round(this.thinkPrice(this.subtotal))
+        )} </th><th>บาท</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' align=left style='padding-right:60px'>เงินสดรับมา</th><th width='100px'>${this.formatPrice(
+          money.receive
+        )} </th><th>บาท</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' align=left style='padding-right:60px'>เงินทอน</th><th width='100px'>${this.formatPrice(
+          money.withdraw
+        )} </th><th>บาท</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th  align=center style='padding-left:60px' >**ขอบคุณที่ใช้บริการ**</th></tr>`
+      );
+      WinPrint.document.write("</table>");
       WinPrint.document.close();
       WinPrint.focus();
-      WinPrint.print();
-      WinPrint.close();
+      setTimeout(WinPrint.print(), 3000);
+      //WinPrint.close();
     }
   },
   created() {
     this.improveCus();
-    //console.log(this.bank2);
+    //console.log(this.orders);
   }
 };
 </script>

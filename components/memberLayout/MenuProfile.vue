@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <div class="text-center mb-5">
-      <v-img height="100%" src="classic.png">
+      <v-img height="100%" src="platinum.png">
         <v-row align="end">
           <v-col align-self="start" class="pa-6" cols="3">
             <v-avatar class="profile" size="100">
@@ -30,12 +30,12 @@
     </div>
     <!--d-none d-sm-flex d-md-flex d-lg-flex-->
     <v-card class="mx-auto hidden-xs-and-down hidden-sm-and-down">
-      <v-list mandatory>
+      <v-list mandatory nav>
         <h4 class="text-center pa-2">
           สวัสดี คุณ : <span class="red_fix--text"> Santi</span>
         </h4>
         <v-divider></v-divider>
-        <v-list-item-group v-model="selectedItem">
+        <v-list-item-group v-model="selectedItem" color="error">
           <v-list-item v-for="(item, i) in items" :key="i" :to="item.to">
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>

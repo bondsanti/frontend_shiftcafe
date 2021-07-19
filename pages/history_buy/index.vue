@@ -25,7 +25,7 @@
               </template>
               <template v-slot:[`item.type_payment`]="{ item }">
                 <v-chip :color="getColor(item.type_payment)" dark small>
-                  {{ item.type_payment }}
+                  {{ getTxt(item.type_payment) }}
                 </v-chip>
               </template>
               <template v-slot:[`item.total_price`]="{ item }">
@@ -75,8 +75,12 @@ export default {
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     getColor(type_payment) {
-      if (type_payment === "cash") return "green";
-      else return "red";
+      if (type_payment === "cash") return "#5C6BC0";
+      else return "blue lighten-1";
+    },
+    getTxt(type_payment) {
+      if (type_payment === "cash") return "เงินสด";
+      else return "โอน";
     }
   },
   async asyncData(context) {

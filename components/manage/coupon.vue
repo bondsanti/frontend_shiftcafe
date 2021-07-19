@@ -26,106 +26,122 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="coupon" :search="search" :items-per-page="15">
+      <v-data-table
+        :headers="headers"
+        :items="coupon"
+        :search="search"
+        :items-per-page="10"
+            :footer-props="{
+    'items-per-page-options': [10, 20, 30, 40, 50,-1]
+  }"
+      >
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
-                  ><v-icon left> mdi-ticket-percent-outline </v-icon> {{ formTitle }}</span
+                  ><v-icon left> mdi-ticket-percent-outline </v-icon>
+                  {{ formTitle }}</span
                 >
               </v-card-title>
 
-              <v-card-text>
-                <v-container>
-            
-                   <v-row>
-                    <v-col cols="12"> </v-col>
-
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="คนออก"
-                        v-model="coupone.codename"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" md="6" class="mt-n7">
-                       
-                  <v-select 
-                      label=" ชื่อคูปอง"
-                      outlined
-                      color="#1D1D1D"
-                        item-text="name"        
-                       item-value="_id"
-                       
-                          v-model="coupone.ref_emp_id_by"
-                       :items="useronline.flat()"
-                     
-                    ></v-select>
-                  </v-col>
+              <v-form v-model="valid" ref="form">
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12"> </v-col>
                       <v-col cols="12" md="6" class="mt-n7">
-                       
-                    <v-select 
-                      label="ออกให้"
-                      outlined
-                      color="#1D1D1D"
-                      item-text="name"        
-                      item-value="_id"
-                      :items="Empname.flat()"
-                   v-model="coupone.ref_emp_id"
-                    ></v-select>
-                  </v-col>
-                    
-                    <v-col cols="12" md="6" class="mt-n7">
-                       <v-text-field
-                          type="date"
-                          v-model="coupone.exp"
-                          label="exp"
+                        <v-text-field
                           outlined
-                          required
+                          label="ชื่อคูปอง"
+                          v-model="coupone.codename"
+                          :rules="rules"
+                      
                           color="#1D1D1D"
                         ></v-text-field>
-                    </v-col>
+                      </v-col>
 
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ส่วนลดในคูปอง"
-                         v-model="coupone.discount"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-select
+                          label=" ชื่อคูปอง"
+                          outlined
+                          color="#1D1D1D"
+                          item-text="name"
+                          item-value="_id"
+                          v-model="coupone.ref_emp_id_by"
+                          :items="useronline.flat()"
+                          :rules="rules"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-select
+                          label="ออกให้"
+                          outlined
+                          color="#1D1D1D"
+                          item-text="name"
+                          item-value="_id"
+                          :items="Empname.flat()"
+                          v-model="coupone.ref_emp_id"
+                          :rules="rules"
+                        ></v-select>
+                      </v-col>
 
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="จำคูปองที่สามารถใช้ได้"
-                        v-model="coupone.num_use"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-text-field
+                          type="date"
+                          v-model="coupone.exp"
+                          :rules="rules"
+                          label="exp"
+                          outlined
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="ส่วนลดในคูปอง"
+                          v-model="coupone.discount"
+                          :rules="numberRules"
+                         type="nubar"
+                         
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="จำคูปองที่สามารถใช้ได้"
+                          v-model="coupone.num_use"
+                           :rules="numberRules"
+                         type="nubar"
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+              </v-form>
 
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-ticket-percent-outline
+                     mdi-close-box 
                   </v-icon>
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" @click="save">
+                <v-btn
+                  class="ma-1"
+                  color="info"
+                  @click="save();showAlert();"
+                  :disabled="!valid"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
-                   mdi-ticket-percent-outline
+                     mdi-content-save
                   </v-icon>
-                  เพิ่มข้อมูล
+                  เพิ่มข้อมูลคูปอง
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -139,11 +155,12 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-ticket-percent-outline </v-icon
+                     mdi-close-box  </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
-                  <v-icon aria-hidden="false" class="mx-4"> mdi-ticket-percent-outline</v-icon
+                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm();showAlert();">
+                  <v-icon aria-hidden="false" class="mx-4">
+                     mdi-delete-forever  </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -154,9 +171,9 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-            mdi-ticket-percent-outline
+               mdi-pencil-plus 
             </v-icon>
-            แก้ไข
+            แก้ไขคูปอง
           </v-btn>
           <v-btn
             rounded-lx
@@ -165,15 +182,17 @@
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-              mdi-ticket-percent-outline
+              mdi-delete-forever 
             </v-icon>
-            ลบ
+            ลบคูปอง
           </v-btn>
         </template>
-              <template v-slot:[`item.exp`]="{ item }">
+           <template v-slot:[`item.No`]="{ index }">
+          {{ index + 1 }}
+        </template>
+        <template v-slot:[`item.exp`]="{ item }">
           <span>{{ item.exp | moment }}</span>
         </template>
-
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -190,21 +209,56 @@ export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
+     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    valid: true,
     search: "",
-    Empname:[],
-    useronline:[],
+    Empname: [],
+    useronline: [],
     headers: [
-      { text: "ชื่อหม่วดหมู่", align: "start", value: "codename", divider: true },
-     
-      { text: "ออกให้พนักงาน", align: "start", value: "ref_emp_id", divider: true },
-       { text: " คนออกคูปอง", align: "start", value: "ref_emp_id_by", divider: true },
-      { text: "วันหมดอายุ", align: "start", value: "exp", divider: true },
-      { text: "ส่วนลด % ", align: "start", value: "discount", divider: true },
-       { text: "จำนวลผู้ใช้คูปอง", align: "start", value: "num_use", divider: true },
+       { text: "ลำดับ", sortable: false, value: "No" },
+      {
+        text: "ชื่อหม่วดหมู่",
+        align: "start",
+        value: "codename"
+        
+      },
+
+      {
+        text: "ออกให้พนักงาน",
+        align: "start",
+        value: "ref_emp_id"
+       
+      },
+      {
+        text: " คนออกคูปอง",
+        align: "start",
+        value: "ref_emp_id_by"
+      
+      },
+      { text: "วันหมดอายุ", align: "start", value: "exp" },
+      { text: "ส่วนลด (%) ", align: "start", value: "discount" },
+      {
+        text: "จำนวลผู้ใช้คูปอง(คน)",
+        align: "start",
+        value: "num_use",
+        divider: true
+      },
       { text: "Actions", value: "actions", sortable: false }
     ],
+     numberRules: [
+      v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+      v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
+    ],
     editedIndex: -1,
-    coupone: { _id: " ", codename: " ",ref_emp_id_by:" ",ref_emp_id:" ",exp:" " ,discount:" ",num_use:" "},
+    coupone: {
+      _id: " ",
+      codename: " ",
+      ref_emp_id_by: " ",
+      ref_emp_id: " ",
+      exp: " ",
+      discount: " ",
+      num_use: " "
+    },
     type: null,
     deleteId: null
   }),
@@ -214,7 +268,7 @@ export default {
       return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
     }
   },
-   filters: {
+  filters: {
     moment: function(date) {
       // return moment(date).format('Do MMMM YYYY').add(543, 'years')
       var strdate = moment(date).add(543, "years");
@@ -230,17 +284,29 @@ export default {
     }
   },
   created() {
-    this.initialize();
+  },
+   mounted() {
+    this.toast = this.$swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000
+    });
   },
   methods: {
-    initialize() {
-      // this.loading = true;
-      //  this.$axios.$get("/authen/user").then(user => {
-      //   this.user = user;
-      // });
-      // this.user = [];
+     showAlert() {
+         this.toast({
+        type: "success",
+        title:
+          "ดำเนิการสำเร็จ"
+      });
+       this.text_val_for_test = Date.now();
+  
+    },
+      someFn(ev) {
+      console.log(ev)}
+      ,
 
-     },
     editItem(item) {
       this.type = "edit";
       this.coupone = item;
@@ -249,7 +315,13 @@ export default {
     addItem() {
       this.type = "add";
       this.coupone = {
-        _id: " ", codename: " ",ref_emp_id_by:" ",ref_emp_id:" ",exp:" " ,discount:" ",num_use:" "
+        _id: " ",
+        codename: " ",
+        ref_emp_id_by: " ",
+        ref_emp_id: " ",
+        exp: " ",
+        discount: " ",
+        num_use: " "
       };
       this.dialog = true;
     },
@@ -280,11 +352,11 @@ export default {
     },
 
     save() {
-
+      this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
-     
-        this.$emit("addCoupon", { ...this.coupone});
+
+        this.$emit("addCoupon", { ...this.coupone });
         this.close();
       } else {
         this.loading = true;
@@ -298,7 +370,7 @@ export default {
           });
       }
     },
-       improveEmp() {
+    improveEmp() {
       for (let i in this.employee) {
         let Emp = {
           _id: this.employee[i]._id,
@@ -307,25 +379,22 @@ export default {
         this.Empname.push(Emp);
       }
     },
-    
-     improveUsers() {
+
+    improveUsers() {
       for (let i in this.user) {
         let use = {
           _id: this.user[i]._id,
           name: this.user[i].fname + " " + this.user[i].lname
-          
         };
-        this.useronline .push(use);
-        
+        this.useronline.push(use);
       }
     }
-    
   },
-  
-  props:['coupon','employee','user'],
-   created() {
+
+  props: ["coupon", "employee", "user"],
+  created() {
     this.improveEmp();
     this.improveUsers();
-   }
+  }
 };
 </script>

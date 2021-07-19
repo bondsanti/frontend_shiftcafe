@@ -251,6 +251,7 @@
 
 <script>
 export default {
+ layout: "layoutCashier",
   data: () => ({
     dialog: false,
     dialogDelete: false,

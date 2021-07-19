@@ -8,7 +8,7 @@ export default {
  middleware: ["auth", "check"],
   async asyncData(context) {
     const levelmember = await context.$axios.$get("/level-member");
-    console.log(levelmember);
+    //console.log(levelmember);
     return { levelmember };
   },
   components: {

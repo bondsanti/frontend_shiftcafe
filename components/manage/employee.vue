@@ -190,7 +190,7 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="save"
+                  @click="save();showAlert()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                      mdi-content-save
@@ -212,9 +212,9 @@
                      mdi-close-box f </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
+                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm();showAlert();">
                   <v-icon aria-hidden="false" class="mx-4"> mdi-delete-forever</v-icon
-                  >ลบ</v-btn
+                  >ยืนยัน</v-btn
                 >
                 <v-spacer></v-spacer>
               </v-card-actions>
@@ -239,6 +239,9 @@
             </v-icon>
             ลบข้อมูลพนักงาน
           </v-btn>
+        </template>
+           <template v-slot:[`item.No`]="{ index }">
+          {{ index + 1 }}
         </template>
         <template v-slot:[`item.fname`]="{ item }">
           {{ item.pname }} - {{ item.fname }} - {{ item.lname }}
@@ -268,6 +271,7 @@ export default {
     roleitme: [],
     pnamesec: ["นาย", "นาง", "นางสาว", "Guest"],
     headers: [
+       { text: "ลำดับ", sortable: false, value: "No" },
       { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อใช้เข้าระบบ", align: "start", value: "username" },
       { text: "ตำแหน่ง", align: "start", value: "ref_id_role.position" },
@@ -328,7 +332,27 @@ export default {
     this.improverole();
   },
 
+   mounted() {
+    this.toast = this.$swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000
+    });
+  },
   methods: {
+     showAlert() {
+         this.toast({
+        type: "success",
+        title:
+          "ดำเนิการสำเร็จ"
+      });
+       this.text_val_for_test = Date.now();
+  
+    },
+      someFn(ev) {
+      console.log(ev)}
+      ,
     toBuddhistYear(moment, format) {
       var christianYear = moment.format("YYYY");
       var buddhishYear = (parseInt(christianYear) + 543).toString();

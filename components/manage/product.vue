@@ -32,9 +32,10 @@
         :search="search"
         :items-per-page="15"
       >
+      <!-- https://api.shift-cafe.com-->
        <template v-slot:[`item.img`]="{ item }">
           <img
-            :src="'https://api.shift-cafe.com/' + item.img"
+            :src="'http://192.168.1.24:5555/' + item.img"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
             style="width: 150px; height: 150px"
@@ -126,7 +127,7 @@
                         class="mb-3"
                       ></v-img>
                       <input
-                        accept="image/*"
+                       
                         type="file"
                         @change="onFileSelected"
                       />
@@ -284,7 +285,7 @@ export default {
       // this.user = [];
     },
     editItem(item) {
-      this.imageURL = `https://api.shift-cafe.com/${item.img}`;
+      this.imageURL = `http://192.168.1.24:5555/${item.img}`;
       this.type = "edit";
       this.productsItem = item;
       this.dialog = true;
@@ -294,7 +295,7 @@ export default {
       if (this.productsItem.img.length > 100) {
         return this.productsItem.img;
       } else {
-        return `https://api.shift-cafe.com/${item.img}`;
+        return `http://192.168.1.24:5555/${item.img}`;
       }
     },
     addItem() {

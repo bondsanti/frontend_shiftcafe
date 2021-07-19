@@ -30,7 +30,10 @@
         :headers="headers"
         :items="customer"
         :search="search"
-        :items-per-page="5"
+        :items-per-page="10"
+             :footer-props="{
+    'items-per-page-options': [10, 20, 30, 40, 50,-1]
+  }"
       >
         <template v-slot:[`item.img`]="{}">
           <img
@@ -174,7 +177,7 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="save"
+                  @click="save();showAlert()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save 
@@ -196,7 +199,7 @@
                     mdi-food-off </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
+                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm();showAlert();">
                   <v-icon aria-hidden="false" class="mx-4"> mdi-delete-foreve </v-icon
                   >ลบ</v-btn
                 >
@@ -228,7 +231,9 @@
             ลบข้อมูลสมาชิก
           </v-btn>
         </template>
-
+           <template v-slot:[`item.No`]="{ index }">
+    {{ index + 1 }}
+  </template>
         <template v-slot:[`item.birthday`]="{ item }">
           <span>{{ item.birthday | moment }}</span>
         </template>
@@ -257,6 +262,7 @@ export default {
     pnamesec: ["นาย", "นาง", "นางสาว"],
     level: [],
     headers: [
+      { text: "ลำดับ", sortable: false, value: "No" },
       { text: "ภาพ", sortable: false, value: "img" },
       // { text: "คำนำหน้า", align: "start", value: "pname" },
       // { text: "ชื่อ", align: "start", value: "fname" },
@@ -315,7 +321,27 @@ export default {
     this.improveLvmb();
   },
 
+ mounted() {
+    this.toast = this.$swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000
+    });
+  },
   methods: {
+     showAlert() {
+         this.toast({
+        type: "success",
+        title:
+          "ดำเนิการสำเร็จ"
+      });
+       this.text_val_for_test = Date.now();
+  
+    },
+      someFn(ev) {
+      console.log(ev)}
+      ,
       toBuddhistYear(moment, format) {
       var christianYear = moment.format('YYYY')
       var buddhishYear = (parseInt(christianYear) + 543).toString()

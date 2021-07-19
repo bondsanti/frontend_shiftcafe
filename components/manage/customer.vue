@@ -30,7 +30,10 @@
         :headers="headers"
         :items="customer"
         :search="search"
-        :items-per-page="5"
+        :items-per-page="10"
+         :footer-props="{
+    'items-per-page-options': [10, 20, 30, 40, 50,-1]
+  }"
       >
         <template v-slot:[`item.img`]="{}">
           <img
@@ -179,7 +182,7 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="save"
+                  @click="save();showAlert();"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -189,7 +192,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="270px">
+          <v-dialog v-model="dialogDelete" max-width="330px">
             <v-card>
               <v-card-title class="text-h5 white--text  primary">
                 แน่ใจแล้วใช่มั้ยที่จะลบ
@@ -198,12 +201,12 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-food-off </v-icon
+                    mdi-close-box   </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
-                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
-                  >ลบ</v-btn
+                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm();showAlert()">
+                  <v-icon aria-hidden="false" class="mx-4">  mdi-delete-forever  </v-icon
+                  >ลบข้อมูลสมาชิก</v-btn
                 >
                 <v-spacer></v-spacer>
               </v-card-actions>
@@ -229,6 +232,9 @@
             ลบข้อมูลสมาชิก
           </v-btn>
         </template>
+           <template v-slot:[`item.No`]="{ index }">
+    {{ index + 1 }}
+  </template>
           <template v-slot:[`item.fname`]="{ item }">
           {{ item.pname }} - {{ item.fname }} - {{ item.lname }}
         </template>
@@ -254,10 +260,11 @@ export default {
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valid: true,
     search: "",
-    pnamesec: ["นาย", "นาง", "นางสาว"],
+    pnamesec: ["นาย", "นาง", "นางสาว","guest"],
     level: [],
     headers: [
-      { text: "ภาพ", sortable: false, value: "img" },
+       { text: "ลำดับ", sortable: false, value: "No" },
+       { text: "ภาพ", sortable: false, value: "img" },
        { text: "ชื่อสมาชิก", align: "start", value: "fname" },
      // { text: "ชื่อ", align: "start", value: "fname" },
       //{ text: "นามสกุล", align: "start", value: "lname" },
@@ -313,8 +320,27 @@ export default {
   created() {
     this.improveLvmb();
   },
-
+ mounted() {
+    this.toast = this.$swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000
+    });
+  },
   methods: {
+     showAlert() {
+         this.toast({
+        type: "success",
+        title:
+          "ดำเนิการสำเร็จ"
+      });
+       this.text_val_for_test = Date.now();
+  
+    },
+      someFn(ev) {
+      console.log(ev)}
+      ,
     toBuddhistYear(moment, format) {
       var christianYear = moment.format("YYYY");
       var buddhishYear = (parseInt(christianYear) + 543).toString();

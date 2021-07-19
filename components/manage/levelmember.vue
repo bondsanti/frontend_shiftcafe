@@ -26,13 +26,18 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="levelmember" :search="search" :items-per-page="15">
-            <template v-slot:[`item.img`]="{}">
+      <v-data-table
+        :headers="headers"
+        :items="levelmember"
+        :search="search"
+        :items-per-page="15"
+      >
+        <template v-slot:[`item.img`]="{}">
           <img
             src="@/assets/img/lv-4.jpeg"
             class="mt-2 mb-2 rounded-lg"
             aspect-ratio="1"
-            style="width: 100px; height: 70px"
+            style="width: 80px; height: 50px"
           />
         </template>
         <template v-slot:top>
@@ -40,43 +45,54 @@
             <v-card>
               <v-card-title>
                 <span class="text-h5"
-                  ><v-icon left> mdi-ticket-account </v-icon> {{ formTitle }}</span
+                  ><v-icon left> mdi-ticket-account </v-icon>
+                  {{ formTitle }}</span
                 >
               </v-card-title>
-
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12"> </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        v-model="levelmemberitme.level_name"
-                        label="ชื่อระดับสมาชิก"
-                      ></v-text-field>
-                    </v-col>
-                       <v-col cols="12" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        v-model="levelmemberitme.discount"
-                        label="ส่วนลด"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-
+              <v-form v-model="valid" ref="form">
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12"> </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          v-model="levelmemberitme.level_name"
+                          :rules="rules"
+                          label="ชื่อระดับสมาชิก"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          v-model="levelmemberitme.discount"
+                          :rules="rules"
+                          label="ส่วนลด(%)"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+              </v-form>
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-barley-off
+                    mdi-close-box
                   </v-icon>
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" @click="save">
+                <v-btn
+                  class="ma-1"
+                  color="info"
+                  :disabled="!valid"
+                  @click="
+                    save();
+                    showAlert();
+                  "
+                >
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-barley
+                    mdi-content-save
                   </v-icon>
                   เพิ่มข้อมูล
                 </v-btn>
@@ -92,11 +108,19 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-barley-off </v-icon
+                    mdi-close-box </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
-                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
+                <v-btn
+                  color="primary"
+                  class="ma-2"
+                  @click="
+                    deleteItemConfirm();
+                    showAlert();
+                  "
+                >
+                  <v-icon aria-hidden="false" class="mx-4">
+                    mdi-delete-forever </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -107,9 +131,9 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-              mdi-barley
+              mdi-close-box
             </v-icon>
-            แก้ไข
+            แก้ไขข้อมูล
           </v-btn>
           <v-btn
             rounded-lx
@@ -118,10 +142,13 @@
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-              mdi-barley-off
+              mdi-delete-forever
             </v-icon>
-            ลบ
+            ลบระดับสมาชิก
           </v-btn>
+        </template>
+        <template v-slot:[`item.No`]="{ index }">
+          {{ index + 1 }}
         </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
@@ -138,18 +165,22 @@ export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    valiid: true,
     search: "",
     headers: [
-       { text: "ภาพ", sortable: false, value: "img" },
-      { text: "ชื่อหม่วดหมู่", align: "start", value: "level_name",  },
+      { text: "ลำดับ", sortable: false, value: "No" },
+      { text: "ภาพ", sortable: false, value: "img" },
+      { text: "ชื่อหม่วดหมู่", align: "start", value: "level_name" },
       //{ text: "ID", align: "start", value: "_id", divider: true },
-      { text: "ส่วนลด", align: "start", value: "discount",  },
-      { text: "Actions", value: "actions", sortable: false }
+      { text: "ส่วนลด()", align: "start", value: "discount" },
+      { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
-    levelmemberitme: { _id: "", level_name: "" ,discount:" "},
+    levelmemberitme: { _id: "", level_name: "", discount: " " },
     type: null,
-    deleteId: null
+    deleteId: null,
+    valid: true
   }),
 
   computed: {
@@ -165,16 +196,24 @@ export default {
       val || this.closeDelete();
     }
   },
-  created() {
-    this.initialize();
+  mounted() {
+    this.toast = this.$swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000
+    });
   },
   methods: {
-    initialize() {
-      // this.loading = true;
-      // this.$axios.$get("/unit").then(unit => {
-      //   this.unit = unit;
-      // });
-      // this.unit = [];
+    showAlert() {
+      this.toast({
+        type: "success",
+        title: "ดำเนิการสำเร็จ"
+      });
+      this.text_val_for_test = Date.now();
+    },
+    someFn(ev) {
+      console.log(ev);
     },
     editItem(item) {
       this.type = "edit";
@@ -184,7 +223,9 @@ export default {
     addItem() {
       this.type = "add";
       this.levelmemberitme = {
-        _id: "", level_name: "" ,discount:" "
+        _id: "",
+        level_name: "",
+        discount: " "
       };
       this.dialog = true;
     },
@@ -215,16 +256,19 @@ export default {
     },
 
     save() {
-
+      this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
-     
+
         this.$emit("addlevelmember", { ...this.levelmemberitme });
         this.close();
       } else {
         this.loading = true;
         this.$axios
-          .$put("/level-member/" + this.levelmemberitme._id, this.levelmemberitme)
+          .$put(
+            "/level-member/" + this.levelmemberitme._id,
+            this.levelmemberitme
+          )
           .then(() => {
             this.close();
           })
@@ -234,6 +278,6 @@ export default {
       }
     }
   },
-  props:['levelmember']
+  props: ["levelmember"]
 };
 </script>

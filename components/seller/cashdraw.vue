@@ -73,7 +73,11 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :items="loadData" :search="search">
+      <v-data-table :headers="headers" :items="loadData" :search="search"    
+        :items-per-page="10"  
+       :footer-props="{
+    'items-per-page-options': [10, 20, 30, 40, 50,-1]
+  }">
         <template v-slot:[`item.type`]="{ item }">
           <v-chip :color="getColor(item.type)" dark small>
             {{ item.type }}
@@ -86,6 +90,9 @@
         <template v-slot:[`item.total_money`]="{ item }">
           <span class="">{{ formatPrice(item.total_money) }}</span>
         </template>
+          <template v-slot:[`item.no`]="{ index }">
+    {{ index + 1 }}
+  </template>
       </v-data-table>
     </v-card>
   </div>
@@ -109,13 +116,14 @@ export default {
       },
       items: ["นำเงินเข้า", "นำเงินออก"],
       headers: [
+        { text: "ลำดับ", sortable: false, value: "no" },
         {
           text: "วันที่",
           align: "start",
           sortable: false,
           value: "datetime"
         },
-
+       
         { text: "ผู้ทำการบันทึก", value: "ref_emp_id.fname"},
         { text: "ประเภท", value: "type" },
         { text: "จำนวนเงิน", value: "total_money" },
@@ -142,6 +150,7 @@ export default {
   created() {
     this.initialize();
   },
+  
   methods: {
     initialize() {},
     formatPrice(total_money) {

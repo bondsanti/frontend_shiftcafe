@@ -55,13 +55,17 @@ module.exports = {
     '@nuxtjs/vuetify',
     '@nuxtjs/axios',
     '@nuxtjs/auth',
-    '@nuxtjs/moment'
+    '@nuxtjs/moment',
+    'nuxt-sweetalert2',
+
+    
   ],
 
   axios: {
-    baseURL: 'https://api.shift-cafe.com/api'
+    baseURL: 'http://192.168.1.24:5555/api'
     //  http://localhost:5555/api
     // 'https://api.shift-cafe.com/api'
+    //http://192.168.1.24:555/api
   },
 
   auth: {

@@ -1,0 +1,70 @@
+<template>
+    <v-card>
+              <v-app-bar flat color="rgba(0,0,0,0)">
+                <v-toolbar-title class="title black--text pl-0 ml-2">
+                  ภาพรวมร้านค่าในวันนี้
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
+
+
+                <div class="text-center">
+                  <v-menu offset-y>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                        วันที่ 16/7/2564
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <!-- <v-list-item v-for="(item, index) in items" :key="index">
+                        <v-list-item-title>{{ item.title }}</v-list-item-title>
+                      </v-list-item> -->
+                    </v-list>
+                  </v-menu>
+                </div>
+              </v-app-bar>
+              <client-only>
+                <div>
+                  <VueApexCharts
+                    max-width="100"
+                    height="350"
+                    type="area"
+                    :options="chartOptions"
+                    :series="series"
+                  ></VueApexCharts>
+                </div>
+              </client-only>
+            </v-card>
+
+</template>
+
+<script>
+export default {
+ components: {
+  VueApexCharts: () => import("vue-apexcharts")
+ },
+  data: () => ({
+    chartOptions: {
+      chart: {
+        id: "vuechart-example"
+      },
+      xaxis: {
+        categories: ["9.00.น", "10.00.น", "11.00 น", "12.00.น", "13.00 น", "14.00 น", "15.00 น", "16.00.น","17.00.น","18.00.น"]
+      }
+    },
+
+    series: [
+      {
+        name: "ยอดขายนะเวลา",
+        data: [30, 40, 35, 50, 100, 60, 20, 10,50,40]
+      }
+    ],
+
+
+  }),
+
+}
+</script>
+
+<style>
+
+</style>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-navigation-drawer v-model="drawer" fixed app color="#1d1d1d" dark>
+      <!-- 1 -->
       <v-list>
         <v-list-item
           v-for="(item, i) in items"
@@ -17,6 +18,30 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <!-- 1 -->
+
+      <!-- 2 -->
+          <template v-slot:append>
+        <div class="pa-2">
+      <v-list>
+        <v-list-item
+          v-for="(item, i) in below"
+          :key="i"
+          :to="item.to"
+          router
+          exact
+        >
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title v-text="item.title" />
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+        </div>
+          </template>
+      <!-- 2 -->
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app color="#1d1d1d" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
@@ -51,13 +76,26 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
+      below: [
+        {
+          icon: "mdi-cog ",
+          title: "ตั้งค่า",
+          to: "/manage/settings"
+        }
+      ],
+
       items: [
         {
           icon: "mdi-home",
           title: "หน้าหลัก",
           to: "/manage/"
         },
-          {
+        {
+          icon: "mdi mdi-cash-register ",
+          title: "ข้อมูลเงินทอน",
+          to: "/manage/cash"
+        },
+        {
           icon: "mdi-account-plus ",
           title: "ลงทะเบียนสมาชิก",
           to: "/manage/register"
@@ -102,7 +140,7 @@ export default {
           title: "จัดการแต้ม",
           to: "/manage/pointmanage"
         },
-         {
+        {
           icon: "mdi-ticket-percent-outline ",
           title: "จัดการคูปอง",
           to: "/manage/coupon"

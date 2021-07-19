@@ -26,13 +26,16 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="unit" :search="search" :items-per-page="15">
+      <v-data-table :headers="headers" :items="unit" :search="search"  :items-per-page="10"
+            :footer-props="{
+    'items-per-page-options': [10, 20, 30, 40, 50,-1]
+  }">
           <template v-slot:[`item.img`]="{}">
             <img
               src="@/assets/img/photo-1.jpg"
               class="mt-2 mb-2 rounded-lg"
               aspect-ratio="1"
-              style="width: 150px; height: 150px"
+              style="width: 60px; height: 60px"
             />
           </template>
         <template v-slot:top>
@@ -43,7 +46,7 @@
                   ><v-icon left> mdi-barley </v-icon> {{ formTitle }}</span
                 >
               </v-card-title>
-
+               <v-form v-model="valid" ref="form">
               <v-card-text>
                 <v-container>
                   <v-row>
@@ -52,26 +55,27 @@
                       <v-text-field
                         outlined
                         v-model="units.u_name"
+                        :rules="rules"
                         label="ชื่อ"
                       ></v-text-field>
                     </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
-
+               </v-form>
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-barley-off
+                    mdi-close-box
                   </v-icon>
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" @click="save">
+                <v-btn class="ma-1" color="info" :disabled="!valid" @click="save();showAlert();">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-barley
+                     mdi-content-save
                   </v-icon>
-                  เพิ่มข้อมูล
+                  เพิ่มข้อมูลหน่วยนับ
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -85,11 +89,11 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-barley-off </v-icon
+                   mdi-close-box   </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
-                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
+                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm();showAlert();">
+                  <v-icon aria-hidden="false" class="mx-4">  mdi-delete-forever  </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -100,9 +104,9 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-              mdi-barley
+              mdi-pencil-plus 
             </v-icon>
-            แก้ไข
+            แก้ไขหน่วยนับ
           </v-btn>
           <v-btn
             rounded-lx
@@ -111,11 +115,14 @@
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-              mdi-barley-off
+              mdi-delete-forever 
             </v-icon>
-            ลบ
+            ลบหน่วยนับ
           </v-btn>
         </template>
+          <template v-slot:[`item.No`]="{ index }">
+    {{ index + 1 }}
+  </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -131,8 +138,10 @@ export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
+    valid: true,
     search: "",
     headers: [
+      { text: "ลำดับ", sortable: false, value: "No" },
         { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อหม่วดหมู่", align: "start", value: "u_name" },
      // { text: "ID", align: "start", value: "_id", divider: true },
@@ -141,7 +150,8 @@ export default {
     editedIndex: -1,
     units: { _id: "", u_name: "" },
     type: null,
-    deleteId: null
+    deleteId: null,
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
   }),
 
   computed: {
@@ -157,17 +167,27 @@ export default {
       val || this.closeDelete();
     }
   },
-  created() {
-    this.initialize();
+   mounted() {
+    this.toast = this.$swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000
+    });
   },
   methods: {
-    initialize() {
-      // this.loading = true;
-      // this.$axios.$get("/unit").then(unit => {
-      //   this.unit = unit;
-      // });
-      // this.unit = [];
+     showAlert() {
+         this.toast({
+        type: "success",
+        title:
+          "ดำเนิการสำเร็จ"
+      });
+       this.text_val_for_test = Date.now();
+  
     },
+      someFn(ev) {
+      console.log(ev)}
+      ,
     editItem(item) {
       this.type = "edit";
       this.units = item;
@@ -208,7 +228,7 @@ export default {
     },
 
     save() {
-
+      this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
      

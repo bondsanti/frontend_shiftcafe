@@ -47,7 +47,7 @@
               </v-form>
             </div>
 
-            <v-btn block light @click="login" :disabled="!valid"> Login </v-btn>
+            <v-btn block light @click="login" :disabled="!valid" > Login </v-btn>
           </v-col>
           <v-col cols="1" sm="1" md="3" lg="4"></v-col>
         </v-row>

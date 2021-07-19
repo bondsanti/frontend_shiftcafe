@@ -30,7 +30,10 @@
         :headers="headers"
         :items="stock"
         :search="search"
-        :items-per-page="15"
+        :items-per-page="10"
+            :footer-props="{
+    'items-per-page-options': [10, 20, 30, 40, 50,-1]
+  }"
       >
       <template v-slot:[`item.img`]="{ item }">
           <img
@@ -100,7 +103,7 @@
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" @click="save" :disabled="!valid">
+                <v-btn class="ma-1" color="info" @click="save();showAlert();" :disabled="!valid">
                   <v-icon aria-hidden="false" class="mx-2">
                      mdi-content-save 
                   </v-icon>
@@ -122,7 +125,7 @@
                     mdi-close-box 	 </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
+                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm();showAlert();">
                   <v-icon aria-hidden="false" class="mx-4"> mdi-delete-forever </v-icon
                   >ลบ</v-btn
                 >
@@ -166,7 +169,9 @@
             {{ item.qty_max }}
           </v-chip>
         </template>
-
+  <template v-slot:[`item.No`]="{ index }">
+    {{ index + 1 }}
+  </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -188,6 +193,7 @@ export default {
      valid: true,
     productitme: [],
     headers: [
+      { text: "ลำดับ", sortable: false, value: "No" },
       { text: "ชื่อสิ้นค้า", align: "start", value: "ref_pro_id" },
       { text: "ให้แจ้งเตื่อนเมื่่อใกล้หมด", align: "start", value: "qty_min" },
       { text: "จำนวลอาหารที่พร้อมขาย", align: "start", value: "qty_max" },
@@ -239,7 +245,27 @@ export default {
   mounted() {
     this.getProduct();
   },
+ mounted() {
+    this.toast = this.$swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000
+    });
+  },
   methods: {
+     showAlert() {
+         this.toast({
+        type: "success",
+        title:
+          "ดำเนิการสำเร็จ"
+      });
+       this.text_val_for_test = Date.now();
+  
+    },
+      someFn(ev) {
+      console.log(ev)}
+      ,
     getProduct() {
       this.$axios
         .get(`/product/`)

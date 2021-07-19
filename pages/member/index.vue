@@ -54,9 +54,7 @@
                 class="flex-grow-0 flex-shrink-0 text-right text-red"
               >
                 <h4 class="pa-2 " outlined tile>
-                  <v-icon color="red darken-3" dense
-                    >mdi-lock-open-variant
-                  </v-icon>
+                  <v-icon color="red darken-3" dense>mdi-eye-off </v-icon>
                   password
                 </h4>
               </v-col>

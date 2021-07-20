@@ -2,20 +2,8 @@
   <div class="ma-3">
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              class="mr-5"
-              v-bind="attrs"
-              v-on="on"
-              @click="addItem"
-            >
-              <v-icon left> mdi-fridge-industrial-outline </v-icon> จัดการstock
-            </v-btn>
-          </template>
-        </v-dialog>
+        <h3>รายการสั่งซื้อ</h3>
+
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
@@ -28,7 +16,7 @@
 
       <v-data-table
         :headers="headers"
-        :items="stock"
+        :items="orders"
         :search="search"
         :items-per-page="10"
         :footer-props="{
@@ -145,20 +133,9 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-              mdi-pencil-plus
+              mdi-eye
             </v-icon>
-            แก้ไขข้อมูลSTOCK
-          </v-btn>
-          <v-btn
-            rounded-lx
-            class="mr-2"
-            color="error"
-            @click="deleteItem(item)"
-          >
-            <v-icon dark class="mx-2">
-              mdi-delete-forever
-            </v-icon>
-            ลบข้อมูลSTOCK
+            ดูข้อมูล
           </v-btn>
         </template>
         <template v-slot:[`item.datetime`]="{ item }">
@@ -200,10 +177,16 @@ export default {
     productitme: [],
     headers: [
       { text: "ลำดับ", sortable: false, value: "No" },
-      { text: "ชื่อสิ้นค้า", align: "start", value: "ref_pro_id.product_name" },
-      { text: "ให้แจ้งเตื่อนเมื่่อใกล้หมด", align: "start", value: "qty_min" },
-      { text: "จำนวลอาหารที่พร้อมขาย", align: "start", value: "qty_max" },
-      { text: "พนักงานที่แก้ไข", align: "start", value: "ref_emp_id" },
+      { text: "ชื่อบิล", align: "start", value: "bill_name" },
+      { text: "จำนวน", align: "start", value: "bill_name" },
+      {
+        text: "สถานะการจ่ายเงิน",
+        align: "start",
+        value: "status"
+      },
+      { text: "ประเภทออเดอร์", align: "start", value: "type_order" },
+      { text: "ยอดสุทธิ", align: "start", value: "total_price" },
+      { text: "พนักงานที่รับออเดอร์", align: "start", value: "ref_emp_id" },
       { text: "วันที่", align: "start", value: "datetime" },
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
@@ -361,6 +344,6 @@ export default {
       }
     }
   },
-  props: ["stock", "product"]
+  props: ["orders"]
 };
 </script>

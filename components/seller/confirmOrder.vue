@@ -149,9 +149,6 @@
                         @click="cancelOrder"
                         >ยกเลิกออเดอร์</v-btn
                       >
-                      <v-btn rounded large block color="red" dark @click="print"
-                        >test print</v-btn
-                      >
                     </v-col>
                     <v-col>
                       <v-btn
@@ -396,7 +393,7 @@ export default {
       for (let i in this.customers) {
         let cus = {
           _id: this.customers[i]._id,
-          name: this.customers[i].fname + " " + this.customers[i].lname
+          name: `${this.customers[i].fname} ${this.customers[i].lname} || tel : ${this.customers[i].tel}`
         };
         this.customers2.push(cus);
       }
@@ -470,7 +467,7 @@ export default {
           this.discount_type = "coupong";
           this.type_order = "1";
           this.bank = "cash";
-          this.cusId = "60e439b7c7d6ae35548c7b62";
+          this.cusId = "60f54e73be4bed2c389e3538";
           this.vat = "1";
         });
         //console.log(newPayment);
@@ -503,7 +500,7 @@ export default {
           this.discount_type = "coupong";
           this.type_order = "1";
           this.bank = "cash";
-          this.cusId = "60e439b7c7d6ae35548c7b62";
+          this.cusId = "60f54e73be4bed2c389e3538";
           this.vat = "1";
         });
         //console.log(newPayment);

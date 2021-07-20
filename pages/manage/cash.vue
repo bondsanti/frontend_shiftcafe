@@ -24,8 +24,7 @@ export default {
   methods: {
     async onSubmitted(cashdrawData) {
       // console.log("Result : ", cashdrawData);
-      this.$axios
-        .$post("/withdraw", cashdrawData)
+    await this.$axios.$post("/withdraw", cashdrawData)
         .then(res => {
           console.log(res);
         })
@@ -34,6 +33,7 @@ export default {
         });
       //this.loadData = context.$axios.$get("/withdraw");
       //
+       this.loadData = await this.$axios.$get("/withdraw");
     }
 
     // async getAll(context) {
@@ -42,6 +42,9 @@ export default {
     //   return { cashdrawData: cashdrawData };
     //   // console.log("cashdrawData");
     // }
-  }
+  },
+    data: () => ({
+    Cashdraw: []
+  })
 };
 </script>

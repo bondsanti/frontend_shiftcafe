@@ -50,9 +50,9 @@
                   {{ formTitle }}</span
                 >
               </v-card-title>
-
+  <v-form v-model="valid" ref="form">
               <v-card-text>
-                <v-container>
+                <div>
                   <v-row>
                     <v-col cols="12"> </v-col>
 
@@ -63,6 +63,7 @@
                         v-model="productsItem.product_name"
                         required
                         color="#1D1D1D"
+                         :rules="rules"
                       ></v-text-field>
                     </v-col>
 
@@ -75,6 +76,7 @@
                         item-value="_id"
                         :items="categoryname.flat()"
                         v-model="productsItem.ref_cate_id"
+                         :rules="rules"
                       ></v-select>
                     </v-col>
                     <v-col cols="12" md="6" class="mt-n7">
@@ -86,6 +88,7 @@
                         item-value="_id"
                         :items="unitname.flat()"
                         v-model="productsItem.ref_uid"
+                         :rules="rules"
                       ></v-select>
                     </v-col>
                     <v-col cols="12" md="4" class="mt-n7">
@@ -95,6 +98,7 @@
                         v-model="productsItem.price_cost"
                         required
                         color="#1D1D1D"
+                         :rules="rules"
                       ></v-text-field>
                     </v-col>
 
@@ -105,6 +109,7 @@
                         v-model="productsItem.price"
                         required
                         color="#1D1D1D"
+                         :rules="rules"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" md="4" class="mt-n7">
@@ -114,6 +119,7 @@
                         v-model="productsItem.stock"
                         required
                         color="#1D1D1D"
+                         :rules="rules"
                       ></v-text-field>
                     </v-col>
 
@@ -130,12 +136,13 @@
                        
                         type="file"
                         @change="onFileSelected"
+                         :rules="rules"
                       />
                     </v-col>
                   </v-row>
-                </v-container>
+                </div>
               </v-card-text>
-
+  </v-form>
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
@@ -144,12 +151,14 @@
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" @click="save">
+
+                <v-btn class="ma-1" color="info" @click="save();resetInput(); " :disabled="!valid">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-ticket-percent-outline
                   </v-icon>
                   เพิ่มข้อมูล
                 </v-btn>
+                
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -216,7 +225,8 @@ export default {
     search: "",
     unitname: [],
     categoryname: [],
-
+     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+      valid: true,
     headers: [
       { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อสิ้นค้า", sortable: false, value: "product_name" },
@@ -239,14 +249,20 @@ export default {
       stock: "",
       img: " "
     },
+    defaultItem:{    
+      product_name: "",
+      ref_uid: "",
+      ref_cate_id: " ",
+      price_cost: " ",
+      price: "",
+      stock: "",
+      img: " "},
+    
     type: null,
     deleteId: null,
     uploadState: false,
     img: [],
-    error: {
-      state: false,
-      msg: ""
-    },
+    error: {state: false, msg: "" },
     imageURL: null
   }),
 
@@ -268,6 +284,10 @@ export default {
   },
 
   methods: {
+    resetInput() {
+      this.formdata = "";
+      
+    },
     onFileSelected(event) {
       const reader = new FileReader();
       reader.onload = event => {
@@ -289,7 +309,7 @@ export default {
       this.type = "edit";
       this.productsItem = item;
       this.dialog = true;
-      file: this.file;
+      
     },
     getProductImage(item) {
       if (this.productsItem.img.length > 100) {
@@ -339,8 +359,9 @@ export default {
     },
 
     save() {
+       this.$refs.form.validate();
       if (this.type === "add") {
-        this.loading = true;
+        this.loading = true;       
         let formdata = new FormData();
         formdata.append("product_name", this.productsItem.product_name);
         formdata.append("ref_uid", this.productsItem.ref_uid);
@@ -352,6 +373,7 @@ export default {
         console.log(this.productsItem);
 
         this.$emit("addProduct", formdata);
+         
         this.close();
       } else {
         this.loading = true;

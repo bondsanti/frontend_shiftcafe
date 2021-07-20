@@ -22,8 +22,10 @@ export default {
   methods: {
     async addProduct(dataProduct) {
       await this.$axios.$post("/product", dataProduct);
+      
       this.product = await this.$axios.$get("/product");
     }
+    
   },
   data: () => ({
     product: []

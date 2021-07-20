@@ -42,7 +42,7 @@
           ตั้งค่าอัตราการจ่ายแต้ม
         </v-card-title>
 
-        <v-container fluid>
+        <div fluid>
           <v-row>
             <v-col cols="4">
               <v-subheader>จำนวลเงิน</v-subheader>
@@ -65,7 +65,7 @@
               ></v-text-field>
             </v-col>
           </v-row>
-        </v-container>
+        </div>
         <v-card-actions>
         
 

@@ -63,6 +63,7 @@
           </v-card>
         </v-dialog>
 
+
         <v-spacer></v-spacer>
 
         <v-text-field
@@ -74,10 +75,51 @@
         ></v-text-field>
       </v-card-title>
       <v-data-table :headers="headers" :items="loadData" :search="search"    
-        :items-per-page="10"  
+        :items-per-page="15"  
        :footer-props="{
-    'items-per-page-options': [10, 20, 30, 40, 50,-1]
+    'items-per-page-options': [15, 20, 30, 40, 50,-1]
   }">
+  <template v-slot:top>
+        <v-dialog v-model="dialogDelete" max-width="270px">
+            <v-card>
+              <v-card-title class="black--text  text-body-1 mb-4 ml-6" >
+                แน่ใจแล้วใช่มั้ยที่จะลบ
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="info" @click="closeDelete">
+                  <v-icon aria-hidden="false" class="mx-2 ma-1">
+                   mdi-close-box   </v-icon
+                  >ยกเลิก</v-btn
+                >
+                <v-btn color="primary"  @click="deleteItemConfirm();showAlert();">
+                  <v-icon aria-hidden="false" class="mx-4">  mdi-delete-forever  </v-icon
+                  >ลบ</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+  </template>
+          <template v-slot:[`item.actions`]="{ item }">
+          <v-btn class="mr2" color="warning" @click="editItem(item)">
+            <v-icon aria-hidden="false" class="mx-2">
+              mdi-pencil-plus 
+            </v-icon>
+            แก้ไข
+          </v-btn>
+          <v-btn
+            rounded-lx
+            class="mr-2"
+            color="error"
+            @click="deleteItem(item)"
+          >
+            <v-icon dark class="mx-2">
+              mdi-delete-forever 
+            </v-icon>
+            ลบ
+          </v-btn>
+        </template>
         <template v-slot:[`item.type`]="{ item }">
           <v-chip :color="getColor(item.type)" dark small>
             {{ item.type }}
@@ -93,6 +135,7 @@
           <template v-slot:[`item.no`]="{ index }">
     {{ index + 1 }}
   </template>
+  
       </v-data-table>
     </v-card>
   </div>
@@ -106,10 +149,16 @@ export default {
   data() {
     return {
       //loadData: [],
-      dialog: false,
-      dialogDelete: false,
+    dialog: false,
+    dialogDelete: false,
+    type: null,
+    deleteId: null,
       search: "",
+       editedIndex: -1,
+        type: null,
+    deleteId: null,
       cashdraw: {
+        _id:" ",
         type: "",
         total_money: "",
         remark: ""
@@ -117,17 +166,12 @@ export default {
       items: ["นำเงินเข้า", "นำเงินออก"],
       headers: [
         { text: "ลำดับ", sortable: false, value: "no" },
-        {
-          text: "วันที่",
-          align: "start",
-          sortable: false,
-          value: "datetime"
-        },
-       
+        { text: "วันที่", align: "start",sortable: false, value: "datetime" },       
         { text: "ผู้ทำการบันทึก", value: "ref_emp_id.fname"},
         { text: "ประเภท", value: "type" },
         { text: "จำนวนเงิน", value: "total_money" },
-        { text: "หมายเหตุ", value: "remark" }
+        { text: "หมายเหตุ", value: "remark" },
+        { text: "แก้ไข", value: "actions" }
       ]
     };
   },
@@ -151,7 +195,27 @@ export default {
     this.initialize();
   },
   
+    mounted() {
+    this.toast = this.$swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000
+    });
+  },
   methods: {
+     showAlert() {
+         this.toast({
+        type: "success",
+        title:
+          "ดำเนิการสำเร็จ"
+      });
+       this.text_val_for_test = Date.now();
+  
+    },
+      someFn(ev) {
+      console.log(ev)}
+      ,
     initialize() {},
     formatPrice(total_money) {
       const value = parseInt(total_money);
@@ -163,6 +227,23 @@ export default {
       else  return "red";
 
     },
+    editItem(item) {
+      this.type = "edit";
+      this.cashdraw = item;
+      this.dialog = true;
+    },
+
+     deleteItem(item) {
+      this.deleteId = item._id;
+       this.editedIndex = this.loadData.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+      deleteItemConfirm() {
+      this.loadData.splice(this.editedIndex, 1);
+      this.$axios.$delete("/withdraw/" + this.deleteId).then(() => {});
+      this.closeDelete();
+    },
     close() {
       this.dialog = false;
       this.$nextTick(() => {
@@ -170,12 +251,31 @@ export default {
         this.editedIndex = -1;
       });
     },
+      closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
 
     saveData() {
+       if (this.type === "edit") {
+        this.loading = true;
+           this.$axios
+          .$put("/withdraw/" + this.cashdraw._id, this.cashdraw)
+          .then(() => {
+            this.close();
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      } else {
       //alert(JSON.stringify(this.cashdraw));
       this.$emit("addCashdraw", this.cashdraw);
       //alert(JSON.stringify(this.cashdraw));
       this.dialog = false;
+    }
     }
   },
 

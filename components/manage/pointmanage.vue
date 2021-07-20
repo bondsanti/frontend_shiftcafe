@@ -98,7 +98,7 @@
         </template>
         <template v-slot:[`item.status`]="{ item }">
           <v-chip :color="getColorstatus(item.status)" dark small>
-            {{ item.status }}
+            {{getTxt (item.status) }}
           </v-chip>
         </template>
         <template v-slot:[`item.datetime`]="{ item }">
@@ -203,6 +203,10 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+    },
+     getTxt(status) {
+      if (status === "plus") return "เพิ่ม";
+      else return "ลบ";
     },
     getColorstatus(status) {
       if (status === "plus") return "green";

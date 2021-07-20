@@ -190,6 +190,8 @@ export default {
       this.$emit("save", money);
       this.$emit("closeCheckout");
       this.dialog2 = false;
+      this.receive = 0;
+      this.withdraw = "";
     },
     save() {
       let money = {
@@ -200,6 +202,8 @@ export default {
       this.$emit("save", money);
       this.$emit("closeCheckout");
       this.dialog2 = false;
+      this.receive = 0;
+      this.withdraw = "";
       //this.$emit("print", money);
       //this.dialog2 = true;
     },

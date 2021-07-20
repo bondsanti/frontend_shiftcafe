@@ -22,7 +22,7 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>SHIFT CAFE</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon>
+      <!-- <v-btn icon>
         <v-icon>mdi-circle-box</v-icon>
       </v-btn>
       <v-btn icon>
@@ -30,14 +30,14 @@
       </v-btn>
       <v-btn icon>
         <v-icon>mdi-clipboard-list</v-icon>
-      </v-btn>
+      </v-btn> -->
+      <v-avatar size="36px" class="mr-2">
+        <img alt="Avatar" src="/profile-user.png" />
+      </v-avatar>
+      <v-toolbar-title>{{ $store.getters["displayName"] }}</v-toolbar-title>
       <v-btn icon @click="logout">
         <v-icon>mdi-logout</v-icon>
       </v-btn>
-      <v-toolbar-title>{{ $store.getters["displayName"] }}</v-toolbar-title>
-      <v-avatar size="36px" class="ml-2">
-        <img alt="Avatar" src="profile-user.png" />
-      </v-avatar>
     </v-app-bar>
   </div>
 </template>
@@ -69,10 +69,20 @@ export default {
           title: "แลก Point",
           to: "/seller/point"
         },
+        // {
+        //   icon: "mdi-fridge-industrial-outline",
+        //   title: "จัดการ stock",
+        //   to: "/seller/stock"
+        // },
         {
-          icon: "mdi-fridge-industrial-outline",
-          title: "จัดการ stock",
-          to: "/seller/stock"
+          icon: "mdi-clipboard-list",
+          title: "จัดการออเดอร์",
+          to: "/seller/order"
+        },
+        {
+          icon: "mdi-receipt",
+          title: "จัดการใบสั่งซื้อ",
+          to: "/seller/invoice"
         }
       ],
       miniVariant: false

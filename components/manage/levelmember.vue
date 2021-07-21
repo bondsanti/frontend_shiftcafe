@@ -150,7 +150,7 @@
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
-          <template v-slot:[`item.discount`]="{ item }">
+        <template v-slot:[`item.discount`]="{ item }">
           <v-chip :color="getColorstatus(item.discount)" dark small>
             <v-icon class="ma-2 ml-1" color="">
               mdi-brightness-percent
@@ -213,7 +213,7 @@ export default {
     });
   },
   methods: {
-     getColorstatus(discount) {
+    getColorstatus(discount) {
       if (discount) return "green";
       else return "red";
     },
@@ -271,16 +271,19 @@ export default {
       this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
+        let formdata = new FormData();
+        formdata.append("level_name", this.levelmemberitme.level_name);
+        formdata.append("discount", this.levelmemberitme.discount);
 
-        this.$emit("addlevelmember", { ...this.levelmemberitme });
+        this.$emit("addlevelmember", formdata);
         this.close();
       } else {
+        let formdata = new FormData();
+        formdata.append("level_name", this.levelmemberitme.level_name);
+        formdata.append("discount", this.levelmemberitme.discount);
         this.loading = true;
         this.$axios
-          .$put(
-            "/level-member/" + this.levelmemberitme._id,
-            this.levelmemberitme
-          )
+          .$put("/level-member/" + this.levelmemberitme._id, formdata)
           .then(() => {
             this.close();
           })

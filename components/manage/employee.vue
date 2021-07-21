@@ -89,7 +89,7 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="employeeitme.fname"
-                         :rules="rules"
+                          :rules="rules"
                           :readonly="editedIndex === 0"
                           prepend-icon="mdi-rename-box"
                           label="ชื่อ"
@@ -114,7 +114,7 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="employeeitme.birthday"
-                         :rules="rules"
+                          :rules="rules"
                           :readonly="editedIndex === 0"
                           prepend-icon="mdi-calendar"
                           type="date"
@@ -169,7 +169,7 @@
                       <v-col cols="12" sm="6">
                         <v-textarea
                           v-model="employeeitme.address"
-                         :rules="rules"
+                          :rules="rules"
                           :readonly="editedIndex === 0"
                           prepend-icon="mdi-map-marker"
                           label="ที่อยู่"
@@ -326,6 +326,7 @@
                           outlined
                           required
                           color="#1D1D1D"
+                          @keypress.enter="check"
                         ></v-text-field>
                       </v-col>
                       <v-col
@@ -337,7 +338,7 @@
                         <div class="mt-2 ml-4" v-if="usernametrue">
                           <span class="green--text ">ใช้ได้</span>
                         </div>
-                         <div class="mt-2 ml-4" v-if="usernameErr">
+                        <div class="mt-2 ml-4" v-if="usernameErr">
                           <span class="red--text ">ซ้ำ</span>
                         </div>
                       </v-col>
@@ -635,8 +636,8 @@
         <template v-slot:[`item.lname`]="{ item }">
           {{ item.lname }}
         </template>
-         <template v-slot:[`item.username`]="{ item }">
-           <v-icon class="ma-2 ml-2" color="primary">
+        <template v-slot:[`item.username`]="{ item }">
+          <v-icon class="ma-2 ml-2" color="primary">
             mdi-identifier
           </v-icon>
           {{ item.username }}
@@ -719,7 +720,10 @@ export default {
     },
     type: null,
     deleteId: null,
-    requiredRules: [v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",  v => (v && v.length <= 280) || 'ชื่อไม่ควรเกิน 280 ตัวอักษร',],
+    requiredRules: [
+      v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+      v => (v && v.length <= 280) || "ชื่อไม่ควรเกิน 280 ตัวอักษร"
+    ],
     emailRules: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
       v =>
@@ -729,7 +733,7 @@ export default {
     ],
     numberRules: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
-       v => (/\d{9,10}/.test(v) && v.length <= 10) || 'เบอร์โทรศัพท์ไม่ถูกต้อง',
+      v => (/\d{9,10}/.test(v) && v.length <= 10) || "เบอร์โทรศัพท์ไม่ถูกต้อง",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ],
     numberRulesidcard: [
@@ -737,7 +741,9 @@ export default {
       v => v.length <= 13 || "ใส่ตัวเลขเกิน13ตัว",
       v => v.length >= 13 || "ใส่ตัวเลขไม่ถึง13ตัว",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
-    ]
+    ],
+    usernametrue: false,
+    usernameErr: false
   }),
   computed: {
     formTitle() {
@@ -783,9 +789,11 @@ export default {
         "/employee/" + this.employeeitmeadd.username
       );
       if (cus.length > 0) {
-        this.usernametrue = true;
+        this.usernameErr = true;
+        this.usernametrue = false;
       } else {
         this.usernameErr = false;
+        this.usernametrue = true;
       }
       //return { category };
     },
@@ -886,7 +894,7 @@ export default {
     getColor(status) {
       if (status === "cashier") return "green";
       else if (status === "manager") return "#F44336";
-      else if (status === "manager") return "#F44336";
+      else if (status === "checker") return "orange";
       return "#03A9F4";
     },
     getPnameColor(status) {
@@ -898,6 +906,7 @@ export default {
     getTxt(status) {
       if (status === "cashier") return "แคชเชียร์";
       else if (status === "manager") return "ผู้จัดการ";
+      else if (status === "checker") return "ผู้ตรวจสอบ";
       else return "พนักงาน";
     },
 

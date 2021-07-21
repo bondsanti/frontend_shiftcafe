@@ -69,6 +69,9 @@ import { mapState } from "vuex";
 export default {
   layout: "login",
   middleware: "isLoggedIn",
+  head: {
+        title: 'เข้าสู่ระบบ'
+    },
   data() {
     return {
       showPass: false,

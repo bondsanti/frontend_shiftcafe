@@ -1,20 +1,27 @@
 <template>
-  <customer :customer="customer" :levelmember="levelmember"  @addCustomer="addCustomer" />
+  <customer
+    :customer="customer"
+    :levelmember="levelmember"
+    @addCustomer="addCustomer"
+  />
 </template>
 
 <script>
 import customer from "@/components/manage/customer.vue";
 export default {
   middleware: ["auth", "check"],
- async asyncData(context) {
-    const [customer,levelmember ] = await Promise.all([
+    head: {
+        title: 'จัดการสมาชิก'
+    },
+  async asyncData(context) {
+    const [customer, levelmember] = await Promise.all([
       context.$axios.$get("/customer"),
-      context.$axios.$get("/level-member"),
+      context.$axios.$get("/level-member")
     ]);
     //const products = await context.$axios.$get("/product");
     //console.log(products);
     //console.log(levelmember);
-    return { customer,levelmember };
+    return { customer, levelmember };
   },
   components: {
     customer

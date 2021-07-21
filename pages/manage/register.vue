@@ -6,6 +6,9 @@
 import register from "@/components/manage/register.vue";
 export default {
   middleware: ["auth", "check"],
+    head: {
+        title: 'สมัคร'
+    },
  async asyncData(context) {
     const [customer,levelmember ] = await Promise.all([
       context.$axios.$get("/customer"),

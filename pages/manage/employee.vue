@@ -6,6 +6,9 @@
 import employee from "@/components/manage/employee.vue";
 export default {
   middleware: ["auth", "check"],
+    head: {
+        title: 'จัดการพนักงาน'
+    },
   async asyncData(context) {
     const [employee, role,] = await Promise.all([
       context.$axios.$get("/employee"),

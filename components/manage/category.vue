@@ -149,7 +149,7 @@ export default {
       { text: "Actions", value: "actions", sortable: false }
     ],
     editedIndex: -1,
-    cate: { _id: "", u_name: "" },
+    cate: { _id: "", cate_name: "" },
     type: null,
 
     deleteId: null
@@ -198,7 +198,7 @@ export default {
       this.type = "add";
       this.cate = {
         _id: "",
-        u_name: ""
+        cate_name: ""
       };
       this.dialog = true;
     },
@@ -232,8 +232,9 @@ export default {
       this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
-     
-        this.$emit("addCategory", { ...this.cate });
+       let formdata = new FormData();     
+        formdata.append("cate_name", this.cate.cate_name);
+        this.$emit("addCategory",formdata);
         this.close();
       } else {
         this.loading = true;

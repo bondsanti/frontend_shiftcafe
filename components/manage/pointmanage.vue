@@ -5,11 +5,10 @@
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-card color="primary" dark class="mr-5 mb-4">
-              <span color="primary" class="mr-5 mt-2">
-                <v-icon left class="mb-2 mt-2 ml-2 ">
-                  mdi-file-powerpoint-box </v-icon
-                >จัดการพอยท์ เพิ่ม/ลด
-              </span>
+              <v-btn color="primary" @click="dialog = true">
+                <v-icon left> mdi-file-powerpoint-box </v-icon>จัดการพอยท์
+                เพิ่ม/ลด
+              </v-btn>
             </v-card>
             <v-btn
               color="primary"
@@ -22,53 +21,6 @@
               <v-icon left> mdi-barley </v-icon> จัดการพอยท์
             </v-btn>
           </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5"
-                ><v-icon left> mdi-barley </v-icon> เพิ่มหน่วย</span
-              >
-            </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12"> </v-col>
-
-                  <v-col cols="12" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="ชื่อหน่วยนับ"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" class="mt-n7">
-                    <v-text-field
-                      outlined
-                      label="วันที่ลงข้อมูล"
-                      required
-                      color="#1D1D1D"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn class="ma-1" color="primary" dark @click="close">
-                <v-icon aria-hidden="false" class="mx-2">
-                  mdi-barley-off
-                </v-icon>
-                ยกเลิก
-              </v-btn>
-              <v-spacer></v-spacer>
-              <v-btn class="ma-1" color="info" @click="save">
-                <v-icon aria-hidden="false" class="mx-2">
-                  mdi-barley
-                </v-icon>
-                เพิ่มข้อมูล
-              </v-btn>
-            </v-card-actions>
-          </v-card>
         </v-dialog>
 
         <v-spacer></v-spacer>
@@ -83,6 +35,79 @@
       </v-card-title>
 
       <v-data-table :headers="headers" :items="pointmanage" :search="search">
+        <template v-slot:top>
+          <v-dialog v-model="dialog" max-width="800px">
+            <v-card>
+              <v-card-title>
+                <span class="text-h5"
+                  ><v-icon left>mdi-card-account-details-outline </v-icon>
+                  ข้อมูลพนักงาน</span
+                >
+              </v-card-title>
+
+              <v-card-text>
+                <v-form v-model="valid" ref="form">
+                  <div>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-autocomplete
+                          outlined
+                          v-model="cusId"
+                          chips
+                          clearable
+                          label="ค้นหาข้อมูลลูกค้า"
+                          :items="customers2.flat()"
+                          item-value="_id"
+                          item-text="name"
+                        ></v-autocomplete>
+                      </v-col>
+
+                      <v-col cols="12">
+                        <v-text-field
+                          v-model="point"
+                          label="จำนวนแต้ม"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                          type="number"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-select
+                          v-model="status"
+                          outlined
+                          :items="items"
+                          label="Standard"
+                        ></v-select>
+                      </v-col>
+                    </v-row>
+                  </div>
+                </v-form>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-btn
+                  class="ma-1"
+                  color="primary"
+                  dark
+                  @click="dialog = false"
+                >
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-close-box
+                  </v-icon>
+                  ยกเลิก
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn class="ma-1" color="info" @click="save()">
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-content-save
+                  </v-icon>
+                  บันทึกข้อมูล
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </template>
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
@@ -98,7 +123,7 @@
         </template>
         <template v-slot:[`item.status`]="{ item }">
           <v-chip :color="getColorstatus(item.status)" dark small>
-            {{getTxt (item.status) }}
+            {{ getTxt(item.status) }}
           </v-chip>
         </template>
         <template v-slot:[`item.datetime`]="{ item }">
@@ -138,22 +163,14 @@ export default {
       { text: "วันทีเพิ่มลดแต้ม", sortable: false, value: "datetime" }
       //   { text: "Actions", value: "actions", sortable: false }
     ],
-    desserts: [],
-    editedIndex: -1,
-    editedItem: {
-      name: "",
-      data: ""
-    },
-    defaultItem: {
-      name: "",
-      data: ""
-    }
+    cusId: null,
+    customers2: [],
+    items: ["เพิ่ม", "ลด"],
+    status: "เพิ่ม",
+    point: 0,
+    valid: true
   }),
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "แก้หนวยนับ";
-    }
-  },
+
   filters: {
     moment: function(date) {
       // return moment(date).format('Do MMMM YYYY').add(543, 'years')
@@ -161,50 +178,9 @@ export default {
       return moment(strdate).format("D/MM/YY");
     }
   },
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    }
-  },
-  created() {
-    this.initialize();
-  },
+
   methods: {
-    initialize() {
-      this.desserts = [];
-    },
-    editItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-    deleteItem(item) {
-      this.editedIndex = this.desserts.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
-    },
-    deleteItemConfirm() {
-      this.desserts.splice(this.editedIndex, 1);
-      this.closeDelete();
-    },
-    close() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-     getTxt(status) {
+    getTxt(status) {
       if (status === "plus") return "เพิ่ม";
       else return "ลบ";
     },
@@ -213,14 +189,44 @@ export default {
       else return "red";
     },
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.desserts[this.editedIndex], this.editedItem);
+      let newPoint = {};
+      if (this.status === "เพิ่ม") {
+        newPoint = {
+          ref_cus_id: this.cusId,
+          point: this.point,
+          status: "plus"
+        };
       } else {
-        this.desserts.push(this.editedItem);
+        newPoint = {
+          ref_cus_id: this.cusId,
+          point: this.point,
+          status: "minus"
+        };
       }
-      this.close();
+      this.$axios
+        .$post("/point-manage", newPoint)
+        .then(res => {
+          this.$emit("refreshPoint");
+          console.log(res);
+          this.dialog = false;
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+    improveCus() {
+      for (let i in this.customers) {
+        let cus = {
+          _id: this.customers[i]._id,
+          name: `${this.customers[i].fname} ${this.customers[i].lname} || tel : ${this.customers[i].tel}`
+        };
+        this.customers2.push(cus);
+      }
     }
   },
-  props: ["pointmanage"]
+  props: ["pointmanage", "customers"],
+  created() {
+    this.improveCus();
+  }
 };
 </script>

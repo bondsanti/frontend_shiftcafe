@@ -142,7 +142,7 @@ export default {
     search: "",
     headers: [
       { text: "ลำดับ", sortable: false, value: "No" },
-        { text: "ภาพ", sortable: false, value: "img" },
+   //     { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อหม่วดหมู่", align: "start", value: "u_name" },
      // { text: "ID", align: "start", value: "_id", divider: true },
       { text: "Actions", value: "actions", sortable: false }

@@ -32,8 +32,8 @@
         :search="search"
         :items-per-page="15"
       >
-      <!-- https://api.shift-cafe.com-->
-       <template v-slot:[`item.img`]="{ item }">
+        <!-- https://api.shift-cafe.com-->
+        <template v-slot:[`item.img`]="{ item }">
           <img
             :src="'http://192.168.1.24:5555/' + item.img"
             class="mt-2 mb-2 rounded-xl"
@@ -45,104 +45,102 @@
           <v-dialog v-model="dialog" max-width="700px">
             <v-card>
               <v-card-title>
-                <span class="text-h5"
-                  ><v-icon left> mdi-ticket-percent-outline </v-icon>
-                  {{ formTitle }}</span
-                >
+                <v-icon left> mdi-ticket-percent-outline </v-icon>
+                {{ formTitle }}
               </v-card-title>
-  <v-form v-model="valid" ref="form">
-              <v-card-text>
-                <div>
-                  <v-row>
-                    <v-col cols="12"> </v-col>
+              <v-form v-model="valid" ref="form">
+                <v-card-text>
+                  <div>
+                    <v-row>
+                      <v-col cols="12"> </v-col>
 
-                    <v-col cols="12" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ชื่อสิ้นค้า"
-                        v-model="productsItem.product_name"
-                        required
-                        color="#1D1D1D"
-                         :rules="rules"
-                      ></v-text-field>
-                    </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="ชื่อสิ้นค้า"
+                          v-model="productsItem.product_name"
+                          required
+                          color="#1D1D1D"
+                          :rules="rules"
+                        ></v-text-field>
+                      </v-col>
 
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-select
-                        label="ประเภท"
-                        outlined
-                        color="#1D1D1D"
-                        item-text="name"
-                        item-value="_id"
-                        :items="categoryname.flat()"
-                        v-model="productsItem.ref_cate_id"
-                         :rules="rules"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-select
-                        label="หน่วย"
-                        outlined
-                        color="#1D1D1D"
-                        item-text="name"
-                        item-value="_id"
-                        :items="unitname.flat()"
-                        v-model="productsItem.ref_uid"
-                         :rules="rules"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="12" md="4" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ราคาต้นทุน"
-                        v-model="productsItem.price_cost"
-                        required
-                        color="#1D1D1D"
-                         :rules="rules"
-                      ></v-text-field>
-                    </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-select
+                          label="ประเภท"
+                          outlined
+                          color="#1D1D1D"
+                          item-text="name"
+                          item-value="_id"
+                          :items="categoryname.flat()"
+                          v-model="productsItem.ref_cate_id"
+                          :rules="rules"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-select
+                          label="หน่วย"
+                          outlined
+                          color="#1D1D1D"
+                          item-text="name"
+                          item-value="_id"
+                          :items="unitname.flat()"
+                          v-model="productsItem.ref_uid"
+                          :rules="rules"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" md="4" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="ราคาต้นทุน"
+                          v-model="productsItem.price_cost"
+                          required
+                          color="#1D1D1D"
+                          :rules="rules"
+                        ></v-text-field>
+                      </v-col>
 
-                    <v-col cols="12" md="4" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ราคาขาย"
-                        v-model="productsItem.price"
-                        required
-                        color="#1D1D1D"
-                         :rules="rules"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" md="4" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="จำนวนStock"
-                        v-model="productsItem.stock"
-                        required
-                        color="#1D1D1D"
-                         :rules="rules"
-                      ></v-text-field>
-                    </v-col>
+                      <v-col cols="12" md="4" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="ราคาขาย"
+                          v-model="productsItem.price"
+                          required
+                          color="#1D1D1D"
+                          :rules="rules"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="4" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="จำนวนStock"
+                          v-model="productsItem.stock"
+                          required
+                          color="#1D1D1D"
+                          :rules="rules"
+                        ></v-text-field>
+                      </v-col>
 
-                    <v-col cols="12" class="mt-n7">
-                      <v-img
-                        v-if="imageURL"
-                        :src="imageURL"
-                        contain
-                        max-height="300px"
-                        max-width="300px"
-                        class="mb-3"
-                      ></v-img>
-                      <input
-                       
-                        type="file"
-                        @change="onFileSelected"
-                         :rules="rules"
-                      />
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-card-text>
-  </v-form>
+                      <v-col cols="12" class="mt-n7">
+                        <v-img
+                          v-if="imageURL"
+                          :src="imageURL"
+                          contain
+                          max-height="300px"
+                          max-width="300px"
+                          class="mb-3"
+                        ></v-img>
+                        <input
+                          type="file"
+                          @change="onFileSelected()"
+                          :rules="rules"
+                        />
+                      </v-col>
+                    </v-row>
+                  </div>
+                </v-card-text>
+                <v-divider class="mx-4"></v-divider>   
+              </v-form>
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
@@ -152,13 +150,21 @@
                 </v-btn>
                 <v-spacer></v-spacer>
 
-                <v-btn class="ma-1" color="info" @click="save();resetInput(); " :disabled="!valid">
+                <v-btn
+                  class="ma-1"
+                  color="info"
+                  @click="
+                    save();
+                    showAlert();
+                    reset();
+                  "
+                  :disabled="!valid"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-ticket-percent-outline
                   </v-icon>
                   เพิ่มข้อมูล
                 </v-btn>
-                
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -225,8 +231,8 @@ export default {
     search: "",
     unitname: [],
     categoryname: [],
-     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
-      valid: true,
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    valid: true,
     headers: [
       { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อสิ้นค้า", sortable: false, value: "product_name" },
@@ -235,8 +241,7 @@ export default {
       { text: "ราคาต้นทุน", sortable: false, value: "price_cost" },
       { text: "ราคา", sortable: false, value: "price" },
       { text: "สต็อก", sortable: false, value: "stock" },
-     // { text: "id", sortable: false, value: "_id" },
-      { text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
+      // { text: "id", sortable: false, value: "_id" },
       { text: "Actions", value: "actions", sortable: false }
     ],
     editedIndex: -1,
@@ -249,20 +254,21 @@ export default {
       stock: "",
       img: " "
     },
-    defaultItem:{    
+    defaultItem: {
       product_name: "",
       ref_uid: "",
       ref_cate_id: " ",
       price_cost: " ",
       price: "",
       stock: "",
-      img: " "},
-    
+      img: " "
+    },
+
     type: null,
     deleteId: null,
     uploadState: false,
     img: [],
-    error: {state: false, msg: "" },
+    error: { state: false, msg: "" },
     imageURL: null
   }),
 
@@ -279,14 +285,28 @@ export default {
       val || this.closeDelete();
     }
   },
-  created() {
-    this.initialize();
+  mounted() {
+    this.toast = this.$swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000
+    });
   },
-
   methods: {
-    resetInput() {
-      this.formdata = "";
-      
+    showAlert() {
+      this.toast({
+        type: "success",
+        title: "ดำเนิการสำเร็จ"
+      });
+      this.text_val_for_test = Date.now();
+    },
+    someFn(ev) {
+      console.log(ev);
+    },
+    reset() {
+      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
     },
     onFileSelected(event) {
       const reader = new FileReader();
@@ -297,19 +317,18 @@ export default {
       this.productsItem.img = event.target.files[0];
     },
 
-    initialize() {
-      // this.loading = true;
-      //  this.$axios.$get("/authen/user").then(user => {
-      //   this.user = user;
-      // });
-      // this.user = [];
+    getImagePreviews() {
+      let reader = new FileReader();
+      reader.addEventListener("load", () => {
+        this.imageURL = reader.result;
+      });
+      reader.readAsDataURL(this.tableItem.photo);
     },
     editItem(item) {
       this.imageURL = `http://192.168.1.24:5555/${item.img}`;
       this.type = "edit";
       this.productsItem = item;
       this.dialog = true;
-      
     },
     getProductImage(item) {
       if (this.productsItem.img.length > 100) {
@@ -359,9 +378,9 @@ export default {
     },
 
     save() {
-       this.$refs.form.validate();
+      this.$refs.form.validate();
       if (this.type === "add") {
-        this.loading = true;       
+        this.loading = true;
         let formdata = new FormData();
         formdata.append("product_name", this.productsItem.product_name);
         formdata.append("ref_uid", this.productsItem.ref_uid);
@@ -373,7 +392,7 @@ export default {
         console.log(this.productsItem);
 
         this.$emit("addProduct", formdata);
-         
+
         this.close();
       } else {
         this.loading = true;

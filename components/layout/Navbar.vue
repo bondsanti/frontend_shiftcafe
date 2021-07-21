@@ -118,11 +118,17 @@ export default {
         }
       ],
       below: [
+         {
+          icon: "mdi-apps",
+          title: "ขาย",
+          to: "/seller"
+        },
         {
           icon: "mdi-cog ",
           title: "ตั้งค่า",
           to: "/manage/settings"
-        }
+        },
+        
       ],
 
       items: [

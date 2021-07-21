@@ -1,5 +1,5 @@
 <template>
-  <div class="ma-3">
+  <div class="ma-3 rounded-lg" >
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
@@ -26,9 +26,9 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="unit" :search="search"  :items-per-page="10"
+      <v-data-table :headers="headers" :items="unit" :search="search"  :items-per-page="15"
             :footer-props="{
-    'items-per-page-options': [10, 20, 30, 40, 50,-1]
+    'items-per-page-options': [15, 20, 30, 40, 50,-1]
   }">
           <template v-slot:[`item.img`]="{}">
             <img
@@ -106,7 +106,7 @@
             <v-icon aria-hidden="false" class="mx-2">
               mdi-pencil-plus 
             </v-icon>
-            แก้ไขหน่วยนับ
+            แก้ไข
           </v-btn>
           <v-btn
             rounded-lx
@@ -117,7 +117,7 @@
             <v-icon dark class="mx-2">
               mdi-delete-forever 
             </v-icon>
-            ลบหน่วยนับ
+            ลบ
           </v-btn>
         </template>
           <template v-slot:[`item.No`]="{ index }">
@@ -141,11 +141,11 @@ export default {
     valid: true,
     search: "",
     headers: [
-      { text: "ลำดับ", sortable: false, value: "No" },
+      { text: "ลำดับ", value: "No" },
    //     { text: "ภาพ", sortable: false, value: "img" },
-      { text: "ชื่อหม่วดหมู่", align: "start", value: "u_name" },
+      { text: "ชื่อหม่วดหมู่", align: "start", value: "u_name" ,divider: true },
      // { text: "ID", align: "start", value: "_id", divider: true },
-      { text: "Actions", value: "actions", sortable: false }
+      { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
     units: { _id: "", u_name: "" },

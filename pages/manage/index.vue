@@ -5,8 +5,8 @@
       
         <v-row>
           <v-col cols="12" sm="12"><apexcharts/></v-col>
-          <v-col cols="12" sm="6"><topsell /> </v-col>
-          <v-col cols="12" sm="6"><datasell /></v-col>
+          <!-- <v-col cols="12" sm="6"><topsell /> </v-col>
+          <v-col cols="12" sm="6"><datasell /></v-col> -->
         </v-row>
       </div>
 
@@ -16,15 +16,18 @@
 </template>
 <script>
 import sell from "@/components/manage/dashboard/sell.vue";
-import topsell from "@/components/manage/dashboard/topsell.vue";
-import datasell from "@/components/manage/dashboard/datasell.vue";
-import apexcharts from "@/components/manage/dashboard/apexcharts.vue";
+// import topsell from "@/components/manage/dashboard/topsell.vue";
+// import datasell from "@/components/manage/dashboard/datasell.vue";
+ import apexcharts from "@/components/manage/dashboard/apexcharts.vue";
 export default {
+    head: {
+        title: 'หน้าผู้จัดการ'
+    },
   components: {
     sell,
-    topsell,
-    datasell,
-    apexcharts,
+    // topsell,
+    //  datasell,
+     apexcharts,
     VueApexCharts: () => import("vue-apexcharts")
   },
 

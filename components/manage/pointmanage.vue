@@ -4,13 +4,9 @@
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-card color="primary" dark class="mr-5 mb-4">
-              <span color="primary" class="mr-5 mt-2">
-                <v-icon left class="mb-2 mt-2 ml-2 ">
-                  mdi-file-powerpoint-box </v-icon
-                >จัดการพอยท์ เพิ่ม/ลด
-              </span>
-            </v-card>
+        
+              <h2 class="text-center">การ เพิ่ม/ลด พอยท์</h2>
+           
             <v-btn
               color="primary"
               disabled
@@ -87,7 +83,7 @@
           {{ index + 1 }}
         </template>
         <template v-slot:[`item.ref_emp_id`]="{ item }">
-          {{ item.ref_emp_id.pname }} - {{ item.ref_emp_id.fname }}
+          {{ item.ref_emp_id.pname }} {{ item.ref_emp_id.fname }}
           {{ item.ref_emp_id.lname }}
         </template>
         <template v-slot:[`item.point`]="{ item }">

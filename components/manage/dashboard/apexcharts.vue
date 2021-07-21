@@ -1,7 +1,7 @@
 <template>
-  <v-card>
+  <v-card class="rounded-lg"  color="">
     <v-app-bar flat color="rgba(0,0,0,0)">
-      <v-toolbar-title class="title black--text pl-0 ml-2">
+      <v-toolbar-title class="title white--text pl-0 ml-2">
         ภาพรวมร้านค้าในวันนี้
       </v-toolbar-title>
       <v-spacer></v-spacer>
@@ -14,9 +14,6 @@
             </v-btn>
           </template>
           <v-list>
-            <!-- <v-list-item v-for="(item, index) in items" :key="index">
-                        <v-list-item-title>{{ item.title }}</v-list-item-title>
-                      </v-list-item> -->
           </v-list>
         </v-menu>
       </div>
@@ -45,7 +42,12 @@ export default {
       chart: {
         id: "vuechart-example"
       },
+      fill: {
+  colors: ['#FFFFFF', '#FFFFFF', '#FFFFFF']
+},
       xaxis: {
+        fontWeight: 400,
+         strokeColor: '#fff',
         categories: [
           "9.00.น",
           "10.00.น",
@@ -57,7 +59,10 @@ export default {
           "16.00.น",
           "17.00.น",
           "18.00.น"
-        ]
+          ,
+          
+        ],
+         fontColor: 'red'
       }
     },
 

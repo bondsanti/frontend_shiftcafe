@@ -6,6 +6,9 @@
 import coupon from "@/components/manage/coupon.vue";
 export default {
   middleware: ["auth", "check"],
+    head: {
+        title: 'คูปอง'
+    },
   async asyncData(context) {
     const [coupon, employee, user] = await Promise.all([
       context.$axios.$get("/coupon"),

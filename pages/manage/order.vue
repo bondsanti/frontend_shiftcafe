@@ -6,6 +6,9 @@
 import Order from "@/components/manage/order.vue";
 
 export default {
+    head: {
+        title: 'ประวัติสั่งชื่อ'
+    },
   layout: "default",
   data() {
     return {

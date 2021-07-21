@@ -1,5 +1,5 @@
 <template>
-  <Order :orders="orders" />
+  <Order :historyOrder="orders" />
 </template>
 
 <script>

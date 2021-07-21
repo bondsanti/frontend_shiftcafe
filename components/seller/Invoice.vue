@@ -60,7 +60,7 @@
         <v-col xs="12" sm="12" md="12" class="">
           <v-card class="px-6 py-5 mb-5">
             <v-card-title>
-              <h2 class="text-center">ข้อมูลการสั่งซื้อ</h2>
+              <h2 class="text-center">ข้อมูลใบสั่งซื้อ</h2>
               <v-spacer></v-spacer>
               <v-text-field
                 v-model="search"
@@ -72,7 +72,7 @@
             </v-card-title>
             <v-data-table
               :headers="headers"
-              :items="historyOrder"
+              :items="historyInvoice"
               :search="search"
               :items-per-page="10"
               :sort-by="['datetime']"
@@ -124,9 +124,11 @@ export default {
           sortable: true,
           value: "datetime"
         },
-        { text: "ชื่อบิล", value: "bill_name" },
-        { text: "สถานะ", value: "status" },
-        { text: "ยอดสั่งซื้อ", value: "total_price" },
+        { text: "หมายเลขบิล", value: "invoice" },
+        { text: "ประเภทการชำระเงิน", value: "type_payment" },
+        { text: "ยอดสุทธิ", value: "net_price" },
+        { text: "เงินรับมา", value: "receive_money" },
+        { text: "เงินทอน", value: "withdraw_money" },
         { text: "Actions", value: "actions", sortable: false }
       ]
       //historyOrder: []
@@ -187,6 +189,6 @@ export default {
     }
   },
 
-  props: ["historyOrder"]
+  props: ["historyInvoice"]
 };
 </script>

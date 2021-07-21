@@ -1,230 +1,300 @@
 <template>
-  <v-row justify="center">
-    <v-dialog v-model="checkout" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="text-h5">Check Out</span>
-        </v-card-title>
-        <v-card-text>
-          <div>
-            <v-row>
-              <v-col cols="12">
-                <v-text-field
-                  label="รับเงินมา"
-                  autofocus
-                  outlined
-                  v-model="receive"
-                  @keypress.enter="calMoney"
-                ></v-text-field>
-              </v-col>
-              <!-- <v-col cols="12">
-                <v-text-field
-                  label="เงินทอน"
-                  outlined
-                  v-model="withdraw"
-                ></v-text-field>
-              </v-col> -->
-            </v-row>
-            <v-row>
-              <v-col cols="3"
-                ><v-btn block @click="addNum('1')">1</v-btn></v-col
-              >
-              <v-col cols="3"
-                ><v-btn block @click="addNum('2')">2</v-btn></v-col
-              >
-              <v-col cols="3"
-                ><v-btn block @click="addNum('3')">3</v-btn></v-col
-              >
-              <v-col cols="3"
-                ><v-btn block color="red" @click="silver('100')"
-                  >100 ฿</v-btn
-                ></v-col
-              >
-            </v-row>
-            <v-row>
-              <v-col cols="3" nogu
-                ><v-btn block @click="addNum('4')">4</v-btn></v-col
-              >
-              <v-col cols="3"
-                ><v-btn block @click="addNum('5')">5</v-btn></v-col
-              >
-              <v-col cols="3"
-                ><v-btn block @click="addNum('6')">6</v-btn></v-col
-              >
-              <v-col cols="3"
-                ><v-btn block color="purple darken-1" @click="silver('500')"
-                  >500 ฿</v-btn
-                ></v-col
-              >
-            </v-row>
-            <v-row>
-              <v-col cols="3"
-                ><v-btn block @click="addNum('7')">7</v-btn></v-col
-              >
-              <v-col cols="3"
-                ><v-btn block @click="addNum('8')">8</v-btn></v-col
-              >
-              <v-col cols="3"
-                ><v-btn block @click="addNum('9')">9</v-btn></v-col
-              >
-              <v-col cols="3"
-                ><v-btn block color="orange lighten-4" @click="silver('1000')"
-                  >1000 ฿</v-btn
-                ></v-col
-              >
-            </v-row>
-            <v-row>
-              <v-col cols="3" nogu></v-col>
-              <v-col cols="3"
-                ><v-btn block @click="addNum('0')">0</v-btn></v-col
-              >
-              <v-col cols="3"
-                ><v-btn block @click="delNum"
-                  ><v-icon> mdi-backspace-outline</v-icon></v-btn
-                ></v-col
-              >
-              <v-col cols="3"
-                ><v-btn block color="green" @click="silver('2000')"
-                  >ชำระเต็ม</v-btn
-                ></v-col
-              >
-            </v-row>
-            <v-row class="justify-center" v-if="error2">
-              <v-alert
-                color="red"
-                dark
-                icon="mdi-alert-circle"
-                border="left"
-                prominent
-                style="width:100%"
-              >
-                ยอดเงินที่รับมาไม่พอ
-              </v-alert>
-            </v-row>
-            <v-row class="justify-center" v-if="error1">
-              <v-alert
-                color="teal"
-                dark
-                icon="mdi-arrow-right-bold"
-                border="left"
-                prominent
-                style="width:100%"
-              >
-                <div class="d-flex flex-row justify-md-space-around">
-                  เงินทอน
-                  <h1>{{ formatPrice(withdraw) }}</h1>
-                  บาท
-                </div>
-              </v-alert>
-            </v-row>
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="closeCheckout">
-            ปิด
+  <div class="ma-3">
+    <v-card class="mx-auto mt-6 py-3 rounded-lg"  elevaation="5" justify-centaer>
+      <v-card-title>
+        <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" dark class="mr-5" v-bind="attrs" v-on="on">
+              <v-icon left> mdi-cash-register</v-icon> ลงข้อมูลเงินทอน
+            </v-btn>
+          </template>
+          <v-card>
+            <v-form>
+              <v-card-title>
+                <span class="text-h"
+                  ><v-icon left> mdi-cash-register </v-icon> กรอกข้อมูล</span
+                >
+              </v-card-title>
+              <v-divider class="mb-3"></v-divider>
+           <v-form v-model="valid" ref="form">
+              <v-card-text>
+                <v-row>
+                  <v-col cols="12">
+                    <v-select
+                      v-model="cashdraw.type"
+                      label="เลือก"
+                      outlined
+                      color="#1D1D1D"
+                      :items="items"
+                        :rules="rules"
+                      required
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="12" md="12" class="mt-n7">
+                    <v-text-field
+                      outlined
+                      label="จำนวนเงิน"
+                      required
+                      type="number"
+                      v-model="cashdraw.total_money"
+                        :rules="rules"
+                      color="#1D1D1D"
+                      prefix="฿"
+                    ></v-text-field>
+                  </v-col>
+
+                  <v-col cols="12" class="mt-n7">
+                    <v-textarea
+                      color="#1D1D1D"
+                      outlined
+                      v-model="cashdraw.remark"
+                        :rules="rules"
+                      label="หมายเหตุ"
+                    ></v-textarea>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+           </v-form>
+              <v-divider class="mt-n3"></v-divider>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="error" @click="close">
+                  <v-icon left> mdi-close </v-icon>Cancel
+                </v-btn>
+                <v-btn color="primary"  :disabled="!valid"  @click="saveData();reset();">
+                  <v-icon left> mdi-content-save </v-icon>Save
+                </v-btn>
+              </v-card-actions>
+            </v-form>
+          </v-card>
+        </v-dialog>
+
+
+        <v-spacer></v-spacer>
+
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table :headers="headers" :items="loadData" :search="search"    
+        :items-per-page="15"  
+       :footer-props="{
+    'items-per-page-options': [15, 20, 30, 40, 50,-1]
+  }">
+  <template v-slot:top>
+        <v-dialog v-model="dialogDelete" max-width="270px">
+            <v-card>
+              <v-card-title class="black--text  text-body-1 mb-4 ml-6" >
+                แน่ใจแล้วใช่มั้ยที่จะลบ
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="info" @click="closeDelete">
+                  <v-icon aria-hidden="false" class="mx-2 ma-1">
+                   mdi-close-box   </v-icon
+                  >ยกเลิก</v-btn
+                >
+                <v-btn color="primary"  @click="deleteItemConfirm();showAlert();">
+                  <v-icon aria-hidden="false" class="mx-4">  mdi-delete-forever  </v-icon
+                  >ลบ</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+  </template>
+          <template v-slot:[`item.actions`]="{ item }">
+          <v-btn class="mr2" color="warning" @click="editItem(item)">
+            <v-icon aria-hidden="false" class="mx-2">
+              mdi-pencil-plus 
+            </v-icon>
+            แก้ไข
           </v-btn>
           <v-btn
-            color="blue darken-1"
-            text
-            @click="dialog2 = true"
-            :disabled="error2"
+            rounded-lx
+            class="mr-2"
+            color="error"
+             
+            @click="deleteItem(item)"
           >
-            บันทึก
+            <v-icon  dark class="mx-2">
+              mdi-delete-forever 
+            </v-icon>
+            ลบ
           </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="dialog2" persistent max-width="320">
-      <v-card>
-        <v-card-title class="text-h5">
-          พิมพ์ใบเสร็จรับเงินหรือไม่ ?
-        </v-card-title>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="close">
-            ปิด
-          </v-btn>
-          <v-btn color="green darken-1" dark @click="save">
-            พิมพ์ใบเสร็จรับเงิน
-          </v-btn>
-        </v-card-actions>
+        </template>
+        <template v-slot:[`item.type`]="{ item }">
+          <v-chip :color="getColor(item.type)" dark small>
+            {{ item.type }}
+          </v-chip>
+        </template>
         
-      </v-card>
-    </v-dialog>
-  </v-row>
+        <template v-slot:[`item.datetime`]="{ item }">
+          <span>{{ item.datetime | moment }}</span>
+        </template>
+        <template v-slot:[`item.total_money`]="{ item }">
+          <span class="">{{ formatPrice(item.total_money) }}</span>
+        </template>
+          <template v-slot:[`item.no`]="{ index }">
+    {{ index + 1 }}
+  </template>
+  
+      </v-data-table>
+    </v-card>
+  </div>
 </template>
-<script>
-export default {
-  data: () => ({
-    receive: 0,
-    
-    withdraw: "",
-    error2: true,
-    error1: false,
-    dialog2: false
-  }),
-  props: ["netPrice", "checkout"],
-  methods: {
-    calMoney() {
-      const netPrice = Math.round(this.netPrice);
 
-      if (this.receive < netPrice) {
-        this.error2 = true;
-        this.withdraw = "";
-        this.error1 = false;
-      } else {
-        this.withdraw = parseInt(this.receive) - netPrice;
-        this.error2 = false;
-        this.error1 = true;
-      }
+<script>
+import moment from "moment";
+import milkShake from "@/assets/milkshake.svg";
+export default {
+  layout: "layoutCashier",
+  data() {
+    return {
+      //loadData: [],
+    dialog: false,
+     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+     valid: true,
+    dialogDelete: false,
+    type: null,
+    deleteId: null,
+      search: "",
+       editedIndex: -1,
+        type: null,
+    deleteId: null,
+      cashdraw: {
+        _id:" ",
+        type: "",
+        total_money: "",
+        remark: ""
+      },
+      items: ["นำเงินเข้า", "นำเงินออก"],
+      headers: [
+        { text: "ลำดับ", sortable: false, value: "no" },
+        { text: "วันที่", align: "start",sortable: false, value: "datetime" },       
+        { text: "ผู้ทำการบันทึก", value: "ref_emp_id.fname"},
+        { text: "ประเภท", value: "type" },
+        { text: "จำนวนเงิน", value: "total_money" },
+        { text: "หมายเหตุ", value: "remark" },
+        { text: "แก้ไข", value: "actions" }
+      ]
+    };
+  },
+  filters: {
+    moment: function(date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("D/MM/YY H:mm");
+    }
+  },
+
+  watch: {
+    dialog(val) {
+      val || this.close();
     },
-    closeCheckout() {
-      this.$emit("closeCheckout");
-    },
-    save() {
-      let money = {
-        withdraw: this.withdraw,
-        receive: this.receive
-      };
-      this.$emit("save", money);
-      //this.dialog2 = true;
-    },
-    silver(value) {
-      if (value === "100" || value === "500" || value === "1000") {
-        this.receive = parseInt(this.receive) + parseInt(value);
-      } else {
-        this.receive = Math.round(this.netPrice);
-      }
-      this.calMoney();
-    },
-    addNum(num) {
-      if (this.receive === 0) {
-        this.receive = "";
-        this.receive += num;
-      } else {
-        this.receive += num;
-      }
-      this.calMoney();
-      //console.log(this.receive.length);
-    },
-    delNum() {
-      let number = `${this.receive}`;
-      this.receive = number.substring(0, number.length - 1);
-      this.calMoney();
-    },
-    formatPrice(value2) {
-      const value = parseInt(value2);
-      let val = (value / 1).toFixed(2).replace(",", ".");
-      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    },
-    close() {
-      this.dialog2 = false;
+    dialogDelete(val) {
+      val || this.closeDelete();
     }
   },
   created() {
-    //this.calMoney();
-  }
+    this.initialize();
+  },
+  
+    mounted() {
+    this.toast = this.$swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000
+    });
+  },
+  methods: {
+     showAlert() {
+         this.toast({
+        type: "success",
+        title:
+          "ดำเนิการสำเร็จ"
+      });
+       this.text_val_for_test = Date.now();
+  
+    },
+      someFn(ev) {
+      console.log(ev)}
+      ,
+      reset() {
+      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
+    },
+    initialize() {},
+    formatPrice(total_money) {
+      const value = parseInt(total_money);
+      let val = (value / 1).toFixed(2).replace(",", ".");
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+    getColor(type) {
+      if (type === "นำเงินเข้า") return "green";
+      else  return "red";
+
+    },
+    editItem(item) {
+      this.type = "edit";
+      this.cashdraw = item;
+      this.dialog = true;
+    },
+
+     deleteItem(item) {
+      this.deleteId = item._id;
+       this.editedIndex = this.loadData.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+      deleteItemConfirm() {
+      this.loadData.splice(this.editedIndex, 1);
+      this.$axios.$delete("/withdraw/" + this.deleteId).then(() => {});
+      this.closeDelete();
+    },
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+      closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    saveData() {
+      this.$refs.form.validate();
+       if (this.type === "edit") {
+        this.loading = true;
+           this.$axios
+          .$put("/withdraw/" + this.cashdraw._id, this.cashdraw)
+          .then(() => {
+            this.close();
+          })
+      
+      } else {
+      //alert(JSON.stringify(this.cashdraw));
+      this.$emit("addCashdraw", this.cashdraw);
+      //alert(JSON.stringify(this.cashdraw));
+      this.dialog = false;
+      this.close();
+    }
+    }
+  },
+
+  components: {
+    milkShake
+  },
+  props: ["loadData"]
 };
 </script>

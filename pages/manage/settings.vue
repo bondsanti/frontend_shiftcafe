@@ -66,6 +66,9 @@
 <script>
 import setpayoutspoints from "@/components/manage/settings/setpayoutspoints.vue";
 export default {
+    head: {
+        title: 'ตั้งค่า'
+    },
     components: {
     setpayoutspoints
   },

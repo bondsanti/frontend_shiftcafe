@@ -36,7 +36,7 @@
         </div>
       </v-card>
     </v-hover>
-    <v-dialog v-model="dialog" max-width="500">
+    <v-dialog v-model="dialog" max-width="650">
       <v-card>
         <v-card-title class="text-h5">
           ตั้งค่าอัตราการจ่ายแต้ม

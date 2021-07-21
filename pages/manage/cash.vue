@@ -3,48 +3,33 @@
 </template>
 
 <script>
-import cash from "@/components/seller/cashdraw.vue";
 
+import cash from "@/components/manage/cash.vue";
 export default {
+    head: {
+        title: 'เงินทอน'
+    },
   layout: "default",
   data() {
     return {
       loadData: []
     };
   },
-  components: {
-    cash
-  },
-
   async asyncData(context) {
     const loadData = await context.$axios.$get("/withdraw");
-    //console.log(cashdrawData);
     return { loadData };
+  },
+   components: {
+    cash
   },
   methods: {
     async onSubmitted(cashdrawData) {
-      // console.log("Result : ", cashdrawData);
-    await this.$axios.$post("/withdraw", cashdrawData)
-        .then(res => {
-          console.log(res);
-        })
-        .catch(res => {
-          console.log(res);
-        });
-      //this.loadData = context.$axios.$get("/withdraw");
-      //
+      await this.$axios.$post("/withdraw", cashdrawData)
        this.loadData = await this.$axios.$get("/withdraw");
     }
-
-    // async getAll(context) {
-    //   const cashdrawData = await context.$axios.$get("/withdraw");
-    //   console.log(cashdrawData);
-    //   return { cashdrawData: cashdrawData };
-    //   // console.log("cashdrawData");
-    // }
   },
     data: () => ({
-    Cashdraw: []
+    loadData: []
   })
 };
 </script>

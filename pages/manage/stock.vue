@@ -7,6 +7,9 @@
 import stock from "@/components/manage/stock.vue";
 export default {
   middleware: ["auth", "check"],
+    head: {
+        title: 'สต๊อก'
+    },
   async asyncData(context) {
     const [stock, product] = await Promise.all([
       context.$axios.$get("/stock"),

@@ -31,9 +31,9 @@
         :items="coupon"
         :search="search"
         :items-per-page="10"
-            :footer-props="{
-    'items-per-page-options': [10, 20, 30, 40, 50,-1]
-  }"
+        :footer-props="{
+          'items-per-page-options': [10, 20, 30, 40, 50, -1]
+        }"
       >
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
@@ -56,7 +56,6 @@
                           label="ชื่อคูปอง"
                           v-model="coupone.codename"
                           :rules="rules"
-                      
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
@@ -103,8 +102,7 @@
                           label="ส่วนลดในคูปอง"
                           v-model="coupone.discount"
                           :rules="numberRules"
-                         type="nubar"
-                         
+                          type="nubar"
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
@@ -114,8 +112,8 @@
                           outlined
                           label="จำคูปองที่สามารถใช้ได้"
                           v-model="coupone.num_use"
-                           :rules="numberRules"
-                         type="nubar"
+                          :rules="numberRules"
+                          type="nubar"
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
@@ -127,7 +125,7 @@
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
-                     mdi-close-box 
+                    mdi-close-box
                   </v-icon>
                   ยกเลิก
                 </v-btn>
@@ -135,11 +133,14 @@
                 <v-btn
                   class="ma-1"
                   color="info"
-                  @click="save();showAlert();"
+                  @click="
+                    save();
+                    showAlert();
+                  "
                   :disabled="!valid"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
-                     mdi-content-save
+                    mdi-content-save
                   </v-icon>
                   เพิ่มข้อมูลคูปอง
                 </v-btn>
@@ -155,12 +156,19 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                     mdi-close-box  </v-icon
+                    mdi-close-box </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm();showAlert();">
+                <v-btn
+                  color="primary"
+                  class="ma-2"
+                  @click="
+                    deleteItemConfirm();
+                    showAlert();
+                  "
+                >
                   <v-icon aria-hidden="false" class="mx-4">
-                     mdi-delete-forever  </v-icon
+                    mdi-delete-forever </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -171,7 +179,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-               mdi-pencil-plus 
+              mdi-pencil-plus
             </v-icon>
             แก้ไขคูปอง
           </v-btn>
@@ -182,16 +190,32 @@
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-              mdi-delete-forever 
+              mdi-delete-forever
             </v-icon>
             ลบคูปอง
           </v-btn>
         </template>
-           <template v-slot:[`item.No`]="{ index }">
+        <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
         <template v-slot:[`item.exp`]="{ item }">
           <span>{{ item.exp | moment }}</span>
+        </template>
+        <template v-slot:[`item.discount`]="{ item }">
+          <v-chip :color="getColorstatus(item.discount)" dark small>
+            <v-icon class="ma-2 ml-1" color="">
+              mdi-brightness-percent
+            </v-icon>
+            {{ item.discount }}
+          </v-chip>
+        </template>
+        <template v-slot:[`item.num_use`]="{ item }">
+          <v-chip :color="getColorstatususe(item.num_use)" dark small>
+            <v-icon class="ma-2 ml-1" color="">
+              mdi-account
+            </v-icon>
+            {{ item.num_use }}
+          </v-chip>
         </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
@@ -209,31 +233,28 @@ export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
-     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valid: true,
     search: "",
     Empname: [],
     useronline: [],
     headers: [
-       { text: "ลำดับ", sortable: false, value: "No" },
+      { text: "ลำดับ", sortable: false, value: "No" },
       {
         text: "ชื่อหม่วดหมู่",
         align: "start",
         value: "codename"
-        
       },
 
       {
         text: "ออกให้พนักงาน",
         align: "start",
         value: "ref_emp_id"
-       
       },
       {
         text: " คนออกคูปอง",
         align: "start",
         value: "ref_emp_id_by"
-      
       },
       { text: "วันหมดอายุ", align: "start", value: "exp" },
       { text: "ส่วนลด (%) ", align: "start", value: "discount" },
@@ -243,9 +264,9 @@ export default {
         value: "num_use",
         divider: true
       },
-      { text: "Actions", value: "actions", sortable: false }
+      { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
-     numberRules: [
+    numberRules: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ],
@@ -283,9 +304,8 @@ export default {
       val || this.closeDelete();
     }
   },
-  created() {
-  },
-   mounted() {
+  created() {},
+  mounted() {
     this.toast = this.$swal.mixin({
       toast: true,
       position: "top-end",
@@ -294,19 +314,24 @@ export default {
     });
   },
   methods: {
-     showAlert() {
-         this.toast({
-        type: "success",
-        title:
-          "ดำเนิการสำเร็จ"
-      });
-       this.text_val_for_test = Date.now();
-  
+    getColorstatus(discount) {
+      if (discount) return "green";
+      else return "red";
     },
-      someFn(ev) {
-      console.log(ev)}
-      ,
-
+     getColorstatususe(num_use) {
+      if (num_use) return "teal";
+      else return "red";
+    },
+    showAlert() {
+      this.toast({
+        type: "success",
+        title: "ดำเนิการสำเร็จ"
+      });
+      this.text_val_for_test = Date.now();
+    },
+    someFn(ev) {
+      console.log(ev);
+    },
     editItem(item) {
       this.type = "edit";
       this.coupone = item;

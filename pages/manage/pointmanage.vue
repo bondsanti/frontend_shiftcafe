@@ -9,7 +9,12 @@
 <script>
 import pointmanage from "@/components/manage/pointmanage.vue";
 export default {
-  middleware: ["auth", "check"],
+
+ middleware: ["auth", "check"],
+   head: {
+        title: 'แต้ม'
+    },
+
   async asyncData(context) {
     const pointmanage = await context.$axios.$get("/point-manage");
     const customers = await context.$axios.$get("/customer2");

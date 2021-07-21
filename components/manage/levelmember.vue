@@ -150,6 +150,14 @@
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
+          <template v-slot:[`item.discount`]="{ item }">
+          <v-chip :color="getColorstatus(item.discount)" dark small>
+            <v-icon class="ma-2 ml-1" color="">
+              mdi-brightness-percent
+            </v-icon>
+            {{ item.discount }}
+          </v-chip>
+        </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -173,7 +181,7 @@ export default {
       { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อหม่วดหมู่", align: "start", value: "level_name" },
       //{ text: "ID", align: "start", value: "_id", divider: true },
-      { text: "ส่วนลด()", align: "start", value: "discount" },
+      { text: "ส่วนลด(%)", align: "start", value: "discount" },
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
@@ -205,6 +213,10 @@ export default {
     });
   },
   methods: {
+     getColorstatus(discount) {
+      if (discount) return "green";
+      else return "red";
+    },
     showAlert() {
       this.toast({
         type: "success",

@@ -6,6 +6,9 @@
 import category from "@/components/manage/category.vue";
 export default {
 middleware: ["auth", "check"],
+  head: {
+        title: 'หมวดหมูสินค้า'
+    },
   async asyncData(context) {
     const category = await context.$axios.$get("/category");
     //console.log(unit);

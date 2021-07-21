@@ -92,9 +92,9 @@
 
                       <v-col cols="12" sm="6">
                         <v-text-field
-                          v-model="customerItme.birthday"
+                           v-model="customerItme.birthday"
                           :readonly="editedIndex === 0"
-                          :rules="requiredRules"
+                           :rules="rules"
                           type="date"
                           label="วันเกิด"
                           outlined
@@ -106,7 +106,8 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.tel"
-                          :readonly="editedIndex === 0"                       
+                          :readonly="editedIndex === 0"   
+                            hint="ไม่ต้องเติม - ในเบอร์โทรศัพท์"                    
                           maxlength="10"
                           :rules="numberRules"
                           label="เบอร์โทรติดต่อ"
@@ -146,16 +147,15 @@
                           item-text="name"
                           item-value="_id"
                           v-model="customerItme.ref_level_id"
-                          :items="level"
-                          
+                          :items="level"                         
                           :readonly="editedIndex === 0"
-                          :rules="requiredRules"
+                           :rules="rules"
                         ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.point"
-                          :rules="numberRules"
+                          
                           :readonly="editedIndex === 0"
                           type="number"
                           label="แต้ม"
@@ -308,8 +308,7 @@ export default {
         "โปรใส่อีเมลให้ถูกต้อง"
     ],
     numberRules: [
-      v => !!v.length <= 10 || "โปรดกรอกข้อความให้ครบในช่อง!",
-      v => v.length <= 10 || "ใส่ตัวเลขเกิน10ตัว",
+      v => (/\d{9,10}/.test(v) && v.length <= 10) || 'เบอร์โทรศัพท์ไม่ถูกต้อง',
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ]
   }),
@@ -365,7 +364,7 @@ export default {
         email: "",
         address: "",
         ref_level_id: "",
-        point: ""
+        point: "0"
       };
       this.dialog = true;
     },

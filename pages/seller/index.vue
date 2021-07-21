@@ -42,10 +42,10 @@
             class="rounded-md d-flex flex-row flex-wrap overflow-y-auto mt-4 scroll"
           >
             <Product
-              v-for="product in product2"
-              :key="product._id"
+              v-for="(product, i) in product2"
+              :key="i"
               :product="product"
-              @addOrder="addOrder"
+              @addOrder="addOrder(i)"
             />
           </v-card>
         </v-card>
@@ -173,6 +173,7 @@
                 :rules="rules"
                 autofocus
                 v-model="bill_name"
+                @keypress.enter="addOrderToDatabase"
               ></v-text-field>
             </v-card-text>
           </v-form>
@@ -285,7 +286,8 @@ export default {
     ConfirmOrder
   },
   data: () => ({
-    cateName: "Coffee",
+    cateName: "Food & Drink",
+    products: [],
     orders: [],
     dialog: false,
     row: null,
@@ -320,13 +322,14 @@ export default {
       );
       this.cateName = cate.cate_name;
     },
-    addOrder(product) {
+    addOrder(i) {
       const orderObj = {
-        ref_pro_id: product._id,
-        name: product.product_name,
+        ref_pro_id: this.product2[i]._id,
+        name: this.product2[i].product_name,
         qty: 1,
-        price: product.price
+        price: this.product2[i].price
       };
+
       for (let i in this.orders) {
         if (this.orders[i].name === orderObj.name) {
           this.orders[i].qty++;
@@ -405,7 +408,8 @@ export default {
       //console.log(preOrder);
       const res = await this.$axios.post("/order", preOrder);
       if (res.status === 200) {
-        this.refreshUser();
+        //this.refreshUser();
+        this.orderOnDatabase = await this.$axios.$get("/order-hold");
         this.orders = [];
         this.subTotal = 0;
         this.bill_name = null;

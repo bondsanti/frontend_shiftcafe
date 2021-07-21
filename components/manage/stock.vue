@@ -31,86 +31,86 @@
         :items="stock"
         :search="search"
         :items-per-page="10"
-            :footer-props="{
-    'items-per-page-options': [10, 20, 30, 40, 50,-1]
-  }"
+        :footer-props="{
+          'items-per-page-options': [10, 20, 30, 40, 50, -1]
+        }"
       >
-      <template v-slot:[`item.img`]="{ item }">
-          <img
-            :src="'https://api.shift-cafe.com/' + item.img"
-            class="mt-2 mb-2 rounded-xl"
-            aspect-ratio="1"
-            style="width: 150px; height: 150px"
-          />
-        </template>
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
-              <v-form v-model="valid" ref="form">
-            <v-card>
-              <v-card-title>
-                <span class="text-h5"
-                  ><v-icon left> mdi-fridge-industrial-outline </v-icon> {{ formTitle }}</span
-                >
-              </v-card-title>
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12"> </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-select
-                        label="ประเภท"
-                        outlined
-                        color="#1D1D1D"
-                        item-text="name"
-                        item-value="_id"
-                        :items="productitme.flat()"
-                        v-model="stockitme.ref_pro_id"
-                         :rules="requiredRules"
-                        
-                        required
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="จำนวลอาหารที่พร้อมขาย"
-                        v-model="stockitme.qty_max"
-                        :rules="nameRules"
-                        required
-                        type="numbar"
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ให้แจ้งเตื่อนเมื่่อใกล้หมด"
-                        v-model="stockitme.qty_min"
-                        :rules="nameRules"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
+            <v-form v-model="valid" ref="form">
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5"
+                    ><v-icon left> mdi-fridge-industrial-outline </v-icon>
+                    {{ formTitle }}</span
+                  >
+                </v-card-title>
+                <v-card-text>
+                  <div>
+                    <v-row>
+                      <v-col cols="12"> </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-select
+                          label="รายการ"
+                          outlined
+                          color="#1D1D1D"
+                          item-text="name"
+                          item-value="_id"
+                          :items="productitme.flat()"
+                          v-model="stockitme.ref_pro_id"
+                          :rules="requiredRules"
+                          required
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="จำนวลอาหารที่พร้อมขาย"
+                          v-model="stockitme.qty_max"
+                          :rules="nameRules"
+                          required
+                          type="numbar"
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="ให้แจ้งเตื่อนเมื่่อใกล้หมด"
+                          v-model="stockitme.qty_min"
+                          :rules="nameRules"
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </div>
+                </v-card-text>
 
-              <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
-                  <v-icon aria-hidden="false" class="mx-2">
-                    mdi-close-box
-                  </v-icon>
-                  ยกเลิก
-                </v-btn>
-                <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" @click="save();showAlert();" :disabled="!valid">
-                  <v-icon aria-hidden="false" class="mx-2">
-                     mdi-content-save 
-                  </v-icon>
-                  เพิ่มข้อมูล
-                </v-btn>
-              </v-card-actions>
-            </v-card>
+                <v-card-actions>
+                  <v-btn class="ma-1" color="primary" dark @click="close">
+                    <v-icon aria-hidden="false" class="mx-2">
+                      mdi-close-box
+                    </v-icon>
+                    ยกเลิก
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    class="ma-1"
+                    color="info"
+                    @click="
+                      save();
+                      showAlert();
+                    "
+                    :disabled="!valid"
+                  >
+                    <v-icon aria-hidden="false" class="mx-2">
+                      mdi-content-save
+                    </v-icon>
+                    เพิ่มข้อมูล
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
             </v-form>
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="270px">
@@ -122,23 +122,30 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-close-box 	 </v-icon
+                    mdi-close-box </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm();showAlert();">
-                  <v-icon aria-hidden="false" class="mx-4"> mdi-delete-forever </v-icon
+                <v-btn
+                  color="primary"
+                  class="ma-2"
+                  @click="
+                    deleteItemConfirm();
+                    showAlert();
+                  "
+                >
+                  <v-icon aria-hidden="false" class="mx-4">
+                    mdi-delete-forever </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
-            
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-              mdi-pencil-plus 
+              mdi-pencil-plus
             </v-icon>
             แก้ไขข้อมูลSTOCK
           </v-btn>
@@ -149,29 +156,28 @@
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-               mdi-delete-forever
+              mdi-delete-forever
             </v-icon>
             ลบข้อมูลSTOCK
           </v-btn>
-          
-         </template>
-            <template v-slot:[`item.datetime`]="{ item }">
+        </template>
+        <template v-slot:[`item.datetime`]="{ item }">
           <span>{{ item.datetime | moment }}</span>
         </template>
-         <template v-slot:[`item.qty_min`]="{ item }">
+        <template v-slot:[`item.qty_min`]="{ item }">
           <v-chip :color="getColor(item.qty_min)" dark small>
             {{ item.qty_min }}
           </v-chip>
         </template>
 
-         <template v-slot:[`item.qty_max`]="{ item }">
+        <template v-slot:[`item.qty_max`]="{ item }">
           <v-chip :color="getColormax(item.qty_max)" dark small>
             {{ item.qty_max }}
           </v-chip>
         </template>
-  <template v-slot:[`item.No`]="{ index }">
-    {{ index + 1 }}
-  </template>
+        <template v-slot:[`item.No`]="{ index }">
+          {{ index + 1 }}
+        </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -190,11 +196,11 @@ export default {
     dialogDelete: false,
     search: "",
     select: null,
-     valid: true,
+    valid: true,
     productitme: [],
     headers: [
       { text: "ลำดับ", sortable: false, value: "No" },
-      { text: "ชื่อสิ้นค้า", align: "start", value: "ref_pro_id" },
+      { text: "ชื่อสิ้นค้า", align: "start", value: "ref_pro_id.product_name" },
       { text: "ให้แจ้งเตื่อนเมื่่อใกล้หมด", align: "start", value: "qty_min" },
       { text: "จำนวลอาหารที่พร้อมขาย", align: "start", value: "qty_max" },
       { text: "พนักงานที่แก้ไข", align: "start", value: "ref_emp_id" },
@@ -211,12 +217,12 @@ export default {
     },
     type: null,
     deleteId: null,
-    requiredRules: [(v) => !!v || "โปรดกรอกข้อความให้ครบในช่อง!"],
+    requiredRules: [v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!"],
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     nameRules: [
-        v => !!v || 'โปรใส่เป็นตัวเลข',
-        v => (v && v.length <= 3) || 'โปรดกรองข้อมูล',
-      ],
+      v => !!v || "โปรใส่เป็นตัวเลข",
+      v => (v && v.length <= 3) || "โปรดกรองข้อมูล"
+    ]
   }),
 
   computed: {
@@ -224,7 +230,7 @@ export default {
       return this.editedIndex === -1 ? "จัดการข้อมมูล " : "จัดการข้อมูล ";
     }
   },
-    filters: {
+  filters: {
     moment: function(date) {
       // return moment(date).format('Do MMMM YYYY').add(543, 'years')
       var strdate = moment(date).add(543, "years");
@@ -245,7 +251,7 @@ export default {
   mounted() {
     this.getProduct();
   },
- mounted() {
+  mounted() {
     this.toast = this.$swal.mixin({
       toast: true,
       position: "top-end",
@@ -254,18 +260,16 @@ export default {
     });
   },
   methods: {
-     showAlert() {
-         this.toast({
+    showAlert() {
+      this.toast({
         type: "success",
-        title:
-          "ดำเนิการสำเร็จ"
+        title: "ดำเนิการสำเร็จ"
       });
-       this.text_val_for_test = Date.now();
-  
+      this.text_val_for_test = Date.now();
     },
-      someFn(ev) {
-      console.log(ev)}
-      ,
+    someFn(ev) {
+      console.log(ev);
+    },
     getProduct() {
       this.$axios
         .get(`/product/`)
@@ -327,27 +331,24 @@ export default {
         this.productitme.push(prod);
       }
     },
-     getColor(qty_min) {
-      if (qty_min > "20" ) return "green";
-       else if (qty_min > "10") return 'orange'
-       else return 'red'
-
+    getColor(qty_min) {
+      return "#1E88E5";
     },
-        getColormax(qty_max) {
-      if (qty_max > "99" ) return "green";
-       else if (qty_max >= "19") return 'orange'
-       else return 'red'
-
+    getColormax(qty_max) {
+      if (qty_max > "50") return "green";
+      else if (qty_max >= "30") return "orange";
+      else return "red";
     },
-    
+
     save() {
-       this.$refs.form.validate();
+      this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
-        
+
         this.$emit("addStock", { ...this.stockitme });
         this.close();
       } else {
+        //console.log(this.stockitme);
         this.loading = true;
         this.$axios
           .$put("/stock/" + this.stockitme._id, this.stockitme)

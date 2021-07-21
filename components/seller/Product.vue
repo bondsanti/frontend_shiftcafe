@@ -17,8 +17,9 @@
         <div class="font-weight primary--text text-h6  text-center">
           {{ product.product_name }}
         </div>
+
         <h3 class="text-h5 font-weight-bold info--text  text-center">
-          {{ product.price }}
+          {{ product.price }} ฿
         </h3>
       </v-card-text>
     </v-card>
@@ -28,11 +29,17 @@
 <script>
 export default {
   props: ["product"],
+  data: () => ({
+    stock: false,
+    stock2: false,
+    min: 0
+  }),
   methods: {
     addOrder() {
-      this.$emit("addOrder", this.product);
+      this.$emit("addOrder");
     }
-  }
+  },
+  created() {}
 };
 </script>
 

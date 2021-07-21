@@ -30,8 +30,9 @@
         :headers="headers"
         :items="customer"
         :search="search"
-          :items-per-page="15"  
-       :footer-props="{'items-per-page-options': [15, 20, 30, 40, 50,-1] }"    >
+        :items-per-page="15"
+        :footer-props="{ 'items-per-page-options': [15, 20, 30, 40, 50, -1] }"
+      >
         <template v-slot:[`item.img`]="{}">
           <img
             src="@/assets/img/photo-2.jpg"
@@ -103,10 +104,10 @@
                         ></v-text-field>
                       </v-col>
 
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="4">
                         <v-text-field
                           v-model="customerItme.tel"
-                          :readonly="editedIndex === 0"                       
+                          :readonly="editedIndex === 0"
                           maxlength="10"
                           :rules="numberRules"
                           label="เบอร์โทรติดต่อ"
@@ -116,13 +117,16 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                      <!-- <v-col cols="12" sm="2">
-                        <v-btn small @click="checkTel(check)">เช๊ค</v-btn>
-                        <div class="mt-2" v-if="check">
-                          <span class="text-red mt- ">ซ้ำ</span>
-                          
+                      <v-col
+                        cols="12"
+                        sm="2"
+                        class="justify-center align-center"
+                      >
+                        <v-btn small fab @click="check">เช๊ค</v-btn>
+                        <div class="mt-2 ml-4" v-if="telErr">
+                          <span class="red--text ">ซ้ำ</span>
                         </div>
-                      </v-col> -->
+                      </v-col>
 
                       <v-col cols="12" sm="6">
                         <v-text-field
@@ -163,7 +167,6 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.point"
-                          :rules="numberRules"
                           :readonly="editedIndex === 0"
                           type="number"
                           label="แต้ม"
@@ -283,7 +286,7 @@ export default {
     pnamesec: ["นาย", "นาง", "นางสาว"],
     level: [],
     headers: [
-    //  { text: "ภาพ", sortable: false, value: "img" },
+      //  { text: "ภาพ", sortable: false, value: "img" },
       { text: "คำนำหน้า", align: "start", value: "pname" },
       { text: "ชื่อ", align: "start", value: "fname" },
       { text: "นามสกุล", align: "start", value: "lname" },
@@ -307,7 +310,7 @@ export default {
     },
     type: null,
     deleteId: null,
-    requiredRules: [v => !!v.length <= 25 || "โปรดกรอกข้อความให้ครบในช่อง!"],
+    requiredRules: [v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!"],
     emailRules: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
       v =>
@@ -319,7 +322,8 @@ export default {
       v => !!v.length <= 10 || "โปรดกรอกข้อความให้ครบในช่อง!",
       v => v.length <= 10 || "ใส่ตัวเลขเกิน10ตัว",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
-    ]
+    ],
+    telErr: false
   }),
   computed: {
     formTitle() {
@@ -345,12 +349,19 @@ export default {
   },
 
   methods: {
-    checkTel(tel) {
-      this
-       const customer = $get("/customer-tel" + $tel);
-      return { category };
+    async check() {
+      const cus = await this.$axios.$get(
+        "/customer-tel/" + this.customerItme.tel
+      );
+      if (cus.length > 0) {
+        this.telErr = true;
+      } else {
+        this.telErr = false;
+      }
+      //return { category };
     },
     viewItem(item) {
+      console.log(item);
       this.editedIndex = 0;
       this.customerItme = Object.assign({}, item);
       this.dialog = true;

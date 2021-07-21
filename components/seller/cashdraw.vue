@@ -16,6 +16,7 @@
                 >
               </v-card-title>
               <v-divider class="mb-3"></v-divider>
+           <v-form v-model="valid" ref="form">
               <v-card-text>
                 <v-row>
                   <v-col cols="12">
@@ -25,6 +26,7 @@
                       outlined
                       color="#1D1D1D"
                       :items="items"
+                        :rules="rules"
                       required
                     ></v-select>
                   </v-col>
@@ -33,7 +35,9 @@
                       outlined
                       label="จำนวนเงิน"
                       required
+                      type="number"
                       v-model="cashdraw.total_money"
+                        :rules="rules"
                       color="#1D1D1D"
                       prefix="฿"
                     ></v-text-field>
@@ -44,18 +48,20 @@
                       color="#1D1D1D"
                       outlined
                       v-model="cashdraw.remark"
+                        :rules="rules"
                       label="หมายเหตุ"
                     ></v-textarea>
                   </v-col>
                 </v-row>
               </v-card-text>
+           </v-form>
               <v-divider class="mt-n3"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="error" @click="close">
                   <v-icon left> mdi-close </v-icon>Cancel
                 </v-btn>
-                <v-btn color="primary" @click="saveData">
+                <v-btn color="primary"  :disabled="!valid"  @click="saveData();reset();">
                   <v-icon left> mdi-content-save </v-icon>Save
                 </v-btn>
               </v-card-actions>
@@ -112,9 +118,10 @@
             rounded-lx
             class="mr-2"
             color="error"
+             disabled
             @click="deleteItem(item)"
           >
-            <v-icon dark class="mx-2">
+            <v-icon  dark class="mx-2">
               mdi-delete-forever 
             </v-icon>
             ลบ
@@ -150,6 +157,8 @@ export default {
     return {
       //loadData: [],
     dialog: false,
+     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+     valid: true,
     dialogDelete: false,
     type: null,
     deleteId: null,
@@ -179,7 +188,7 @@ export default {
     moment: function(date) {
       // return moment(date).format('Do MMMM YYYY').add(543, 'years')
       var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY");
+      return moment(strdate).format("D/MM/YY H:mm");
     }
   },
 
@@ -216,6 +225,10 @@ export default {
       someFn(ev) {
       console.log(ev)}
       ,
+      reset() {
+      this.$refs.form.reset();
+      this.$refs.form.resetValidation();
+    },
     initialize() {},
     formatPrice(total_money) {
       const value = parseInt(total_money);
@@ -260,6 +273,7 @@ export default {
     },
 
     saveData() {
+      this.$refs.form.validate();
        if (this.type === "edit") {
         this.loading = true;
            this.$axios

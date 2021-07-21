@@ -136,16 +136,16 @@ export default {
           title: "ข้อมูลเงินทอน",
           to: "/manage/cash"
         },
-        {
-          icon: "mdi-account-plus ",
-          title: "ลงทะเบียนสมาชิก",
-          to: "/manage/register"
-        },
-        {
-          icon: "mdi-fridge-industrial-outline",
-          title: "จัดการstock",
-          to: "/manage/stock"
-        },
+        // {
+        //   icon: "mdi-account-plus ",
+        //   title: "ลงทะเบียนสมาชิก",
+        //   to: "/manage/register"
+        // },
+        // {
+        //   icon: "mdi-fridge-industrial-outline",
+        //   title: "จัดการstock",
+        //   to: "/manage/stock"
+        // },
         {
           icon: "mdi-clipboard account outline",
           title: "จัดข้อมูลสมาชิก",

@@ -30,11 +30,8 @@
         :headers="headers"
         :items="customer"
         :search="search"
-        :items-per-page="10"
-             :footer-props="{
-    'items-per-page-options': [10, 20, 30, 40, 50,-1]
-  }"
-      >
+          :items-per-page="15"  
+       :footer-props="{'items-per-page-options': [15, 20, 30, 40, 50,-1] }"    >
         <template v-slot:[`item.img`]="{}">
           <img
             src="@/assets/img/photo-2.jpg"
@@ -49,13 +46,13 @@
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left> mdi-account-plus </v-icon>
-                  สมัครสมาชิก</span
+                  {{ formTitle }}</span
                 >
               </v-card-title>
 
               <v-card-text>
                 <v-form v-model="valid" ref="form">
-                  <v-container>
+                  <div>
                     <v-row>
                       <v-col cols="12">
                         <v-select
@@ -65,12 +62,15 @@
                           :items="pnamesec"
                           v-model="customerItme.pname"
                           :rules="requiredRules"
+                          :readonly="editedIndex === 0"
                         ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.fname"
+                          maxlength="25"
                           :rules="requiredRules"
+                          :readonly="editedIndex === 0"
                           label="ชื่อ"
                           outlined
                           required
@@ -80,7 +80,9 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.lname"
+                          maxlength="25"
                           :rules="requiredRules"
+                          :readonly="editedIndex === 0"
                           label="นามสกุล"
                           outlined
                           required
@@ -91,6 +93,7 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.birthday"
+                          :readonly="editedIndex === 0"
                           :rules="requiredRules"
                           type="date"
                           label="วันเกิด"
@@ -98,10 +101,13 @@
                           required
                           color="#1D1D1D"
                         ></v-text-field>
-                      </v-col>             
+                      </v-col>
+
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.tel"
+                          :readonly="editedIndex === 0"                       
+                          maxlength="10"
                           :rules="numberRules"
                           label="เบอร์โทรติดต่อ"
                           outlined
@@ -110,9 +116,18 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
+                      <!-- <v-col cols="12" sm="2">
+                        <v-btn small @click="checkTel(check)">เช๊ค</v-btn>
+                        <div class="mt-2" v-if="check">
+                          <span class="text-red mt- ">ซ้ำ</span>
+                          
+                        </div>
+                      </v-col> -->
+
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.email"
+                          :readonly="editedIndex === 0"
                           label="อีเมล"
                           :rules="emailRules"
                           outlined
@@ -124,6 +139,7 @@
                         <v-text-field
                           v-model="customerItme.address"
                           :rules="requiredRules"
+                          :readonly="editedIndex === 0"
                           label="ที่อยู่"
                           outlined
                           required
@@ -139,6 +155,8 @@
                           item-value="_id"
                           v-model="customerItme.ref_level_id"
                           :items="level"
+                          disabled
+                          :readonly="editedIndex === 0"
                           :rules="requiredRules"
                         ></v-select>
                       </v-col>
@@ -146,29 +164,24 @@
                         <v-text-field
                           v-model="customerItme.point"
                           :rules="numberRules"
+                          :readonly="editedIndex === 0"
                           type="number"
                           label="แต้ม"
                           outlined
                           required
-                          value="10.00"
+                          disabled
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
                     </v-row>
-                  </v-container>
+                  </div>
                 </v-form>
               </v-card-text>
 
-              <v-card-actions>
-                <v-btn
-                  class="ma-1"
-                  color="primary"
-                 
-                  dark
-                  @click="close"
-                >
+              <v-card-actions v-if="editedIndex !== 0">
+                <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-close-box 
+                    mdi-close-box
                   </v-icon>
                   ยกเลิก
                 </v-btn>
@@ -177,10 +190,10 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="save();showAlert()"
+                  @click="save"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-content-save 
+                    mdi-content-save
                   </v-icon>
                   บันทึกข้อมูลลูกค้า
                 </v-btn>
@@ -199,46 +212,54 @@
                     mdi-food-off </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm();showAlert();">
-                  <v-icon aria-hidden="false" class="mx-4"> mdi-delete-foreve </v-icon
+                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
+                  <v-icon aria-hidden="false" class="mx-4"> mdi-barley </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <!-- ดูข้อมูล -->
         </template>
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr2" 
-            disabled  
-            color="warning"
-             @click="editItem(item)">
-            <v-icon aria-hidden="false" class="mx-2">
-              mdi-pencil-plus 
+        <template v-slot:[`item.viewItem`]="{ item }">
+          <v-btn class="mr1" color="success" @click="viewItem(item)">
+            <v-icon aria-hidden="false" class="me-1">
+              mdi-eye
             </v-icon>
-            แก้ไขมูลสมาชิก
+            ดูข้อมูล
+          </v-btn>
+        </template>
+
+        <!-- ดูข้อมูล -->
+        <template v-slot:[`item.actions`]="{ item }">
+          <v-btn class="mr1" color="warning" @click="editItem(item)">
+            <v-icon aria-hidden="false" class="me-1">
+              mdi-pencil-plus
+            </v-icon>
+            แก้ไข
           </v-btn>
           <v-btn
             rounded-lx
-            class="mr-2"
+            class="mr-1"
             color="error"
-              disabled
+            disabled
             @click="deleteItem(item)"
           >
-            <v-icon dark class="mx-2">
-              mdi-delete-forever 
+            <v-icon dark class="me-1">
+              mdi-delete-forever
             </v-icon>
-            ลบข้อมูลสมาชิก
+            ลบ
           </v-btn>
         </template>
-           <template v-slot:[`item.No`]="{ index }">
-    {{ index + 1 }}
-  </template>
-        <template v-slot:[`item.birthday`]="{ item }">
-          <span>{{ item.birthday | moment }}</span>
-        </template>
-        <template v-slot:[`item.fname`]="{ item }">
-          {{ item.pname }} - {{ item.fname }} - {{ item.lname }}
+        <template v-slot:[`item.ref_level_id.level_name`]="{ item }">
+          <v-chip
+            :color="getColorstatus(item.ref_level_id.level_name)"
+            dark
+            small
+          >
+            {{ item.ref_level_id.level_name }}
+          </v-chip>
         </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
@@ -251,8 +272,8 @@
 </template>
 
 <script>
-import moment from 'moment'
 export default {
+  layout: "layoutCashier",
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -262,18 +283,13 @@ export default {
     pnamesec: ["นาย", "นาง", "นางสาว"],
     level: [],
     headers: [
-      { text: "ลำดับ", sortable: false, value: "No" },
-      { text: "ภาพ", sortable: false, value: "img" },
-      // { text: "คำนำหน้า", align: "start", value: "pname" },
-      // { text: "ชื่อ", align: "start", value: "fname" },
-      // { text: "นามสกุล", align: "start", value: "lname" },
-      { text: "ชื่อสมาชิก", align: "start", value: "fname" },
-      { text: "วันเกิด", align: "start", value: "birthday" },
+    //  { text: "ภาพ", sortable: false, value: "img" },
+      { text: "คำนำหน้า", align: "start", value: "pname" },
+      { text: "ชื่อ", align: "start", value: "fname" },
+      { text: "นามสกุล", align: "start", value: "lname" },
       { text: "เบอร์โทร", align: "start", value: "tel" },
-      { text: "อีเมล์", align: "start", value: "email" },
-      { text: "ที่อยู่", align: "start", value: "address" },
-      { text: "ระดับ", align: "start", value: "ref_level_id.level_name" },
-      { text: "แต้ม", align: "start", value: "point" },
+      //{ text: "แต้ม", align: "start", value: "point" },
+      { text: "ดูข้อมูลสมาชิก", value: "viewItem", sortable: false },
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
@@ -287,11 +303,11 @@ export default {
       email: "",
       address: "",
       ref_level_id: "",
-      point: "0"
+      point: " "
     },
     type: null,
     deleteId: null,
-    requiredRules: [v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!"],
+    requiredRules: [v => !!v.length <= 25 || "โปรดกรอกข้อความให้ครบในช่อง!"],
     emailRules: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
       v =>
@@ -300,13 +316,20 @@ export default {
         "โปรใส่อีเมลให้ถูกต้อง"
     ],
     numberRules: [
-      v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+      v => !!v.length <= 10 || "โปรดกรอกข้อความให้ครบในช่อง!",
+      v => v.length <= 10 || "ใส่ตัวเลขเกิน10ตัว",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ]
   }),
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
+      if (this.editedIndex === -1) {
+        return "จัดการข้อมูลลูกค้า";
+      } else if (this.editedIndex === 0) {
+        return "ดูข้อมูลลูกค้า";
+      } else {
+        return "จัดการข้อมูลลูกค้า";
+      }
     }
   },
   watch: {
@@ -321,41 +344,19 @@ export default {
     this.improveLvmb();
   },
 
- mounted() {
-    this.toast = this.$swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000
-    });
-  },
   methods: {
-     showAlert() {
-         this.toast({
-        type: "success",
-        title:
-          "ดำเนิการสำเร็จ"
-      });
-       this.text_val_for_test = Date.now();
-  
+    checkTel(tel) {
+      this
+       const customer = $get("/customer-tel" + $tel);
+      return { category };
     },
-      someFn(ev) {
-      console.log(ev)}
-      ,
-      toBuddhistYear(moment, format) {
-      var christianYear = moment.format('YYYY')
-      var buddhishYear = (parseInt(christianYear) + 543).toString()
-      return moment
-        .format(
-          format          
-            .replace('YYYY', buddhishYear)
-            .replace('YY', buddhishYear.substring(2, 4))
-        
-             
-        )
-        .replace(monthNamesThai ,christianYear, buddhishYear)
-    },  
+    viewItem(item) {
+      this.editedIndex = 0;
+      this.customerItme = Object.assign({}, item);
+      this.dialog = true;
+    },
     editItem(item) {
+      this.editedIndex === -1;
       this.type = "edit";
       this.customerItme = item;
       this.dialog = true;
@@ -371,7 +372,7 @@ export default {
         tel: " ",
         email: "",
         address: "",
-        ref_level_id: "",
+        ref_level_id: "60e439b7c7d6ae35548c7b62",
         point: "0"
       };
       this.dialog = true;
@@ -410,6 +411,12 @@ export default {
         this.level.push(Lvmb);
       }
     },
+    getColorstatus(level_name) {
+      if (level_name === "classic") return "#8D6E63";
+      else if (level_name === "silver") return "#78909C";
+      else if (level_name === "gold") return "#FFEA00";
+      else return "#00B0FF";
+    },
     save() {
       this.$refs.form.validate();
       if (this.type === "add") {
@@ -429,14 +436,6 @@ export default {
           });
       }
     }
-  },
-   filters: {
-    moment: function (date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
-
-      var strdate = moment(date).add(543, 'years')
-      return moment(strdate).format('Do MMMM YYYY')
-    },
   },
   props: ["customer", "levelmember"]
 };

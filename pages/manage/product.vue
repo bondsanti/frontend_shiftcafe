@@ -1,5 +1,11 @@
 <template>
-  <product :product="product"  :unit="unit" :category="category" @addProduct="addProduct" />
+  <product
+    :product="product"
+    :unit="unit"
+    :category="category"
+    @addProduct="addProduct"
+    @refresh="refresh"
+  />
 </template>
 
 <script>
@@ -13,7 +19,7 @@ export default {
       context.$axios.$get("/category")
     ]);
     //const products = await context.$axios.$get("/product");
-   // console.log(category);
+    // console.log(category);
     return { product, unit, category };
   },
   components: {
@@ -22,10 +28,12 @@ export default {
   methods: {
     async addProduct(dataProduct) {
       await this.$axios.$post("/product", dataProduct);
-      
+
+      this.product = await this.$axios.$get("/product");
+    },
+    async refresh() {
       this.product = await this.$axios.$get("/product");
     }
-    
   },
   data: () => ({
     product: []

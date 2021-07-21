@@ -331,6 +331,7 @@
   </div>
 </template>
 <script>
+import moment from "moment";
 import Calculator from "@/components/seller/Calculator.vue";
 export default {
   components: {
@@ -416,7 +417,7 @@ export default {
     },
     formatPrice(value2) {
       const value = parseInt(value2);
-      let val = (value / 1).toFixed(1).replace(",", ".");
+      let val = (value / 1).toFixed(2).replace(",", ".");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     thinkPrice() {
@@ -573,26 +574,31 @@ export default {
         "",
         "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
       );
-      WinPrint.document.write("<table>");
+      WinPrint.document.write("<table >");
       WinPrint.document.write(
         "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='50px' height='50px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
       WinPrint.document.write(
-        "<tr><th align='left'>บริษัท ชิฟท์ เรสเตอรองต์ จำกัด</th><th style='padding-left:60px'></th></tr>"
+        "<tr><th align='left'>บริษัท ชิฟท์ เรสเตอรองต์ จำกัด</th></tr>"
       );
       WinPrint.document.write(
-        "<tr><th align='left'>ที่อยู่ : 89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท</th><th style='padding-left:60px'></th></tr>"
+        "<tr><th align='left'>ที่อยู่ : 89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท</th></tr>"
       );
       WinPrint.document.write(
-        "<tr><th align='left'>อำเภอเมือง จังหวัดลำปาง 52000</th><th style='padding-left:60px'></th></tr>"
+        "<tr><th align='left'>อำเภอเมือง จังหวัดลำปาง 52000</th></tr>"
       );
       WinPrint.document.write(
-        "<tr><th align='left'>เบอร์มือถือ : 0917961816</th><th style='padding-left:60px'></th></tr>"
+        "<tr><th align='left'>เบอร์มือถือ : 0917961816</th></tr>"
       );
       WinPrint.document.write(
-        `<tr><th align='left' >ใบเสร็จรับเงินเลทที่ ${this.invoice}</th></tr>`
+        `<tr><th align='center' >ใบเสร็จรับเงินเลทที่ : ${this.invoice}</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th align='center' >วันที่ ${this.formatDate(
+          Date.now()
+        )}</th></tr>`
       );
       WinPrint.document.write("</table>");
       //WinPrint.document.write("<img src='" + __dirname + "25.png'>");
@@ -627,13 +633,29 @@ export default {
           this.subtotal
         )} </th><th>บาท</th></tr>`
       );
+      if (this.coupon !== 0) {
+        const dis = Math.round((this.subtotal * this.coupon) / 100);
+        WinPrint.document.write(
+          `<tr><th width='1000px' align=left style='padding-right:60px;'>ส่วนลด</th><th width='100px'>${this.formatPrice(
+            dis
+          )} </th><th>บาท</th></tr>`
+        );
+      }
+      if (this.tax !== 0) {
+        const vat = Math.round((this.subtotal * this.tax) / 100);
+        WinPrint.document.write(
+          `<tr><th width='1000px' align=left style='padding-right:60px;'>ภาษี</th><th width='100px'>${this.formatPrice(
+            vat
+          )} </th><th>บาท</th></tr>`
+        );
+      }
       WinPrint.document.write(
         `<tr><th width='1000px' align=left style='padding-right:60px'>ยอดรวมสุทธิ</th><th width='100px'>${this.formatPrice(
           Math.round(this.thinkPrice(this.subtotal))
         )} </th><th>บาท</th></tr>`
       );
       WinPrint.document.write(
-        `<tr><th width='1000px' align=left style='padding-right:60px'>เงินสดรับมา</th><th width='100px'>${this.formatPrice(
+        `<tr><th width='1000px' align=left style='padding-right:60px'>เงินสด</th><th width='100px'>${this.formatPrice(
           money.receive
         )} </th><th>บาท</th></tr>`
       );
@@ -650,6 +672,10 @@ export default {
       WinPrint.focus();
       setTimeout(WinPrint.print(), 3000);
       //WinPrint.close();
+    },
+    formatDate(date) {
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("D/MM/YY H:mm");
     }
   },
   created() {

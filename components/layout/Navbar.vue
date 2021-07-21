@@ -59,7 +59,7 @@
         <v-icon>mdi-clipboard-list</v-icon>
       </v-btn> -->
       <v-avatar size="36px" class="mr-2">
-        <img alt="Avatar" src="profile-user.png" />
+        <img alt="Avatar" src="/profile-user.png" />
       </v-avatar>
       <v-toolbar-title>{{ $store.getters["displayName"] }}</v-toolbar-title>
       <v-btn icon @click="logout">
@@ -173,7 +173,7 @@ export default {
         },
         {
           icon: "mdi-card-account-details-outline ",
-          title: "จัดการพนังงาน",
+          title: "จัดการพนักงาน",
           to: "/manage/employee"
         },
         {

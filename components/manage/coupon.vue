@@ -12,7 +12,7 @@
               v-on="on"
               @click="addItem"
             >
-              <v-icon left> mdi-ticket-percent-outline</v-icon> จัดหมวดหมู่
+              <v-icon left> mdi-ticket-percent-outline</v-icon> จัดการคูปอง
             </v-btn>
           </template>
         </v-dialog>
@@ -62,7 +62,7 @@
 
                       <v-col cols="12" md="6" class="mt-n7">
                         <v-select
-                          label=" ชื่อคูปอง"
+                          label=" ชื่อคนออกคูปอง"
                           outlined
                           color="#1D1D1D"
                           item-text="name"
@@ -286,7 +286,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
+      return this.editedIndex === -1 ? "จัดการคูปอง " : "จัดการคูปอง ";
     }
   },
   filters: {
@@ -318,7 +318,7 @@ export default {
       if (discount) return "green";
       else return "red";
     },
-     getColorstatususe(num_use) {
+    getColorstatususe(num_use) {
       if (num_use) return "teal";
       else return "red";
     },

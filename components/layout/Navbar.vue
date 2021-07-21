@@ -118,7 +118,7 @@ export default {
         }
       ],
       below: [
-         {
+        {
           icon: "mdi-apps",
           title: "ขาย",
           to: "/seller"
@@ -127,8 +127,7 @@ export default {
           icon: "mdi-cog ",
           title: "ตั้งค่า",
           to: "/manage/settings"
-        },
-        
+        }
       ],
 
       items: [
@@ -207,6 +206,7 @@ export default {
       await this.$auth.logout();
       this.$router.push("/login");
     }
-  }
+  },
+  created() {}
 };
 </script>

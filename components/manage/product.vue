@@ -35,7 +35,7 @@
       >
         <template v-slot:[`item.img`]="{ item }">
           <v-img
-            :src="`http://192.168.1.24:5555/${item.img}`"
+            :src="`https://api.shift-cafe.com/${item.img}`"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
             width="70px"
@@ -114,7 +114,6 @@
                         outlined
                         label="จำนวนStock"
                         v-model="productsItem.stock"
-                        
                         required
                         color="#1D1D1D"
                       ></v-text-field>
@@ -197,7 +196,7 @@
             ลบ
           </v-btn>
         </template>
-          <template v-slot:[`item.No`]="{ index }">
+        <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
         <template v-slot:[`item.exp`]="{ item }">
@@ -223,14 +222,14 @@ export default {
     unitname: [],
     categoryname: [],
     headers: [
-       { text: "ลำดับ", sortable: false, value: "No" },
+      { text: "ลำดับ", sortable: false, value: "No" },
       { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อสิ้นค้า", sortable: false, value: "product_name" },
       { text: "หน่วย", sortable: false, value: "ref_uid.u_name" },
       { text: "ประเภท", sortable: false, value: "ref_cate_id.cate_name" },
       { text: "ราคาต้นทุน", sortable: false, value: "price_cost" },
       { text: "ราคา", sortable: false, value: "price" },
-     // { text: "สต็อก", sortable: false, value: "stock" },
+      // { text: "สต็อก", sortable: false, value: "stock" },
       // { text: "id", sortable: false, value: "_id" },
       { text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
       { text: "Actions", value: "actions", sortable: false }
@@ -281,7 +280,7 @@ export default {
       //console.log(this.preImg);
     },
     editItem(item) {
-      this.imageURL = `http://192.168.1.24:5555/${item.img}`;
+      this.imageURL = `https://api.shift-cafe.com/${item.img}`;
       this.type = "edit";
       this.productsItem = {
         _id: item._id,
@@ -299,7 +298,7 @@ export default {
       if (this.productsItem.img.length > 0) {
         return this.productsItem.img;
       } else {
-        return `http://192.168.1.24:5555/${item.img}`;
+        return `https://api.shift-cafe.com/${item.img}`;
       }
     },
     addItem() {

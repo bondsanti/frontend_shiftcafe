@@ -1,29 +1,29 @@
-const pkg = require('./package')
+const pkg = require("./package");
 
 module.exports = {
-  mode: 'universal',
+  mode: "universal",
 
   /*
    ** Headers of the page
    */
   head: {
-    titleTemplate: 'shift café  | %s',
-    title: 'shift café',
+    titleTemplate: "shift café  | %s",
+    title: "shift café",
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
-        hid: 'description',
-        name: 'description',
-        content: 'shift café powered by Dev Fong Co.,Ltd.'
+        hid: "description",
+        name: "description",
+        content: "shift café powered by Dev Fong Co.,Ltd."
       }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/logo2.ico' },
+      { rel: "icon", type: "image/x-icon", href: "/logo2.ico" },
       {
-        rel: 'stylesheet',
+        rel: "stylesheet",
         href:
-          'https://fonts.googleapis.com/css2?family=Mitr&family=Sarabun&display=swap'
+          "https://fonts.googleapis.com/css2?family=Mitr&family=Sarabun&display=swap"
       }
     ],
     script: [
@@ -36,7 +36,7 @@ module.exports = {
   /*
    ** Customize the progress-bar color
    */
-  loading: { color: '#FFFFFF' },
+  loading: { color: "#FFFFFF" },
 
   /*
    ** Global CSS
@@ -52,17 +52,15 @@ module.exports = {
    ** Nuxt.js modules
    */
   modules: [
-    '@nuxtjs/vuetify',
-    '@nuxtjs/axios',
-    '@nuxtjs/auth',
-    '@nuxtjs/moment',
-    'nuxt-sweetalert2',
-
-    
+    "@nuxtjs/vuetify",
+    "@nuxtjs/axios",
+    "@nuxtjs/auth",
+    "@nuxtjs/moment",
+    "nuxt-sweetalert2"
   ],
 
   axios: {
-    baseURL: 'http://192.168.1.24:5555/api'
+    baseURL: "https://api.shift-cafe.com/api"
     //  http://localhost:5555/api
     // 'https://api.shift-cafe.com/api'
     //http://192.168.1.24:555/api
@@ -73,21 +71,21 @@ module.exports = {
       local: {
         endpoints: {
           login: {
-            method: 'post',
-            url: 'authen/login',
-            propertyName: 'token'
+            method: "post",
+            url: "authen/login",
+            propertyName: "token"
           },
           user: {
-            method: 'get',
-            url: 'authen/user',
-            propertyName: 'user'
+            method: "get",
+            url: "authen/user",
+            propertyName: "user"
           },
           logout: false
         }
       }
     },
     redirect: {
-      login: '/login'
+      login: "/login"
     }
   },
   vuetify: {
@@ -95,9 +93,9 @@ module.exports = {
       light: true, //you don't actually need this line as it's for default
       themes: {
         light: {
-          primary: '#1d1d1d',
-          secondary: '#ededed',
-          info: '#39b54a'
+          primary: "#1d1d1d",
+          secondary: "#ededed",
+          info: "#39b54a"
         }
       }
     }
@@ -107,14 +105,14 @@ module.exports = {
    ** Build configuration
    */
   build: {
-    vendor : ['vue-apexchart'],
+    vendor: ["vue-apexchart"],
     /*
      ** You can extend webpack config here
      */
-    extend (config, ctx) {}
+    extend(config, ctx) {}
   },
   server: {
     port: 3000,
-    host: '0.0.0.0'
+    host: "0.0.0.0"
   }
-}
+};

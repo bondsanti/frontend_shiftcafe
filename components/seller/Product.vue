@@ -10,7 +10,7 @@
         height="150px"
         contain
         :aspect-ratio="16 / 9"
-        :src="'http://localhost:5555/' + product.img"
+        :src="'https://api.shift-cafe.com/' + product.img"
       >
       </v-img>
       <v-card-text class="pt-6 pa-0" style="position: relative;">

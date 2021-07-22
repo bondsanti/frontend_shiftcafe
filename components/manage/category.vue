@@ -37,7 +37,9 @@
       >
         <template v-slot:[`item.img`]="{ item }">
           <v-img
-            :src="`http://192.168.1.24:5555/${item.img}`"
+            :src="
+              item.img ? `https://api.shift-cafe.com/${item.img}` : 'coffee.png'
+            "
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
             width="100px"
@@ -132,8 +134,7 @@
                     showAlert();
                   "
                 >
-                  <v-icon aria-hidden="false" >
-                    mdi-delete-forever </v-icon
+                  <v-icon aria-hidden="false"> mdi-delete-forever </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -142,8 +143,7 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr-2 pa-2" color="warning"  
-            @click="editItem(item)">
+          <v-btn class="mr-2 pa-2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false">
               mdi-pencil
             </v-icon>
@@ -152,7 +152,7 @@
           <v-btn
             rounded-lx
             class="mr-2  pa-2"
-            color="error" 
+            color="error"
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
@@ -240,16 +240,16 @@ export default {
     someFn(ev) {
       console.log(ev);
     },
-getProductImage(item) {
+    getProductImage(item) {
       if (this.cate.img.length > 0) {
         return this.cate.img;
       } else {
-        return `http://192.168.1.24:5555/${item.img}`;
+        return `https://api.shift-cafe.com/${item.img}`;
       }
     },
     editItem(item) {
       this.type = "edit";
-      this.imageURL = `http://192.168.1.24:5555/${item.img}`;
+      this.imageURL = `https://api.shift-cafe.com/${item.img}`;
       this.cate = {
         _id: item._id,
         cate_name: item.cate_name,
@@ -293,7 +293,7 @@ getProductImage(item) {
     },
 
     save() {
-       this.$refs.form.validate();
+      this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
         let formdata = new FormData();
@@ -316,7 +316,7 @@ getProductImage(item) {
           formdata.append("img", this.preImg);
         }
         // console.log(this.productsItem);
-        
+
         this.$axios
           .$put("/category/" + this.cate._id, formdata)
           .then(() => {

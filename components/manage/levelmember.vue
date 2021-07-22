@@ -37,7 +37,7 @@
       >
         <template v-slot:[`item.img`]="{ item }">
           <v-img
-            :src="`http://192.168.1.24:5555/${item.img}`"
+            :src="`https://api.shift-cafe.com/${item.img}`"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
             width="180px"
@@ -75,7 +75,7 @@
                           label="ส่วนลด(%)"
                         ></v-text-field>
                       </v-col>
-                        <v-col cols="12" class="mt-n7">
+                      <v-col cols="12" class="mt-n7">
                         <v-img
                           v-if="imageURL"
                           :src="imageURL"
@@ -205,7 +205,7 @@ export default {
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
-    levelmemberitme: { _id: "", level_name: "", discount: " ", img:""} ,
+    levelmemberitme: { _id: "", level_name: "", discount: " ", img: "" },
     type: null,
     deleteId: null,
     uploadState: false,
@@ -265,17 +265,17 @@ export default {
       if (this.cate.img.length > 0) {
         return this.cate.img;
       } else {
-        return `http://192.168.1.24:5555/${item.img}`;
+        return `https://api.shift-cafe.com/${item.img}`;
       }
     },
     editItem(item) {
       this.type = "edit";
-       this.imageURL = `http://192.168.1.24:5555/${item.img}`;
+      this.imageURL = `https://api.shift-cafe.com/${item.img}`;
       this.levelmemberitme = {
-          _id:item._id,
-         level_name:item.level_name,
-         discount:item.discount,
-         img:item.img
+        _id: item._id,
+        level_name: item.level_name,
+        discount: item.discount,
+        img: item.img
       };
       this.dialog = true;
     },
@@ -360,7 +360,6 @@ export default {
           });
       }
     }
-   
   },
   props: ["levelmember"]
 };

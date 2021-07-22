@@ -6,7 +6,7 @@
 import Order from "@/components/seller/Order.vue";
 export default {
   layout: "layoutCashier",
-  middleware: ["auth", "check"],
+  middleware: ["auth", "checkAll", "refresh"],
   async asyncData(context) {
     const [orders] = await Promise.all([context.$axios.$get("/order")]);
     //const products = await context.$axios.$get("/product");

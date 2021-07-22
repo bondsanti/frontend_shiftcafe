@@ -6,7 +6,7 @@
 import pointmanage from "@/components/manage/pointmanage.vue";
 export default {
   layout: "layoutCashier",
- middleware: ["auth", "check"],
+  middleware: ["auth", "checkAll", "refresh"],
   async asyncData(context) {
     const pointmanage = await context.$axios.$get("/point-manage");
     //console.log(pointmanage);

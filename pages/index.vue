@@ -25,13 +25,13 @@
 import Logo from "~/components/Logo.vue";
 
 export default {
-  middleware: "auth",
+  middleware: ["auth", "checkAll"],
   components: {
     Logo
   },
   created() {
-    const position = this.$store.getters.position;
-    //console.log(position);
+    const position = this.$store.getters["position"];
+    console.log(position);
     if (
       position === "admin" ||
       position === "manager" ||

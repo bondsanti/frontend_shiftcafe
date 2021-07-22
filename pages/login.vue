@@ -47,7 +47,7 @@
               </v-form>
             </div>
 
-            <v-btn block light @click="login" :disabled="!valid" > Login </v-btn>
+            <v-btn block light @click="login" :disabled="!valid"> Login </v-btn>
           </v-col>
           <v-col cols="1" sm="1" md="3" lg="4"></v-col>
         </v-row>
@@ -70,8 +70,8 @@ export default {
   layout: "login",
   middleware: "isLoggedIn",
   head: {
-        title: 'เข้าสู่ระบบ'
-    },
+    title: "เข้าสู่ระบบ"
+  },
   data() {
     return {
       showPass: false,
@@ -94,10 +94,26 @@ export default {
         }
       };
 
-      this.$auth.loginWith("local", payload).then(res => {
+      this.$auth.loginWith("local", payload).then(async res => {
         //console.log(res);
         if (res.status === 200) {
-          this.$router.push("/");
+          await this.$store.dispatch(
+            "setPosition",
+            this.user.ref_id_role.position
+          );
+          const position = this.$store.getters["position"];
+          //console.log(this.user.ref_id_role.position);
+          if (
+            position == "admin" ||
+            position == "manager" ||
+            position == "checker"
+          ) {
+            this.$router.push("/manage");
+          } else if (position === "staff" || position === "cashier") {
+            this.$router.push("/seller");
+          } else {
+            this.$router.push("/member");
+          }
         } else {
           this.snackbar = true;
           this.error = res.data.message;
@@ -106,7 +122,7 @@ export default {
     }
   },
   computed: {
-    ...mapState("auth", ["loggedIn"])
+    ...mapState("auth", ["user"])
   },
   created() {}
 };

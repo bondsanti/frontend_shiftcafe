@@ -252,7 +252,7 @@ import Product from "@/components/seller/Product.vue";
 import Category from "@/components/seller/Category.vue";
 import ConfirmOrder from "@/components/seller/confirmOrder.vue";
 export default {
-  middleware: ["auth", "check"],
+  middleware: ["auth", "checkAll", "refresh"],
   layout: "layoutCashier",
   async asyncData(context) {
     const [

@@ -9,7 +9,7 @@
 <script>
 import pointmanage from "@/components/manage/pointmanage.vue";
 export default {
-  middleware: ["auth", "check", "refresh"],
+  middleware: ["auth", "check", "refresh", "checkChecker"],
   head: {
     title: "แต้ม"
   },

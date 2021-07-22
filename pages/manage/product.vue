@@ -11,7 +11,7 @@
 <script>
 import product from "@/components/manage/product.vue";
 export default {
-  middleware: ["auth", "check", "refresh"],
+  middleware: ["auth", "check", "refresh", "checkChecker"],
   head: {
     title: "จัดการสินค้า"
   },

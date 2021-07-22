@@ -17,6 +17,29 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <!-- 2 -->
+      <template v-slot:append>
+        <div class="pa-2">
+          <v-list>
+            <v-list-item
+              v-for="(item, i) in below"
+              :key="i"
+              :to="item.to"
+              router
+              exact
+            >
+              <v-list-item-action>
+                <v-icon>{{ item.icon }}</v-icon>
+              </v-list-item-action>
+
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title" />
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </div>
+      </template>
+      <!-- 2 -->
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app color="#1d1d1d" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
@@ -54,7 +77,7 @@ export default {
       items: [
         {
           icon: "mdi-apps",
-          title: "ขาย",
+          title: "สั่งสินค้า",
           to: "/seller"
         },
         {
@@ -72,11 +95,7 @@ export default {
           title: "แลก Point",
           to: "/seller/point"
         },
-        // {
-        //   icon: "mdi-fridge-industrial-outline",
-        //   title: "จัดการ stock",
-        //   to: "/seller/stock"
-        // },
+
         {
           icon: "mdi-clipboard-list",
           title: "จัดการออเดอร์",
@@ -88,14 +107,46 @@ export default {
           to: "/seller/invoice"
         }
       ],
-      miniVariant: false
+      miniVariant: false,
+      below: []
     };
   },
   methods: {
     async logout() {
       await this.$auth.logout();
       this.$router.push("/login");
+    },
+    checkStaff() {
+      if (this.$store.getters["position"] === "staff") {
+        this.items = [
+          {
+            icon: "mdi-apps",
+            title: "สั่งสินค้า",
+            to: "/seller"
+          },
+
+          {
+            icon: "mdi-account",
+            title: "ลงทะเบียนสมาชิก",
+            to: "/seller/register"
+          }
+        ];
+      } else if (
+        this.$store.getters["position"] === "manager" ||
+        this.$store.getters["position"] === "admin"
+      ) {
+        this.below = [
+          {
+            icon: "mdi-monitor-dashboard",
+            title: "จัดการหลังบ้าน",
+            to: "/manage"
+          }
+        ];
+      }
     }
+  },
+  created() {
+    this.checkStaff();
   }
 };
 </script>

@@ -10,7 +10,7 @@
 <script>
 import coupon from "@/components/manage/coupon.vue";
 export default {
-  middleware: ["auth", "check", "refresh"],
+  middleware: ["auth", "check", "refresh", "checkChecker"],
   head: {
     title: "คูปอง"
   },

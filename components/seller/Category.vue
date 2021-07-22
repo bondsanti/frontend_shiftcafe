@@ -12,7 +12,7 @@
       contain
       max-height="40px"
       max-width="40px"
-      src="/coffee.png"
+      :src="`http://localhost:5555/${cate.img}`"
     ></v-img>
     <h2 class="d-flex flex-row white--text">{{ cate.cate_name }}</h2>
   </v-card>

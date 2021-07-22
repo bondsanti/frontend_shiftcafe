@@ -130,6 +130,7 @@
           </div>
         </v-card>
         <v-btn
+          v-if="checkStaff"
           class="mt-5"
           rounded
           x-large
@@ -252,7 +253,7 @@ import Product from "@/components/seller/Product.vue";
 import Category from "@/components/seller/Category.vue";
 import ConfirmOrder from "@/components/seller/confirmOrder.vue";
 export default {
-  middleware: ["auth", "checkAll", "refresh"],
+  middleware: ["auth", "checkAll", "refresh", "checkChecker"],
   layout: "layoutCashier",
   async asyncData(context) {
     const [
@@ -304,7 +305,8 @@ export default {
     orderOnDatabase: [],
     valid: true,
     rules: [value => !!value || "โปรดกรอกชื่อบิล"],
-    idForEditOrder: null
+    idForEditOrder: null,
+    checkStaff: false
   }),
   head() {
     return {
@@ -526,7 +528,13 @@ export default {
       setTimeout(WinPrint.print(), 3000);
     }
   },
-  created() {}
+  created() {
+    if (this.$store.getters["position"] === "staff") {
+      this.checkStaff = false;
+    } else {
+      this.checkStaff = true;
+    }
+  }
 };
 </script>
 

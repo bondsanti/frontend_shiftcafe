@@ -150,7 +150,6 @@ export default {
           to: "/manage/order"
         },
         {
-
           icon: "mdi-cash-multiple",
           title: "ข้อมูลการชำระเงิน",
 
@@ -222,6 +221,31 @@ export default {
             to: "/manage/invoice"
           }
         ];
+      } else if (this.$store.getters["position"] === "checker") {
+        this.items = [
+          {
+            icon: "mdi-home",
+            title: "หน้าหลัก",
+            to: "/manage/"
+          },
+          {
+            icon: "mdi mdi-cash-register ",
+            title: "ข้อมูลเงินทอน",
+            to: "/manage/cash"
+          },
+
+          {
+            icon: "mdi-note-text-outline",
+            title: "ข้อมูลการสั่งซื้อ",
+            to: "/manage/order"
+          },
+          {
+            icon: "mdi-cash-multiple",
+            title: "ข้อมูลการชำระเงิน",
+            to: "/manage/invoice"
+          }
+        ];
+        this.below = [];
       }
     }
   },

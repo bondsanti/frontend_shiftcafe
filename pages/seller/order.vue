@@ -9,7 +9,7 @@ export default {
   head: {
     title: "Order"
   },
-  middleware: ["auth", "checkAll", "refresh"],
+  middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   async asyncData(context) {
     const [orders] = await Promise.all([context.$axios.$get("/order")]);
     //const products = await context.$axios.$get("/product");

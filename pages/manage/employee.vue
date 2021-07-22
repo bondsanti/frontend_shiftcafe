@@ -5,7 +5,7 @@
 <script>
 import employee from "@/components/manage/employee.vue";
 export default {
-  middleware: ["auth", "check", "refresh"],
+  middleware: ["auth", "check", "refresh", "checkChecker"],
   head: {
     title: "จัดการพนักงาน"
   },

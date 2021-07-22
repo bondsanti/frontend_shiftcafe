@@ -9,7 +9,7 @@ export default {
   head: {
     title: "Invoice"
   },
-  middleware: ["auth", "checkAll", "refresh"],
+  middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   async asyncData(context) {
     const [invoices] = await Promise.all([context.$axios.$get("/payment")]);
     //const products = await context.$axios.$get("/product");

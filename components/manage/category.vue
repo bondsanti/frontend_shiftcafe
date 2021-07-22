@@ -132,8 +132,7 @@
                     showAlert();
                   "
                 >
-                  <v-icon aria-hidden="false" >
-                    mdi-delete-forever </v-icon
+                  <v-icon aria-hidden="false"> mdi-delete-forever </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -142,8 +141,7 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr-2 pa-2" color="warning"  
-            @click="editItem(item)">
+          <v-btn class="mr-2 pa-2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false">
               mdi-pencil
             </v-icon>
@@ -152,7 +150,7 @@
           <v-btn
             rounded-lx
             class="mr-2  pa-2"
-            color="error" 
+            color="error"
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
@@ -240,7 +238,7 @@ export default {
     someFn(ev) {
       console.log(ev);
     },
-getProductImage(item) {
+    getProductImage(item) {
       if (this.cate.img.length > 0) {
         return this.cate.img;
       } else {
@@ -293,7 +291,7 @@ getProductImage(item) {
     },
 
     save() {
-       this.$refs.form.validate();
+      this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
         let formdata = new FormData();
@@ -316,7 +314,7 @@ getProductImage(item) {
           formdata.append("img", this.preImg);
         }
         // console.log(this.productsItem);
-        
+
         this.$axios
           .$put("/category/" + this.cate._id, formdata)
           .then(() => {

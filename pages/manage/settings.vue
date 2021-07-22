@@ -69,7 +69,7 @@ export default {
   head: {
     title: "ตั้งค่า"
   },
-  middleware: ["auth", "check", "refresh"],
+  middleware: ["auth", "check", "refresh", "checkChecker"],
   components: {
     setpayoutspoints
   }

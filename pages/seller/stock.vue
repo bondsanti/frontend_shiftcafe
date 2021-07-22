@@ -9,7 +9,7 @@ export default {
   head: {
     title: "Stock"
   },
-  middleware: ["auth", "checkAll", "refresh"],
+  middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   async asyncData(context) {
     const [stock, product] = await Promise.all([
       context.$axios.$get("/stock"),

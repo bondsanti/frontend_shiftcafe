@@ -7,6 +7,9 @@ import Cashdraw from "@/components/seller/cashdraw.vue";
 
 export default {
   middleware: ["auth", "checkAll", "refresh"],
+  head: {
+    title: "Withdraw"
+  },
   layout: "layoutCashier",
   data() {
     return {

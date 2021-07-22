@@ -6,6 +6,9 @@
 import stock from "@/components/manage/stock.vue";
 export default {
   layout: "layoutCashier",
+  head: {
+    title: "Stock"
+  },
   middleware: ["auth", "checkAll", "refresh"],
   async asyncData(context) {
     const [stock, product] = await Promise.all([

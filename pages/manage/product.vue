@@ -12,6 +12,9 @@
 import product from "@/components/manage/product.vue";
 export default {
   middleware: ["auth", "check", "refresh"],
+  head: {
+    title: "จัดการสินค้า"
+  },
   async asyncData(context) {
     const [product, unit, category] = await Promise.all([
       context.$axios.$get("/product"),

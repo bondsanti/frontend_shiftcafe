@@ -10,6 +10,9 @@
 import register from "@/components/seller/register.vue";
 export default {
   layout: "layoutCashier",
+  head: {
+    title: "Register"
+  },
   middleware: ["auth", "checkAll", "refresh"],
   async asyncData(context) {
     const [customer, levelmember] = await Promise.all([

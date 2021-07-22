@@ -1,22 +1,21 @@
 <template>
-  <employee :employee="employee"  :role="role"  @addEmployee="addEmployee" />
+  <employee :employee="employee" :role="role" @addEmployee="addEmployee" />
 </template>
 
 <script>
 import employee from "@/components/manage/employee.vue";
 export default {
-  middleware: ["auth", "check"],
-    head: {
-        title: 'จัดการพนักงาน'
-    },
+  middleware: ["auth", "check", "refresh"],
+  head: {
+    title: "จัดการพนักงาน"
+  },
   async asyncData(context) {
-    const [employee, role,] = await Promise.all([
+    const [employee, role] = await Promise.all([
       context.$axios.$get("/employee"),
-      context.$axios.$get("/role"),
-     
+      context.$axios.$get("/role")
     ]);
     //const products = await context.$axios.$get("/product");
-   // console.log(employee);
+    // console.log(employee);
     return { employee, role };
   },
   components: {

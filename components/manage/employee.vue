@@ -74,7 +74,6 @@
                       <v-col cols="12" sm="12">
                         <v-text-field
                           v-model="employeeitme.username"
-                          disabled
                           :rules="rules"
                           :readonly="editedIndex === 0"
                           label="username"

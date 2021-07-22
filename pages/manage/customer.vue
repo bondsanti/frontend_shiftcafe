@@ -9,10 +9,10 @@
 <script>
 import customer from "@/components/manage/customer.vue";
 export default {
-  middleware: ["auth", "check"],
-    head: {
-        title: 'จัดการสมาชิก'
-    },
+  middleware: ["auth", "check", "refresh"],
+  head: {
+    title: "จัดการสมาชิก"
+  },
   async asyncData(context) {
     const [customer, levelmember] = await Promise.all([
       context.$axios.$get("/customer"),

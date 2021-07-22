@@ -1,14 +1,19 @@
 <template>
-  <coupon :coupon="coupon"  :employee="employee" :user="user" @addCoupon="addCoupon" />
+  <coupon
+    :coupon="coupon"
+    :employee="employee"
+    :user="user"
+    @addCoupon="addCoupon"
+  />
 </template>
 
 <script>
 import coupon from "@/components/manage/coupon.vue";
 export default {
-  middleware: ["auth", "check"],
-    head: {
-        title: 'คูปอง'
-    },
+  middleware: ["auth", "check", "refresh"],
+  head: {
+    title: "คูปอง"
+  },
   async asyncData(context) {
     const [coupon, employee, user] = await Promise.all([
       context.$axios.$get("/coupon"),
@@ -17,7 +22,7 @@ export default {
     ]);
     //const products = await context.$axios.$get("/product");
     //console.log(products);
-   // console.log(user);
+    // console.log(user);
     return { coupon, employee, user };
   },
   components: {

@@ -10,7 +10,7 @@
 import register from "@/components/seller/register.vue";
 export default {
   layout: "layoutCashier",
-  middleware: ["auth", "check"],
+  middleware: ["auth", "checkAll", "refresh"],
   async asyncData(context) {
     const [customer, levelmember] = await Promise.all([
       context.$axios.$get("/customer"),

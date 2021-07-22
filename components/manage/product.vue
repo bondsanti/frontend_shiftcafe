@@ -38,8 +38,8 @@
             :src="`http://192.168.1.24:5555/${item.img}`"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
-            width="70px"
-            height="70px"
+            width="80px"
+            height="80px"
             contain
           />
         </template>
@@ -227,7 +227,7 @@ export default {
       { text: "ราคา", sortable: false, value: "price" },
       { text: "สต็อก", sortable: false, value: "stock" },
       // { text: "id", sortable: false, value: "_id" },
-      { text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
+      // { text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
       { text: "Actions", value: "actions", sortable: false }
     ],
     editedIndex: -1,
@@ -425,12 +425,16 @@ export default {
         };
         this.categoryname.push(cate);
       }
+    },
+    reverse(value) {
+      value.slice().reverse();
     }
   },
   props: ["product", "unit", "category"],
   created() {
     this.improveUn();
     this.improveCatename();
+    this.reverse(this.product);
   }
 };
 </script>

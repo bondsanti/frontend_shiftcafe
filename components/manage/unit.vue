@@ -102,7 +102,7 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr2" color="warning" @click="editItem(item)">
+          <v-btn class="mr2" small color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
               mdi-pencil-plus 
             </v-icon>
@@ -111,10 +111,10 @@
           <v-btn
             rounded-lx
             class="mr-2"
-            color="error"
+            color="error" small
             @click="deleteItem(item)"
           >
-            <v-icon dark class="mx-2">
+            <v-icon dark   class="mx-2">
               mdi-delete-forever 
             </v-icon>
             ลบ

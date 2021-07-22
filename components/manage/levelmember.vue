@@ -30,14 +30,19 @@
         :headers="headers"
         :items="levelmember"
         :search="search"
-        :items-per-page="15"
+        :items-per-page="20"
+        :footer-props="{
+          'items-per-page-options': [20, 30, 40, 50, -1]
+        }"
       >
-        <template v-slot:[`item.img`]="{}">
-          <img
-            src="@/assets/img/lv-4.jpeg"
-            class="mt-2 mb-2 rounded-lg"
+        <template v-slot:[`item.img`]="{ item }">
+          <v-img
+            :src="`http://192.168.1.24:5555/${item.img}`"
+            class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
-            style="width: 80px; height: 50px"
+            width="180px"
+            height="80px"
+            contain
           />
         </template>
         <template v-slot:top>
@@ -69,6 +74,21 @@
                           :rules="rules"
                           label="ส่วนลด(%)"
                         ></v-text-field>
+                      </v-col>
+                        <v-col cols="12" class="mt-n7">
+                        <v-img
+                          v-if="imageURL"
+                          :src="imageURL"
+                          contain
+                          max-height="300px"
+                          max-width="300px"
+                          class="mb-3 ml-12 my-3"
+                        ></v-img>
+                        <input
+                          accept="image/*"
+                          type="file"
+                          @change="onFileSelected"
+                        />
                       </v-col>
                     </v-row>
                   </div>
@@ -185,9 +205,14 @@ export default {
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
-    levelmemberitme: { _id: "", level_name: "", discount: " " },
+    levelmemberitme: { _id: "", level_name: "", discount: " ", img:""} ,
     type: null,
     deleteId: null,
+    uploadState: false,
+    img: [],
+    error: { state: false, msg: "" },
+    imageURL: null,
+    preImg: null,
     valid: true
   }),
 
@@ -213,6 +238,15 @@ export default {
     });
   },
   methods: {
+    onFileSelected(event) {
+      const reader = new FileReader();
+      reader.onload = event => {
+        this.imageURL = event.target.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+      this.preImg = event.target.files[0];
+      //console.log(this.preImg);
+    },
     getColorstatus(discount) {
       if (discount) return "green";
       else return "red";
@@ -227,9 +261,22 @@ export default {
     someFn(ev) {
       console.log(ev);
     },
+    getProductImage(item) {
+      if (this.cate.img.length > 0) {
+        return this.cate.img;
+      } else {
+        return `http://192.168.1.24:5555/${item.img}`;
+      }
+    },
     editItem(item) {
       this.type = "edit";
-      this.levelmemberitme = item;
+       this.imageURL = `http://192.168.1.24:5555/${item.img}`;
+      this.levelmemberitme = {
+          _id:item._id,
+         level_name:item.level_name,
+         discount:item.discount,
+         img:item.img
+      };
       this.dialog = true;
     },
     addItem() {
@@ -266,7 +313,6 @@ export default {
         this.editedIndex = -1;
       });
     },
-
     save() {
       this.$refs.form.validate();
       if (this.type === "add") {
@@ -274,24 +320,72 @@ export default {
         let formdata = new FormData();
         formdata.append("level_name", this.levelmemberitme.level_name);
         formdata.append("discount", this.levelmemberitme.discount);
-
-        this.$emit("addlevelmember", formdata);
+        formdata.append("img", this.preImg);
+        //console.log(this.productsItem);
+        this.$emit("addCategory", formdata);
+        this.levelmemberitme = {
+          level_name: "",
+          discount: " ",
+          img: ""
+        };
+        this.imageURL = null;
         this.close();
+        this.preImg = null;
       } else {
+        this.loading = true;
+
         let formdata = new FormData();
         formdata.append("level_name", this.levelmemberitme.level_name);
         formdata.append("discount", this.levelmemberitme.discount);
-        this.loading = true;
+        if (this.preImg !== null) {
+          formdata.append("img", this.preImg);
+        }
+        // console.log(this.productsItem);
+
         this.$axios
           .$put("/level-member/" + this.levelmemberitme._id, formdata)
           .then(() => {
+            this.$emit("refresh");
+
             this.close();
+            this.levelmemberitme = {
+              level_name: "",
+              discount: " ",
+              img: ""
+            };
+            this.imageURL = null;
+            this.preImg = null;
           })
           .catch(e => {
             console.log(e);
           });
       }
     }
+    // save() {
+    //   this.$refs.form.validate();
+    //   if (this.type === "add") {
+    //     this.loading = true;
+    //     let formdata = new FormData();
+    //     formdata.append("level_name", this.levelmemberitme.level_name);
+    //     formdata.append("discount", this.levelmemberitme.discount);
+
+    //     this.$emit("addlevelmember", formdata);
+    //     this.close();
+    //   } else {
+    //     let formdata = new FormData();
+    //     formdata.append("level_name", this.levelmemberitme.level_name);
+    //     formdata.append("discount", this.levelmemberitme.discount);
+    //     this.loading = true;
+    //     this.$axios
+    //       .$put("/level-member/" + this.levelmemberitme._id, formdata)
+    //       .then(() => {
+    //         this.close();
+    //       })
+    //       .catch(e => {
+    //         console.log(e);
+    //       });
+    //   }
+    // }
   },
   props: ["levelmember"]
 };

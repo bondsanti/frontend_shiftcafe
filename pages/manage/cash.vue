@@ -3,13 +3,13 @@
 </template>
 
 <script>
-
 import cash from "@/components/manage/cash.vue";
 export default {
-    head: {
-        title: 'เงินทอน'
-    },
+  head: {
+    title: "เงินทอน"
+  },
   layout: "default",
+  middleware: ["auth", "check", "refresh"],
   data() {
     return {
       loadData: []
@@ -19,16 +19,16 @@ export default {
     const loadData = await context.$axios.$get("/withdraw");
     return { loadData };
   },
-   components: {
+  components: {
     cash
   },
   methods: {
     async onSubmitted(cashdrawData) {
-      await this.$axios.$post("/withdraw", cashdrawData)
-       this.loadData = await this.$axios.$get("/withdraw");
+      await this.$axios.$post("/withdraw", cashdrawData);
+      this.loadData = await this.$axios.$get("/withdraw");
     }
   },
-    data: () => ({
+  data: () => ({
     loadData: []
   })
 };

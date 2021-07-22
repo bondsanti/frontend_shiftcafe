@@ -5,10 +5,10 @@
 <script>
 import unit from "@/components/manage/unit.vue";
 export default {
-  middleware: ["auth", "check"],  
-    head: {
-        title: 'จัดการหน่วยนับ'
-    },
+  middleware: ["auth", "check", "refresh", "checkManager"],
+  head: {
+    title: "จัดการหน่วยนับ"
+  },
   async asyncData(context) {
     const unit = await context.$axios.$get("/unit");
     //console.log(unit);

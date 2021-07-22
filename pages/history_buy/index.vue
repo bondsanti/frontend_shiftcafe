@@ -50,6 +50,7 @@ import moment from "moment";
 import MenuProfile from "~/components/memberLayout/MenuProfile";
 export default {
   layout: "layoutMember",
+  middleware: ["auth"],
   data() {
     return {
       headers: [

@@ -6,7 +6,7 @@
 import Invoice from "@/components/seller/Invoice.vue";
 export default {
   layout: "layoutCashier",
-  middleware: ["auth", "check"],
+  middleware: ["auth", "checkAll", "refresh"],
   async asyncData(context) {
     const [invoices] = await Promise.all([context.$axios.$get("/payment")]);
     //const products = await context.$axios.$get("/product");

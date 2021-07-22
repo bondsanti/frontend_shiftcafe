@@ -2,7 +2,7 @@
   <div class="my-6 ma-6">
     <v-row no-gutters>
       <v-col cols="12" sm="4" md="4" class="pa-4">
-      <setpayoutspoints />
+        <setpayoutspoints />
       </v-col>
       <v-col cols="12" sm="4" md="4" class="pa-4">
         <v-hover v-slot="{ hover }" open-delay="300">
@@ -66,12 +66,13 @@
 <script>
 import setpayoutspoints from "@/components/manage/settings/setpayoutspoints.vue";
 export default {
-    head: {
-        title: 'ตั้งค่า'
-    },
-    components: {
-    setpayoutspoints
+  head: {
+    title: "ตั้งค่า"
   },
+  middleware: ["auth", "check", "refresh"],
+  components: {
+    setpayoutspoints
+  }
 };
 </script>
 

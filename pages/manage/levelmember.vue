@@ -5,10 +5,10 @@
 <script>
 import levelmember from "@/components/manage/levelmember.vue";
 export default {
- middleware: ["auth", "check"],
-   head: {
-        title: 'ระดับสมาชิก'
-    },
+  middleware: ["auth", "check", "refresh"],
+  head: {
+    title: "ระดับสมาชิก"
+  },
   async asyncData(context) {
     const levelmember = await context.$axios.$get("/level-member");
     //console.log(levelmember);

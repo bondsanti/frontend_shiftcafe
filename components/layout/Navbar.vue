@@ -148,6 +148,11 @@ export default {
           icon: "mdi-note-text-outline",
           title: "ข้อมูลการสั่งซื้อ",
           to: "/manage/order"
+        },
+        {
+          icon: "mdi-cash-multiple",
+          title: "ข้อมูลการชำระเงิน",
+          to: "/manage/invoice"
         }
       ],
       miniVariant: false,
@@ -208,6 +213,11 @@ export default {
             icon: "mdi-note-text-outline",
             title: "ข้อมูลการสั่งซื้อ",
             to: "/manage/order"
+          },
+          {
+            icon: "mdi-cash-multiple",
+            title: "ข้อมูลการชำระเงิน",
+            to: "/manage/invoice"
           }
         ];
       }

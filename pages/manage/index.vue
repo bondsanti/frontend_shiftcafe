@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-center  py-6 pl-4 pr-4">
-      <sell />
+      <sell :today="today" :month="month" :year="year" />
 
       <v-row>
         <v-col cols="12" sm="12"><apexcharts /></v-col>
@@ -29,6 +29,14 @@ export default {
     //  datasell,
     apexcharts,
     VueApexCharts: () => import("vue-apexcharts")
+  },
+  async asyncData(context) {
+    const [today, month, year] = await Promise.all([
+      context.$axios.$get("/payment-today"),
+      context.$axios.$get("/payment-month"),
+      context.$axios.$get("/payment-year")
+    ]);
+    return { today, month, year };
   },
 
   methods: {}

@@ -126,7 +126,7 @@ export default {
         },
         {
           icon: "mdi-ticket-account",
-          title: "จัดระดับสมาขิก",
+          title: "จัดการระดับสมาขิก",
           to: "/manage/levelmember"
         },
         {
@@ -150,8 +150,10 @@ export default {
           to: "/manage/order"
         },
         {
+
           icon: "mdi-cash-multiple",
           title: "ข้อมูลการชำระเงิน",
+
           to: "/manage/invoice"
         }
       ],
@@ -191,7 +193,7 @@ export default {
           },
           {
             icon: "mdi-ticket-account",
-            title: "จัดระดับสมาขิก",
+            title: "จัดการระดับสมาขิก",
             to: "/manage/levelmember"
           },
           {

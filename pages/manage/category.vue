@@ -1,5 +1,5 @@
 <template>
-  <category :category="category" @addCategory="addCategory" />
+  <category :category="category" @addCategory="addCategory" @refresh="refresh" />
 </template>
 
 <script>
@@ -20,6 +20,9 @@ export default {
   methods: {
     async addCategory(dataCategory) {
       await this.$axios.$post("/category", dataCategory);
+      this.category = await this.$axios.$get("/category");
+    },
+      async refresh() {
       this.category = await this.$axios.$get("/category");
     }
   },

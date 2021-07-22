@@ -3,6 +3,7 @@
     :customer="customer"
     :levelmember="levelmember"
     @addCustomer="addCustomer"
+    @refresh="refresh"
   />
 </template>
 
@@ -29,6 +30,9 @@ export default {
   methods: {
     async addCustomer(dataCustomer) {
       await this.$axios.$post("/customer", dataCustomer);
+      this.customer = await this.$axios.$get("/customer");
+    },
+    async refresh() {
       this.customer = await this.$axios.$get("/customer");
     }
   },

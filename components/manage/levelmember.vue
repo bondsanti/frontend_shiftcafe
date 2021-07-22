@@ -346,7 +346,6 @@ export default {
           .$put("/level-member/" + this.levelmemberitme._id, formdata)
           .then(() => {
             this.$emit("refresh");
-
             this.close();
             this.levelmemberitme = {
               level_name: "",
@@ -361,31 +360,7 @@ export default {
           });
       }
     }
-    // save() {
-    //   this.$refs.form.validate();
-    //   if (this.type === "add") {
-    //     this.loading = true;
-    //     let formdata = new FormData();
-    //     formdata.append("level_name", this.levelmemberitme.level_name);
-    //     formdata.append("discount", this.levelmemberitme.discount);
-
-    //     this.$emit("addlevelmember", formdata);
-    //     this.close();
-    //   } else {
-    //     let formdata = new FormData();
-    //     formdata.append("level_name", this.levelmemberitme.level_name);
-    //     formdata.append("discount", this.levelmemberitme.discount);
-    //     this.loading = true;
-    //     this.$axios
-    //       .$put("/level-member/" + this.levelmemberitme._id, formdata)
-    //       .then(() => {
-    //         this.close();
-    //       })
-    //       .catch(e => {
-    //         console.log(e);
-    //       });
-    //   }
-    // }
+   
   },
   props: ["levelmember"]
 };

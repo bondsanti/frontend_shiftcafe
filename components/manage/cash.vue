@@ -172,6 +172,12 @@ export default {
         total_money: "",
         remark: ""
       },
+      defaultItem:{
+         _id:"",
+        type: "",
+        total_money: "",
+        remark: ""
+      },
       items: ["นำเงินเข้า", "นำเงินออก"],
       headers: [
         { text: "ลำดับ", sortable: false, value: "no" },
@@ -262,6 +268,7 @@ export default {
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+  
       });
     },
       closeDelete() {
@@ -277,8 +284,9 @@ export default {
        if (this.type === "edit") {
         this.loading = true;
            this.$axios
-          .$put("/withdraw/" + this.cashdraw._id, this.cashdraw)
+          .$put("/withdraw/" + this.cashdraw._id, this.cashdraw)         
           .then(() => {
+            this.$emit("refresh");
             this.close();
           })
       

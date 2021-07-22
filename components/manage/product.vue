@@ -38,8 +38,8 @@
             :src="`http://192.168.1.24:5555/${item.img}`"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
-            width="80px"
-            height="80px"
+            width="70px"
+            height="70px"
             contain
           />
         </template>
@@ -114,6 +114,7 @@
                         outlined
                         label="จำนวนStock"
                         v-model="productsItem.stock"
+                        
                         required
                         color="#1D1D1D"
                       ></v-text-field>
@@ -196,6 +197,9 @@
             ลบ
           </v-btn>
         </template>
+          <template v-slot:[`item.No`]="{ index }">
+          {{ index + 1 }}
+        </template>
         <template v-slot:[`item.exp`]="{ item }">
           <span>{{ item.exp | moment }}</span>
         </template>
@@ -219,15 +223,16 @@ export default {
     unitname: [],
     categoryname: [],
     headers: [
+       { text: "ลำดับ", sortable: false, value: "No" },
       { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อสิ้นค้า", sortable: false, value: "product_name" },
       { text: "หน่วย", sortable: false, value: "ref_uid.u_name" },
       { text: "ประเภท", sortable: false, value: "ref_cate_id.cate_name" },
       { text: "ราคาต้นทุน", sortable: false, value: "price_cost" },
       { text: "ราคา", sortable: false, value: "price" },
-      { text: "สต็อก", sortable: false, value: "stock" },
+     // { text: "สต็อก", sortable: false, value: "stock" },
       // { text: "id", sortable: false, value: "_id" },
-      // { text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
+      { text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
       { text: "Actions", value: "actions", sortable: false }
     ],
     editedIndex: -1,
@@ -254,7 +259,7 @@ export default {
   }),
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
+      return this.editedIndex === -1 ? "จัดการสินค้า " : "จัดการสินค้า";
     }
   },
   watch: {
@@ -265,9 +270,6 @@ export default {
       val || this.closeDelete();
     }
   },
-  created() {
-    this.initialize();
-  },
   methods: {
     onFileSelected(event) {
       const reader = new FileReader();
@@ -277,13 +279,6 @@ export default {
       reader.readAsDataURL(event.target.files[0]);
       this.preImg = event.target.files[0];
       //console.log(this.preImg);
-    },
-    initialize() {
-      // this.loading = true;
-      //  this.$axios.$get("/authen/user").then(user => {
-      //   this.user = user;
-      // });
-      // this.user = [];
     },
     editItem(item) {
       this.imageURL = `http://192.168.1.24:5555/${item.img}`;
@@ -298,7 +293,6 @@ export default {
         stock: item.stock,
         img: item.img
       };
-
       this.dialog = true;
     },
     getProductImage(item) {
@@ -373,7 +367,6 @@ export default {
         this.preImg = null;
       } else {
         this.loading = true;
-
         let formdata = new FormData();
         formdata.append("product_name", this.productsItem.product_name);
         formdata.append("ref_uid", this.productsItem.ref_uid);
@@ -385,7 +378,6 @@ export default {
           formdata.append("img", this.preImg);
         }
         console.log(this.productsItem);
-
         this.$axios
           .$put("/product/" + this.productsItem._id, formdata)
           .then(() => {
@@ -425,16 +417,12 @@ export default {
         };
         this.categoryname.push(cate);
       }
-    },
-    reverse(value) {
-      value.slice().reverse();
     }
   },
   props: ["product", "unit", "category"],
   created() {
     this.improveUn();
     this.improveCatename();
-    this.reverse(this.product);
   }
 };
 </script>

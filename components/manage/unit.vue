@@ -48,7 +48,7 @@
               </v-card-title>
                <v-form v-model="valid" ref="form">
               <v-card-text>
-                <v-container>
+                <div>
                   <v-row>
                     <v-col cols="12"> </v-col>
                     <v-col cols="12" class="mt-n7">
@@ -60,7 +60,7 @@
                       ></v-text-field>
                     </v-col>
                   </v-row>
-                </v-container>
+                </div>
               </v-card-text>
                </v-form>
               <v-card-actions>

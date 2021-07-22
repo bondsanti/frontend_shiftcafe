@@ -26,43 +26,66 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="category" :search="search" :items-per-page="10"
-            :footer-props="{
-    'items-per-page-options': [10, 20, 30, 40, 50,-1]
-  }">
-        <template v-slot:[`item.img`]="{}">
-            <img
-              src="@/assets/img/photo-4.jpg"
-              class="mt-2 mb-2 rounded-lg"
-              aspect-ratio="1"
-              style="width: 50px; height: 50px"
-            />
-          </template>
+      <v-data-table
+        :headers="headers"
+        :items="category"
+        :search="search"
+        :items-per-page="20"
+        :footer-props="{
+          'items-per-page-options': [20, 30, 40, 50, -1]
+        }"
+      >
+        <template v-slot:[`item.img`]="{ item }">
+          <v-img
+            :src="`http://192.168.1.24:5555/${item.img}`"
+            class="mt-2 mb-2 rounded-xl"
+            aspect-ratio="1"
+            width="100px"
+            height="100px"
+            contain
+          />
+        </template>
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
-                  ><v-icon left> mdi-food-fork-drink </v-icon> {{ formTitle }}</span
+                  ><v-icon left> mdi-food-fork-drink </v-icon>
+                  {{ formTitle }}</span
                 >
               </v-card-title>
-       <v-form v-model="valid" ref="form">
-              <v-card-text>
-                <v-container>
-                  <v-row>
-                    <v-col cols="12"> </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-text-field
-                        outlined
-                         :rules="rules"
-                        v-model="cate.cate_name"
-                        label="ชื่อ"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-card-text>
-            </v-form>
+              <v-form v-model="valid" ref="form">
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12"> </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          :rules="rules"
+                          v-model="cate.cate_name"
+                          label="ชื่อ"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-img
+                          v-if="imageURL"
+                          :src="imageURL"
+                          contain
+                          max-height="300px"
+                          max-width="300px"
+                          class="mb-3"
+                        ></v-img>
+                        <input
+                          accept="image/*"
+                          type="file"
+                          @change="onFileSelected"
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+              </v-form>
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
@@ -71,9 +94,17 @@
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" :disabled="!valid" @click="save();showAlert()">
+                <v-btn
+                  class="ma-1"
+                  color="info"
+                  :disabled="!valid"
+                  @click="
+                    save();
+                    showAlert();
+                  "
+                >
                   <v-icon aria-hidden="false" class="mx-2">
-                     mdi-content-save
+                    mdi-content-save
                   </v-icon>
                   เพิ่มข้อมูลหมวดหมูสินค้า
                 </v-btn>
@@ -89,11 +120,19 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-close-box  </v-icon
+                    mdi-close-box </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm();showAlert();">
-                  <v-icon aria-hidden="false" class="mx-4"> mdi-delete-forever  </v-icon
+                <v-btn
+                  color="primary"
+                  class="ma-2"
+                  @click="
+                    deleteItemConfirm();
+                    showAlert();
+                  "
+                >
+                  <v-icon aria-hidden="false" >
+                    mdi-delete-forever </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -102,27 +141,28 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr2" color="warning" @click="editItem(item)">
-            <v-icon aria-hidden="false" class="mx-2">
-              mdi-pencil-plus
+          <v-btn class="mr-2 pa-2" color="warning"  
+            @click="editItem(item)">
+            <v-icon aria-hidden="false">
+              mdi-pencil
             </v-icon>
             แก้ไขหมวดหมู่
           </v-btn>
           <v-btn
             rounded-lx
-            class="mr-2"
-            color="error"
+            class="mr-2  pa-2"
+            color="error" 
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
-               mdi-delete-forever 
+              mdi-delete-forever
             </v-icon>
             ลบหมวดหมู
           </v-btn>
         </template>
-            <template v-slot:[`item.No`]="{ index }">
-    {{ index + 1 }}
-  </template>
+        <template v-slot:[`item.No`]="{ index }">
+          {{ index + 1 }}
+        </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -137,22 +177,25 @@
 export default {
   data: () => ({
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
-     valid: true,
+    valid: true,
     dialog: false,
     dialogDelete: false,
     search: "",
     headers: [
       { text: "ลำดับ", sortable: false, value: "No" },
-      //{ text: "ภาพ", sortable: false, value: "img" },
-      { text: "ชื่อหม่วดหมู่", align: "start", value: "cate_name"},
-     // { text: "ID", align: "start", value: "_id", divider: true },
-      { text: "Actions", value: "actions", sortable: false }
+      { text: "ภาพ", sortable: false, value: "img" },
+      { text: "ชื่อหม่วดหมู่", align: "start", value: "cate_name" },
+      { text: "เหตุผล", value: "actions", sortable: false }
     ],
     editedIndex: -1,
-    cate: { _id: "", cate_name: "" },
+    cate: { _id: "", cate_name: "", img: "" },
     type: null,
-
-    deleteId: null
+    deleteId: null,
+    uploadState: false,
+    img: [],
+    error: { state: false, msg: "" },
+    imageURL: null,
+    preImg: null
   }),
 
   computed: {
@@ -177,28 +220,48 @@ export default {
     });
   },
   methods: {
-     showAlert() {
-         this.toast({
-        type: "success",
-        title:
-          "ดำเนิการสำเร็จ"
-      });
-       this.text_val_for_test = Date.now();
-  
+    onFileSelected(event) {
+      const reader = new FileReader();
+      reader.onload = event => {
+        this.imageURL = event.target.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+      this.preImg = event.target.files[0];
+      //console.log(this.preImg);
     },
-      someFn(ev) {
-      console.log(ev)}
-      ,
+    showAlert() {
+      this.toast({
+        type: "success",
+        title: "ดำเนิการสำเร็จ"
+      });
+      this.text_val_for_test = Date.now();
+    },
+    someFn(ev) {
+      console.log(ev);
+    },
+getProductImage(item) {
+      if (this.cate.img.length > 0) {
+        return this.cate.img;
+      } else {
+        return `http://192.168.1.24:5555/${item.img}`;
+      }
+    },
     editItem(item) {
       this.type = "edit";
-      this.cate = item;
+      this.imageURL = `http://192.168.1.24:5555/${item.img}`;
+      this.cate = {
+        _id: item._id,
+        cate_name: item.cate_name,
+        img: item.img
+      };
       this.dialog = true;
     },
     addItem() {
       this.type = "add";
       this.cate = {
         _id: "",
-        cate_name: ""
+        cate_name: "",
+        img: ""
       };
       this.dialog = true;
     },
@@ -229,19 +292,42 @@ export default {
     },
 
     save() {
-      this.$refs.form.validate();
+       this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
-       let formdata = new FormData();     
+        let formdata = new FormData();
         formdata.append("cate_name", this.cate.cate_name);
-        this.$emit("addCategory",formdata);
+        formdata.append("img", this.preImg);
+        //console.log(this.productsItem);
+        this.$emit("addCategory", formdata);
+        this.cate = {
+          cate_name: "",
+          img: " "
+        };
+        this.imageURL = null;
         this.close();
+        this.preImg = null;
       } else {
         this.loading = true;
+        let formdata = new FormData();
+        formdata.append("cate_name", this.cate.cate_name);
+        if (this.preImg !== null) {
+          formdata.append("img", this.preImg);
+        }
+        // console.log(this.productsItem);
+        
         this.$axios
-          .$put("/category/" + this.cate._id, this.cate)
+          .$put("/category/" + this.cate._id, formdata)
           .then(() => {
+            this.$emit("refresh");
+
             this.close();
+            this.cate = {
+              cate_name: "",
+              img: " "
+            };
+            this.imageURL = null;
+            this.preImg = null;
           })
           .catch(e => {
             console.log(e);
@@ -249,6 +335,6 @@ export default {
       }
     }
   },
-  props:['category']
+  props: ["category"]
 };
 </script>

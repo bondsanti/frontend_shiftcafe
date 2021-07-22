@@ -30,8 +30,9 @@
         :headers="headers"
         :items="customer"
         :search="search"
-          :items-per-page="15"  
-       :footer-props="{'items-per-page-options': [15, 20, 30, 40, 50,-1] }"    >
+        :items-per-page="15"
+        :footer-props="{ 'items-per-page-options': [15, 20, 30, 40, 50, -1] }"
+      >
         <template v-slot:[`item.img`]="{}">
           <img
             src="@/assets/img/photo-2.jpg"
@@ -41,7 +42,7 @@
           />
         </template>
         <template v-slot:top>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" max-width="700px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
@@ -90,11 +91,11 @@
                         ></v-text-field>
                       </v-col>
 
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="4">
                         <v-text-field
-                           v-model="customerItme.birthday"
+                          v-model="customerItme.birthday"
                           :readonly="editedIndex === 0"
-                           :rules="rules"
+                          :rules="rules"
                           type="date"
                           label="วันเกิด"
                           outlined
@@ -103,11 +104,11 @@
                         ></v-text-field>
                       </v-col>
 
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="4">
                         <v-text-field
                           v-model="customerItme.tel"
-                          :readonly="editedIndex === 0"   
-                            hint="ไม่ต้องเติม - ในเบอร์โทรศัพท์"                    
+                          :readonly="editedIndex === 0"
+                          hint="ไม่ต้องเติม - ในเบอร์โทรศัพท์"
                           maxlength="10"
                           :rules="numberRules"
                           label="เบอร์โทรติดต่อ"
@@ -115,7 +116,21 @@
                           type="number"
                           required
                           color="#1D1D1D"
+                          @keypress.enter="check"
                         ></v-text-field>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="2"
+                        class="justify-center align-center"
+                      >
+                        <v-btn small fab @click="check">เช๊ค</v-btn>
+                        <div class="mt-2 ml-4" v-if="teltrue">
+                          <span class="green--text ">ใช้ได้</span>
+                        </div>
+                        <div class="mt-2 ml-4" v-if="telErr">
+                          <span class="red--text ">ซ้ำ</span>
+                        </div>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
@@ -147,15 +162,14 @@
                           item-text="name"
                           item-value="_id"
                           v-model="customerItme.ref_level_id"
-                          :items="level"                         
+                          :items="level"
                           :readonly="editedIndex === 0"
-                           :rules="rules"
+                          :rules="rules"
                         ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.point"
-                          
                           :readonly="editedIndex === 0"
                           type="number"
                           label="แต้ม"
@@ -215,7 +229,7 @@
           <!-- ดูข้อมูล -->
         </template>
         <template v-slot:[`item.viewItem`]="{ item }">
-          <v-btn class="mr1" color="success" @click="viewItem(item)">
+          <v-btn class="mr1" small color="success" @click="viewItem(item)">
             <v-icon aria-hidden="false" class="me-1">
               mdi-eye
             </v-icon>
@@ -225,7 +239,7 @@
 
         <!-- ดูข้อมูล -->
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr1" color="warning" @click="editItem(item)">
+          <v-btn class="mr1" small color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="me-1">
               mdi-pencil-plus
             </v-icon>
@@ -235,7 +249,7 @@
             rounded-lx
             class="mr-1"
             color="error"
-            
+            small
             @click="deleteItem(item)"
           >
             <v-icon dark class="me-1">
@@ -244,14 +258,25 @@
             ลบ
           </v-btn>
         </template>
-        <template v-slot:[`item.ref_level_id.level_name`]="{ item }">
-          <v-chip
-            :color="getColorstatus(item.ref_level_id.level_name)"
-            dark
-            small
-          >
-            {{ item.ref_level_id.level_name }}
+             <template v-slot:[`item.No`]="{ index }">
+          {{ index + 1 }}
+        </template>
+        <template v-slot:[`item.pname`]="{ item }">
+          <v-chip :color="getPnameColor(item.pname)" dark small>
+            {{ item.pname }}
           </v-chip>
+        </template>
+         <template v-slot:[`item.ref_level_id.level_name`]="{ item }">
+          <v-chip :color="getColor(item.ref_level_id.level_name)" dark small>
+            {{ item.ref_level_id.level_name}}
+          </v-chip>
+        </template>
+          <template v-slot:[`item.tel`]="{ item }">
+            <v-icon class="ma-2 ml-2" color="primary">
+            mdi-phone-in-talk-outline 
+          </v-icon>
+            {{ item.tel}}
+        
         </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
@@ -267,6 +292,8 @@
 export default {
   layout: "layoutCashier",
   data: () => ({
+    teltrue: false,
+    telErr: false,
     dialog: false,
     dialogDelete: false,
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
@@ -275,11 +302,13 @@ export default {
     pnamesec: ["นาย", "นาง", "นางสาว"],
     level: [],
     headers: [
-    //  { text: "ภาพ", sortable: false, value: "img" },
+      { text: "ลำดับ", sortable: false, value: "No" },
+      //  { text: "ภาพ", sortable: false, value: "img" },
       { text: "คำนำหน้า", align: "start", value: "pname" },
       { text: "ชื่อ", align: "start", value: "fname" },
       { text: "นามสกุล", align: "start", value: "lname" },
       { text: "เบอร์โทร", align: "start", value: "tel" },
+      { text: "ระดับ", align: "start", value: "ref_level_id.level_name" },
       //{ text: "แต้ม", align: "start", value: "point" },
       { text: "ดูข้อมูลสมาชิก", value: "viewItem", sortable: false },
       { text: "หมายเหตุ", value: "actions", sortable: false }
@@ -308,7 +337,7 @@ export default {
         "โปรใส่อีเมลให้ถูกต้อง"
     ],
     numberRules: [
-      v => (/\d{9,10}/.test(v) && v.length <= 10) || 'เบอร์โทรศัพท์ไม่ถูกต้อง',
+      v => (/\d{9,10}/.test(v) && v.length <= 10) || "เบอร์โทรศัพท์ไม่ถูกต้อง",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ]
   }),
@@ -336,15 +365,24 @@ export default {
   },
 
   methods: {
-    checkTel(tel) {
-      this
-       const customer = $get("/customer-tel" + $tel);
-      return { category };
+    async check() {
+      const cus = await this.$axios.$get(
+        "/customer-tel/" + this.customerItme.tel
+      );
+      if (cus.length > 0) {
+        this.telErr = true;
+        this.teltrue = false;
+      } else {
+        this.telErr = false;
+        this.teltrue = true;
+      }
+      //return { category };
     },
     viewItem(item) {
       this.editedIndex = 0;
       this.customerItme = Object.assign({}, item);
       this.dialog = true;
+      console.log(item);
     },
     editItem(item) {
       this.editedIndex === -1;
@@ -402,17 +440,23 @@ export default {
         this.level.push(Lvmb);
       }
     },
-    getColorstatus(level_name) {
-      if (level_name === "classic") return "#8D6E63";
-      else if (level_name === "silver") return "#78909C";
-      else if (level_name === "gold") return "#FFEA00";
-      else return "#00B0FF";
+     getColor(status) {
+      if (status === "platinum") return "cyan";
+      else if (status === "gold") return "amber";
+      else if (status === "silver") return "blue-grey";
+      return "brown";
+    },
+
+       getPnameColor(status) {
+      if (status === "นาย") return "#03A9F4";
+      else if (status === "นางสาว") return "#F06292";
+      else if (status === "นาง") return "#F06292";
+      return "#FFCC80";
     },
     save() {
       this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
-
         this.$emit("addCustomer", { ...this.customerItme });
         this.close();
       } else {

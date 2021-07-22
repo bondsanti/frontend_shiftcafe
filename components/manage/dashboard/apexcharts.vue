@@ -19,13 +19,14 @@
     </v-app-bar>
     <client-only>
       <div>
-        <VueApexCharts
+        <component
+          :is="apexchart"
           max-width="100"
           height="350"
           type="area"
           :options="chartOptions"
           :series="series"
-        ></VueApexCharts>
+        ></component>
       </div>
     </client-only>
   </v-card>
@@ -34,9 +35,6 @@
 <script>
 import moment from "moment";
 export default {
-  components: {
-    VueApexCharts: () => import("vue-apexcharts")
-  },
   data: () => ({
     chartOptions: {
       chart: {
@@ -75,6 +73,15 @@ export default {
     formatDate(date) {
       var strdate = moment(date).add(543, "years");
       return moment(strdate).format("D/MM/YY ");
+    }
+  },
+  computed: {
+    apexchart() {
+      return () => {
+        if (process.client) {
+          return import("vue-apexcharts");
+        }
+      };
     }
   }
 };

@@ -22,7 +22,7 @@ export default {
 
   async asyncData(context) {
     const historyOrder = await context.$axios.$get("/order");
-    console.log(historyOrder);
+    //console.log(historyOrder);
     return { historyOrder };
   },
   methods: {

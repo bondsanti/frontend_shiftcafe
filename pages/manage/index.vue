@@ -27,8 +27,7 @@ export default {
     sell,
     // topsell,
     //  datasell,
-    apexcharts,
-    VueApexCharts: () => import("vue-apexcharts")
+    apexcharts
   },
   async asyncData(context) {
     const [today, month, year] = await Promise.all([

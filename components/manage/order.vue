@@ -149,7 +149,7 @@ export default {
     Detail(item) {
       this.from = item;
       this.itemBy = item;
-      console.log("aa" + JSON.stringify(this.itemBy));
+      //console.log("aa" + JSON.stringify(this.itemBy));
 
       for (let i in this.itemBy.list_product) {
         //console.log(this.itemBy.list_product[i].name);

@@ -1,11 +1,15 @@
 <template>
-  <category :category="category" @addCategory="addCategory" @refresh="refresh" />
+  <category
+    :category="category"
+    @addCategory="addCategory"
+    @refresh="refresh"
+  />
 </template>
 
 <script>
 import category from "@/components/manage/category.vue";
 export default {
-  middleware: ["auth", "check", "refresh", "checkManager"],
+  middleware: ["auth", "check", "refresh", "checkManager", "checkChecker"],
   head: {
     title: "หมวดหมูสินค้า"
   },
@@ -22,7 +26,8 @@ export default {
       await this.$axios.$post("/category", dataCategory);
       this.category = await this.$axios.$get("/category");
     },
-      async refresh() {
+    async refresh() {
+      //console.log("refresh here");
       this.category = await this.$axios.$get("/category");
     }
   },

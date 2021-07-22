@@ -1,12 +1,16 @@
 <template>
-  <Cashdraw @addCashdraw="onSubmitted" :loadData="loadData"   @refresh="refresh" />
+  <Cashdraw
+    @addCashdraw="onSubmitted"
+    :loadData="loadData"
+    @refresh="refresh"
+  />
 </template>
 
 <script>
 import Cashdraw from "@/components/seller/cashdraw.vue";
 
 export default {
-  middleware: ["auth", "checkAll", "refresh"],
+  middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   head: {
     title: "Withdraw"
   },
@@ -40,7 +44,7 @@ export default {
       //
       this.loadData = await this.$axios.$get("/withdraw");
     },
-     async refresh() {
+    async refresh() {
       this.loadData = await this.$axios.$get("/withdraw");
     }
 

@@ -9,7 +9,7 @@
 <script>
 import register from "@/components/manage/register.vue";
 export default {
-  middleware: ["auth", "check", "refresh"],
+  middleware: ["auth", "check", "refresh", "checkChecker"],
   head: {
     title: "สมัคร"
   },

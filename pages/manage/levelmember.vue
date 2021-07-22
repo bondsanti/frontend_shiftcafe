@@ -1,11 +1,15 @@
 <template>
-  <levelmember :levelmember="levelmember" @addlevelmember="addlevelmember"    @refresh="refresh" />
+  <levelmember
+    :levelmember="levelmember"
+    @addlevelmember="addlevelmember"
+    @refresh="refresh"
+  />
 </template>
 
 <script>
 import levelmember from "@/components/manage/levelmember.vue";
 export default {
-  middleware: ["auth", "check", "refresh"],
+  middleware: ["auth", "check", "refresh", "checkChecker"],
   head: {
     title: "ระดับสมาชิก"
   },
@@ -22,7 +26,7 @@ export default {
       await this.$axios.$post("/level-member", datalevelmember);
       this.levelmember = await this.$axios.$get("/level-member");
     },
-        async refresh() {
+    async refresh() {
       this.levelmember = await this.$axios.$get("/level-member");
     }
   },

@@ -10,7 +10,7 @@
 <script>
 import customer from "@/components/manage/customer.vue";
 export default {
-  middleware: ["auth", "check", "refresh"],
+  middleware: ["auth", "check", "refresh", "checkChecker"],
   head: {
     title: "จัดการสมาชิก"
   },

@@ -5,7 +5,7 @@
 <script>
 import unit from "@/components/manage/unit.vue";
 export default {
-  middleware: ["auth", "check", "refresh", "checkManager"],
+  middleware: ["auth", "check", "refresh", "checkManager", "checkChecker"],
   head: {
     title: "จัดการหน่วยนับ"
   },

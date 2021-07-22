@@ -5,7 +5,7 @@
 <script>
 import stock from "@/components/manage/stock.vue";
 export default {
-  middleware: ["auth", "check", "refresh"],
+  middleware: ["auth", "check", "refresh", "checkChecker"],
   head: {
     title: "สต๊อก"
   },

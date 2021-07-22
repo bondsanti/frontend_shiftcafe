@@ -9,7 +9,7 @@ export default {
   head: {
     title: "Point"
   },
-  middleware: ["auth", "checkAll", "refresh"],
+  middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   async asyncData(context) {
     const pointmanage = await context.$axios.$get("/point-manage");
     //console.log(pointmanage);

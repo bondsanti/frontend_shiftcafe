@@ -464,7 +464,8 @@ export default {
         this.$axios
           .$put("/customer/" + this.customerItme._id, this.customerItme)
           .then(() => {
-            this.close();
+            this.$emit("refresh");
+            this.close("refresh");
           })
           .catch(e => {
             console.log(e);

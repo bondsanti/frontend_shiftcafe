@@ -1,5 +1,5 @@
 <template>
-  <Cashdraw @addCashdraw="onSubmitted" :loadData="loadData" />
+  <Cashdraw @addCashdraw="onSubmitted" :loadData="loadData"   @refresh="refresh" />
 </template>
 
 <script>
@@ -35,6 +35,9 @@ export default {
         });
       //this.loadData = context.$axios.$get("/withdraw");
       //
+      this.loadData = await this.$axios.$get("/withdraw");
+    },
+     async refresh() {
       this.loadData = await this.$axios.$get("/withdraw");
     }
 

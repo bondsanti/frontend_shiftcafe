@@ -1,5 +1,5 @@
 <template>
-  <cash @addCashdraw="onSubmitted" :loadData="loadData" />
+  <cash @addCashdraw="onSubmitted" :loadData="loadData"     @refresh="refresh" />
 </template>
 
 <script>
@@ -25,6 +25,9 @@ export default {
   methods: {
     async onSubmitted(cashdrawData) {
       await this.$axios.$post("/withdraw", cashdrawData);
+      this.loadData = await this.$axios.$get("/withdraw");
+    },
+      async refresh() {
       this.loadData = await this.$axios.$get("/withdraw");
     }
   },

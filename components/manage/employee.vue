@@ -919,12 +919,9 @@ export default {
       } else {
         this.loading = true;
         this.$axios
-          .$put(
-            "/employee/" + this.employeeitme._id,
-            this.employeeitme,
-            this.improverole
-          )
+          .$put("/employee/" + this.employeeitme._id,  this.employeeitme, this.improverole )
           .then(() => {
+            this.$emit("refresh");
             this.closePass();
             this.close();
           })

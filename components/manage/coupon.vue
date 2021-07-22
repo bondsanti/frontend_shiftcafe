@@ -47,7 +47,7 @@
 
               <v-form v-model="valid" ref="form">
                 <v-card-text>
-                  <v-container>
+                  <div>
                     <v-row>
                       <v-col cols="12"> </v-col>
                       <v-col cols="12" md="6" class="mt-n7">
@@ -101,8 +101,8 @@
                           outlined
                           label="ส่วนลดในคูปอง"
                           v-model="coupone.discount"
-                          :rules="numberRules"
-                          type="nubar"
+                           :rules="rules"
+                          type="number"
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
@@ -112,13 +112,13 @@
                           outlined
                           label="จำคูปองที่สามารถใช้ได้"
                           v-model="coupone.num_use"
-                          :rules="numberRules"
-                          type="nubar"
+                          :rules="rules"
+                          type="number"
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
                     </v-row>
-                  </v-container>
+                  </div>
                 </v-card-text>
               </v-form>
 
@@ -129,15 +129,12 @@
                   </v-icon>
                   ยกเลิก
                 </v-btn>
+
                 <v-spacer></v-spacer>
                 <v-btn
                   class="ma-1"
                   color="info"
-                  @click="
-                    save();
-                    showAlert();
-                  "
-                  :disabled="!valid"
+                  @click="save(); showAlert();  "      :disabled="!valid"         
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save

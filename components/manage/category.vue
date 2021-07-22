@@ -56,7 +56,7 @@
               </v-card-title>
               <v-form v-model="valid" ref="form">
                 <v-card-text>
-                  <v-container>
+                  <div>
                     <v-row>
                       <v-col cols="12"> </v-col>
                       <v-col cols="12" class="mt-n7">
@@ -74,16 +74,17 @@
                           contain
                           max-height="300px"
                           max-width="300px"
-                          class="mb-3"
+                          class="mb-3 ml-12"
                         ></v-img>
                         <input
                           accept="image/*"
                           type="file"
+                          :rules="rules"
                           @change="onFileSelected"
                         />
                       </v-col>
                     </v-row>
-                  </v-container>
+                  </div>
                 </v-card-text>
               </v-form>
               <v-card-actions>
@@ -320,7 +321,6 @@ getProductImage(item) {
           .$put("/category/" + this.cate._id, formdata)
           .then(() => {
             this.$emit("refresh");
-
             this.close();
             this.cate = {
               cate_name: "",

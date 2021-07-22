@@ -25,6 +25,9 @@ export default {
     async addEmployee(dataEmployee) {
       await this.$axios.$post("/employee", dataEmployee);
       this.employee = await this.$axios.$get("/employee");
+    },
+    async refresh() {
+      this.employee = await this.$axios.$get("/employee");
     }
   },
   data: () => ({

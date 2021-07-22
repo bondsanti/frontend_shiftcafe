@@ -1,5 +1,5 @@
 <template>
-  <levelmember :levelmember="levelmember" @addlevelmember="addlevelmember" />
+  <levelmember :levelmember="levelmember" @addlevelmember="addlevelmember"    @refresh="refresh" />
 </template>
 
 <script>
@@ -20,6 +20,9 @@ export default {
   methods: {
     async addlevelmember(datalevelmember) {
       await this.$axios.$post("/level-member", datalevelmember);
+      this.levelmember = await this.$axios.$get("/level-member");
+    },
+        async refresh() {
       this.levelmember = await this.$axios.$get("/level-member");
     }
   },

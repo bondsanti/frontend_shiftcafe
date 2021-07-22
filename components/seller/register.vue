@@ -154,15 +154,15 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="6"  v-if="editedIndex !== 0">
                         <v-select
                           label="ระดับ"
                           outlined
                           color="#1D1D1D"
-                          item-text="name"
-                          item-value="_id"
+                         
+                          
                           v-model="customerItme.ref_level_id"
-                          :items="level"
+                          :items="lv"
                           :readonly="editedIndex === 0"
                           :rules="rules"
                         ></v-select>
@@ -301,6 +301,7 @@ export default {
     search: "",
     pnamesec: ["นาย", "นาง", "นางสาว"],
     level: [],
+    lv:[{text:'classic',value:'60e439b7c7d6ae35548c7b62'}],
     headers: [
       { text: "ลำดับ", sortable: false, value: "No" },
       //  { text: "ภาพ", sortable: false, value: "img" },
@@ -401,7 +402,7 @@ export default {
         tel: " ",
         email: "",
         address: "",
-        ref_level_id: "",
+        ref_level_id:"",
         point: "0"
       };
       this.dialog = true;

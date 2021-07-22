@@ -1,0 +1,395 @@
+<template>
+  <div class="" style="height: 100%">
+    <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
+      <v-dialog v-model="dialog" max-width="500px">
+        <v-card>
+          <v-form>
+            <v-card-title>
+              <span class="text-h"
+                ><v-icon left> mdi-note-text-outline </v-icon> Invoice No.#{{
+                  itemBy.invoice
+                }}</span
+              >
+            </v-card-title>
+            <v-divider class="mb-3"></v-divider>
+            <v-card-text>
+              <v-row v-for="(de, i) in detailArr" :key="i">
+                <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center"
+                  ><h4>{{ de.name }}</h4></v-col
+                >
+                <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center"
+                  ><h4>{{ de.value }}</h4></v-col
+                >
+              </v-row>
+            </v-card-text>
+            <v-divider class="mt-3"></v-divider>
+            <v-card-actions>
+              <v-btn color="teal" @click="printInvoice" dark>
+                <v-icon left> mdi-printer </v-icon>พิมพ์ใบเสร็จรับเงิน
+              </v-btn>
+              <v-spacer></v-spacer>
+
+              <v-btn color="error" @click="close">
+                <v-icon left> mdi-close </v-icon>ปิด
+              </v-btn>
+            </v-card-actions>
+          </v-form>
+        </v-card>
+      </v-dialog>
+      <v-row>
+        <v-col xs="12" sm="12" md="12" class="">
+          <v-card class="px-6 py-5 mb-5">
+            <v-card-title>
+              <h2 class="text-center">ข้อมูลใบสั่งซื้อ</h2>
+              <v-spacer></v-spacer>
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+              ></v-text-field>
+            </v-card-title>
+            <v-data-table
+              :headers="headers"
+              :items="historyInvoice"
+              :search="search"
+              :items-per-page="10"
+              :sort-by="['datetime']"
+              :sort-desc="[true, false]"
+              class="mb-n5"
+            >
+              <template v-slot:[`item.datetime`]="{ item }">
+                <span>{{ item.datetime | moment }}</span>
+              </template>
+              <template v-slot:[`item.type_payment`]="{ item }">
+                <v-chip :color="getColor(item.type_payment)" dark small>
+                  {{ getTxt(item.type_payment) }}
+                </v-chip>
+              </template>
+              <template v-slot:[`item.receive_money`]="{ item }">
+                <span class="">{{ formatPrice(item.receive_money) }} ฿</span>
+              </template>
+              <template v-slot:[`item.net_price`]="{ item }">
+                <span class="">{{ formatPrice(item.net_price) }} ฿</span>
+              </template>
+              <template v-slot:[`item.withdraw_money`]="{ item }">
+                <span class="">{{ formatPrice(item.withdraw_money) }} ฿</span>
+              </template>
+              <template v-slot:[`item.actions`]="{ item }">
+                <v-btn class="mr2" color="warning" @click="Detail(item)" small>
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-eye-settings
+                  </v-icon>
+                  ดูรายละเอียด
+                </v-btn>
+              </template>
+            </v-data-table>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-card>
+  </div>
+</template>
+
+<script>
+import moment from "moment";
+export default {
+  data() {
+    return {
+      search: "",
+      dialog: false,
+
+      itemBy: {},
+      headers: [
+        {
+          text: "วัน เวลา",
+          align: "start",
+          sortable: true,
+          value: "datetime"
+        },
+        { text: "หมายเลขบิล", value: "invoice" },
+        { text: "ประเภทการชำระเงิน", value: "type_payment" },
+        { text: "ยอดสุทธิ", value: "net_price" },
+        { text: "เงินรับมา", value: "receive_money" },
+        { text: "เงินทอน", value: "withdraw_money" },
+        { text: "Actions", value: "actions", sortable: false }
+      ],
+      detailArr: [],
+      order_id: ""
+      //historyOrder: []
+    };
+  },
+  methods: {
+    formatPrice(total_price) {
+      const value = parseInt(total_price);
+      let val = (value / 1).toFixed(2).replace(",", ".");
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+    getColor(status) {
+      if (status === "cash") return "teal darken-1";
+      else return "indigo darken-1";
+    },
+    getTxt(status) {
+      if (status === "cash") return "เงินสด";
+      else return "โอนผ่านธนาคาร";
+    },
+    Detail(item) {
+      this.order_id = item.ref_order_id._id;
+      this.itemBy = item;
+      if (item.type_payment === "transfer") {
+        this.detailArr = [
+          {
+            name: "หมายเลขออเดอร์",
+            value: item.ref_order_id.order_no
+          },
+          {
+            name: "พนักงานที่รับเงิน",
+            value: item.ref_emp_id.username
+          },
+          {
+            name: "ชื่อลูกค้า",
+            value: item.ref_cus_id.fname + " " + item.ref_cus_id.lname
+          },
+          {
+            name: "ประเภทการชำระเงิน",
+            value: item.type_payment
+          },
+          {
+            name: "ธนาคาร",
+            value: item.ref_bank_id.bank_name
+          },
+          {
+            name: "เงินรับมา",
+            value: this.formatPrice(item.receive_money) + "  ฿"
+          },
+          {
+            name: "เงินทอน",
+            value: this.formatPrice(item.withdraw_money) + "  ฿"
+          },
+          {
+            name: "ราคาทั้งหมด",
+            value: this.formatPrice(item.total_price) + "  ฿"
+          },
+          {
+            name: "ส่วนลด",
+            value: this.formatPrice(item.discount_price) + "  ฿"
+          },
+          {
+            name: "ราคาหลังจากลด",
+            value: this.formatPrice(item.after_discount) + "  ฿"
+          },
+          {
+            name: "ภาษี",
+            value: this.formatPrice(item.vat_price) + "  ฿"
+          },
+          {
+            name: "ราคาหลังบวกภาษี",
+            value: this.formatPrice(item.after_vat) + "  ฿"
+          },
+          {
+            name: "ราคาสุทธิ",
+            value: this.formatPrice(item.net_price) + "  ฿"
+          },
+          {
+            name: "แต้มที่ได้",
+            value: item.ref_point_pay_id.point
+          }
+        ];
+      } else {
+        this.detailArr = [
+          {
+            name: "หมายเลขออเดอร์",
+            value: item.ref_order_id.order_no
+          },
+          {
+            name: "พนักงานที่รับเงิน",
+            value: item.ref_emp_id.username
+          },
+          {
+            name: "ชื่อลูกค้า",
+            value: item.ref_cus_id.fname + " " + item.ref_cus_id.lname
+          },
+          {
+            name: "ประเภทการชำระเงิน",
+            value: item.type_payment
+          },
+
+          {
+            name: "เงินรับมา",
+            value: this.formatPrice(item.receive_money) + " ฿"
+          },
+          {
+            name: "เงินทอน",
+            value: this.formatPrice(item.withdraw_money) + " ฿"
+          },
+          {
+            name: "ราคาทั้งหมด",
+            value: this.formatPrice(item.total_price) + " ฿"
+          },
+          {
+            name: "ส่วนลด",
+            value: this.formatPrice(item.discount_price) + " ฿"
+          },
+          {
+            name: "ราคาหลังจากลด",
+            value: this.formatPrice(item.after_discount) + " ฿"
+          },
+          {
+            name: "ภาษี",
+            value: this.formatPrice(item.vat_price) + " ฿"
+          },
+          {
+            name: "ราคาหลังบวกภาษี",
+            value: this.formatPrice(item.after_vat) + " ฿"
+          },
+          {
+            name: "ราคาสุทธิ",
+            value: this.formatPrice(item.net_price) + " ฿"
+          },
+          {
+            name: "แต้มที่ได้",
+            value: item.ref_point_pay_id.point
+          }
+        ];
+      }
+
+      this.dialog = true;
+    },
+
+    close() {
+      this.dialog = false;
+    },
+    async printInvoice() {
+      const order = await this.$axios.$get("/order/" + this.order_id);
+      var WinPrint = window.open(
+        "",
+        "",
+        "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
+      );
+      WinPrint.document.write("<table>");
+      WinPrint.document.write(
+        "<tr><th>SHIFT CAFÉ</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
+      );
+      WinPrint.document.write("</table>");
+      WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
+      WinPrint.document.write(
+        "<tr><th align='left'>บริษัท ชิฟท์ เรสเตอรองต์ จำกัด</th></tr>"
+      );
+      WinPrint.document.write(
+        "<tr><th align='left'>ที่อยู่ : 89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท</th></tr>"
+      );
+      WinPrint.document.write(
+        "<tr><th align='left'>อำเภอเมือง จังหวัดลำปาง 52000</th></tr>"
+      );
+      WinPrint.document.write(
+        "<tr><th align='left'>เบอร์มือถือ : 0917961816</th></tr>"
+      );
+      WinPrint.document.write(
+        `<tr><th align='center'  >ใบเสร็จรับเงินเลขที่ : ${this.itemBy.invoice}</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th  align='center'>วันที่ ${this.formatDate(
+          this.itemBy.datetime
+        )}</th></tr>`
+      );
+      WinPrint.document.write("</table>");
+      //WinPrint.document.write("<img src='" + __dirname + "25.png'>");
+      WinPrint.document.write(
+        "<table   style='width: 100%;font-size: 0.5em;'>"
+      );
+      WinPrint.document.write(
+        "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th><th style='border-bottom: thin dotted;border-top: thin dotted' colspan='2' width='100px'>ราคา</th></tr>"
+      );
+      for (let i in order.list_product) {
+        WinPrint.document.write("<tr style='border-bottom: thin solid'>");
+        WinPrint.document.write(
+          `<td style='padding-left:20px;'>${parseInt(i) + 1}</td><td >${
+            order.list_product[i].name
+          }</td><td style='padding-left:20px;'>${
+            order.list_product[i].qty
+          }</td><td style='padding-left:20px;'>${this.formatPrice(
+            order.list_product[i].price
+          )} </td><td style='padding-right:20px;'>฿</td>`
+        );
+        WinPrint.document.write("</tr>");
+      }
+      WinPrint.document.write(
+        "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
+      );
+      WinPrint.document.write("</table>");
+      WinPrint.document.write(
+        "<table  style='margin-top:20px;font-size: 0.6em;'>"
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' align=left style='padding-right:60px;'>รวมเงิน</th><th width='100px'>${this.formatPrice(
+          this.itemBy.total_price
+        )} </th><th>บาท</th></tr>`
+      );
+      if (this.itemBy.discount_price > 0) {
+        WinPrint.document.write(
+          `<tr><th width='1000px' align=left style='padding-right:60px;'>ส่วนลด</th><th width='100px'>${this.formatPrice(
+            this.itemBy.discount_price
+          )}</th><th>บาท</th></tr>`
+        );
+      }
+      if (this.itemBy.vat_price > 0) {
+        WinPrint.document.write(
+          `<tr><th width='1000px' align=left style='padding-right:60px;'>ภาษี</th><th width='100px'>${this.formatPrice(
+            this.itemBy.vat_price
+          )}</th><th>บาท</th></tr>`
+        );
+      }
+      WinPrint.document.write(
+        `<tr><th width='1000px' align=left style='padding-right:60px'>ยอดสุทธิ</th><th width='100px'>${this.formatPrice(
+          this.itemBy.net_price
+        )} </th><th>บาท</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' align=left style='padding-right:60px'>เงินสด</th><th width='100px'>${this.formatPrice(
+          this.itemBy.receive_money
+        )} </th><th>บาท</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th width='1000px' align=left style='padding-right:60px'>เงินทอน</th><th width='100px'>${this.formatPrice(
+          this.itemBy.withdraw_money
+        )} </th><th>บาท</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th  align=center style='padding-left:60px' >**ขอบคุณที่ใช้บริการ**</th></tr>`
+      );
+      WinPrint.document.write("</table>");
+      WinPrint.document.close();
+      WinPrint.focus();
+      setTimeout(WinPrint.print(), 3000);
+    },
+    formatDate(date) {
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("D/MM/YY H:mm");
+    }
+  },
+  //   async asyncData(context) {
+  //     const historyOrder = await context.$axios.$get("/order");
+
+  //     console.log(historyOrder);
+  //     return { historyOrder };
+  //   },
+  filters: {
+    moment: function(date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("D/MM/YY H:mm");
+    }
+  },
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    }
+  },
+
+  props: ["historyInvoice"]
+};
+</script>

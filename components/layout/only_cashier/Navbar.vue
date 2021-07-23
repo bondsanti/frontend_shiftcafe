@@ -45,17 +45,9 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title>SHIFT CAFE</v-toolbar-title>
       <v-spacer></v-spacer>
-      <!-- <v-btn icon>
-        <v-icon>mdi-circle-box</v-icon>
-      </v-btn>
-      <v-btn icon>
-        <v-icon>mdi-store-minus</v-icon>
-      </v-btn>
-      <v-btn icon>
-        <v-icon>mdi-clipboard-list</v-icon>
-      </v-btn> -->
+
       <v-avatar size="36px" class="mr-2">
-        <img alt="Avatar" src="/profile-user.png" />
+        <v-icon x-large>mdi-account-circle</v-icon>
       </v-avatar>
       <v-toolbar-title
         >{{ $store.getters["displayName"] }} |
@@ -124,11 +116,10 @@ export default {
             title: "สั่งสินค้า",
             to: "/seller"
           },
-
           {
-            icon: "mdi-account",
-            title: "ลงทะเบียนสมาชิก",
-            to: "/seller/register"
+            icon: "mdi-clipboard-list",
+            title: "จัดการออเดอร์",
+            to: "/seller/order"
           }
         ];
       } else if (

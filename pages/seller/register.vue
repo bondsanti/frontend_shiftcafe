@@ -13,7 +13,7 @@ export default {
   head: {
     title: "Register"
   },
-  middleware: ["auth", "checkAll", "refresh", "checkChecker"],
+  middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   async asyncData(context) {
     const [customer, levelmember] = await Promise.all([
       context.$axios.$get("/customer"),

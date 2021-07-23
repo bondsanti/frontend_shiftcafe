@@ -204,7 +204,7 @@
         </template>
 
         <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize">
+          <v-btn color="primary" @click="product">
             Reset
           </v-btn>
         </template>
@@ -231,8 +231,8 @@ export default {
       { text: "ราคา", sortable: false, value: "price" },
       // { text: "สต็อก", sortable: false, value: "stock" },
       // { text: "id", sortable: false, value: "_id" },
-      { text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
-      { text: "Actions", value: "actions", sortable: false }
+      //{ text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
+      { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
     productsItem: {

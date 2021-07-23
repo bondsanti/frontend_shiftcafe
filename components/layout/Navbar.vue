@@ -59,7 +59,7 @@
         <v-icon>mdi-clipboard-list</v-icon>
       </v-btn> -->
       <v-avatar size="36px" class="mr-2">
-        <img alt="Avatar" src="/profile-user.png" />
+        <v-icon x-large>mdi-account-circle</v-icon>
       </v-avatar>
       <v-toolbar-title
         >{{ $store.getters["displayName"] }} |

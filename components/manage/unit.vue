@@ -1,5 +1,5 @@
 <template>
-  <div class="ma-3 rounded-lg" >
+  <div class="ma-3 rounded-lg">
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
@@ -26,18 +26,23 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="unit" :search="search"  :items-per-page="15"
-            :footer-props="{
-    'items-per-page-options': [15, 20, 30, 40, 50,-1]
-  }">
-          <template v-slot:[`item.img`]="{}">
-            <img
-              src="@/assets/img/photo-1.jpg"
-              class="mt-2 mb-2 rounded-lg"
-              aspect-ratio="1"
-              style="width: 60px; height: 60px"
-            />
-          </template>
+      <v-data-table
+        :headers="headers"
+        :items="unit"
+        :search="search"
+        :items-per-page="15"
+        :footer-props="{
+          'items-per-page-options': [15, 20, 30, 40, 50, -1]
+        }"
+      >
+        <template v-slot:[`item.img`]="{}">
+          <img
+            src="@/assets/img/photo-1.jpg"
+            class="mt-2 mb-2 rounded-lg"
+            aspect-ratio="1"
+            style="width: 60px; height: 60px"
+          />
+        </template>
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
             <v-card>
@@ -46,23 +51,23 @@
                   ><v-icon left> mdi-barley </v-icon> {{ formTitle }}</span
                 >
               </v-card-title>
-               <v-form v-model="valid" ref="form">
-              <v-card-text>
-                <div>
-                  <v-row>
-                    <v-col cols="12"> </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        v-model="units.u_name"
-                        :rules="rules"
-                        label="ชื่อ"
-                      ></v-text-field>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-card-text>
-               </v-form>
+              <v-form v-model="valid" ref="form">
+                <v-card-text>
+                  <div>
+                    <v-row>
+                      <v-col cols="12"> </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          v-model="units.u_name"
+                          :rules="rules"
+                          label="ชื่อ"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </div>
+                </v-card-text>
+              </v-form>
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
@@ -71,9 +76,17 @@
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" :disabled="!valid" @click="save();showAlert();">
+                <v-btn
+                  class="ma-1"
+                  color="info"
+                  :disabled="!valid"
+                  @click="
+                    save();
+                    showAlert();
+                  "
+                >
                   <v-icon aria-hidden="false" class="mx-2">
-                     mdi-content-save
+                    mdi-content-save
                   </v-icon>
                   เพิ่มข้อมูลหน่วยนับ
                 </v-btn>
@@ -89,11 +102,19 @@
                 <v-spacer></v-spacer>
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
-                   mdi-close-box   </v-icon
+                    mdi-close-box </v-icon
                   >ยกเลิก</v-btn
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm();showAlert();">
-                  <v-icon aria-hidden="false" class="mx-4">  mdi-delete-forever  </v-icon
+                <v-btn
+                  color="primary"
+                  class="ma-2"
+                  @click="
+                    deleteItemConfirm();
+                    showAlert();
+                  "
+                >
+                  <v-icon aria-hidden="false" class="mx-4">
+                    mdi-delete-forever </v-icon
                   >ลบ</v-btn
                 >
                 <v-spacer></v-spacer>
@@ -104,27 +125,28 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr2" small color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
-              mdi-pencil-plus 
+              mdi-pencil-plus
             </v-icon>
             แก้ไข
           </v-btn>
           <v-btn
             rounded-lx
             class="mr-2"
-            color="error" small
+            color="error"
+            small
             @click="deleteItem(item)"
           >
-            <v-icon dark   class="mx-2">
-              mdi-delete-forever 
+            <v-icon dark class="mx-2">
+              mdi-delete-forever
             </v-icon>
             ลบ
           </v-btn>
         </template>
-          <template v-slot:[`item.No`]="{ index }">
-    {{ index + 1 }}
-  </template>
+        <template v-slot:[`item.No`]="{ index }">
+          {{ index + 1 }}
+        </template>
         <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize">
+          <v-btn color="primary" @click="unit">
             Reset
           </v-btn>
         </template>
@@ -142,21 +164,21 @@ export default {
     search: "",
     headers: [
       { text: "ลำดับ", value: "No" },
-   //     { text: "ภาพ", sortable: false, value: "img" },
-      { text: "ชื่อหม่วดหมู่", align: "start", value: "u_name" ,divider: true },
-     // { text: "ID", align: "start", value: "_id", divider: true },
+      //     { text: "ภาพ", sortable: false, value: "img" },
+      { text: "ชื่อหม่วดหมู่", align: "start", value: "u_name", divider: true },
+      // { text: "ID", align: "start", value: "_id", divider: true },
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
     units: { _id: "", u_name: "" },
     type: null,
     deleteId: null,
-    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"]
   }),
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
+      return this.editedIndex === -1 ? "เพิ่มหน่วยนับ" : "เพิ่มหน่วยนับ";
     }
   },
   watch: {
@@ -167,7 +189,7 @@ export default {
       val || this.closeDelete();
     }
   },
-   mounted() {
+  mounted() {
     this.toast = this.$swal.mixin({
       toast: true,
       position: "top-end",
@@ -176,18 +198,16 @@ export default {
     });
   },
   methods: {
-     showAlert() {
-         this.toast({
+    showAlert() {
+      this.toast({
         type: "success",
-        title:
-          "ดำเนิการสำเร็จ"
+        title: "ดำเนิการสำเร็จ"
       });
-       this.text_val_for_test = Date.now();
-  
+      this.text_val_for_test = Date.now();
     },
-      someFn(ev) {
-      console.log(ev)}
-      ,
+    someFn(ev) {
+      console.log(ev);
+    },
     editItem(item) {
       this.type = "edit";
       this.units = item;
@@ -231,7 +251,7 @@ export default {
       this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
-     
+
         this.$emit("addUnit", { ...this.units });
         this.close();
       } else {
@@ -247,6 +267,6 @@ export default {
       }
     }
   },
-  props:['unit']
+  props: ["unit"]
 };
 </script>

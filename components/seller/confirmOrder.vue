@@ -353,7 +353,7 @@ export default {
     discount_type: "coupong",
     type_order: "1",
     bank: "cash",
-    cusId: "60f54e73be4bed2c389e3538",
+    cusId: "60fa3812dc42a9589e33ba1b",
     customers2: [],
     tab: "tab-1",
     cus: {
@@ -468,7 +468,7 @@ export default {
           this.discount_type = "coupong";
           this.type_order = "1";
           this.bank = "cash";
-          this.cusId = "60f54e73be4bed2c389e3538";
+          this.cusId = "60fa3812dc42a9589e33ba1b";
           this.vat = "1";
         });
         //console.log(newPayment);
@@ -501,7 +501,7 @@ export default {
           this.discount_type = "coupong";
           this.type_order = "1";
           this.bank = "cash";
-          this.cusId = "60f54e73be4bed2c389e3538";
+          this.cusId = "60fa3812dc42a9589e33ba1b";
           this.vat = "1";
         });
         //console.log(newPayment);
@@ -576,7 +576,7 @@ export default {
       );
       WinPrint.document.write("<table >");
       WinPrint.document.write(
-        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='50px' height='50px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
+        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");

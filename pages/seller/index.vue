@@ -225,7 +225,7 @@
                   ><v-icon color="teal">mdi-printer</v-icon></v-btn
                 >
                 <v-btn small fab class="ml-3" @click="deleteOrderOnDatabase(i)"
-                  ><v-icon color="red">mdi-close</v-icon></v-btn
+                  ><v-icon color="red">mdi-delete</v-icon></v-btn
                 >
               </div>
             </v-col>
@@ -454,6 +454,7 @@ export default {
     deleteOrderOnDatabase(i) {
       this.$axios.$delete("/order/" + this.orderOnDatabase[i]._id).then(() => {
         this.orderOnDatabase.splice(i, 1);
+        this.bill_name = null;
       });
     },
     printorder(i) {
@@ -465,27 +466,27 @@ export default {
       );
       WinPrint.document.write("<table>");
       WinPrint.document.write(
-        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='50px' height='50px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
+        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
       WinPrint.document.write(
-        "<tr><th align='left'>บริษัท ชิฟท์ เรสเตอรองต์ จำกัด</th><th style='padding-left:60px'></th></tr>"
+        "<tr><th align='left'>บริษัท ชิฟท์ เรสเตอรองต์ จำกัด</th></tr>"
       );
       WinPrint.document.write(
-        "<tr><th align='left'>ที่อยู่ : 89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท</th><th style='padding-left:60px'></th></tr>"
+        "<tr><th align='left'>ที่อยู่ : 89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท</th></tr>"
       );
       WinPrint.document.write(
-        "<tr><th align='left'>อำเภอเมือง จังหวัดลำปาง 52000</th><th style='padding-left:60px'></th></tr>"
+        "<tr><th align='left'>อำเภอเมือง จังหวัดลำปาง 52000</th></tr>"
       );
       WinPrint.document.write(
-        "<tr><th align='left'>เบอร์มือถือ : 0917961816</th><th style='padding-left:60px'></th></tr>"
+        "<tr><th align='left'>เบอร์มือถือ : 0917961816</th></tr>"
       );
       WinPrint.document.write(
-        `<tr><th align='left'>ชื่อบิล : ${this.bill_name}</th><th style='padding-left:60px'></th></tr>`
+        `<tr><th align='left'>ชื่อบิล : ${this.bill_name}</th></tr>`
       );
       WinPrint.document.write(
-        "<tr><th align='center'>***สำหรับเรียกเก็บเงินลูกค้า***</th><th style='padding-left:60px'></th></tr>"
+        "<tr><th align='center'>***สำหรับเรียกเก็บเงินลูกค้า***</th></tr>"
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write(

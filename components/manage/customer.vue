@@ -122,7 +122,7 @@
                           required
                           color="#1D1D1D"
                         ></v-text-field>
-                        
+
                         <!-- <v-menu
                           ref="menu"
                           v-model="menu"
@@ -312,10 +312,16 @@
                         ></v-text-field>
                       </v-col>
 
-                      <v-col cols="12" sm="6">               
-                          <date-picker  v-model="customerItme.birthday" valueType="format"></date-picker>                       
+                      <v-col cols="12" sm="6">
+                        <date-picker
+                        class="my-datepicker" 
+                         label="วันเกิด"
+                          style="height: 100%;" 
+                          v-model="customerItme.birthday"
+                          valueType="format"
+                        ></date-picker>
                       </v-col>
-                    
+
                       <v-col cols="12" sm="4">
                         <v-text-field
                           v-model="customerItme.tel"
@@ -503,8 +509,8 @@
 
 <script>
 import moment from "moment";
-import DatePicker from 'vue2-datepicker';
-import 'vue2-datepicker/index.css';  
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 export default {
   layout: "layoutCashier",
   data: () => ({
@@ -594,7 +600,7 @@ export default {
       point: " "
     },
     itemBy: {},
-     time1: null,
+    time1: null,
     type: null,
     deleteId: null,
     requiredRules: [v => !!v.length <= 25 || "โปรดกรอกข้อความให้ครบในช่อง!"],
@@ -614,12 +620,12 @@ export default {
   // computed: {
   //   dateformat() {
   //     // this.customerItme.birthday.add(543,"years");
-  //     return  moment(this.customerItme.birthday).format("DD-MM-YYYY"); 
+  //     return  moment(this.customerItme.birthday).format("DD-MM-YYYY");
 
   //   },
-   
+
   // },
-   components: { DatePicker },
+  components: { DatePicker },
   watch: {
     dialog(val) {
       val || this.close();
@@ -801,18 +807,24 @@ export default {
   props: ["customer", "levelmember"]
 };
 </script>
-<style scoped>
+
+<style lang="scss" scoped>
+.my-datepicker >>> .my-datepicker_calendar {
+  width: 100%;
+  height: 330px;
+}
 .mx-datepicker {
-    position: relative;
-    display: inline-block;
-    width: 314px;
-   
-}
-.mx-datepicker .mx-input-wrapper{
-   padding: 26px;
-}
-.mx-datepicker .mx-input-wrapper .mx-input {  
-       height: 57px;
-    padding: 28px 30px;
+  height: 100%;
+  width: 100%;
+  border-color: #519fc5;
+  &::placeholder {
+    border-color: #519fc5;
+    color: #519fc5;
+  }
+  .mx-input {
+    height: 57px;
+    width: 100%;
+    border-color: #519fc5 !important;
+  }
 }
 </style>

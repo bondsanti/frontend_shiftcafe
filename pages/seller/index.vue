@@ -5,10 +5,10 @@
         <v-card class=" rounded-xl pb-1 " color="#ededed" elevation="5">
           <!-- <v-row> -->
           <v-app-bar width="100%" color="white" flat>
-            <v-col cols="6" sm="6" md="3"
+            <v-col cols="3" sm="6" md="3" class="hidden-sm-and-down"
               ><h2>{{ cateName }}</h2></v-col
             >
-            <v-col cols="6" sm="6" md="9">
+            <v-col cols="12" sm="12" md="9">
               <div class="d-flex flex-row">
                 <v-text-field
                   class="mr-5"
@@ -21,7 +21,7 @@
                   dense
                   elevation="0"
                   v-model="keyword"
-                  @keypress="searchProduct"
+                  @keydown="searchProduct"
                 ></v-text-field>
                 <!-- </v-col> -->
                 <!-- <v-col cols="1" sm="1" md="1"> -->
@@ -50,6 +50,27 @@
           </v-card>
         </v-card>
         <div class="d-flex flex-row mt-4 flex-wrap justify-start">
+          <v-col cols="12" sm="6" md="4" lg="3">
+            <v-card
+              class="rounded-xl d-flex flex-column align-center cursor ma-1"
+              elevation="0"
+              color="primary"
+              width="100%"
+              height="80px"
+              @click="product2 = products"
+            >
+              <v-img
+                class="d-flex flex-row mt-1"
+                contain
+                max-height="40px"
+                max-width="40px"
+                src="/coffee.png"
+              ></v-img>
+              <h2 class="d-flex flex-row white--text text-md-body-1">
+                ทั้งหมด
+              </h2>
+            </v-card>
+          </v-col>
           <Category
             v-for="cate in categories"
             :key="cate.cate_name"
@@ -57,6 +78,7 @@
             @changPic="changCate"
           />
         </div>
+
         <div class="d-flex flex-row mt-4"></div>
       </v-col>
       <v-col cols="12" sm="12" md="4">
@@ -65,7 +87,7 @@
           elevation="2"
           height="65px"
         >
-          <h1>ORDER</h1>
+          <h1>รายการสั่งซื้อ</h1>
         </v-card>
         <v-card
           class="rounded-xl d-flex flex-column mt-3"
@@ -73,13 +95,13 @@
           elevation="5"
         >
           <div class="d-flex flex-row justify-space-between ml-15 mt-2 mb-5">
-            <h3 class="d-flex flex-column mr-0">NAME</h3>
+            <h3 class="d-flex flex-column mr-0">ชื่อ</h3>
             |
             <h3 class="d-flex flex-column">
-              QUANTITY
+              จำนวน
             </h3>
             |
-            <h3 class="d-flex flex-column mr-15">PRICE</h3>
+            <h3 class="d-flex flex-column mr-15">ราคา</h3>
           </div>
           <!-- <v-divider></v-divider> -->
           <div
@@ -88,7 +110,11 @@
             :key="i"
           >
             <v-col cols="1">
-              <v-icon class="mr-4" @click="deleteOrder(i)" size="30px"
+              <v-icon
+                color="red"
+                class="mr-4"
+                @click="deleteOrder(i)"
+                size="30px"
                 >mdi-trash-can-outline</v-icon
               >
             </v-col>
@@ -117,7 +143,7 @@
           <div
             class="d-flex flex-row justify-space-between mb-0 mr-4 ml-4 mt-16"
           >
-            <h2 class="d-flex flex-column">Total</h2>
+            <h2 class="d-flex flex-column">ราคา</h2>
             <h2 class="d-flex flex-column info--text">
               {{ formatPrice(subTotal) }}
             </h2>
@@ -137,12 +163,13 @@
           block
           color="info"
           @click="dialog = true"
+          :disabled="orders.length === 0"
           >ชำระเงิน ({{ formatPrice(subTotal) }} ฿)</v-btn
         >
         <div class="d-flex flex-row">
           <v-col cols="6">
             <v-btn rounded large block outlined color="red" @click="clearOrder"
-              >Cancel Order</v-btn
+              >ยกเลิกออเดอร์</v-btn
             >
           </v-col>
           <v-col cols="6">
@@ -156,7 +183,7 @@
               ><v-chip class="mr-4" color="info" text-color="white">
                 {{ orderOnDatabase.length }}
               </v-chip>
-              จอง/พัก</v-btn
+              ออเดอร์</v-btn
             >
           </v-col>
         </div>
@@ -186,36 +213,50 @@
             >
               บันทึกคำสั่งซื้อ
             </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn @click="closeOrderDl">ปิด</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
     </v-row>
-    <v-row class="justify-center" v-model="holdDl">
+    <v-row class="justify-center">
       <v-dialog
         transition="dialog-bottom-transition"
         v-model="holdDl"
-        max-width="1000"
+        max-width="100%"
       >
         <v-card>
-          <v-toolbar color="primary" dark>พักการขาย</v-toolbar>
+          <v-toolbar color="primary" dark
+            ><h3>พักการขาย/ออเดอร์</h3>
+            <v-spacer></v-spacer
+            ><v-btn outlined @click="holdDl = false">ปิด</v-btn></v-toolbar
+          >
           <div class="d-flex flex-row mb-3 ">
-            <v-col cols="3"><h3>ชื่อบิล</h3></v-col>
-            <v-col cols="3"><h3>เวลา</h3></v-col>
-            <v-col cols="2"><h3>รายการ</h3></v-col>
-            <v-col cols="2"><h3>รวมทั้งสิ้น</h3></v-col>
-            <v-col cols="2"><h3>จัดการ</h3></v-col>
+            <v-col cols="4" md="3"><h3>ชื่อบิล</h3></v-col>
+            <v-col cols="4" md="3" class="hidden-sm-and-down"
+              ><h3>เวลา</h3></v-col
+            >
+            <v-col cols="4" md="2" class="hidden-sm-and-down"
+              ><h3>รายการ</h3></v-col
+            >
+            <v-col cols="4" md="2"><h3>รวมทั้งสิ้น</h3></v-col>
+            <v-col cols="4" md="2"><h3>จัดการ</h3></v-col>
           </div>
           <div
             class="d-flex flex-row m-2"
             v-for="(order2, i) in orderOnDatabase"
             :key="i"
           >
-            <v-col cols="3">{{ order2.bill_name }}</v-col>
-            <v-col cols="3">{{ order2.datetime }}</v-col>
-            <v-col cols="2">{{ order2.list_product.length }}</v-col>
-            <v-col cols="2">{{ order2.total_price }} ฿</v-col>
-            <v-col cols="2">
-              <div class="d-flex flex-row ">
+            <v-col cols="4" md="3">{{ order2.bill_name }}</v-col>
+            <v-col cols="4" md="3" class="hidden-sm-and-down">{{
+              formatDate3(order2.datetime)
+            }}</v-col>
+            <v-col cols="4" md="2" class="hidden-sm-and-down">{{
+              order2.list_product.length
+            }}</v-col>
+            <v-col cols="4" md="2">{{ order2.total_price }} ฿</v-col>
+            <v-col cols="4" md="2">
+              <div class="d-flex flex-row  flex-wrap justify-center">
                 <v-btn small fab
                   ><v-icon color="info" @click="viewOrder(i)"
                     >mdi-eye</v-icon
@@ -306,7 +347,21 @@ export default {
     valid: true,
     rules: [value => !!value || "โปรดกรอกชื่อบิล"],
     idForEditOrder: null,
-    checkStaff: false
+    checkStaff: false,
+    monthNamesThai: [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤษจิกายน",
+      "ธันวาคม"
+    ]
   }),
   head() {
     return {
@@ -323,6 +378,10 @@ export default {
         pro => pro.ref_cate_id._id === this.cateId
       );
       this.cateName = cate.cate_name;
+    },
+    closeOrderDl() {
+      this.bill_name = null;
+      this.orderDl = false;
     },
     addOrder(i) {
       const orderObj = {
@@ -377,11 +436,21 @@ export default {
       this.subTotal = subTotal;
     },
     clearOrder() {
-      this.orders = [];
-      this.subTotal = 0;
-      this.bill_name = null;
-      this.idForEditOrder = null;
-      this.refreshUser();
+      if (this.idForEditOrder !== null) {
+        this.$axios.$delete("/order/" + this.idForEditOrder).then(() => {
+          this.orders = [];
+          this.subTotal = 0;
+          this.bill_name = null;
+          this.idForEditOrder = null;
+          this.refreshUser();
+        });
+      } else {
+        this.orders = [];
+        this.subTotal = 0;
+        this.bill_name = null;
+        this.idForEditOrder = null;
+        this.refreshUser();
+      }
     },
     searchProduct() {
       this.product2 = [];
@@ -450,6 +519,7 @@ export default {
       this.idForEditOrder = this.orderOnDatabase[i]._id;
       setTimeout(this.totalPrice, 200);
       this.holdDl = false;
+      console.log(this.orderOnDatabase[i]);
     },
     deleteOrderOnDatabase(i) {
       this.$axios.$delete("/order/" + this.orderOnDatabase[i]._id).then(() => {
@@ -457,8 +527,15 @@ export default {
         this.bill_name = null;
       });
     },
+    formatDate3(date) {
+      const today = new Date(date);
+      return `${today.getDate()} - ${
+        this.monthNamesThai[today.getMonth()]
+      } - ${today.getFullYear() + 543}`;
+    },
     printorder(i) {
       this.bill_name = this.orderOnDatabase[i].bill_name;
+      const today = new Date(this.orderOnDatabase[i].datetime);
       var WinPrint = window.open(
         "",
         "",
@@ -484,6 +561,11 @@ export default {
       );
       WinPrint.document.write(
         `<tr><th align='left'>ชื่อบิล : ${this.bill_name}</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th align='center'>วันที่ ${today.getDate()} - ${
+          this.monthNamesThai[today.getMonth()]
+        } - ${today.getFullYear() + 543}</th></tr>`
       );
       WinPrint.document.write(
         "<tr><th align='center'>***สำหรับเรียกเก็บเงินลูกค้า***</th></tr>"

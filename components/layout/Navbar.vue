@@ -127,8 +127,8 @@ export default {
         },
 
         {
-          icon: "mdi-clipboard account outline",
-          title: "จัดข้อมูลสมาชิก",
+          icon: "mdi-account",
+          title: "จัดข้อมูลลูกค้า",
           to: "/manage/customer"
         },
         {
@@ -202,8 +202,8 @@ export default {
           },
 
           {
-            icon: "mdi-clipboard account outline",
-            title: "จัดข้อมูลสมาชิก",
+            icon: "mdi-account ",
+            title: "จัดข้อมูลลูกค้า",
             to: "/manage/customer"
           },
 

@@ -39,10 +39,10 @@
           <v-dialog v-model="dialog" max-width="500px">
             <v-card>
               <v-card-title>
-                <span class="text-h5"
-                  ><v-icon left> mdi-ticket-percent-outline </v-icon>
-                  {{ formTitle }}</span
-                >
+                <span class="text-h5">
+                  <v-icon left> mdi-ticket-percent-outline </v-icon>
+                  {{ formTitle }}
+                </span>
               </v-card-title>
 
               <v-form v-model="valid" ref="form">
@@ -97,14 +97,17 @@
                       </v-col>
 
                       <v-col cols="12" md="6" class="mt-n7">
-                        <v-text-field
-                          outlined
+                      
+                         <v-select
                           label="ส่วนลดในคูปอง"
-                          v-model="coupone.discount"
-                           :rules="rules"
-                          type="number"
+                          
+                          outlined
                           color="#1D1D1D"
-                        ></v-text-field>
+                          :items="dropdown_edit"
+                          v-model="coupone.discount"
+                          :rules="rules"
+                          
+                        ></v-select>
                       </v-col>
 
                       <v-col cols="12" md="6" class="mt-n7">
@@ -134,7 +137,11 @@
                 <v-btn
                   class="ma-1"
                   color="info"
-                  @click="save(); showAlert();  "      :disabled="!valid"         
+                  @click="
+                    save();
+                    showAlert();
+                  "
+                  :disabled="!valid"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -154,8 +161,8 @@
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box </v-icon
-                  >ยกเลิก</v-btn
-                >
+                  >ยกเลิก
+                </v-btn>
                 <v-btn
                   color="primary"
                   class="ma-2"
@@ -166,8 +173,8 @@
                 >
                   <v-icon aria-hidden="false" class="mx-4">
                     mdi-delete-forever </v-icon
-                  >ลบ</v-btn
-                >
+                  >ลบ
+                </v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -215,7 +222,7 @@
           </v-chip>
         </template>
         <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize">
+          <v-btn color="primary" @click="coupon">
             Reset
           </v-btn>
         </template>
@@ -235,8 +242,94 @@ export default {
     search: "",
     Empname: [],
     useronline: [],
+    dropdown_edit: [
+      {
+        text: "1%",
+        value: "1"
+      },
+      {
+        text: "2%",
+        value: "2"
+      },
+      {
+        text: "3%",
+        value: "3"
+      },
+      {
+        text: "4%",
+        value: "4"
+      },
+      {
+        text: "5%",
+        value: "5"
+      },
+      {
+        text: "6%",
+        value: "6"
+      },
+      {
+        text: "7%",
+        value: "7"
+      },
+      {
+        text: "8%",
+        value: "8"
+      },
+      {
+        text: "9%",
+        value: "9"
+      },
+      {
+        text: "10%",
+        value: "10"
+      },
+      {
+        text: "11%",
+        value: "11"
+      },
+      {
+        text: "12%",
+        value: "12"
+      },
+      {
+        text: "13%",
+        value: "13"
+      },
+      {
+        text: "14%",
+        value: "14"
+      },
+      {
+        text: "15%",
+        value: "15"
+      },
+      {
+        text: "16%",
+        value: "16"
+      },
+      {
+        text: "17%",
+        value: "17"
+      },
+      {
+        text: "18%",
+        value: "18"
+      },
+      {
+        text: "19%",
+        value: "19"
+      },
+      {
+        text: "20%",
+        value: "20"
+      }
+    ],
     headers: [
-      { text: "ลำดับ", sortable: false, value: "No" },
+      {
+        text: "ลำดับ",
+        sortable: false,
+        value: "No"
+      },
       {
         text: "ชื่อหม่วดหมู่",
         align: "start",
@@ -253,15 +346,27 @@ export default {
         align: "start",
         value: "ref_emp_id_by"
       },
-      { text: "วันหมดอายุ", align: "start", value: "exp" },
-      { text: "ส่วนลด (%) ", align: "start", value: "discount" },
+      {
+        text: "วันหมดอายุ",
+        align: "start",
+        value: "exp"
+      },
+      {
+        text: "ส่วนลด (%) ",
+        align: "start",
+        value: "discount"
+      },
       {
         text: "จำนวลผู้ใช้คูปอง(คน)",
         align: "start",
         value: "num_use",
         divider: true
       },
-      { text: "หมายเหตุ", value: "actions", sortable: false }
+      {
+        text: "หมายเหตุ",
+        value: "actions",
+        sortable: false
+      }
     ],
     numberRules: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
@@ -378,7 +483,9 @@ export default {
       if (this.type === "add") {
         this.loading = true;
 
-        this.$emit("addCoupon", { ...this.coupone });
+        this.$emit("addCoupon", {
+          ...this.coupone
+        });
         this.close();
       } else {
         this.loading = true;

@@ -189,7 +189,10 @@
                       <h3>{{ order.price }} ฿.</h3>
                     </v-col>
                   </div>
-                  <v-row class="justify-space-between ma-1 mx-16 mt-14">
+                  <v-row
+                    v-if="coupon !== 0"
+                    class="justify-space-between ma-1 mx-16 mt-14"
+                  >
                     <h2>ส่วนลด (%)</h2>
                     <h2>{{ coupon }} %</h2>
                   </v-row>
@@ -197,7 +200,10 @@
                     <h2>ราคา</h2>
                     <h2>{{ formatPrice(subtotal) }}</h2>
                   </v-row>
-                  <v-row class="justify-space-between ma-1 mx-16">
+                  <v-row
+                    v-if="tax !== 0"
+                    class="justify-space-between ma-1 mx-16"
+                  >
                     <h2>ภาษี</h2>
                     <h2>{{ tax }} %</h2>
                   </v-row>
@@ -388,7 +394,7 @@ export default {
       this.$emit("closeDialog");
     },
     show() {
-      console.log(this.customers);
+      // console.log(this.customers);
     },
     improveCus() {
       for (let i in this.customers) {
@@ -455,21 +461,31 @@ export default {
           receive_money: money.receive,
           withdraw_money: money.withdraw
         };
-        this.$axios.$post("/payment", newPayment).then(pay => {
-          console.log(pay);
-          this.invoice = pay.data.invoice;
-          if (!money.noBill) {
-            this.print(money);
+        this.$axios.post("/payment", newPayment).then(pay => {
+          //console.log(pay);
+          if (pay.status === 200) {
+            this.invoice = pay.data.invoice;
+            if (!money.noBill) {
+              this.print(money);
+            }
+            this.$emit("closeDialog");
+            this.$emit("clearOrder");
+            this.checkout = false;
+            this.cus_type = "guest";
+            this.discount_type = "coupong";
+            this.type_order = "1";
+            this.bank = "cash";
+            this.cusId = "60fa3812dc42a9589e33ba1b";
+            this.vat = "1";
+          } else {
+            this.$swal({
+              position: "center",
+              type: "warning",
+              title: pay.data.message,
+              showConfirmButton: false,
+              timer: 2500
+            });
           }
-          this.$emit("closeDialog");
-          this.$emit("clearOrder");
-          this.checkout = false;
-          this.cus_type = "guest";
-          this.discount_type = "coupong";
-          this.type_order = "1";
-          this.bank = "cash";
-          this.cusId = "60fa3812dc42a9589e33ba1b";
-          this.vat = "1";
         });
         //console.log(newPayment);
       } else {
@@ -488,21 +504,32 @@ export default {
           receive_money: money.receive,
           withdraw_money: money.withdraw
         };
-        this.$axios.$post("/payment", newPayment).then(pay => {
-          console.log(pay);
-          this.invoice = pay.data.invoice;
-          if (!money.noBill) {
-            this.print(money);
+        this.$axios.post("/payment", newPayment).then(pay => {
+          //console.log(pay);
+          if (pay.status === 200) {
+            this.invoice = pay.data.invoice;
+            if (!money.noBill) {
+              this.print(money);
+            }
+            this.$emit("closeDialog");
+            this.$emit("clearOrder");
+            this.checkout = false;
+            this.cus_type = "guest";
+            this.discount_type = "coupong";
+            this.type_order = "1";
+            this.bank = "cash";
+            this.cusId = "60fa3812dc42a9589e33ba1b";
+            this.vat = "1";
+          } else {
+            this.idOrder = order.data._id;
+            this.$swal({
+              position: "center",
+              type: "warning",
+              title: pay.data.message,
+              showConfirmButton: false,
+              timer: 2500
+            });
           }
-          this.$emit("closeDialog");
-          this.$emit("clearOrder");
-          this.checkout = false;
-          this.cus_type = "guest";
-          this.discount_type = "coupong";
-          this.type_order = "1";
-          this.bank = "cash";
-          this.cusId = "60fa3812dc42a9589e33ba1b";
-          this.vat = "1";
         });
         //console.log(newPayment);
       }
@@ -512,8 +539,14 @@ export default {
         const res = await this.$axios.$get("/customer/" + this.cusId);
         //console.log(res);
         this.coupon = res.ref_level_id.discount;
+        //this.cusId = "";
+        //console.log(this.cusId);
       } else {
+        if (this.cus_type === "guest") {
+          this.cusId = "60fa3812dc42a9589e33ba1b";
+        }
         this.coupon = 0;
+        //console.log(this.cusId);
       }
     },
     checkTypePayment() {
@@ -680,7 +713,6 @@ export default {
   },
   created() {
     this.improveCus();
-    //console.log(this.orders);
   }
 };
 </script>

@@ -14,7 +14,8 @@
               <v-card-title class="text-h5">
                 ยอดขายวันนี้
               </v-card-title>
-              <v-card-subtitle> {{ formatDate(Date.now()) }}</v-card-subtitle>
+              <!-- <v-card-subtitle> {{ formatDate(Date.now()) }}</v-card-subtitle> -->
+              <v-card-subtitle> {{ formatDate3() }}</v-card-subtitle>
               <v-card-actions>
                 <v-list-item-title class="headline mb-1 white--text">
                   ฿ {{ formatPrice(todayPrice) }}
@@ -99,7 +100,21 @@ export default {
   data: () => ({
     todayPrice: 0,
     monthPrice: 0,
-    yearPrice: 0
+    yearPrice: 0,
+    monthNamesThai: [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤษจิกายน",
+      "ธันวาคม"
+    ]
   }),
   methods: {
     thinkToday() {
@@ -130,17 +145,31 @@ export default {
       const today = new Date();
       let month2 = today.getMonth();
       let endDay = new Date(today.getFullYear(), month2 + 1, 0);
-      let startDay = new Date(today.getFullYear(), today.getMonth(), 1);
 
-      return this.formatDate(startDay) + " - " + this.formatDate(endDay);
+      //return this.formatDate(startDay) + " - " + this.formatDate(endDay);
+      return `1/${this.monthNamesThai[today.getMonth()]}/${today.getFullYear() +
+        543} - ${endDay.getDate()}/${
+        this.monthNamesThai[today.getMonth()]
+      }/${today.getFullYear() + 543} `;
     },
     formatDate(date) {
+      moment.locale("th");
       var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY ");
+
+      return moment(strdate).format("D/MMMM/YYYY ");
     },
-    formatDate2(date) {
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("MM / YYYY ");
+    formatDate2() {
+      const today = new Date();
+
+      return `${this.monthNamesThai[today.getMonth()]} - ${today.getFullYear() +
+        543}`;
+    },
+    formatDate3() {
+      const today = new Date();
+
+      return `${today.getDate()} - ${
+        this.monthNamesThai[today.getMonth()]
+      } - ${today.getFullYear() + 543}`;
     },
     formatPrice(value2) {
       const value = parseInt(value2);

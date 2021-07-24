@@ -1,6 +1,19 @@
 <template>
   <div>
     <v-navigation-drawer v-model="drawer" fixed app color="#1d1d1d" dark>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title class="text-h6">
+            SHIFT CAFÉ
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            คาเฟ่ no.1 ของเอเชียตะวันออกเฉียงใต้
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-divider></v-divider>
+
       <!-- 1 -->
       <v-list>
         <v-list-item
@@ -14,15 +27,32 @@
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
+            <h3>{{ item.title }}</h3>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <v-divider></v-divider>
+      <v-list>
+        <v-list-item
+          v-for="(item, i) in below"
+          :key="i"
+          :to="item.to"
+          router
+          exact
+        >
+          <v-list-item-action>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <h3>{{ item.title }}</h3>
           </v-list-item-content>
         </v-list-item>
       </v-list>
       <!-- 1 -->
-      <template> </template>
 
       <!-- 2 -->
-      <template v-slot:append>
+      <!-- <template v-slot:append>
         <div class="pa-2">
           <v-list>
             <v-list-item
@@ -37,28 +67,20 @@
               </v-list-item-action>
 
               <v-list-item-content>
-                <v-list-item-title v-text="item.title" />
+                <h3>{{ item.title }}</h3>
               </v-list-item-content>
             </v-list-item>
           </v-list>
         </div>
-      </template>
+      </template> -->
       <!-- 2 -->
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app color="#1d1d1d" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>SHIFT CAFE</v-toolbar-title>
+      <v-toolbar-title class="hidden-xs-only">SHIFT CAFÉ</v-toolbar-title>
       <v-spacer></v-spacer>
-      <!-- <v-btn icon>
-        <v-icon>mdi-circle-box</v-icon>
-      </v-btn>
-      <v-btn icon>
-        <v-icon>mdi-store-minus</v-icon>
-      </v-btn>
-      <v-btn icon>
-        <v-icon>mdi-clipboard-list</v-icon>
-      </v-btn> -->
-      <v-avatar size="36px" class="mr-2">
+
+      <v-avatar size="36px" class="mr-2 hidden-xs-only">
         <v-icon x-large>mdi-account-circle</v-icon>
       </v-avatar>
       <v-toolbar-title

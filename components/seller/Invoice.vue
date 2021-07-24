@@ -116,7 +116,21 @@ export default {
         { text: "Actions", value: "actions", sortable: false }
       ],
       detailArr: [],
-      order_id: ""
+      order_id: "",
+      monthNamesThai: [
+        "มกราคม",
+        "กุมภาพันธ์",
+        "มีนาคม",
+        "เมษายน",
+        "พฤษภาคม",
+        "มิถุนายน",
+        "กรกฎาคม",
+        "สิงหาคม",
+        "กันยายน",
+        "ตุลาคม",
+        "พฤษจิกายน",
+        "ธันวาคม"
+      ]
       //historyOrder: []
     };
   },
@@ -262,6 +276,7 @@ export default {
     },
     async printInvoice() {
       const order = await this.$axios.$get("/order/" + this.order_id);
+      const today = new Date(order.datetime);
       var WinPrint = window.open(
         "",
         "",
@@ -289,9 +304,9 @@ export default {
         `<tr><th align='center'  >ใบเสร็จรับเงินเลขที่ : ${this.itemBy.invoice}</th></tr>`
       );
       WinPrint.document.write(
-        `<tr><th  align='center'>วันที่ ${this.formatDate(
-          this.itemBy.datetime
-        )}</th></tr>`
+        `<tr><th align='center'>วันที่ ${today.getDate()} - ${
+          this.monthNamesThai[today.getMonth()]
+        } - ${today.getFullYear() + 543}</th></tr>`
       );
       WinPrint.document.write("</table>");
       //WinPrint.document.write("<img src='" + __dirname + "25.png'>");

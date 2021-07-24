@@ -3,28 +3,23 @@
     <v-dialog v-model="checkout" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="text-h5">Check Out</span>
+          <span class="text-h5">ตรวจสอบการชำระเงิน</span>
         </v-card-title>
         <v-card-text>
           <div>
             <v-row>
               <v-col cols="12">
                 <v-text-field
+                  style="font-size:2em;font-weight:900"
+                  min="0"
                   label="รับเงินมา"
                   autofocus
                   outlined
-                  v-model="receive"
+                  v-model.lazy="receive"
                   type="number"
                   @keypress.enter="calMoney"
                 ></v-text-field>
               </v-col>
-              <!-- <v-col cols="12">
-                <v-text-field
-                  label="เงินทอน"
-                  outlined
-                  v-model="withdraw"
-                ></v-text-field>
-              </v-col> -->
             </v-row>
             <v-row>
               <v-col cols="3"
@@ -75,7 +70,11 @@
               >
             </v-row>
             <v-row>
-              <v-col cols="3" nogu></v-col>
+              <v-col cols="3"
+                ><v-btn color="red" block @click="clearNum()" dark
+                  >ล้างค่า</v-btn
+                ></v-col
+              >
               <v-col cols="3"
                 ><v-btn block @click="addNum('0')">0</v-btn></v-col
               >
@@ -97,7 +96,7 @@
                 icon="mdi-alert-circle"
                 border="left"
                 prominent
-                style="width:100%"
+                style="width:100%; font-size:2em"
               >
                 ยอดเงินที่รับมาไม่พอ
               </v-alert>
@@ -109,9 +108,9 @@
                 icon="mdi-arrow-right-bold"
                 border="left"
                 prominent
-                style="width:100%"
+                style="width:100% "
               >
-                <div class="d-flex flex-row justify-md-space-around">
+                <div class="d-flex flex-row justify-md-space-around ">
                   เงินทอน
                   <h1>{{ formatPrice(withdraw) }}</h1>
                   บาท
@@ -125,12 +124,8 @@
           <v-btn color="blue darken-1" text @click="closeCheckout">
             ปิด
           </v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="dialog2 = true"
-            :disabled="error2"
-          >
+          <v-btn color="blue darken-1" text @click="save" :disabled="error2">
+            <!-- <v-btn color="blue darken-1" text @click="save2"> -->
             บันทึก
           </v-btn>
         </v-card-actions>
@@ -147,7 +142,7 @@
           <v-btn color="green darken-1" text @click="noBill">
             ไม่พิมพ์ใบเสร็จรับเงิน
           </v-btn>
-          <v-btn color="green darken-1" dark @click="save">
+          <v-btn color="green darken-1" dark @click="save2">
             พิมพ์ใบเสร็จรับเงิน
           </v-btn>
         </v-card-actions>
@@ -164,19 +159,20 @@ export default {
     error1: false,
     dialog2: false
   }),
-  props: ["netPrice", "checkout"],
+  props: ["netPrice", "checkout", "subPrice"],
   methods: {
     calMoney() {
       const netPrice = Math.round(this.netPrice);
-      if (this.receive < netPrice) {
+      if (parseInt(this.receive) < netPrice) {
         this.error2 = true;
-        this.withdraw = "";
+        this.withdraw = 0;
         this.error1 = false;
       } else {
         this.withdraw = parseInt(this.receive) - netPrice;
         this.error2 = false;
         this.error1 = true;
       }
+      //console.log(this.receive);
     },
     closeCheckout() {
       this.$emit("closeCheckout");
@@ -191,9 +187,23 @@ export default {
       this.$emit("closeCheckout");
       this.dialog2 = false;
       this.receive = 0;
-      this.withdraw = "";
+      this.withdraw = 0;
     },
     save() {
+      const netPrice = Math.round(this.netPrice);
+      if (parseInt(this.receive) < netPrice) {
+        this.error2 = true;
+        this.withdraw = 0;
+        this.error1 = false;
+        this.calMoney();
+      } else {
+        this.withdraw = parseInt(this.receive) - netPrice;
+        this.error2 = false;
+        this.error1 = true;
+        this.dialog2 = true;
+      }
+    },
+    save2() {
       let money = {
         withdraw: this.withdraw,
         receive: this.receive,
@@ -203,9 +213,7 @@ export default {
       this.$emit("closeCheckout");
       this.dialog2 = false;
       this.receive = 0;
-      this.withdraw = "";
-      //this.$emit("print", money);
-      //this.dialog2 = true;
+      this.withdraw = 0;
     },
     silver(value) {
       if (value === "100" || value === "500" || value === "1000") {
@@ -235,14 +243,17 @@ export default {
       this.receive = number.substring(0, number.length - 1);
       this.calMoney();
     },
+    clearNum() {
+      this.receive = 0;
+      this.withdraw = 0;
+      this.calMoney();
+    },
     formatPrice(value2) {
       const value = parseInt(value2);
       let val = (value / 1).toFixed(2).replace(",", ".");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
   },
-  created() {
-    //this.calMoney();
-  }
+  created() {}
 };
 </script>

@@ -30,7 +30,7 @@
               </v-btn>
             </v-card-actions>
           </div>
-          <v-avatar class="mx-auto mt-7" size="90" max-width="90px" tile>
+          <v-avatar class="mx-auto mt-7" size="90" max-width="190px" tile>
             <v-img src="/wallet.gif"></v-img>
           </v-avatar>
         </div>

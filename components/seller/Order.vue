@@ -6,8 +6,10 @@
           <v-form>
             <v-card-title>
               <span class="text-h"
-                ><v-icon left> mdi-note-text-outline </v-icon> Order
-                No.#01512</span
+                ><v-icon left> mdi-note-text-outline </v-icon> หมายเลขออเดอร์ :
+                {{ itemBy.order_no }}<br />พนักงานที่รับออเดอร์ :
+                {{ itemBy.length !== 0 ? itemBy.ref_emp_id.fname : "" }}
+                {{ itemBy.length !== 0 ? itemBy.ref_emp_id.lname : "" }}</span
               >
             </v-card-title>
             <v-divider class="mb-3"></v-divider>
@@ -50,7 +52,7 @@
               <v-spacer></v-spacer>
 
               <v-btn color="error" @click="close">
-                <v-icon left> mdi-close </v-icon>Cancel
+                <v-icon left> mdi-close </v-icon>ปิด
               </v-btn>
             </v-card-actions>
           </v-form>
@@ -80,7 +82,7 @@
               class="mb-n5"
             >
               <template v-slot:[`item.datetime`]="{ item }">
-                <span>{{ item.datetime | moment }}</span>
+                <span>{{ formatDate3(item.datetime) }}</span>
               </template>
               <template v-slot:[`item.status`]="{ item }">
                 <v-chip :color="getColor(item.status)" dark small>
@@ -107,7 +109,7 @@
 </template>
 
 <script>
-import moment from "moment";
+import { monthNamesThai } from "@/instant";
 export default {
   data() {
     return {
@@ -149,7 +151,7 @@ export default {
     Detail(item) {
       this.from = item;
       this.itemBy = item;
-      //console.log("aa" + JSON.stringify(this.itemBy));
+      // console.log("aa" + JSON.stringify(this.itemBy));
 
       for (let i in this.itemBy.list_product) {
         //console.log(this.itemBy.list_product[i].name);
@@ -163,21 +165,17 @@ export default {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
       });
+    },
+    formatDate3(date) {
+      const today = new Date(date);
+      return `${today.getDate()} - ${
+        monthNamesThai[today.getMonth()]
+      } - ${today.getFullYear() + 543} | ${today.getHours()}:${
+        today.getMinutes() < 10 ? "0" : ""
+      }${today.getMinutes()}`;
     }
   },
-  //   async asyncData(context) {
-  //     const historyOrder = await context.$axios.$get("/order");
 
-  //     console.log(historyOrder);
-  //     return { historyOrder };
-  //   },
-  filters: {
-    moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY H:mm");
-    }
-  },
   watch: {
     dialog(val) {
       val || this.close();

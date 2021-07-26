@@ -1,5 +1,9 @@
 <template>
-  <pointmanage :pointmanage="pointmanage" />
+  <pointmanage
+    :pointmanage="pointmanage"
+    :customers="customers"
+    @refreshPoint="refreshPoint"
+  />
 </template>
 
 <script>
@@ -12,9 +16,11 @@ export default {
   middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   async asyncData(context) {
     const pointmanage = await context.$axios.$get("/point-manage");
+    const customers = await context.$axios.$get("/customer2");
     //console.log(pointmanage);
-    return { pointmanage };
+    return { pointmanage, customers };
   },
+
   components: {
     pointmanage
   },
@@ -26,7 +32,12 @@ export default {
   // },
   data: () => ({
     pointmanage: []
-  })
+  }),
+  methods: {
+    async refreshPoint() {
+      this.pointmanage = await this.$axios.$get("/point-manage");
+    }
+  }
 };
 </script>
 

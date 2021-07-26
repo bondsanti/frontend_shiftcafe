@@ -11,7 +11,7 @@
               <v-col cols="12">
                 <v-text-field
                   style="font-size:2em;font-weight:900"
-                  min="0"
+                  min="1"
                   label="รับเงินมา"
                   autofocus
                   outlined
@@ -163,7 +163,13 @@ export default {
   methods: {
     calMoney() {
       const netPrice = Math.round(this.netPrice);
-      if (parseInt(this.receive) < netPrice) {
+      if (
+        parseInt(this.receive) < netPrice ||
+        this.receive === NaN ||
+        this.receive === null ||
+        this.receive === 0 ||
+        this.receive === ""
+      ) {
         this.error2 = true;
         this.withdraw = 0;
         this.error1 = false;
@@ -191,7 +197,13 @@ export default {
     },
     save() {
       const netPrice = Math.round(this.netPrice);
-      if (parseInt(this.receive) < netPrice) {
+      if (
+        parseInt(this.receive) < netPrice ||
+        this.receive === NaN ||
+        this.receive === null ||
+        this.receive === 0 ||
+        this.receive === ""
+      ) {
         this.error2 = true;
         this.withdraw = 0;
         this.error1 = false;

@@ -255,7 +255,7 @@
               order2.list_product.length
             }}</v-col>
             <v-col cols="4" md="2">{{ order2.total_price }} ฿</v-col>
-            <v-col cols="4" md="2">
+            <v-col cols="4" md="2" class="hidden-sm-and-down">
               <div class="d-flex flex-row  flex-wrap justify-center">
                 <v-btn small fab
                   ><v-icon color="info" @click="viewOrder(i)"
@@ -269,6 +269,36 @@
                   ><v-icon color="red">mdi-delete</v-icon></v-btn
                 >
               </div>
+            </v-col>
+            <v-col cols="4" md="2" class="hidden-md-and-up">
+              <v-expansion-panels focusable>
+                <v-expansion-panel>
+                  <v-expansion-panel-header
+                    ><v-icon class="hidden-xs-only"
+                      >mdi-menu</v-icon
+                    ></v-expansion-panel-header
+                  >
+                  <v-expansion-panel-content>
+                    <v-row class="justify-center my-1">
+                      <v-btn small fab
+                        ><v-icon color="info" @click="viewOrder(i)"
+                          >mdi-eye</v-icon
+                        ></v-btn
+                      >
+                    </v-row>
+                    <v-row class="justify-center my-2 ">
+                      <v-btn small fab @click="printorder(i)"
+                        ><v-icon color="teal">mdi-printer</v-icon></v-btn
+                      >
+                    </v-row>
+                    <v-row class="justify-center mt-1">
+                      <v-btn small fab @click="deleteOrderOnDatabase(i)"
+                        ><v-icon color="red">mdi-delete</v-icon></v-btn
+                      >
+                    </v-row>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
             </v-col>
           </div>
         </v-card>
@@ -531,7 +561,9 @@ export default {
       const today = new Date(date);
       return `${today.getDate()} - ${
         this.monthNamesThai[today.getMonth()]
-      } - ${today.getFullYear() + 543}`;
+      } - ${today.getFullYear() + 543} | ${today.getHours()}:${
+        today.getMinutes() < 10 ? "0" : ""
+      }${today.getMinutes()}`;
     },
     printorder(i) {
       this.bill_name = this.orderOnDatabase[i].bill_name;

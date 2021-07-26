@@ -249,7 +249,7 @@
           >
             <v-col cols="4" md="3">{{ order2.bill_name }}</v-col>
             <v-col cols="4" md="3" class="hidden-sm-and-down">{{
-              formatDate3(order2.datetime)
+              order2.datetime | moment
             }}</v-col>
             <v-col cols="4" md="2" class="hidden-sm-and-down">{{
               order2.list_product.length
@@ -320,6 +320,8 @@
 </template>
 
 <script>
+import moment from "moment";
+import "moment/locale/th";
 import Product from "@/components/seller/Product.vue";
 import Category from "@/components/seller/Category.vue";
 import ConfirmOrder from "@/components/seller/confirmOrder.vue";
@@ -377,26 +379,19 @@ export default {
     valid: true,
     rules: [value => !!value || "โปรดกรอกชื่อบิล"],
     idForEditOrder: null,
-    checkStaff: false,
-    monthNamesThai: [
-      "มกราคม",
-      "กุมภาพันธ์",
-      "มีนาคม",
-      "เมษายน",
-      "พฤษภาคม",
-      "มิถุนายน",
-      "กรกฎาคม",
-      "สิงหาคม",
-      "กันยายน",
-      "ตุลาคม",
-      "พฤษจิกายน",
-      "ธันวาคม"
-    ]
+    checkStaff: false
   }),
   head() {
     return {
       title: this.cateName
     };
+  },
+  filters: {
+    moment: function(date) {
+      var strdate = moment("th").format("LLLL");
+      strdate = moment(date).add(543, "years");
+      return moment(strdate).format("YYYY MMMM D  H:mm");
+    }
   },
   methods: {
     changCate(cate) {
@@ -557,14 +552,7 @@ export default {
         this.bill_name = null;
       });
     },
-    formatDate3(date) {
-      const today = new Date(date);
-      return `${today.getDate()} - ${
-        this.monthNamesThai[today.getMonth()]
-      } - ${today.getFullYear() + 543} | ${today.getHours()}:${
-        today.getMinutes() < 10 ? "0" : ""
-      }${today.getMinutes()}`;
-    },
+
     printorder(i) {
       this.bill_name = this.orderOnDatabase[i].bill_name;
       const today = new Date(this.orderOnDatabase[i].datetime);

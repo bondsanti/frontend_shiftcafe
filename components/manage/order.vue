@@ -108,6 +108,7 @@
 
 <script>
 import moment from "moment";
+import "moment/locale/th";
 export default {
   data() {
     return {
@@ -165,17 +166,13 @@ export default {
       });
     }
   },
-  //   async asyncData(context) {
-  //     const historyOrder = await context.$axios.$get("/order");
 
-  //     console.log(historyOrder);
-  //     return { historyOrder };
-  //   },
   filters: {
     moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+      var strdate = moment("th").format("LLLL");
       var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY H:mm");
+      return moment(strdate).format("Do MMMM YYYY  H:mm");
+      // return moment(strdate).format("D/MM/YY H:mm");
     }
   },
   watch: {

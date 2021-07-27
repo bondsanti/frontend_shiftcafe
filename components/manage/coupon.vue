@@ -127,9 +127,7 @@
                           :rules="rules"
                           v-model="coupone.exp"
                            type="datetime"
-                            :hour-options="hours"
-                                 :default-value="new Date()"
-        :disabled-date="disabledBeforeTodayAndAfterAWeek"
+                         
                           valueType="format"
                         ></date-picker>
                       </v-col>
@@ -638,7 +636,7 @@ export default {
     moment: function(date) {
       // return moment(date).format('Do MMMM YYYY').add(543, 'years')
       var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("DD MMMM YYYY");
+      return moment(strdate).format("DD MMMM YYYY ");
     }
   },
   watch: {

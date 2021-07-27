@@ -249,7 +249,7 @@
           >
             <v-col cols="4" md="3">{{ order2.bill_name }}</v-col>
             <v-col cols="4" md="3" class="hidden-sm-and-down">{{
-              order2.datetime | moment
+              formatDate(order2.datetime)
             }}</v-col>
             <v-col cols="4" md="2" class="hidden-sm-and-down">{{
               order2.list_product.length
@@ -320,8 +320,6 @@
 </template>
 
 <script>
-import moment from "moment";
-import "moment/locale/th";
 import Product from "@/components/seller/Product.vue";
 import Category from "@/components/seller/Category.vue";
 import ConfirmOrder from "@/components/seller/confirmOrder.vue";
@@ -342,9 +340,7 @@ export default {
       context.$axios.$get("/order-hold"),
       context.$axios.$get("/bank")
     ]);
-    //const products = await context.$axios.$get("/product");
-    //console.log(products);
-    //console.log(customers);
+
     return {
       products,
       categories,
@@ -386,14 +382,13 @@ export default {
       title: this.cateName
     };
   },
-  filters: {
-    moment: function(date) {
-      var strdate = moment("th").format("LLLL");
-      strdate = moment(date).add(543, "years");
-      return moment(strdate).format("YYYY MMMM D  H:mm");
-    }
-  },
+
   methods: {
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY H:mm");
+    },
     changCate(cate) {
       //console.log(cate);
       this.product2 = this.products;
@@ -555,7 +550,7 @@ export default {
 
     printorder(i) {
       this.bill_name = this.orderOnDatabase[i].bill_name;
-      const today = new Date(this.orderOnDatabase[i].datetime);
+      //const today = new Date(this.orderOnDatabase[i].datetime);
       var WinPrint = window.open(
         "",
         "",
@@ -583,9 +578,9 @@ export default {
         `<tr><th align='left'>ชื่อบิล : ${this.bill_name}</th></tr>`
       );
       WinPrint.document.write(
-        `<tr><th align='center'>วันที่ ${today.getDate()} - ${
-          this.monthNamesThai[today.getMonth()]
-        } - ${today.getFullYear() + 543}</th></tr>`
+        `<tr><th align='center'>วันที่ ${this.formatDate(
+          this.orderOnDatabase[i].datetime
+        )} </th></tr>`
       );
       WinPrint.document.write(
         "<tr><th align='center'>***สำหรับเรียกเก็บเงินลูกค้า***</th></tr>"

@@ -210,7 +210,7 @@
         </template>
 
         <template v-slot:[`item.datetime`]="{ item }">
-          <span>{{ formatDate3(item.datetime) }}</span>
+          <span>{{ formatDate(item.datetime) }}</span>
         </template>
         <template v-slot:[`item.total_money`]="{ item }">
           <span class="">{{ formatPrice(item.total_money) }}</span>
@@ -264,29 +264,8 @@ export default {
         { text: "จำนวนเงิน", value: "total_money" },
         { text: "หมายเหตุ", value: "remark" },
         { text: "แก้ไข", value: "actions" }
-      ],
-      monthNamesThai: [
-        "มกราคม",
-        "กุมภาพันธ์",
-        "มีนาคม",
-        "เมษายน",
-        "พฤษภาคม",
-        "มิถุนายน",
-        "กรกฎาคม",
-        "สิงหาคม",
-        "กันยายน",
-        "ตุลาคม",
-        "พฤษจิกายน",
-        "ธันวาคม"
       ]
     };
-  },
-  filters: {
-    moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY H:mm");
-    }
   },
 
   created() {
@@ -388,11 +367,10 @@ export default {
         //console.log(this.cashdraw);
       }
     },
-    formatDate3(date) {
-      const today = new Date(date);
-      return `${today.getDate()} - ${
-        this.monthNamesThai[today.getMonth()]
-      } - ${today.getFullYear() + 543} `;
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY ");
     }
   },
 

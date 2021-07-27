@@ -13,7 +13,6 @@
           </v-card-title>
           <v-divider class="mb-3"></v-divider>
           <v-card-text>
-
             <v-row v-for="(de, i) in detailArr" :key="i">
               <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center">
                 <h4>{{ de.name }}</h4>
@@ -21,10 +20,7 @@
               <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center">
                 <h4>{{ de.value }}</h4>
               </v-col>
-                
             </v-row>
-
-
           </v-card-text>
         </v-form>
       </v-card>
@@ -366,7 +362,7 @@
                           color="#1D1D1D"
                           item-text="name"
                           item-value="_id"
-                          disabled
+                          :disabled="$store.getters['position'] === 'cashier'"
                           v-model="customerItme.ref_level_id"
                           :items="level"
                           :rules="rules"
@@ -475,6 +471,7 @@
             rounded-lx
             class="mr-1"
             color="error"
+            :disabled="$store.getters['position'] === 'cashier'"
             small
             @click="deleteItem(item)"
           >
@@ -524,7 +521,7 @@
 
 <script>
 import moment from "moment";
-import 'moment/locale/th';
+import "moment/locale/th";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 export default {
@@ -664,11 +661,11 @@ export default {
       timer: 3000
     });
   },
-  
+
   methods: {
-     moment2(date) {
-     // moment.locale('th');
-       var strdate = moment("th").format("LLLL");
+    moment2(date) {
+      // moment.locale('th');
+      var strdate = moment("th").format("LLLL");
       var strdate = moment(date).add(543, "years");
       return moment(strdate).format("DD MMMM YYYY ");
     },
@@ -779,7 +776,7 @@ export default {
         },
         {
           name: "วันเกิด",
-          value: this.moment2(item.birthday) 
+          value: this.formatDate(item.birthday)
         },
         {
           name: "เบอร์มือถือ",
@@ -801,7 +798,7 @@ export default {
       ];
 
       this.dialogView = true;
-      console.log(item);
+      //console.log(item);
     },
 
     getColor(status) {
@@ -837,6 +834,11 @@ export default {
             console.log(e);
           });
       }
+    },
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY ");
     }
   },
   props: ["customer", "levelmember"]

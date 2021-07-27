@@ -28,12 +28,12 @@
           v-model="search"
           append-icon="mdi-magnify"
           label="ค้นหา"
-          single-line
+          solo
           hide-details
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="pointmanage" :search="search">
+      <v-data-table :headers="headers" :items="pointTableData" :search="search">
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="800px">
             <v-form v-model="valid" ref="form">
@@ -118,14 +118,7 @@
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
-        <template v-slot:[`item.ref_emp_id`]="{ item }">
-          {{ item.ref_emp_id.pname }} {{ item.ref_emp_id.fname }}
-          {{ item.ref_emp_id.lname }}
-        </template>
-        <template v-slot:[`item.ref_cus_id`]="{ item }">
-          {{ item.ref_cus_id.pname }} {{ item.ref_cus_id.fname }}
-          {{ item.ref_cus_id.lname }}
-        </template>
+
         <template v-slot:[`item.point`]="{ item }">
           <v-icon class="ma-2 ml-2" color="primary">
             mdi-file-powerpoint-box
@@ -134,11 +127,11 @@
         </template>
         <template v-slot:[`item.status`]="{ item }">
           <v-chip :color="getColorstatus(item.status)" dark small>
-            {{ getTxt(item.status) }}
+            {{ item.status }}
           </v-chip>
         </template>
         <template v-slot:[`item.datetime`]="{ item }">
-          <span>{{ formatDate3(item.datetime) }}</span>
+          <span>{{ formatDate(item.datetime) }}</span>
         </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="reloadPage">
@@ -151,7 +144,6 @@
 </template>
 
 <script>
-import { monthNamesThai } from "@/instant";
 export default {
   data: () => ({
     dialog: false,
@@ -163,7 +155,7 @@ export default {
       {
         text: "ชื่อลูกค้าที่ถูกจัดการ",
         align: "start",
-        sortable: false,
+        sortable: true,
         value: "ref_cus_id"
       },
       { text: "ชื่อพนักงานที่จัดการ", sortable: false, value: "ref_emp_id" },
@@ -181,6 +173,19 @@ export default {
     point: 0,
     valid: true
   }),
+  computed: {
+    pointTableData() {
+      return this.pointmanage.map(item => {
+        return {
+          ref_cus_id: `${item.ref_cus_id.pname} ${item.ref_cus_id.fname} ${item.ref_cus_id.lname}`,
+          ref_emp_id: `${item.ref_emp_id.fname} ${item.ref_emp_id.lname}`,
+          point: item.point,
+          status: item.status === "plus" ? "เพิ่ม" : "ลบ",
+          datetime: item.datetime
+        };
+      });
+    }
+  },
 
   methods: {
     getTxt(status) {
@@ -188,7 +193,7 @@ export default {
       else return "ลบ";
     },
     getColorstatus(status) {
-      if (status === "plus") return "green";
+      if (status === "เพิ่ม") return "green";
       else return "red";
     },
     save() {
@@ -230,11 +235,10 @@ export default {
     reloadPage() {
       window.location.reload();
     },
-    formatDate3(date) {
-      const today = new Date(date);
-      return `${today.getDate()} - ${
-        monthNamesThai[today.getMonth()]
-      } - ${today.getFullYear() + 543} `;
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY ");
     }
   },
   props: ["pointmanage", "customers"],

@@ -10,7 +10,7 @@
         height="150px"
         contain
         :aspect-ratio="16 / 9"
-        :src="'https://api.shift-cafe.com/' + product.img"
+        :src="$nuxt.context.env.config.IMG_URL + product.img"
       >
       </v-img>
       <v-card-text class="pt-6 pa-0" style="position: relative;">

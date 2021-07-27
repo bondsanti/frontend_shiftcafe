@@ -23,23 +23,22 @@
           label="ค้นหา"
           single-line
           hide-details
-           solo-inverted
-             flat
+          solo-inverted
+          flat
         ></v-text-field>
-         <v-spacer></v-spacer>
-            <v-select
-              v-model="sortBy"
-              flat
-              solo-inverted
-              hide-details
-              item-text="name"
-               item-value="_id"
-              :items="categoryname.flat()"
-              prepend-inner-icon="mdi-magnify"
-              label="ประเภท"
-            ></v-select>
+        <v-spacer></v-spacer>
+        <v-select
+          v-model="sortBy"
+          flat
+          solo-inverted
+          hide-details
+          item-text="name"
+          item-value="_id"
+          :items="categoryname.flat()"
+          prepend-inner-icon="mdi-magnify"
+          label="ประเภท"
+        ></v-select>
       </v-card-title>
-      
 
       <v-data-table
         :headers="headers"
@@ -50,7 +49,7 @@
       >
         <template v-slot:[`item.img`]="{ item }">
           <v-img
-            :src="`https://api.shift-cafe.com/${item.img}`"
+            :src="`${$nuxt.context.env.config.IMG_URL}${item.img}`"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
             width="70px"
@@ -236,7 +235,7 @@ export default {
     search: "",
     unitname: [],
     categoryname: [],
-    sortBy: 'ชื่อ',
+    sortBy: "ชื่อ",
     sortDesc: false,
     headers: [
       { text: "ลำดับ", sortable: false, value: "No" },
@@ -297,7 +296,7 @@ export default {
       //console.log(this.preImg);
     },
     editItem(item) {
-      this.imageURL = `https://api.shift-cafe.com/${item.img}`;
+      this.imageURL = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       this.type = "edit";
       this.productsItem = {
         _id: item._id,
@@ -315,7 +314,7 @@ export default {
       if (this.productsItem.img.length > 0) {
         return this.productsItem.img;
       } else {
-        return `https://api.shift-cafe.com/${item.img}`;
+        return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       }
     },
     addItem() {

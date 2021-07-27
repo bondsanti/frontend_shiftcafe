@@ -74,7 +74,7 @@
               <v-card-title>
                 <v-icon left> mdi-account-plus </v-icon> ลงทะเบียนลูกค้า
               </v-card-title>
- <v-card-text>
+              <v-card-text>
                 <v-divider class="mx-auto" inset></v-divider>
               </v-card-text>
               <v-card-text>
@@ -462,7 +462,7 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn  class="mr1" small color="warning" @click="editItem(item)">
+          <v-btn class="mr1" small color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="me-1">
               mdi-pencil-plus
             </v-icon>
@@ -523,6 +523,7 @@
 <script>
 import moment from "moment";
 import DatePicker from "vue2-datepicker";
+import "moment/locale/th";
 import "vue2-datepicker/index.css";
 export default {
   layout: "layoutCashier",
@@ -662,6 +663,12 @@ export default {
     });
   },
   methods: {
+    moment2(date) {
+      // moment.locale('th');
+      var strdate = moment("th").format("LLLL");
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("DD MMMM YYYY ");
+    },
     showAlert() {
       this.toast({
         type: "success",
@@ -703,7 +710,7 @@ export default {
         tel: "null",
         email: "",
         address: "",
-        ref_level_id:"60e439b7c7d6ae35548c7b62",
+        ref_level_id: "60e439b7c7d6ae35548c7b62",
         point: "0"
       };
       this.dialogadd = true;
@@ -769,7 +776,7 @@ export default {
         },
         {
           name: "วันเกิด",
-          value: item.birthday
+          value: this.moment2(item.birthday) 
         },
         {
           name: "เบอร์มือถือ",

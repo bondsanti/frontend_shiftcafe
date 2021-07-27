@@ -524,7 +524,7 @@
 
 <script>
 import moment from "moment";
-import 'moment/locale/th'
+import 'moment/locale/th';
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 export default {
@@ -670,7 +670,7 @@ export default {
      // moment.locale('th');
        var strdate = moment("th").format("LLLL");
       var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("Do MMMM YYYY  hh:mm");
+      return moment(strdate).format("DD MMMM YYYY ");
     },
     showAlert() {
       this.toast({

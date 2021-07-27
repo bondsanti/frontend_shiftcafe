@@ -267,6 +267,7 @@
                     <v-col cols="12" class="mt-n7">
                       <v-text-field
                         v-model="cus.tel"
+                        type="number"
                         outlined
                         label="เบอร์โทร"
                         required

@@ -12,7 +12,8 @@
             <v-form>
               <v-card-title>
                 <span class="text-h"
-                  ><v-icon left> mdi-cash-register </v-icon> กรอกข้อมูล</span
+                  ><v-icon left> mdi-cash-register </v-icon>
+                  กรอกข้อมูลเงินทอน</span
                 >
               </v-card-title>
               <v-divider class="mb-3"></v-divider>
@@ -28,7 +29,34 @@
                         :items="items"
                         :rules="rules"
                         required
+                        hide-details
                       ></v-select>
+                    </v-col>
+                    <v-col cols="12">
+                      <v-menu
+                        v-model="menu2"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="cashdraw.datetime"
+                            label="วันที่"
+                            prepend-inner-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            outlined
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="cashdraw.datetime"
+                          @input="menu2 = false"
+                        ></v-date-picker>
+                      </v-menu>
                     </v-col>
                     <v-col cols="12" md="12" class="mt-n7">
                       <v-text-field
@@ -59,17 +87,10 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="error" @click="close">
-                  <v-icon left> mdi-close </v-icon>Cancel
+                  <v-icon left> mdi-close </v-icon>ปิด
                 </v-btn>
-                <v-btn
-                  color="primary"
-                  :disabled="!valid"
-                  @click="
-                    saveData();
-                    reset();
-                  "
-                >
-                  <v-icon left> mdi-content-save </v-icon>Save
+                <v-btn color="primary" :disabled="!valid" @click="saveData()">
+                  <v-icon left> mdi-content-save </v-icon>บันทึก
                 </v-btn>
               </v-card-actions>
             </v-form>
@@ -80,7 +101,7 @@
             <v-form>
               <v-card-title>
                 <span class="text-h"
-                  ><v-icon left> mdi-cash-register </v-icon> แกไข้ข้อมูล</span
+                  ><v-icon left> mdi-cash-register </v-icon> แก้ไขข้อมูล</span
                 >
               </v-card-title>
               <v-divider class="mb-3"></v-divider>
@@ -104,14 +125,10 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="error" @click="closeedit">
-                  <v-icon left> mdi-close </v-icon>Cancel
+                  <v-icon left> mdi-close </v-icon>ปิด
                 </v-btn>
-                <v-btn
-                  color="primary"
-                  :disabled="!valid"
-                  @click="saveData();showAlert();   "
-                >
-                  <v-icon left> mdi-content-save </v-icon>Save
+                <v-btn color="primary" :disabled="!valid" @click="saveData()">
+                  <v-icon left> mdi-content-save </v-icon>บันทึก
                 </v-btn>
               </v-card-actions>
             </v-form>
@@ -193,7 +210,7 @@
         </template>
 
         <template v-slot:[`item.datetime`]="{ item }">
-          <span>{{ item.datetime | moment }}</span>
+          <span>{{ formatDate(item.datetime) }}</span>
         </template>
         <template v-slot:[`item.total_money`]="{ item }">
           <span class="">{{ formatPrice(item.total_money) }}</span>
@@ -207,8 +224,6 @@
 </template>
 
 <script>
-import moment from "moment";
-import milkShake from "@/assets/milkshake.svg";
 export default {
   layout: "layoutCashier",
   data() {
@@ -217,10 +232,11 @@ export default {
       dialog: false,
       dialogedi: false,
       dialogDelete: false,
+      dialogeditItem: false,
+
+      menu2: false,
       rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
       valid: true,
-
-      type: null,
       deleteId: null,
       search: "",
       editedIndex: -1,
@@ -230,7 +246,10 @@ export default {
         _id: " ",
         type: "",
         total_money: "",
-        remark: ""
+        remark: "",
+        datetime: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .substr(0, 10)
       },
       cashdrawedi: {
         _id: " ",
@@ -248,25 +267,7 @@ export default {
       ]
     };
   },
-  filters: {
-    moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY H:mm");
-    }
-  },
 
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogeditItem(val) {
-      val || this.closeedit();
-    },
-    dialogedi(val) {
-      val || this.closedi();
-    }
-  },
   created() {
     this.initialize();
   },
@@ -280,12 +281,11 @@ export default {
     });
   },
   methods: {
-    showAlert() {
+    showAlert(msg) {
       this.toast({
         type: "success",
-        title: "ดำเนิการสำเร็จ"
+        title: msg
       });
-      this.text_val_for_test = Date.now();
     },
     someFn(ev) {
       console.log(ev);
@@ -349,26 +349,31 @@ export default {
         this.loading = true;
         this.$axios
           .$put("/withdraw/" + this.cashdrawedi._id, this.cashdrawedi)
-          .then(() => {
+          .then(res => {
             this.$emit("refresh");
+            this.showAlert(res.message);
             this.closeedit();
+            this.type = null;
           })
           .catch(e => {
             console.log(e);
           });
       } else {
-        //alert(JSON.stringify(this.cashdraw));
         this.$emit("addCashdraw", this.cashdraw);
-        //alert(JSON.stringify(this.cashdraw));
         this.close();
         this.dialog = false;
+        this.reset();
+        this.type = null;
+        //console.log(this.cashdraw);
       }
+    },
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY ");
     }
   },
 
-  components: {
-    milkShake
-  },
   props: ["loadData"]
 };
 </script>

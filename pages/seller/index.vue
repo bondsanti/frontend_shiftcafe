@@ -249,13 +249,13 @@
           >
             <v-col cols="4" md="3">{{ order2.bill_name }}</v-col>
             <v-col cols="4" md="3" class="hidden-sm-and-down">{{
-              formatDate3(order2.datetime)
+              formatDate(order2.datetime)
             }}</v-col>
             <v-col cols="4" md="2" class="hidden-sm-and-down">{{
               order2.list_product.length
             }}</v-col>
             <v-col cols="4" md="2">{{ order2.total_price }} ฿</v-col>
-            <v-col cols="4" md="2">
+            <v-col cols="4" md="2" class="hidden-sm-and-down">
               <div class="d-flex flex-row  flex-wrap justify-center">
                 <v-btn small fab
                   ><v-icon color="info" @click="viewOrder(i)"
@@ -269,6 +269,36 @@
                   ><v-icon color="red">mdi-delete</v-icon></v-btn
                 >
               </div>
+            </v-col>
+            <v-col cols="4" md="2" class="hidden-md-and-up">
+              <v-expansion-panels focusable>
+                <v-expansion-panel>
+                  <v-expansion-panel-header
+                    ><v-icon class="hidden-xs-only"
+                      >mdi-menu</v-icon
+                    ></v-expansion-panel-header
+                  >
+                  <v-expansion-panel-content>
+                    <v-row class="justify-center my-1">
+                      <v-btn small fab
+                        ><v-icon color="info" @click="viewOrder(i)"
+                          >mdi-eye</v-icon
+                        ></v-btn
+                      >
+                    </v-row>
+                    <v-row class="justify-center my-2 ">
+                      <v-btn small fab @click="printorder(i)"
+                        ><v-icon color="teal">mdi-printer</v-icon></v-btn
+                      >
+                    </v-row>
+                    <v-row class="justify-center mt-1">
+                      <v-btn small fab @click="deleteOrderOnDatabase(i)"
+                        ><v-icon color="red">mdi-delete</v-icon></v-btn
+                      >
+                    </v-row>
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-expansion-panels>
             </v-col>
           </div>
         </v-card>
@@ -310,9 +340,7 @@ export default {
       context.$axios.$get("/order-hold"),
       context.$axios.$get("/bank")
     ]);
-    //const products = await context.$axios.$get("/product");
-    //console.log(products);
-    //console.log(customers);
+
     return {
       products,
       categories,
@@ -347,28 +375,20 @@ export default {
     valid: true,
     rules: [value => !!value || "โปรดกรอกชื่อบิล"],
     idForEditOrder: null,
-    checkStaff: false,
-    monthNamesThai: [
-      "มกราคม",
-      "กุมภาพันธ์",
-      "มีนาคม",
-      "เมษายน",
-      "พฤษภาคม",
-      "มิถุนายน",
-      "กรกฎาคม",
-      "สิงหาคม",
-      "กันยายน",
-      "ตุลาคม",
-      "พฤษจิกายน",
-      "ธันวาคม"
-    ]
+    checkStaff: false
   }),
   head() {
     return {
       title: this.cateName
     };
   },
+
   methods: {
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY H:mm");
+    },
     changCate(cate) {
       //console.log(cate);
       this.product2 = this.products;
@@ -527,15 +547,10 @@ export default {
         this.bill_name = null;
       });
     },
-    formatDate3(date) {
-      const today = new Date(date);
-      return `${today.getDate()} - ${
-        this.monthNamesThai[today.getMonth()]
-      } - ${today.getFullYear() + 543}`;
-    },
+
     printorder(i) {
       this.bill_name = this.orderOnDatabase[i].bill_name;
-      const today = new Date(this.orderOnDatabase[i].datetime);
+      //const today = new Date(this.orderOnDatabase[i].datetime);
       var WinPrint = window.open(
         "",
         "",
@@ -563,9 +578,9 @@ export default {
         `<tr><th align='left'>ชื่อบิล : ${this.bill_name}</th></tr>`
       );
       WinPrint.document.write(
-        `<tr><th align='center'>วันที่ ${today.getDate()} - ${
-          this.monthNamesThai[today.getMonth()]
-        } - ${today.getFullYear() + 543}</th></tr>`
+        `<tr><th align='center'>วันที่ ${this.formatDate(
+          this.orderOnDatabase[i].datetime
+        )} </th></tr>`
       );
       WinPrint.document.write(
         "<tr><th align='center'>***สำหรับเรียกเก็บเงินลูกค้า***</th></tr>"

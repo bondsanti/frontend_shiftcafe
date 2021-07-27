@@ -6,9 +6,8 @@
           <v-form>
             <v-card-title>
               <span class="text-h"
-                ><v-icon left> mdi-note-text-outline </v-icon> Invoice No.#{{
-                  itemBy.invoice
-                }}</span
+                ><v-icon left> mdi-note-text-outline </v-icon>
+                หมายเลขใบเสร็จรับเงิน : {{ itemBy.invoice }}</span
               >
             </v-card-title>
             <v-divider class="mb-3"></v-divider>
@@ -60,7 +59,7 @@
               class="mb-n5"
             >
               <template v-slot:[`item.datetime`]="{ item }">
-                <span>{{ item.datetime | moment }}</span>
+                <span>{{ formatDate3(item.datetime) }}</span>
               </template>
               <template v-slot:[`item.type_payment`]="{ item }">
                 <v-chip :color="getColor(item.type_payment)" dark small>
@@ -93,7 +92,7 @@
 </template>
 
 <script>
-import moment from "moment";
+import { monthNamesThai } from "@/instant";
 export default {
   data() {
     return {
@@ -274,6 +273,12 @@ export default {
     close() {
       this.dialog = false;
     },
+    formatDate3(date) {
+      const today = new Date(date);
+      return `${today.getDate()} - ${
+        monthNamesThai[today.getMonth()]
+      } - ${today.getFullYear() + 543} `;
+    },
     async printInvoice() {
       const order = await this.$axios.$get("/order/" + this.order_id);
       const today = new Date(order.datetime);
@@ -377,10 +382,6 @@ export default {
       WinPrint.document.close();
       WinPrint.focus();
       setTimeout(WinPrint.print(), 3000);
-    },
-    formatDate(date) {
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY H:mm");
     }
   },
   //   async asyncData(context) {

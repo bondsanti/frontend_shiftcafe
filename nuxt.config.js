@@ -46,9 +46,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [
-    { src: '~/plugins/datepicker', ssr: false }
-  ],
+  plugins: [{ src: "~/plugins/datepicker", ssr: false }],
 
   /*
    ** Nuxt.js modules
@@ -62,10 +60,10 @@ module.exports = {
   ],
 
   axios: {
-    baseURL: 'https://api.shift-cafe.com/api'
+    baseURL: "http://localhost:5555/api"
     //  http://localhost:5555/api
     // 'https://api.shift-cafe.com/api'
-    //http://192.168.1.24:555/api
+    //http://192.168.1.24:5555/api
   },
 
   auth: {
@@ -89,6 +87,11 @@ module.exports = {
     redirect: {
       login: "/login"
     }
+  },
+  moment: {
+    defaultLocale: "th",
+    locales: ["th"],
+    timezone: true
   },
   vuetify: {
     theme: {

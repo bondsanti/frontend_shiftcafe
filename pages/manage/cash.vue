@@ -1,9 +1,9 @@
 <template>
-  <cash @addCashdraw="onSubmitted" :loadData="loadData"     @refresh="refresh" />
+  <cash @addCashdraw="onSubmitted" :loadData="loadData" @refresh="refresh" />
 </template>
 
 <script>
-import cash from "@/components/manage/cash.vue";
+import cash from "@/components/seller/cashdraw.vue";
 export default {
   head: {
     title: "เงินทอน"
@@ -27,7 +27,7 @@ export default {
       await this.$axios.$post("/withdraw", cashdrawData);
       this.loadData = await this.$axios.$get("/withdraw");
     },
-      async refresh() {
+    async refresh() {
       this.loadData = await this.$axios.$get("/withdraw");
     }
   },

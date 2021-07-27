@@ -13,7 +13,7 @@
         contain
         max-height="40px"
         max-width="40px"
-        :src="`https://api.shift-cafe.com/${cate.img}`"
+        :src="`${$nuxt.context.env.config.IMG_URL}${cate.img}`"
       ></v-img>
       <h2 class="d-flex flex-row white--text text-md-body-1">
         {{ cate.cate_name }}

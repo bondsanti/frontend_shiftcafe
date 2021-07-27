@@ -82,7 +82,7 @@
               class="mb-n5"
             >
               <template v-slot:[`item.datetime`]="{ item }">
-                <span>{{ formatDate3(item.datetime) }}</span>
+                <span>{{ formatDate(item.datetime) }}</span>
               </template>
               <template v-slot:[`item.status`]="{ item }">
                 <v-chip :color="getColor(item.status)" dark small>
@@ -109,7 +109,6 @@
 </template>
 
 <script>
-import { monthNamesThai } from "@/instant";
 export default {
   data() {
     return {
@@ -166,13 +165,10 @@ export default {
         this.editedIndex = -1;
       });
     },
-    formatDate3(date) {
-      const today = new Date(date);
-      return `${today.getDate()} - ${
-        monthNamesThai[today.getMonth()]
-      } - ${today.getFullYear() + 543} | ${today.getHours()}:${
-        today.getMinutes() < 10 ? "0" : ""
-      }${today.getMinutes()}`;
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY H:mm");
     }
   },
 

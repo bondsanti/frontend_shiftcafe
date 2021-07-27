@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import register from "@/components/seller/register.vue";
+import register from "@/components/manage/customer.vue";
 export default {
   layout: "layoutCashier",
   head: {

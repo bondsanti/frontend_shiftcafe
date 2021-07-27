@@ -23,8 +23,23 @@
           label="ค้นหา"
           single-line
           hide-details
+           solo-inverted
+             flat
         ></v-text-field>
+         <v-spacer></v-spacer>
+            <v-select
+              v-model="sortBy"
+              flat
+              solo-inverted
+              hide-details
+              item-text="name"
+               item-value="_id"
+              :items="categoryname.flat()"
+              prepend-inner-icon="mdi-magnify"
+              label="ประเภท"
+            ></v-select>
       </v-card-title>
+      
 
       <v-data-table
         :headers="headers"
@@ -221,6 +236,8 @@ export default {
     search: "",
     unitname: [],
     categoryname: [],
+    sortBy: 'ชื่อ',
+    sortDesc: false,
     headers: [
       { text: "ลำดับ", sortable: false, value: "No" },
       { text: "ภาพ", sortable: false, value: "img" },

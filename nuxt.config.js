@@ -1,4 +1,4 @@
-const pkg = require("./package");
+const config = require("./config.js");
 
 module.exports = {
   mode: "universal",
@@ -6,6 +6,9 @@ module.exports = {
   /*
    ** Headers of the page
    */
+  env: {
+    config
+  },
   head: {
     titleTemplate: "shift café  | %s",
     title: "shift café",
@@ -60,10 +63,7 @@ module.exports = {
   ],
 
   axios: {
-    baseURL: 'https://api.shift-cafe.com/api'
-    //  http://localhost:5555/api
-    // 'https://api.shift-cafe.com/api'
-    //http://192.168.1.24:5555/api
+    baseURL: config.BASE_URL
   },
 
   auth: {

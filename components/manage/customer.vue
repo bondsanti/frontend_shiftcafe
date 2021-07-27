@@ -1,7 +1,7 @@
 <template>
   <div class="ma-3">
     <!-- 1 -->
-    <v-dialog v-model="dialogView" max-width="500px">
+    <v-dialog v-model="dialogView" max-width="400px">
       <v-card>
         <v-form>
           <v-card-title>
@@ -13,18 +13,14 @@
           </v-card-title>
           <v-divider class="mb-3"></v-divider>
           <v-card-text>
-
             <v-row v-for="(de, i) in detailArr" :key="i">
               <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center">
-                <h4>{{ de.name }}</h4>
+                <h4 class="text-left">{{ de.name }}</h4>
               </v-col>
               <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center">
-                <h4>{{ de.value }}</h4>
+                <h4 class="text-center">{{ de.value }}</h4>
               </v-col>
-                
             </v-row>
-
-
           </v-card-text>
         </v-form>
       </v-card>
@@ -61,14 +57,13 @@
         :items="customer"
         :search="search"
         :items-per-page="15"
-        :footer-props="{ 'items-per-page-options': [15, 20, 30, 40, 50, -1],
-       
-        prevIcon: 'mdi-chevron-left',
-        nextIcon: 'mdi-chevron-right',
-           'items-per-page-text':'ข้อมูลหน้าต่อไป'
-        
-         }"
-        
+        :footer-props="{
+          'items-per-page-options': [15, 20, 30, 40, 50, -1],
+
+          prevIcon: 'mdi-chevron-left',
+          nextIcon: 'mdi-chevron-right',
+          'items-per-page-text': 'ข้อมูลหน้าต่อไป'
+        }"
       >
         <template v-slot:[`item.img`]="{}">
           <img
@@ -131,6 +126,7 @@
                           placeholder="วันเกิด"
                           :rules="requiredRules"
                           v-model="customerItme.birthday"
+                          
                           valueType="format"
                         ></date-picker>
                       </v-col>
@@ -250,7 +246,7 @@
           <!-- ***************************************add ********************************************************************************************************-->
 
           <!--******************************* edi ****************************************************************************************************************-->
-          <v-dialog v-model="dialog" max-width="700px">
+          <v-dialog v-model="dialog" max-width="750px">
             <v-card>
               <v-card-title>
                 <span class="text-h5">
@@ -286,7 +282,7 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="4">
                         <v-text-field
                           v-model="customerItme.lname"
                           maxlength="25"
@@ -300,7 +296,6 @@
 
                       <v-col cols="12" sm="6">
                         <date-picker
-                     
                           placeholder="วันเกิด"
                           :rules="requiredRules"
                           :max="
@@ -373,7 +368,7 @@
                           color="#1D1D1D"
                           item-text="name"
                           item-value="_id"
-                          disabled
+                          :disabled="$store.getters['position'] === 'cashier'"
                           v-model="customerItme.ref_level_id"
                           :items="level"
                           :rules="rules"
@@ -482,6 +477,7 @@
             rounded-lx
             class="mr-1"
             color="error"
+            :disabled="$store.getters['position'] === 'cashier'"
             small
             @click="deleteItem(item)"
           >
@@ -519,10 +515,10 @@
           </v-btn>
         </template>
         <template v-slot:[`item.view`]="{ item }">
-          <v-btn class="mr1" small color="teal"  @click="Detail(item)" >
-               <div class="d-block  white--text">
-            <v-icon aria-hidden="false" class="mx-1"> mdi-eye </v-icon
-            >ดูรายละเอียด
+          <v-btn class="mr1" small color="teal" @click="Detail(item)">
+            <div class="d-block  white--text">
+              <v-icon aria-hidden="false" class="mx-1"> mdi-eye </v-icon
+              >ดูรายละเอียด
             </div>
           </v-btn>
         </template>
@@ -533,7 +529,7 @@
 
 <script>
 import moment from "moment";
-import 'moment/locale/th';
+import "moment/locale/th";
 import DatePicker from "vue2-datepicker";
 import "@/assets/css/datepicker.css";
 import "vue2-datepicker/index.css";
@@ -674,11 +670,11 @@ export default {
       timer: 3000
     });
   },
-  
+
   methods: {
-     moment2(date) {
-     // moment.locale('th');
-       var strdate = moment("th").format("LLLL");
+    moment2(date) {
+      // moment.locale('th');
+      var strdate = moment("th").format("LLLL");
       var strdate = moment(date).add(543, "years");
       return moment(strdate).format("DD MMMM YYYY ");
     },
@@ -789,7 +785,7 @@ export default {
         },
         {
           name: "วันเกิด",
-          value: this.moment2(item.birthday) 
+          value: this.formatDate(item.birthday)
         },
         {
           name: "เบอร์มือถือ",
@@ -811,7 +807,7 @@ export default {
       ];
 
       this.dialogView = true;
-      console.log(item);
+      //console.log(item);
     },
 
     getColor(status) {
@@ -847,6 +843,11 @@ export default {
             console.log(e);
           });
       }
+    },
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY ");
     }
   },
   props: ["customer", "levelmember"]

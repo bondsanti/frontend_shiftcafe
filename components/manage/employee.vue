@@ -58,7 +58,12 @@
         :items="employee"
         :search="search"
         :items-per-page="15"
-        :footer-props="{ 'items-per-page-options': [15, 20, 30, 40, 50, -1] }"
+        :footer-props="{
+          'items-per-page-options': [15, 20, 30, 40, 50, -1],
+           prevIcon: 'mdi-chevron-left',
+          nextIcon: 'mdi-chevron-right',
+          'items-per-page-text': 'ข้อมูลหน้าต่อไป'
+        }"
       >
         <template v-slot:[`item.img`]="{}">
           <img
@@ -605,7 +610,7 @@
         </template>
         <template v-slot:[`item.username`]="{ item }">
           <v-icon class="ma-2 ml-2" color="primary">
-            mdi-identifier
+           mdi-identifier
           </v-icon>
           {{ item.username }}
         </template>
@@ -864,7 +869,9 @@ export default {
       if (status === "cashier") return "green";
       else if (status === "manager") return "#F44336";
       else if (status === "checker") return "orange";
-      return "#03A9F4";
+      else if (status === "admin") return "#673AB7";
+      else if (status === "staff") return "#03A9F4";
+      return "primary";
     },
     getPnameColor(status) {
       if (status === "นาย") return "#03A9F4";
@@ -876,7 +883,9 @@ export default {
       if (status === "cashier") return "แคชเชียร์";
       else if (status === "manager") return "ผู้จัดการ";
       else if (status === "checker") return "ผู้ตรวจสอบ";
-      else return "พนักงาน";
+      else if (status === "admin") return "แอดมิน";
+      else if (status === "staff") return "พนักงาน";
+      else return "ผู้เยียมชม";
     },
     Detail(item) {
       this.itemBy = item;

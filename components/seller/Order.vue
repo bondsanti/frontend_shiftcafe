@@ -76,13 +76,19 @@
               :headers="headers"
               :items="historyOrder"
               :search="search"
-              :items-per-page="10"
+              :items-per-page="15"
+              :footer-props="{
+                'items-per-page-options': [15, 20, 30, 40, 50, -1],
+                prevIcon: 'mdi-chevron-left',
+                nextIcon: 'mdi-chevron-right',
+                'items-per-page-text': 'ข้อมูลหน้าต่อไป'
+              }"
               :sort-by="['datetime']"
               :sort-desc="[true, false]"
               class="mb-n5"
             >
               <template v-slot:[`item.datetime`]="{ item }">
-                <span>{{ formatDate3(item.datetime) }}</span>
+                <span>{{ formatDate(item.datetime) }}</span>
               </template>
               <template v-slot:[`item.status`]="{ item }">
                 <v-chip :color="getColor(item.status)" dark small>
@@ -109,7 +115,6 @@
 </template>
 
 <script>
-import { monthNamesThai } from "@/instant";
 export default {
   data() {
     return {
@@ -129,7 +134,7 @@ export default {
         { text: "ชื่อบิล", value: "bill_name" },
         { text: "สถานะ", value: "status" },
         { text: "ยอดสั่งซื้อ", value: "total_price" },
-        { text: "Actions", value: "actions", sortable: false }
+        { text: "หมายเหตุ", value: "actions", sortable: false }
       ]
       //historyOrder: []
     };
@@ -166,13 +171,10 @@ export default {
         this.editedIndex = -1;
       });
     },
-    formatDate3(date) {
-      const today = new Date(date);
-      return `${today.getDate()} - ${
-        monthNamesThai[today.getMonth()]
-      } - ${today.getFullYear() + 543} | ${today.getHours()}:${
-        today.getMinutes() < 10 ? "0" : ""
-      }${today.getMinutes()}`;
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY H:mm");
     }
   },
 

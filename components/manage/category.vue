@@ -32,22 +32,21 @@
         :search="search"
         :items-per-page="20"
         :footer-props="{
-          'items-per-page-options': [20, 30, 40, 50, -1]
+          'items-per-page-options': [20, 30, 40, 50, -1],
+           prevIcon: 'mdi-chevron-left',
+          nextIcon: 'mdi-chevron-right',
+          'items-per-page-text': 'ข้อมูลหน้าต่อไป'
         }"
       >
         <template v-slot:[`item.img`]="{ item }">
-        
           <v-img
-            :src="
-              item.img ? `https://api.shift-cafe.com/${item.img}` : 'coffee.png'
-            "
+            :src="`${$nuxt.context.env.config.IMG_URL}${item.img}`"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
             width="100px"
             height="100px"
             contain
           />
-        
         </template>
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
@@ -172,20 +171,25 @@
           </v-btn>
         </template>
       </v-data-table>
-       <v-card-text>
-         <v-alert outlined  color="info" prominent border="left" class="text-center">
-                  โปรดตวรจสอบหมวดหมูให้ดีก่อนลบหมวดหมูที่ใช้อยู่
-                  <q class="font-weight-black ">
-                    ระบบจะมีปัญหา
-                  </q>
-                </v-alert>
+      <v-card-text>
+        <v-alert
+          outlined
+          color="info"
+          prominent
+          border="left"
+          class="text-center"
+        >
+          โปรดตวรจสอบหมวดหมูให้ดีก่อนลบหมวดหมูที่ใช้อยู่
+          <q class="font-weight-black ">
+            ระบบจะมีปัญหา
+          </q>
+        </v-alert>
       </v-card-text>
     </v-card>
   </div>
 </template>
 
 <script>
-
 export default {
   data: () => ({
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
@@ -197,7 +201,7 @@ export default {
       { text: "ลำดับ", sortable: false, value: "No" },
       { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อหม่วดหมู่", align: "start", value: "cate_name" },
-      { text: "เหตุผล", value: "actions", sortable: false }
+      { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
     cate: { _id: "", cate_name: "", img: "" },
@@ -232,8 +236,6 @@ export default {
     });
   },
   methods: {
-  
- 
     onFileSelected(event) {
       const reader = new FileReader();
       reader.onload = event => {
@@ -257,12 +259,12 @@ export default {
       if (this.cate.img.length > 0) {
         return this.cate.img;
       } else {
-        return `https://api.shift-cafe.com/${item.img}`;
+        return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       }
     },
     editItem(item) {
       this.type = "edit";
-      this.imageURL = `https://api.shift-cafe.com/${item.img}`;
+      this.imageURL = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       this.cate = {
         _id: item._id,
         cate_name: item.cate_name,

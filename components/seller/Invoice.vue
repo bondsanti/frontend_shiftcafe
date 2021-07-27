@@ -53,7 +53,13 @@
               :headers="headers"
               :items="historyInvoice"
               :search="search"
-              :items-per-page="10"
+              :items-per-page="15"
+              :footer-props="{
+                'items-per-page-options': [15, 20, 30, 40, 50, -1],
+                prevIcon: 'mdi-chevron-left',
+                nextIcon: 'mdi-chevron-right',
+                'items-per-page-text': 'ข้อมูลหน้าต่อไป'
+              }"
               :sort-by="['datetime']"
               :sort-desc="[true, false]"
               class="mb-n5"
@@ -112,7 +118,7 @@ export default {
         { text: "ยอดสุทธิ", value: "net_price" },
         { text: "เงินรับมา", value: "receive_money" },
         { text: "เงินทอน", value: "withdraw_money" },
-        { text: "Actions", value: "actions", sortable: false }
+        { text: "หมายเหตุ", value: "actions", sortable: false }
       ],
       detailArr: [],
       order_id: "",

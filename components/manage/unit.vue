@@ -155,7 +155,7 @@
          <v-alert outlined  color="info" prominent border="left" class="text-center">
                   โปรดตวรจสอบหน่วยนับให้ดีก่อนลบหน่วยนับที่ใช้อยู่
                   <q class="font-weight-black ">
-                    ระบบจะมีปัญหา
+                    ระบบจะมีปัญหาได้
                   </q>
                 </v-alert>
       </v-card-text>

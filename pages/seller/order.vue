@@ -7,7 +7,7 @@ import Order from "@/components/seller/Order.vue";
 export default {
   layout: "layoutCashier",
   head: {
-    title: "Order"
+    title: "ใบสั่งซื้อ"
   },
   middleware: ["auth", "checkAll", "refresh", "checkChecker"],
   async asyncData(context) {

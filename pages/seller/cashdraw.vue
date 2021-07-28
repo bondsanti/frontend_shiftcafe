@@ -12,7 +12,7 @@ import Cashdraw from "@/components/seller/cashdraw.vue";
 export default {
   middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   head: {
-    title: "Withdraw"
+    title: "เงินทอน"
   },
   layout: "layoutCashier",
   data() {

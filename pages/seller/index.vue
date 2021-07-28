@@ -57,7 +57,7 @@
               color="primary"
               width="100%"
               height="80px"
-              @click="product2 = products"
+              @click="allProduct"
             >
               <v-img
                 class="d-flex flex-row mt-1"
@@ -384,6 +384,10 @@ export default {
   },
 
   methods: {
+    allProduct() {
+      this.product2 = this.products;
+      this.cateName = "ทั้งหมดทั้งมวล";
+    },
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
@@ -539,7 +543,7 @@ export default {
       this.idForEditOrder = this.orderOnDatabase[i]._id;
       setTimeout(this.totalPrice, 200);
       this.holdDl = false;
-      console.log(this.orderOnDatabase[i]);
+      //console.log(this.orderOnDatabase[i]);
     },
     deleteOrderOnDatabase(i) {
       this.$axios.$delete("/order/" + this.orderOnDatabase[i]._id).then(() => {

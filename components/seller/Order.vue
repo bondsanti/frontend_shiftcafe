@@ -74,7 +74,7 @@
             </v-card-title>
             <v-data-table
               :headers="headers"
-              :items="historyOrder"
+              :items="orderTableData"
               :search="search"
               :items-per-page="15"
               :footer-props="{
@@ -87,19 +87,21 @@
               :sort-desc="[true, false]"
               class="mb-n5"
             >
-              <template v-slot:[`item.datetime`]="{ item }">
-                <span>{{ formatDate(item.datetime) }}</span>
-              </template>
               <template v-slot:[`item.status`]="{ item }">
                 <v-chip :color="getColor(item.status)" dark small>
-                  {{ getTxt(item.status) }}
+                  {{ item.status }}
                 </v-chip>
               </template>
               <template v-slot:[`item.total_price`]="{ item }">
                 <span class="">{{ formatPrice(item.total_price) }}</span>
               </template>
               <template v-slot:[`item.actions`]="{ item }">
-                <v-btn class="mr2" color="warning" @click="Detail(item)" small>
+                <v-btn
+                  class="mr2"
+                  color="warning"
+                  @click="Detail(item.actions)"
+                  small
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-eye-settings
                   </v-icon>
@@ -139,6 +141,19 @@ export default {
       //historyOrder: []
     };
   },
+  computed: {
+    orderTableData() {
+      return this.historyOrder.map(item => {
+        return {
+          datetime: this.formatDate(item.datetime),
+          bill_name: item.bill_name,
+          status: item.status === 0 ? "รอชำระเงิน" : "ชำระเงินแล้ว",
+          total_price: item.total_price,
+          actions: item
+        };
+      });
+    }
+  },
   methods: {
     formatPrice(total_price) {
       const value = parseInt(total_price);
@@ -146,21 +161,15 @@ export default {
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     getColor(status) {
-      if (status === 0) return "#757575";
+      if (status === "รอชำระเงิน") return "#757575";
       else return "green";
     },
-    getTxt(status) {
-      if (status === 0) return "รอชำระเงิน";
-      else return "ชำระเงินแล้ว";
-    },
+
     Detail(item) {
       this.from = item;
       this.itemBy = item;
-      // console.log("aa" + JSON.stringify(this.itemBy));
+      //console.log("aa" + JSON.stringify(this.itemBy));
 
-      for (let i in this.itemBy.list_product) {
-        //console.log(this.itemBy.list_product[i].name);
-      }
       this.dialog = true;
     },
 
@@ -175,15 +184,6 @@ export default {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
       return this.$moment(strdate).format("D MMMM YYYY H:mm");
-    }
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
     }
   },
 

@@ -51,7 +51,7 @@
             </v-card-title>
             <v-data-table
               :headers="headers"
-              :items="historyInvoice"
+              :items="invoiceTableData"
               :search="search"
               :items-per-page="15"
               :footer-props="{
@@ -64,12 +64,9 @@
               :sort-desc="[true, false]"
               class="mb-n5"
             >
-              <template v-slot:[`item.datetime`]="{ item }">
-                <span>{{ formatDate3(item.datetime) }}</span>
-              </template>
               <template v-slot:[`item.type_payment`]="{ item }">
                 <v-chip :color="getColor(item.type_payment)" dark small>
-                  {{ getTxt(item.type_payment) }}
+                  {{ item.type_payment }}
                 </v-chip>
               </template>
               <template v-slot:[`item.receive_money`]="{ item }">
@@ -82,7 +79,12 @@
                 <span class="">{{ formatPrice(item.withdraw_money) }} ฿</span>
               </template>
               <template v-slot:[`item.actions`]="{ item }">
-                <v-btn class="mr2" color="warning" @click="Detail(item)" small>
+                <v-btn
+                  class="mr2"
+                  color="warning"
+                  @click="Detail(item.actions)"
+                  small
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-eye-settings
                   </v-icon>
@@ -98,7 +100,6 @@
 </template>
 
 <script>
-import { monthNamesThai } from "@/instant";
 export default {
   data() {
     return {
@@ -121,23 +122,24 @@ export default {
         { text: "หมายเหตุ", value: "actions", sortable: false }
       ],
       detailArr: [],
-      order_id: "",
-      monthNamesThai: [
-        "มกราคม",
-        "กุมภาพันธ์",
-        "มีนาคม",
-        "เมษายน",
-        "พฤษภาคม",
-        "มิถุนายน",
-        "กรกฎาคม",
-        "สิงหาคม",
-        "กันยายน",
-        "ตุลาคม",
-        "พฤษจิกายน",
-        "ธันวาคม"
-      ]
-      //historyOrder: []
+      order_id: ""
     };
+  },
+  computed: {
+    invoiceTableData() {
+      return this.historyInvoice.map(item => {
+        return {
+          datetime: this.formatDate(item.datetime),
+          invoice: item.invoice,
+          type_payment:
+            item.type_payment === "cash" ? "เงินสด" : "โอนผ่านธนาคาร",
+          net_price: item.net_price,
+          receive_money: item.receive_money,
+          withdraw_money: item.withdraw_money,
+          actions: item
+        };
+      });
+    }
   },
   methods: {
     formatPrice(total_price) {
@@ -146,15 +148,13 @@ export default {
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     getColor(status) {
-      if (status === "cash") return "teal darken-1";
+      if (status === "เงินสด") return "teal darken-1";
       else return "indigo darken-1";
     },
-    getTxt(status) {
-      if (status === "cash") return "เงินสด";
-      else return "โอนผ่านธนาคาร";
-    },
+
     Detail(item) {
-      this.order_id = item.ref_order_id._id;
+      //console.log(item);
+      this.order_id = item.ref_order_id !== null ? item.ref_order_id._id : "";
       this.itemBy = item;
       if (item.type_payment === "transfer") {
         this.detailArr = [
@@ -164,7 +164,7 @@ export default {
           },
           {
             name: "พนักงานที่รับเงิน",
-            value: item.ref_emp_id.username
+            value: item.ref_emp_id.fname + " " + item.ref_emp_id.lname
           },
           {
             name: "ชื่อลูกค้า",
@@ -223,7 +223,7 @@ export default {
           },
           {
             name: "พนักงานที่รับเงิน",
-            value: item.ref_emp_id.username
+            value: item.ref_emp_id.fname + " " + item.ref_emp_id.lname
           },
           {
             name: "ชื่อลูกค้า",
@@ -279,11 +279,10 @@ export default {
     close() {
       this.dialog = false;
     },
-    formatDate3(date) {
-      const today = new Date(date);
-      return `${today.getDate()} - ${
-        monthNamesThai[today.getMonth()]
-      } - ${today.getFullYear() + 543} `;
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY H:mm");
     },
     async printInvoice() {
       const order = await this.$axios.$get("/order/" + this.order_id);
@@ -312,12 +311,20 @@ export default {
         "<tr><th align='left'>เบอร์มือถือ : 0917961816</th></tr>"
       );
       WinPrint.document.write(
+        `<tr><th align='left'>พนักงานรับเงิน : ${this.itemBy.ref_emp_id.fname} ${this.itemBy.ref_emp_id.fname}</th></tr>`
+      );
+      if (this.itemBy.ref_cus_id.fname !== "guest") {
+        WinPrint.document.write(
+          `<tr><th align='left'>ลูกค้า : คุณ ${this.itemBy.ref_cus_id.fname} ${this.itemBy.ref_cus_id.lname}</th></tr>`
+        );
+      }
+      WinPrint.document.write(
         `<tr><th align='center'  >ใบเสร็จรับเงินเลขที่ : ${this.itemBy.invoice}</th></tr>`
       );
       WinPrint.document.write(
-        `<tr><th align='center'>วันที่ ${today.getDate()} - ${
-          this.monthNamesThai[today.getMonth()]
-        } - ${today.getFullYear() + 543}</th></tr>`
+        `<tr><th align='center'>วันที่ ${this.formatDate(
+          this.itemBy.datetime
+        )}</th></tr>`
       );
       WinPrint.document.write("</table>");
       //WinPrint.document.write("<img src='" + __dirname + "25.png'>");
@@ -388,27 +395,6 @@ export default {
       WinPrint.document.close();
       WinPrint.focus();
       setTimeout(WinPrint.print(), 3000);
-    }
-  },
-  //   async asyncData(context) {
-  //     const historyOrder = await context.$axios.$get("/order");
-
-  //     console.log(historyOrder);
-  //     return { historyOrder };
-  //   },
-  filters: {
-    moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY H:mm");
-    }
-  },
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
     }
   },
 

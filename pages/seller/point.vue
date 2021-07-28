@@ -11,7 +11,7 @@ import pointmanage from "@/components/manage/pointmanage.vue";
 export default {
   layout: "layoutCashier",
   head: {
-    title: "Point"
+    title: "พอยท์"
   },
   middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   async asyncData(context) {

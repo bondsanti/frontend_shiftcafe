@@ -1,11 +1,17 @@
 <template>
   <div class="">
     <div class="text-center mb-5">
-      <v-img height="100%" src="platinum.png">
+      <v-img
+        height="100%"
+        :src="`${$nuxt.context.env.config.IMG_URL}${loadData.ref_level_id.img}`"
+      >
         <v-row align="end">
           <v-col align-self="start" class="pa-6" cols="3">
             <v-avatar class="profile" size="100">
-              <v-img src="https://cdn.vuetifyjs.com/images/john.jpg"></v-img>
+              <v-img
+                src="profile-member.png"
+                style="border: 2px solid #ffffff"
+              ></v-img>
             </v-avatar>
           </v-col>
           <v-col align-self="start" class="pa-5 mt-10 " cols="9">
@@ -16,9 +22,6 @@
         </v-row>
       </v-img>
 
-      <!--<v-avatar size="180" style="border: 4px solid #ffffff">
-        <img :src="account.avatar_img" />
-      </v-avatar>-->
       <v-progress-linear
         v-model="knowledge"
         height="15"
@@ -93,6 +96,7 @@ export default {
   //components: { Footer },
   layout: "layoutMember",
   props: ["loadData"],
+  props: ["storyBuy"],
   data() {
     return {
       //loadData: [],
@@ -117,7 +121,7 @@ export default {
         }
       ],
       account: {
-        avatar_img: "https://cdn.vuetifyjs.com/images/john.jpg"
+        avatar_img: "logo2.png"
       }
     };
   },

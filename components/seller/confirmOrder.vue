@@ -338,7 +338,6 @@
   </div>
 </template>
 <script>
-import moment from "moment";
 import Calculator from "@/components/seller/Calculator.vue";
 export default {
   components: {
@@ -387,8 +386,7 @@ export default {
     coupon: 0,
     checkout: false,
     bank_id: null,
-    tax: 0,
-    invoice: null
+    tax: 0
   }),
   methods: {
     closeDialog() {
@@ -408,7 +406,7 @@ export default {
     },
     async addCus() {
       this.$refs.form.validate();
-      console.log(this.cus);
+      //console.log(this.cus);
       this.dialog2 = true;
       const res = await this.$axios.post("/customer", this.cus);
       if (res.status === 200) {
@@ -465,9 +463,8 @@ export default {
         this.$axios.post("/payment", newPayment).then(pay => {
           //console.log(pay);
           if (pay.status === 200) {
-            this.invoice = pay.data.invoice;
             if (!money.noBill) {
-              this.print(money);
+              this.print(money, pay.data.data);
             }
             this.$emit("closeDialog");
             this.$emit("clearOrder");
@@ -510,7 +507,7 @@ export default {
           if (pay.status === 200) {
             this.invoice = pay.data.invoice;
             if (!money.noBill) {
-              this.print(money);
+              this.print(money, pay.data.data);
             }
             this.$emit("closeDialog");
             this.$emit("clearOrder");
@@ -601,8 +598,9 @@ export default {
         this.$emit("closeDialog");
       }
     },
-    print(money) {
-      //console.log(__filename);
+    print(money, pay) {
+      const cusName = this.customers.filter(cus => cus._id === this.cusId);
+      //console.log(cusName);
       var WinPrint = window.open(
         "",
         "",
@@ -627,11 +625,19 @@ export default {
         "<tr><th align='left'>เบอร์มือถือ : 0917961816</th></tr>"
       );
       WinPrint.document.write(
-        `<tr><th align='center' >ใบเสร็จรับเงินเลทที่ : ${this.invoice}</th></tr>`
+        `<tr><th align='left'>พนักงานรับเงิน : ${this.$store.getters["displayName"]}</th></tr>`
+      );
+      if (cusName[0].fname !== "guest") {
+        WinPrint.document.write(
+          `<tr><th align='left'>ลูกค้า : คุณ ${cusName[0].fname} ${cusName[0].lname}</th></tr>`
+        );
+      }
+      WinPrint.document.write(
+        `<tr><th align='center' >ใบเสร็จรับเงินเลขที่ : ${pay.invoice}</th></tr>`
       );
       WinPrint.document.write(
         `<tr><th align='center' >วันที่ ${this.formatDate(
-          Date.now()
+          pay.datetime
         )}</th></tr>`
       );
       WinPrint.document.write("</table>");
@@ -708,8 +714,9 @@ export default {
       //WinPrint.close();
     },
     formatDate(date) {
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY H:mm");
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY H:mm");
     }
   },
   created() {

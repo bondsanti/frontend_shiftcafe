@@ -7,7 +7,7 @@ import Invoice from "@/components/seller/Invoice.vue";
 export default {
   layout: "layoutCashier",
   head: {
-    title: "Invoice"
+    title: "ใบเสร็จรับเงิน"
   },
   middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   async asyncData(context) {

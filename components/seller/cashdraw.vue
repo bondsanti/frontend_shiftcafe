@@ -147,7 +147,7 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
-        :items="loadData"
+        :items="cashTableData"
         :search="search"
         :items-per-page="15"
         :footer-props="{
@@ -169,6 +169,7 @@
                 >
                 <v-btn
                   color="primary"
+                  :disabled="$store.getters['position'] === 'cashier'"
                   @click="
                     deleteItemConfirm();
                     showAlert();
@@ -194,7 +195,7 @@
             rounded-lx
             class="mr-2"
             color="error"
-            disabled
+            :disabled="$store.getters['position'] === 'cashier'"
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">
@@ -207,10 +208,6 @@
           <v-chip :color="getColor(item.type)" dark small>
             {{ item.type }}
           </v-chip>
-        </template>
-
-        <template v-slot:[`item.datetime`]="{ item }">
-          <span>{{ formatDate(item.datetime) }}</span>
         </template>
         <template v-slot:[`item.total_money`]="{ item }">
           <span class="">{{ formatPrice(item.total_money) }}</span>
@@ -259,13 +256,26 @@ export default {
       headers: [
         { text: "ลำดับ", sortable: false, value: "no" },
         { text: "วันที่", align: "start", sortable: false, value: "datetime" },
-        { text: "ผู้ทำการบันทึก", value: "ref_emp_id.fname" },
+        { text: "ผู้ทำการบันทึก", value: "ref_emp_id" },
         { text: "ประเภท", value: "type" },
         { text: "จำนวนเงิน", value: "total_money" },
         { text: "หมายเหตุ", value: "remark" },
         { text: "แก้ไข", value: "actions" }
       ]
     };
+  },
+  computed: {
+    cashTableData() {
+      return this.loadData.map(item => {
+        return {
+          datetime: this.formatDate(item.datetime),
+          ref_emp_id: `${item.ref_emp_id.fname} ${item.ref_emp_id.lname}`,
+          type: item.type,
+          total_money: item.total_money,
+          remark: item.remark
+        };
+      });
+    }
   },
 
   created() {

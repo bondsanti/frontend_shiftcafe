@@ -130,9 +130,7 @@
             {{ item.status }}
           </v-chip>
         </template>
-        <template v-slot:[`item.datetime`]="{ item }">
-          <span>{{ formatDate(item.datetime) }}</span>
-        </template>
+
         <template v-slot:no-data>
           <v-btn color="primary" @click="reloadPage">
             Reset
@@ -181,17 +179,13 @@ export default {
           ref_emp_id: `${item.ref_emp_id.fname} ${item.ref_emp_id.lname}`,
           point: item.point,
           status: item.status === "plus" ? "เพิ่ม" : "ลบ",
-          datetime: item.datetime
+          datetime: this.formatDate(item.datetime)
         };
       });
     }
   },
 
   methods: {
-    getTxt(status) {
-      if (status === "plus") return "เพิ่ม";
-      else return "ลบ";
-    },
     getColorstatus(status) {
       if (status === "เพิ่ม") return "green";
       else return "red";

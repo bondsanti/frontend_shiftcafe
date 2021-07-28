@@ -11,7 +11,7 @@ import register from "@/components/manage/customer.vue";
 export default {
   layout: "layoutCashier",
   head: {
-    title: "Register"
+    title: "ข้อมูลลูกค้า"
   },
   middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   async asyncData(context) {

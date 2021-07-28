@@ -74,7 +74,13 @@
               :headers="headers"
               :items="historyOrder"
               :search="search"
-              :items-per-page="10"
+              :items-per-page="15"
+              :footer-props="{
+                'items-per-page-options': [10, 20, 30, 40, 50, -1],
+                prevIcon: 'mdi-chevron-left',
+                nextIcon: 'mdi-chevron-right',
+                'items-per-page-text': 'ข้อมูลหน้าต่อไป'
+              }"
               :sort-by="['datetime']"
               :sort-desc="[true, false]"
               class="mb-n5"
@@ -128,7 +134,7 @@ export default {
         { text: "ชื่อบิล", value: "bill_name" },
         { text: "สถานะ", value: "status" },
         { text: "ยอดสั่งซื้อ", value: "total_price" },
-        { text: "Actions", value: "actions", sortable: false }
+        { text: "หมายเหตุ", value: "actions", sortable: false }
       ]
       //historyOrder: []
     };

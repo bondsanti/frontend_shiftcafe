@@ -1,7 +1,7 @@
 <template>
   <div class="ma-3">
     <!-- 1 -->
-    <v-dialog v-model="dialogView" max-width="500px">
+    <v-dialog v-model="dialogView" max-width="400px">
       <v-card>
         <v-form>
           <v-card-title>
@@ -15,10 +15,10 @@
           <v-card-text>
             <v-row v-for="(de, i) in detailArr" :key="i">
               <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center">
-                <h4>{{ de.name }}</h4>
+                <h4 class="text-left">{{ de.name }}</h4>
               </v-col>
               <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center">
-                <h4>{{ de.value }}</h4>
+                <h4 class="text-center">{{ de.value }}</h4>
               </v-col>
             </v-row>
           </v-card-text>
@@ -57,7 +57,13 @@
         :items="customer"
         :search="search"
         :items-per-page="15"
-        :footer-props="{ 'items-per-page-options': [15, 20, 30, 40, 50, -1] }"
+        :footer-props="{
+          'items-per-page-options': [15, 20, 30, 40, 50, -1],
+
+          prevIcon: 'mdi-chevron-left',
+          nextIcon: 'mdi-chevron-right',
+          'items-per-page-text': 'ข้อมูลหน้าต่อไป'
+        }"
       >
         <template v-slot:[`item.img`]="{}">
           <img
@@ -120,6 +126,7 @@
                           placeholder="วันเกิด"
                           :rules="requiredRules"
                           v-model="customerItme.birthday"
+                          
                           valueType="format"
                         ></date-picker>
                       </v-col>
@@ -239,7 +246,7 @@
           <!-- ***************************************add ********************************************************************************************************-->
 
           <!--******************************* edi ****************************************************************************************************************-->
-          <v-dialog v-model="dialog" max-width="700px">
+          <v-dialog v-model="dialog" max-width="750px">
             <v-card>
               <v-card-title>
                 <span class="text-h5">
@@ -275,7 +282,7 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="4">
                         <v-text-field
                           v-model="customerItme.lname"
                           maxlength="25"
@@ -289,7 +296,6 @@
 
                       <v-col cols="12" sm="6">
                         <date-picker
-                          class="my-datepicker"
                           placeholder="วันเกิด"
                           :rules="requiredRules"
                           :max="
@@ -509,9 +515,11 @@
           </v-btn>
         </template>
         <template v-slot:[`item.view`]="{ item }">
-          <v-btn class="mr1" color="primary" @click="Detail(item)" small>
-            <v-icon aria-hidden="false" class="mx-1"> mdi-eye </v-icon
-            >ดูรายละเอียด
+          <v-btn class="mr1" small color="teal" @click="Detail(item)">
+            <div class="d-block  white--text">
+              <v-icon aria-hidden="false" class="mx-1"> mdi-eye </v-icon
+              >ดูรายละเอียด
+            </div>
           </v-btn>
         </template>
       </v-data-table>
@@ -523,6 +531,7 @@
 import moment from "moment";
 import "moment/locale/th";
 import DatePicker from "vue2-datepicker";
+import "@/assets/css/datepicker.css";
 import "vue2-datepicker/index.css";
 export default {
   layout: "layoutCashier",
@@ -846,7 +855,7 @@ export default {
 </script>
 
 <style>
-.mx-icon-left:before,
+/* .mx-icon-left:before,
 .mx-icon-right:before,
 .mx-icon-double-left:before,
 .mx-icon-double-right:before,
@@ -1314,5 +1323,5 @@ export default {
   cursor: not-allowed;
   color: #ccc;
   background-color: #f3f3f3;
-}
+} */
 </style>

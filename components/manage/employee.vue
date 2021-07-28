@@ -1,5 +1,30 @@
 <template>
   <div class="ma-3">
+    <!-- view -->
+    <v-dialog v-model="dialogView" max-width="400px">
+      <v-card>
+        <v-form>
+          <v-card-title>
+            <span class="text-h">
+              <v-icon left> mdi-account-search</v-icon> ข้อมูลพนักงาน
+            </span>
+          </v-card-title>
+          <v-divider class="mb-3"></v-divider>
+          <v-card-text>
+            <v-row v-for="(de, i) in detailArr" :key="i">
+              <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center">
+                <h4 class="text-left text-none">{{ de.name }}</h4>
+              </v-col>
+              <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center">
+                <h4 class="text-center text-none">{{ de.value }}</h4>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-form>
+      </v-card>
+    </v-dialog>
+    <!-- view -->
+
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
         <!-- ********************************************************************************************************************************************************************** -->
@@ -33,7 +58,12 @@
         :items="employee"
         :search="search"
         :items-per-page="15"
-        :footer-props="{ 'items-per-page-options': [15, 20, 30, 40, 50, -1] }"
+        :footer-props="{
+          'items-per-page-options': [15, 20, 30, 40, 50, -1],
+           prevIcon: 'mdi-chevron-left',
+          nextIcon: 'mdi-chevron-right',
+          'items-per-page-text': 'ข้อมูลหน้าต่อไป'
+        }"
       >
         <template v-slot:[`item.img`]="{}">
           <img
@@ -45,253 +75,8 @@
         </template>
         <template v-slot:top>
           <!-- ********************************************************************************************************************************************************************** -->
-          <!-- edi------------------------------------------------------------------ -->
-          <v-dialog v-model="dialog" max-width="850px">
-            <v-card>
-              <v-card-title>
-                <span class="text-h5"
-                  ><v-icon left>mdi-card-account-details-outline </v-icon>
-                  แก้ไขข้อมูลพนักงาน</span
-                >
-              </v-card-title>
-
-              <v-card-text>
-                <v-form v-model="valid" ref="form">
-                  <div>
-                    <v-row>
-                      <v-col cols="12">
-                        <v-select
-                          label="คำนำหน้า"
-                          prepend-icon="mdi-account"
-                          outlined
-                          color="#1D1D1D"
-                          :items="pnamesec"
-                          v-model="employeeitme.pname"
-                          :rules="rules"
-                          :readonly="editedIndex === 0"
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="12">
-                        <v-text-field
-                          v-model="employeeitme.username"
-                          :rules="rules"
-                          :readonly="editedIndex === 0"
-                          label="username"
-                          type="username"
-                          prepend-icon="mdi-account"
-                          outlined
-                          required
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="employeeitme.fname"
-                          :rules="rules"
-                          :readonly="editedIndex === 0"
-                          prepend-icon="mdi-rename-box"
-                          label="ชื่อ"
-                          outlined
-                          required
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="employeeitme.lname"
-                          :rules="rules"
-                          :readonly="editedIndex === 0"
-                          label="นามสกุล"
-                          prepend-icon="mdi-rename-box"
-                          outlined
-                          required
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col>
-
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="employeeitme.birthday"
-                          :rules="rules"
-                          :readonly="editedIndex === 0"
-                          prepend-icon="mdi-calendar"
-                          type="date"
-                          label="วันเกิด"
-                          outlined
-                          required
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="employeeitme.idcard"
-                          :rules="numberRulesidcard"
-                          :readonly="editedIndex === 0"
-                          prepend-icon="mdi-card-account-details-outline "
-                          maxlength="13"
-                          minlength="13"
-                          type="number"
-                          label="เลขบัตรประจำตัวประชาชน"
-                          outlined
-                          required
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="employeeitme.tel"
-                          maxlength="10"
-                          minlength="10"
-                          :readonly="editedIndex === 0"
-                          :rules="numberRules"
-                          prepend-icon="mdi-phone"
-                          label="เบอร์โทรติดต่อ"
-                          outlined
-                          type="number"
-                          required
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="employeeitme.email"
-                          label="อีเมล"
-                          prepend-icon="mdi-email"
-                          :rules="emailRules"
-                          :readonly="editedIndex === 0"
-                          outlined
-                          required
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-textarea
-                          v-model="employeeitme.address"
-                          :rules="rules"
-                          :readonly="editedIndex === 0"
-                          prepend-icon="mdi-map-marker"
-                          label="ที่อยู่"
-                          outlined
-                          required
-                          rows="1"
-                          color="#1D1D1D"
-                        ></v-textarea>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-select
-                          label="ตำแหน่งงาน"
-                          prepend-icon="mdi-briefcase"
-                          outlined
-                          color="#1D1D1D"
-                          item-text="name"
-                          item-value="_id"
-                          :items="roleitme.flat()"
-                          v-model="employeeitme.ref_id_role"
-                          :readonly="editedIndex === 0"
-                          :rules="rules"
-                        ></v-select>
-                      </v-col>
-                    </v-row>
-                  </div>
-                </v-form>
-              </v-card-text>
-
-              <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
-                  <v-icon aria-hidden="false" class="mx-2">
-                    mdi-close-box
-                  </v-icon>
-                  ยกเลิก
-                </v-btn>
-                <v-spacer></v-spacer>
-                <v-btn
-                  v-if="editedIndex !== 0"
-                  class="ma-1"
-                  color="info"
-                  :disabled="!valid"
-                  @click="
-                    save();
-                    showAlert();
-                  "
-                >
-                  <v-icon aria-hidden="false" class="mx-2">
-                    mdi-content-save
-                  </v-icon>
-                  บันทึกข้อมูลพนักงาน
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <!-- -----------------------------------------edi-->
-
-          <!-- ********************************************************************************************************************************************************************** -->
-
-          <!-- password----------------------------------- -->
-          <v-dialog v-model="dialogpass" max-width="500px">
-            <v-card>
-              <v-card-title>
-                <span class="text-h5"
-                  ><v-icon left> mdi-card-account-details-outline </v-icon>
-                  เปลียนรหัสผ่าน</span
-                >
-              </v-card-title>
-
-              <v-card-text>
-                <v-form v-model="valid" ref="form">
-                  <div>
-                    <v-row>
-                      <v-col cols="12"> </v-col>
-
-                      <v-col cols="12" sm="12">
-                        <v-text-field
-                          v-model="employeeitme.password"
-                          :rules="requiredRules"
-                          label="password"
-                          type="password"
-                          outlined
-                          required
-                          color="#1D1D1D"
-                          prepend-icon="mdi-lock"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </div>
-                </v-form>
-              </v-card-text>
-
-              <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="closePass">
-                  <v-icon aria-hidden="false" class="mx-2">
-                    mdi-close-box
-                  </v-icon>
-                  ยกเลิก
-                </v-btn>
-                <v-spacer></v-spacer>
-                <v-btn
-                  class="ma-1"
-                  color="info"
-                  :disabled="!valid"
-                  @click="
-                    save();
-                    showAlert();
-                  "
-                >
-                  <v-icon aria-hidden="false" class="mx-2">
-                    mdi-content-save
-                  </v-icon>
-                  บันทึกข้อมูลพนักงาน
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-
-          <!--  password---------------------------------------------->
-
-          <!-- ********************************************************************************************************************************************************************** -->
-
           <!-- add------------------dialogadd--------------------------------- -->
-          <v-dialog v-model="dialogadd" max-width="900px">
+          <v-dialog v-model="dialogadd" max-width="650px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
@@ -307,7 +92,7 @@
                       <v-col cols="12">
                         <v-select
                           label="คำนำหน้า"
-                          prepend-icon="mdi-account"
+                          append-icon="mdi-account"
                           outlined
                           color="#1D1D1D"
                           :items="pnamesec"
@@ -315,13 +100,13 @@
                           :rules="requiredRules"
                         ></v-select>
                       </v-col>
-                      <v-col cols="12" sm="8">
+                      <v-col cols="12" sm="4">
                         <v-text-field
                           v-model="employeeitmeadd.username"
                           :rules="requiredRules"
                           label="username"
                           type="username"
-                          prepend-icon="mdi-account"
+                          append-icon="mdi-account"
                           outlined
                           required
                           color="#1D1D1D"
@@ -333,7 +118,7 @@
                         sm="2"
                         class="justify-center align-center"
                       >
-                        <v-btn small fab @click="check">เช๊ค</v-btn>
+                        <v-btn color="warning" @click="check">ตรวจสอบ</v-btn>
                         <div class="mt-2 ml-4" v-if="usernametrue">
                           <span class="green--text ">ใช้ได้</span>
                         </div>
@@ -351,14 +136,14 @@
                           outlined
                           required
                           color="#1D1D1D"
-                          prepend-icon="mdi-lock"
+                          append-icon="mdi-lock"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="employeeitmeadd.fname"
                           :rules="requiredRules"
-                          prepend-icon="mdi-rename-box"
+                          append-icon="mdi-rename-box"
                           label="ชื่อ"
                           outlined
                           required
@@ -370,7 +155,7 @@
                           v-model="employeeitmeadd.lname"
                           :rules="requiredRules"
                           label="นามสกุล"
-                          prepend-icon="mdi-rename-box"
+                          append-icon="mdi-rename-box"
                           outlined
                           required
                           color="#1D1D1D"
@@ -378,22 +163,28 @@
                       </v-col>
 
                       <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="employeeitmeadd.birthday"
+                        <date-picker
+                          class="my-datepicker"
+                          placeholder="วันเกิด"
                           :rules="requiredRules"
-                          prepend-icon="mdi-calendar"
-                          type="date"
-                          label="วันเกิด"
-                          outlined
-                          required
-                          color="#1D1D1D"
-                        ></v-text-field>
+                          :max="
+                            new Date(
+                              Date.now() -
+                                new Date().getTimezoneOffset() * 60000
+                            )
+                              .toISOString()
+                              .substr(0, 10)
+                          "
+                          min="1950-01-01"
+                          v-model="employeeitmeadd.birthday"
+                          valueType="format"
+                        ></date-picker>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="employeeitmeadd.idcard"
                           :rules="numberRulesidcard"
-                          prepend-icon="mdi-card-account-details-outline "
+                          append-icon="mdi-card-account-details-outline "
                           maxlength="13"
                           minlength="13"
                           type="number"
@@ -409,7 +200,7 @@
                           maxlength="10"
                           minlength="10"
                           :rules="numberRules"
-                          prepend-icon="mdi-phone"
+                          append-icon="mdi-phone"
                           label="เบอร์โทรติดต่อ"
                           outlined
                           type="number"
@@ -417,33 +208,33 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="4">
+                      <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="employeeitmeadd.email"
                           label="อีเมล"
-                          prepend-icon="mdi-email"
+                          append-icon="mdi-email"
                           :rules="emailRules"
                           outlined
                           required
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="4">
+                      <v-col cols="12" sm="6">
                         <v-textarea
                           rows="1"
                           v-model="employeeitmeadd.address"
                           :rules="requiredRules"
-                          prepend-icon="mdi-map-marker"
+                          append-icon="mdi-map-marker"
                           label="ที่อยู่"
                           outlined
                           required
                           color="#1D1D1D"
                         ></v-textarea>
                       </v-col>
-                      <v-col cols="12" sm="4">
+                      <v-col cols="12" sm="6">
                         <v-select
                           label="ตำแหน่งงาน"
-                          prepend-icon="mdi-briefcase"
+                          append-icon="mdi-briefcase"
                           outlined
                           color="#1D1D1D"
                           item-text="name"
@@ -485,8 +276,185 @@
           </v-dialog>
           <!-- --------------------------------------------------add -->
           <!-- ********************************************************************************************************************************************************************** -->
+
+          <!-- edi------------------------------------------------------------------ -->
+          <v-dialog v-model="dialog" max-width="600px">
+            <v-card>
+              <v-card-title>
+                <span class="text-h5"
+                  ><v-icon left>mdi-card-account-details-outline </v-icon>
+                  แก้ไขข้อมูลพนักงาน</span
+                >
+              </v-card-title>
+
+              <v-card-text>
+                <v-form v-model="valid" ref="form">
+                  <div>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-select
+                          label="คำนำหน้า"
+                         append-icon="mdi-account"
+                          outlined
+                          color="#1D1D1D"
+                          :items="pnamesec"
+                          v-model="employeeitme.pname"
+                          :rules="rules"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" sm="12">
+                        <v-text-field
+                          v-model="employeeitme.username"
+                          :rules="rules"
+                          disabled
+                          label="username"
+                          type="username"
+                          append-icon="mdi-account"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="employeeitme.fname"
+                          :rules="rules"
+                          append-icon="mdi-rename-box"
+                          label="ชื่อ"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="employeeitme.lname"
+                          :rules="rules"
+                          label="นามสกุล"
+                          append-icon="mdi-rename-box"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+
+                      <v-col cols="12" sm="6">
+                     <date-picker
+                         
+                          placeholder="วันเกิด"
+                          :rules="requiredRules"
+                          :max="
+                            new Date(
+                              Date.now() -
+                                new Date().getTimezoneOffset() * 60000
+                            )
+                              .toISOString()
+                              .substr(0, 10)
+                          "
+                          min="1950-01-01"
+                          v-model="employeeitme.birthday"
+                          valueType="format"
+                        ></date-picker>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="employeeitme.idcard"
+                          :rules="numberRulesidcard"
+                          append-icon="mdi-card-account-details-outline "
+                          maxlength="13"
+                          minlength="13"
+                          type="number"
+                          label="เลขบัตรประจำตัวประชาชน"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="employeeitme.tel"
+                          maxlength="10"
+                          minlength="10"
+                          :rules="numberRules"
+                          append-icon="mdi-phone"
+                          label="เบอร์โทรติดต่อ"
+                          outlined
+                          type="number"
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-text-field
+                          v-model="employeeitme.email"
+                          label="อีเมล"
+                          append-icon="mdi-email"
+                          :rules="emailRules"
+                          outlined
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-textarea
+                          v-model="employeeitme.address"
+                          :rules="rules"
+                          append-icon="mdi-map-marker"
+                          label="ที่อยู่"
+                          outlined
+                          required
+                          rows="1"
+                          color="#1D1D1D"
+                        ></v-textarea>
+                      </v-col>
+                      <v-col cols="12" sm="6">
+                        <v-select
+                          label="ตำแหน่งงาน"
+                          append-icon="mdi-briefcase"
+                          outlined
+                          color="#1D1D1D"
+                          item-text="name"
+                          item-value="_id"
+                          :items="roleitme.flat()"
+                          v-model="employeeitme.ref_id_role"
+                          :rules="rules"
+                        ></v-select>
+                      </v-col>
+                    </v-row>
+                  </div>
+                </v-form>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-btn class="ma-1" color="primary" dark @click="close">
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-close-box
+                  </v-icon>
+                  ยกเลิก
+                </v-btn>
+                <v-spacer></v-spacer>
+                <v-btn
+                  class="ma-1"
+                  color="info"
+                  :disabled="!valid"
+                  @click="
+                    save();
+                    showAlert();
+                  "
+                >
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-content-save
+                  </v-icon>
+                  บันทึกข้อมูลพนักงาน
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- -----------------------------------------edi-->
+
           <!-- password--------------------------------------------- -->
-          <v-dialog v-model="dialogpass" max-width="500px">
+          <v-dialog v-model="dialogpass" max-width="400px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
@@ -503,19 +471,24 @@
 
                       <v-col cols="12" sm="12">
                         <v-text-field
-                          v-model="employeeitme.password"
+                          v-model="employeeitmeadd.password"
                           :rules="requiredRules"
-                          label="password"
+                          label="PASSWORD"
                           type="password"
                           outlined
                           required
                           color="#1D1D1D"
-                          prepend-icon="mdi-lock"
+                           append-icon="mdi-lock"
                         ></v-text-field>
                       </v-col>
                     </v-row>
                   </div>
                 </v-form>
+              </v-card-text>
+              <v-card-text>
+                <v-alert outlined prominent border="left" type="warning">
+                  โปรดตวรจสอบให้ดีก่อนบันทึกข้อมูล
+                </v-alert>
               </v-card-text>
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="closePass">
@@ -537,7 +510,7 @@
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
                   </v-icon>
-                  บันทึกข้อมูลพนักงาน
+                  บันทึก
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -580,7 +553,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr1" small color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-1">
-              mdi-pencil-plus
+              mdi-pencil
             </v-icon>
             แก้ไข
           </v-btn>
@@ -611,7 +584,7 @@
         <!-- --------------------------------------------------btn edi pass -->
         <!-- btn-view--------------------------------------------------- -->
         <template v-slot:[`item.view`]="{ item }">
-          <v-btn class="mr1" small color="teal" @click="viewItem(item)">
+          <v-btn class="mr1" small color="teal" @click="Detail(item)">
             <div class="d-block  white--text">
               <v-icon aria-hidden="false">
                 mdi-eye
@@ -637,7 +610,7 @@
         </template>
         <template v-slot:[`item.username`]="{ item }">
           <v-icon class="ma-2 ml-2" color="primary">
-            mdi-identifier
+           mdi-identifier
           </v-icon>
           {{ item.username }}
         </template>
@@ -661,12 +634,20 @@
 
 <script>
 import moment from "moment";
+import "moment/locale/th";
+import DatePicker from "vue2-datepicker";
+import "@/assets/css/datepicker.css";
+import "vue2-datepicker/index.css";
 export default {
   data: () => ({
+    //
     dialog: false,
     dialogpass: false,
     dialogDelete: false,
     dialogadd: false,
+    dialogView: false,
+    detailArr: [],
+    //
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valid: true,
     search: "",
@@ -693,7 +674,7 @@ export default {
     editedIndex: -1,
     employeeitme: {
       _id: "",
-      username: "",
+      username: "null",
       pname: "",
       ref_id_role: "",
       idcard: " ",
@@ -706,7 +687,7 @@ export default {
     },
     employeeitmeadd: {
       _id: "",
-      username: "",
+      username: "null",
       pname: "",
       ref_id_role: "",
       idcard: " ",
@@ -744,11 +725,8 @@ export default {
     usernametrue: false,
     usernameErr: false
   }),
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
-    }
-  },
+  components: { DatePicker },
+  computed: {},
   filters: {
     moment: function(date) {
       // return moment(date).format('Do MMMM YYYY').add(543, 'years')
@@ -783,6 +761,12 @@ export default {
     });
   },
   methods: {
+    moment2(date) {
+      // moment.locale('th');
+      var strdate = moment("th").format("LLLL");
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("DD MMMM YYYY ");
+    },
     async check() {
       const cus = await this.$axios.$get(
         "/employee/" + this.employeeitmeadd.username
@@ -805,11 +789,6 @@ export default {
     },
     someFn(ev) {
       console.log(ev);
-    },
-    viewItem(item) {
-      this.editedIndex = 0;
-      this.employeeitme = Object.assign({}, item);
-      this.dialog = true;
     },
     editItemPass(item) {
       this.type = "edit";
@@ -856,28 +835,24 @@ export default {
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
       });
     },
     closePass() {
       this.dialogpass = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
       });
     },
     closeadd() {
       this.dialogadd = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
       });
     },
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
       });
     },
     improverole() {
@@ -894,7 +869,9 @@ export default {
       if (status === "cashier") return "green";
       else if (status === "manager") return "#F44336";
       else if (status === "checker") return "orange";
-      return "#03A9F4";
+      else if (status === "admin") return "#673AB7";
+      else if (status === "staff") return "#03A9F4";
+      return "primary";
     },
     getPnameColor(status) {
       if (status === "นาย") return "#03A9F4";
@@ -906,7 +883,49 @@ export default {
       if (status === "cashier") return "แคชเชียร์";
       else if (status === "manager") return "ผู้จัดการ";
       else if (status === "checker") return "ผู้ตรวจสอบ";
-      else return "พนักงาน";
+      else if (status === "admin") return "แอดมิน";
+      else if (status === "staff") return "พนักงาน";
+      else return "ผู้เยียมชม";
+    },
+    Detail(item) {
+      this.itemBy = item;
+      this.detailArr = [
+        {
+          name: "Username",
+          value: item.username
+        },
+        {
+          name: "ชื่อ-นามสกุล",
+          value: item.pname + "  " + item.fname + " " + item.lname
+        },
+        {
+          name: "ตำแหน่ง",
+          value: this.getTxt(item.ref_id_role.position)
+        },
+        {
+          name: "รหัสบัตรประชาชน",
+          value: item.idcard
+        },
+        {
+          name: "วันเกิด",
+          value: this.moment2(item.birthday)
+        },
+        {
+          name: "เบอร์มือถือ",
+          value: item.tel
+        },
+
+        {
+          name: "อีเมล์",
+          value: item.email
+        },
+        {
+          name: "ที่อยู่",
+          value: item.address
+        }
+      ];
+
+      this.dialogView = true;
     },
 
     save() {
@@ -919,7 +938,11 @@ export default {
       } else {
         this.loading = true;
         this.$axios
-          .$put("/employee/" + this.employeeitme._id,  this.employeeitme, this.improverole )
+          .$put(
+            "/employee/" + this.employeeitme._id,
+            this.employeeitme,
+            this.improverole
+          )
           .then(() => {
             this.$emit("refresh");
             this.closePass();

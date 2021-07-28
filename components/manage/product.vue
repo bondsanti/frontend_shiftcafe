@@ -45,7 +45,12 @@
         :items="product"
         :search="search"
         :items-per-page="20"
-        :footer-props="{ 'items-per-page-options': [20, 30, 40, 50, -1] }"
+        :footer-props="{
+          'items-per-page-options': [20, 20, 30, 40, 50, -1],
+           prevIcon: 'mdi-chevron-left',
+          nextIcon: 'mdi-chevron-right',
+          'items-per-page-text': 'ข้อมูลหน้าต่อไป'
+        }">
       >
         <template v-slot:[`item.img`]="{ item }">
           <v-img

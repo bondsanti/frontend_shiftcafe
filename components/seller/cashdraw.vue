@@ -149,9 +149,12 @@
         :headers="headers"
         :items="cashTableData"
         :search="search"
-        :items-per-page="15"
+         :items-per-page="15"
         :footer-props="{
-          'items-per-page-options': [15, 20, 30, 40, 50, -1]
+          'items-per-page-options': [15, 20, 30, 40, 50, -1],
+           prevIcon: 'mdi-chevron-left',
+          nextIcon: 'mdi-chevron-right',
+          'items-per-page-text': 'ข้อมูลหน้าต่อไป'
         }"
       >
         <template v-slot:top>
@@ -260,7 +263,7 @@ export default {
         { text: "ประเภท", value: "type" },
         { text: "จำนวนเงิน", value: "total_money" },
         { text: "หมายเหตุ", value: "remark" },
-        { text: "แก้ไข", value: "actions" }
+        { text: "หมายเหตุ", value: "actions" }
       ]
     };
   },

@@ -36,19 +36,21 @@
         </div>
       </v-card>
     </v-hover>
-    <v-dialog v-model="dialog" max-width="650">
-      <v-card>
+
+
+
+    <v-dialog v-model="dialog" max-width="550">
+      <v-card class="pa-6">
         <v-card-title class="text-h5">
           ตั้งค่าอัตราการจ่ายแต้ม
         </v-card-title>
-
-        <div fluid>
+        <div>
           <v-row>
             <v-col cols="4">
               <v-subheader>จำนวลเงิน</v-subheader>
             </v-col>
-            <v-col cols="8">
-              <v-text-field label="บาท" value="100.00" prefix="฿"  type ="number"></v-text-field>
+            <v-col cols="6">
+              <v-text-field label="บาท"  outlined value="100.00" prefix="฿"  type ="number"></v-text-field>
             </v-col>
           </v-row>
 
@@ -56,9 +58,11 @@
             <v-col cols="4">
               <v-subheader>จำนวลแต้ม</v-subheader>
             </v-col>
-            <v-col cols="8">
+            <v-col cols="6">
               <v-text-field
+              
                 label="แต้ม"
+                 outlined
                 value="5.00"
                 prefix="P"
                 type ="number"
@@ -69,7 +73,7 @@
         <v-card-actions>
         
 
-          <v-btn color="green darken-1" text @click="dialog = false">
+          <v-btn color="error darken-1" text @click="dialog = false">
             ยกเลิก
           </v-btn>
   <v-spacer></v-spacer>

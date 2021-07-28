@@ -729,7 +729,6 @@ export default {
   computed: {},
   filters: {
     moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
       var strdate = moment(date).add(543, "years");
       return moment(strdate).format("D/MM/YY");
     }

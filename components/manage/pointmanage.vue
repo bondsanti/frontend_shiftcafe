@@ -33,22 +33,27 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="pointTableData" :search="search" :items-per-page="10"
-          :footer-props="{
+      <v-data-table
+        :headers="headers"
+        :items="pointTableData"
+        :search="search"
+        :items-per-page="10"
+        :footer-props="{
           'items-per-page-options': [10, 20, 30, 40, 50, -1],
-           prevIcon: 'mdi-chevron-left',
+          prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
-        }">
+        }"
+      >
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="800px">
             <v-form v-model="valid" ref="form">
               <v-card>
                 <v-card-title>
-                  <span class="text-h5"
-                    ><v-icon left>mdi-card-account-details-outline </v-icon>
-                    จัดการพอยท์ เพิ่ม/ลด</span
-                  >
+                  <span class="text-h5">
+                    <v-icon left>mdi-card-account-details-outline </v-icon>
+                    จัดการพอยท์ เพิ่ม/ลด
+                  </span>
                 </v-card-title>
 
                 <v-card-text>
@@ -155,19 +160,41 @@ export default {
     dialogDelete: false,
     search: "",
     headers: [
-      { text: "ลำดับ", sortable: false, value: "No" },
+      {
+        text: "ลำดับ",
+        sortable: false,
+        value: "No"
+      },
       {
         text: "ชื่อลูกค้าที่ถูกจัดการ",
         align: "start",
         sortable: true,
         value: "ref_cus_id"
       },
-      { text: "ชื่อพนักงานที่จัดการ", sortable: false, value: "ref_emp_id" },
+      {
+        text: "ชื่อพนักงานที่จัดการ",
+        sortable: false,
+        value: "ref_emp_id"
+      },
 
-      { text: "แต้ม(P)", align: "start", sortable: false, value: "point" },
-      { text: "สถานะ", align: "start", sortable: false, value: "status" },
+      {
+        text: "แต้ม(P)",
+        align: "start",
+        sortable: false,
+        value: "point"
+      },
+      {
+        text: "สถานะ",
+        align: "start",
+        sortable: false,
+        value: "status"
+      },
 
-      { text: "วันทีเพิ่มลดแต้ม", sortable: false, value: "datetime" }
+      {
+        text: "วันทีเพิ่มลดแต้ม",
+        sortable: false,
+        value: "datetime"
+      }
       //   { text: "Actions", value: "actions", sortable: false }
     ],
     cusId: null,
@@ -181,7 +208,9 @@ export default {
     pointTableData() {
       return this.pointmanage.map(item => {
         return {
-          ref_cus_id: `${item.ref_cus_id.pname} ${item.ref_cus_id.fname} ${item.ref_cus_id.lname}`,
+          ref_cus_id: `${item.ref_cus_id ? item.ref_cus_id.pname : ""} ${
+            item.ref_cus_id ? item.ref_cus_id.fname : ""
+          } ${item.ref_cus_id ? item.ref_cus_id.lname : ""}`,
           ref_emp_id: `${item.ref_emp_id.fname} ${item.ref_emp_id.lname}`,
           point: item.point,
           status: item.status === "plus" ? "เพิ่ม" : "ลบ",

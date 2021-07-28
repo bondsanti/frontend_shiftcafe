@@ -4,7 +4,10 @@
       <sell :today="today" :month="month" :year="year" />
 
       <v-row>
-        <v-col cols="12" sm="12"><apexcharts /></v-col>
+        <v-col cols="12" sm="12">
+           <p class="mb-4">วันที่ {{ now }}</p>
+          <apexcharts  :chart-data="chartData" :animations="animations"  />
+          </v-col>
         <!-- <v-col cols="12" sm="6"><topsell /> </v-col>
           <v-col cols="12" sm="6"><datasell /></v-col> -->
       </v-row>
@@ -15,8 +18,6 @@
 </template>
 <script>
 import sell from "@/components/manage/dashboard/sell.vue";
-// import topsell from "@/components/manage/dashboard/topsell.vue";
-// import datasell from "@/components/manage/dashboard/datasell.vue";
 import apexcharts from "@/components/manage/dashboard/apexcharts.vue";
 export default {
   head: {
@@ -25,9 +26,16 @@ export default {
   middleware: ["auth", "check", "refresh"],
   components: {
     sell,
-    // topsell,
-    //  datasell,
     apexcharts
+  },
+data() {
+    return {
+      chartData: this.chartData,
+      loading: true,
+      errored: false,
+      animations: true,
+      now: new Date().toJSON().slice(0, 10), //.replace(/-/g,'/')
+    };
   },
   async asyncData(context) {
     const [today, month, year] = await Promise.all([
@@ -37,7 +45,23 @@ export default {
     ]);
     return { today, month, year };
   },
+  
 
-  methods: {}
+  methods: {},
+
+  mounted() {
+   this.$axios.get(
+        "https://campaign-admin.gewista.at/chart/12/2021-07-01T10:03:23/2021-07-10T10:03:2"
+      )
+      .then(response => {
+        this.chartData = response.data;
+      //  console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+        this.errored = true;
+      })
+      .finally(() => (this.loading = false));
+  }
 };
 </script>

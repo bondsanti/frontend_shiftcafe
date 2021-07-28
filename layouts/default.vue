@@ -1,27 +1,34 @@
 <template>
-  <v-app>
-    <Navbar />
+<v-app>
+    <Topbar />
+    <Sidebar />
     <v-main class="secondary">
-      <nuxt />
+        <nuxt />
     </v-main>
     <Footer />
-  </v-app>
+</v-app>
 </template>
+
 <script>
-import Navbar from "@/components/layout/Navbar.vue";
+import Topbar from "@/components/layout/Topbar.vue";
+import Sidebar from "@/components/layout/Sidebar.vue";
 import Footer from "@/components/layout/Footer.vue";
+
 export default {
-  components: {
-    Navbar,
-    Footer
-  }
+    components: {
+        Topbar,
+        Sidebar,
+        Footer
+    }
 };
 </script>
+
 <style>
 html {
-  font-family: "Sarabun", sans-serif;
+    font-family: "Sarabun", sans-serif;
 }
+
 #app {
-  font-family: "Sarabun", sans-serif;
+    font-family: "Sarabun", sans-serif;
 }
 </style>

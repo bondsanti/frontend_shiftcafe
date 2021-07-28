@@ -1,10 +1,14 @@
 export const state = () => ({
-  position: ""
+  position: "",
+  drawer: false
 });
 
 export const mutations = {
   setPosition(state, text) {
     state.position = text;
+  },
+  set_drawer(state, newVal) {
+    state.drawer = newVal
   }
 };
 

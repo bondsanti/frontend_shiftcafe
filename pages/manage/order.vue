@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Order from "@/components/manage/order.vue";
+import Order from "@/components/seller/Order.vue";;
 
 export default {
   head: {

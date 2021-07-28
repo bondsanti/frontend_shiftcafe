@@ -1,6 +1,6 @@
 <template>
   <div class="ma-3">
-     <!-- 1 -->
+    <!-- 1 -->
     <v-dialog v-model="dialogView" max-width="400px">
       <v-card>
         <v-form>
@@ -63,6 +63,7 @@
         }"
       >
         <template v-slot:top>
+          <!--------------------------------------------------- add -------------------------->
           <v-dialog v-model="dialog" max-width="700px">
             <v-card>
               <v-card-title>
@@ -122,12 +123,18 @@
                       <v-col cols="12" sm="6">
                         <date-picker
                           class="my-datepicker"
-                          :lang="lang"
                           placeholder="วันหมดอายุ"
                           :rules="rules"
+                          :max="
+                            new Date(
+                              Date.now() -
+                                new Date().getTimezoneOffset() * 60000
+                            )
+                              .toISOString()
+                              .substr(0, 10)
+                          "
+                          min="1950-01-01"
                           v-model="coupone.exp"
-                           type="datetime"
-                         
                           valueType="format"
                         ></date-picker>
                       </v-col>
@@ -137,7 +144,7 @@
                           label="ส่วนลดในคูปอง"
                           outlined
                           color="#1D1D1D"
-                          :items="dropdown_edit"
+                          :items="discount"
                           v-model="coupone.discount"
                           :rules="rules"
                         ></v-select>
@@ -184,8 +191,8 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-
-<!-- edit -->
+          <!--------------------------------------------------- add -------------------------->
+          <!--------------------------------------------------- edit -------------------------->
           <v-dialog v-model="dialogedit" max-width="700px">
             <v-card>
               <v-card-title>
@@ -245,11 +252,9 @@
                       <v-col cols="12" sm="6">
                         <date-picker
                           class="my-datepicker"
-                          :lang="lang"
                           placeholder="วันหมดอายุ"
                           :rules="rules"
                           v-model="coupone.exp"
-                           type="datetime"
                           valueType="format"
                         ></date-picker>
                       </v-col>
@@ -259,7 +264,7 @@
                           label="ส่วนลดในคูปอง"
                           outlined
                           color="#1D1D1D"
-                          :items="dropdown_edit"
+                          :items="discount"
                           v-model="coupone.discount"
                           :rules="rules"
                         ></v-select>
@@ -289,14 +294,19 @@
                   </div>
                 </v-card-text>
                 <v-card-text>
-                  <v-alert text outlined color="deep-orange" icon="mdi-ticket-percent-outline">
-                    <q class="font-weight-bold" >{{status_edit}}</q>
+                  <v-alert
+                    text
+                    outlined
+                    color="deep-orange"
+                    icon="mdi-ticket-percent-outline"
+                  >
+                    <q class="font-weight-bold">{{ status_edit }}</q>
                   </v-alert>
                 </v-card-text>
               </v-form>
 
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
+                <v-btn class="ma-1" color="primary" dark @click="closeedit">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -321,6 +331,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <!--------------------------------------------------- edit -------------------------->
 
           <v-dialog v-model="dialogDelete" max-width="270px">
             <v-card>
@@ -329,13 +340,13 @@
               </v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="info"  small class="ma-2" @click="closeDelete">
+                <v-btn color="info" small class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box </v-icon
                   >ยกเลิก
                 </v-btn>
                 <v-btn
-                small
+                  small
                   color="primary"
                   class="ma-2"
                   @click="
@@ -353,7 +364,7 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn small class="mr2"  color="warning" @click="editItem(item)">
+          <v-btn small class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
               mdi-pencil
             </v-icon>
@@ -372,13 +383,13 @@
             ลบคูปอง
           </v-btn>
         </template>
-             <template v-slot:[`item.view`]="{ item }">
-          <v-btn  small class="mr2" color="warning" @click="Detail(item)">
+        <template v-slot:[`item.view`]="{ item }">
+          <v-btn small class="mr2" color="warning" @click="Detail(item)">
             <v-icon aria-hidden="false" class="mx-2">
-             mdi-eye-settings-outline
+              mdi-eye-settings-outline
             </v-icon>
             ดูข้อมูล
-          </v-btn>       
+          </v-btn>
         </template>
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
@@ -421,6 +432,7 @@
 
 <script>
 import moment from "moment";
+import "moment/locale/th";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/locale/th";
 import "@/assets/css/datepicker.css";
@@ -430,23 +442,6 @@ export default {
     DatePicker
   },
   data: () => ({
-    lang: {
-      months: [
-        "มกราคม",
-        "กุมภาพันธ์",
-        "มีนาคม",
-        "เมษายน",
-        "พฤษภาคม",
-        "มิถุนายน",
-        "กรกฎาคม",
-        "สิงหาคม",
-        "กันยายน",
-        "ตุลาคม",
-        "พฤศจิกายน",
-        "ธันวาคม"
-      ],
-      monthBeforeYear: false
-    },
     detailArr: [],
     dialog: false,
     dialogView: false,
@@ -475,86 +470,86 @@ export default {
         value: "ยกเลิก"
       }
     ],
-    dropdown_edit: [
+    discount: [
       {
         text: "1%",
-        value: "1"
+        value: 1
       },
       {
         text: "2%",
-        value: "2"
+        value: 2
       },
       {
         text: "3%",
-        value: "3"
+        value: 3
       },
       {
         text: "4%",
-        value: "4"
+        value: 4
       },
       {
         text: "5%",
-        value: "5"
+        value: 5
       },
       {
         text: "6%",
-        value: "6"
+        value: 6
       },
       {
         text: "7%",
-        value: "7"
+        value: 7
       },
       {
         text: "8%",
-        value: "8"
+        value: 8
       },
       {
         text: "9%",
-        value: "9"
+        value: 9
       },
       {
         text: "10%",
-        value: "10"
+        value: 10
       },
       {
         text: "11%",
-        value: "11"
+        value: 11
       },
       {
         text: "12%",
-        value: "12"
+        value: 12
       },
       {
         text: "13%",
-        value: "13"
+        value: 13
       },
       {
         text: "14%",
-        value: "14"
+        value: 14
       },
       {
         text: "15%",
-        value: "15"
+        value: 15
       },
       {
         text: "16%",
-        value: "16"
+        value: 16
       },
       {
         text: "17%",
-        value: "17"
+        value: 17
       },
       {
         text: "18%",
-        value: "18"
+        value: 18
       },
       {
         text: "19%",
-        value: "19"
+        value: 19
       },
       {
         text: "20%",
-        value: "20"
+        value: 20
       }
     ],
 
@@ -565,7 +560,7 @@ export default {
         value: "No"
       },
       {
-        text: "ชื่อหม่วดหมู่",
+        text: "ชื่อคูปอง",
         align: "start",
         value: "codename"
       },
@@ -593,19 +588,17 @@ export default {
       {
         text: "จำนวลคูปองที่สมารถใช้ได้ต่อครั้ง",
         align: "start",
-        value: "num_use",
-       
+        value: "num_use"
       },
       {
         text: "สถานะการใช้งาน",
         align: "start",
-        value: "status_edit",
-        
+        value: "status_edit"
       },
-        {
+      {
         text: "คนที่ใช้คูปอง",
         align: "start",
-        value: "view",
+        value: "view"
       },
       {
         text: "หมายเหตุ",
@@ -634,9 +627,8 @@ export default {
   computed: {},
   filters: {
     moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
       var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("DD MMMM YYYY ");
+      return moment(strdate).format("วันที่ DD MMM YY ");
     }
   },
   watch: {
@@ -666,13 +658,13 @@ export default {
         {
           name: "ชื่อ-นามสกุล",
           value: item.ref_emp_id
-        },
+        }
       ];
 
       this.dialogView = true;
       //console.log(item);
     },
-    
+
     getColorstatus(discount) {
       if (discount) return "green";
       else return "red";
@@ -699,7 +691,7 @@ export default {
         codename: " ",
         ref_emp_id_by: " ",
         ref_emp_id: " ",
-        exp: " ",
+        exp: "",
         discount: " ",
         num_use: " "
       };
@@ -708,6 +700,7 @@ export default {
     editItem(item) {
       this.type = "edit";
       this.coupone = item;
+
       this.dialogedit = true;
     },
     deleteItem(item) {

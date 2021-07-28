@@ -91,8 +91,8 @@ export default {
     const historyBuy = await context.$axios.$get(
       "/payment/customer/" + context.$auth.user._id
     );
-    //console.log(histortBuy);
-    //console.log(context.$auth.user);
+
+    //console.log(historyBuy);
     return { loadData, historyBuy };
   },
   filters: {

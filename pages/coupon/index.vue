@@ -136,7 +136,7 @@ export default {
     const loadData = await context.$axios.$get(
       "/customer/" + context.$auth.user._id
     );
-    console.log(loadData);
+    //console.log(loadData);
     //console.log(context.$auth.user);
     return { loadData };
   },

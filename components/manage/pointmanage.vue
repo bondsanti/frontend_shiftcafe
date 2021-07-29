@@ -50,10 +50,10 @@
             <v-form v-model="valid" ref="form">
               <v-card>
                 <v-card-title>
-                  <span class="text-h5"
-                    ><v-icon left>mdi-card-account-details-outline </v-icon>
-                    จัดการพอยท์ เพิ่ม/ลด</span
-                  >
+                  <span class="text-h5">
+                    <v-icon left>mdi-card-account-details-outline </v-icon>
+                    จัดการพอยท์ เพิ่ม/ลด
+                  </span>
                 </v-card-title>
 
                 <v-card-text>
@@ -160,19 +160,41 @@ export default {
     dialogDelete: false,
     search: "",
     headers: [
-      { text: "ลำดับ", sortable: false, value: "No" },
+      {
+        text: "ลำดับ",
+        sortable: false,
+        value: "No"
+      },
       {
         text: "ชื่อลูกค้าที่ถูกจัดการ",
         align: "start",
         sortable: true,
         value: "ref_cus_id"
       },
-      { text: "ชื่อพนักงานที่จัดการ", sortable: false, value: "ref_emp_id" },
+      {
+        text: "ชื่อพนักงานที่จัดการ",
+        sortable: false,
+        value: "ref_emp_id"
+      },
 
-      { text: "แต้ม(P)", align: "start", sortable: false, value: "point" },
-      { text: "สถานะ", align: "start", sortable: false, value: "status" },
+      {
+        text: "แต้ม(P)",
+        align: "start",
+        sortable: false,
+        value: "point"
+      },
+      {
+        text: "สถานะ",
+        align: "start",
+        sortable: false,
+        value: "status"
+      },
 
-      { text: "วันทีเพิ่มลดแต้ม", sortable: false, value: "datetime" }
+      {
+        text: "วันทีเพิ่มลดแต้ม",
+        sortable: false,
+        value: "datetime"
+      }
       //   { text: "Actions", value: "actions", sortable: false }
     ],
     cusId: null,

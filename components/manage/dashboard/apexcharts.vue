@@ -22,10 +22,10 @@
         <component
           :is="apexchart"
           max-width="100"
-          height="350"
-          type="area"
+          height="400"
+          type="line"
           :options="chartOptions"
-          :series="series"
+         :series="formattedData"
         ></component>
       </div>
     </client-only>
@@ -35,55 +35,98 @@
 <script>
 import moment from "moment";
 export default {
-  data: () => ({
-    chartOptions: {
-      chart: {
-        id: "vuechart-example"
-      },
-      fill: {
-        colors: ["#FFFFFF", "#FFFFFF", "#FFFFFF"]
-      },
-      xaxis: {
-        fontWeight: 400,
-        strokeColor: "#fff",
-        categories: [
-          "9.00.น",
-          "10.00.น",
-          "11.00 น",
-          "12.00.น",
-          "13.00 น",
-          "14.00 น",
-          "15.00 น",
-          "16.00.น",
-          "17.00.น",
-          "18.00.น"
-        ],
-        fontColor: "red"
-      }
+  props: {
+    chartData: {
+      type: Array,
+      default: () => [],
     },
+    animations: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  data() {
+    return {};
+  },
+  computed: {
+     apexchart() {
+      return () => {
+        if (process.client) {
+          return import("vue-apexcharts");
+        }
+      };
+    },
+    chartOptions() {
+      return {
+        title: {
+        //  text: 'Sieben Sterngasse 3 Location Campaign Grosser',
+         // align: "left",
+        },
+        chart: {
+          animations: {
+            enabled: this.animations,
+          },
+        },
+        xaxis: {
+          type: "datetime",
+        },
+        yaxis: [
+          // {
+          //   title: {
+          //     text: "ความชื้นใน %",
+          //     style: {
+          //       //fontSize:  '14px',
+          //       //fontWeight:  'bold',
+          //       color: "rgb(0, 143, 251)",
+          //     },
+          //   },
+          //   labels: {
+          //     formatter: (val) => val * 1,
+          //   },
+          // },
+          {
+            opposite: true,
+            title: {
+              text: "อุณหภูมิ (ในเซลเซียส)",
+              style: {
+                //fontSize:  '14px',
+                //fontWeight:  'bold',
+                color: "rgb(0, 227, 150)",
+              },
+            },
+          },
+        ],
 
-    series: [
-      {
-        name: "ยอดขาย ณ เวลา",
-        data: [30, 40, 35, 50, 100, 60, 20, 10, 50, 40]
-      }
-    ]
-  }),
+        labels: this.formattedLabels,
+      };
+    },
+    formattedLabels() {
+      return this.chartData.map((d) => d.date);
+    },
+    formattedData() {
+    //  const volumeSeries = this.chartData.map((d) => d.Feuchtigkeit);
+      const closeSeries = this.chartData.map((d) => d.Temperatur);
+      return [
+        // {
+        //   name: "Feuchtigkeit",
+        //   //type: "column",
+        //   type: "line",
+        //   data: volumeSeries,
+        // },
+        {
+          name: "Temperatur",
+          type: "line",
+          data: closeSeries,
+        },
+      ];
+    },
+  },
   methods: {
     formatDate(date) {
       var strdate = moment(date).add(543, "years");
       return moment(strdate).format("D/MM/YY ");
     }
   },
-  computed: {
-    apexchart() {
-      return () => {
-        if (process.client) {
-          return import("vue-apexcharts");
-        }
-      };
-    }
-  }
 };
 </script>
 

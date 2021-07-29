@@ -189,7 +189,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-row class="justify-center">
+    <!-- <v-row class="justify-center">
       <v-dialog v-model="orderDl" max-width="500px" persistent>
         <v-card>
           <v-form v-model="valid" ref="form">
@@ -232,46 +232,106 @@
             ><v-btn outlined @click="holdDl = false">ปิด</v-btn></v-toolbar
           >
           <div class="d-flex flex-row mb-3 ">
-            <v-col cols="4" md="3"><h3>ชื่อบิล</h3></v-col>
+            <v-col cols="3" md="3"><h3>ชื่อบิล</h3></v-col>
             <v-col cols="4" md="3" class="hidden-sm-and-down"
               ><h3>เวลา</h3></v-col
             >
-            <v-col cols="4" md="2" class="hidden-sm-and-down"
+            <v-col cols="4" md="1" class="hidden-sm-and-down"
               ><h3>รายการ</h3></v-col
             >
-            <v-col cols="4" md="2"><h3>รวมทั้งสิ้น</h3></v-col>
-            <v-col cols="4" md="2"><h3>จัดการ</h3></v-col>
+            <v-col cols="3" md="1"><h3>รวมเงิน</h3></v-col>
+            <v-col cols="3" md="2"><h3>สถานะ</h3></v-col>
+            <v-col cols="3" md="2"><h3>จัดการ</h3></v-col>
           </div>
           <div
             class="d-flex flex-row m-2"
             v-for="(order2, i) in orderOnDatabase"
             :key="i"
           >
-            <v-col cols="4" md="3">{{ order2.bill_name }}</v-col>
+            <v-col cols="3" md="3">{{ order2.bill_name }}</v-col>
             <v-col cols="4" md="3" class="hidden-sm-and-down">{{
               formatDate(order2.datetime)
             }}</v-col>
-            <v-col cols="4" md="2" class="hidden-sm-and-down">{{
+            <v-col cols="4" md="1" class="hidden-sm-and-down">{{
               order2.list_product.length
             }}</v-col>
-            <v-col cols="4" md="2">{{ order2.total_price }} ฿</v-col>
-            <v-col cols="4" md="2" class="hidden-sm-and-down">
+            <v-col cols="3" md="1">{{ order2.total_price }} ฿</v-col>
+            <v-col cols="3" md="2"
+              ><v-chip
+                width="100%"
+                outlined
+                :color="orderOnDatabase[i].status_cook === 0 ? 'red' : 'green'"
+                ><span class="text-truncate">
+                  {{
+                    orderOnDatabase[i].status_cook === 0
+                      ? "ยังไม่ได้สั่งทำ"
+                      : "สั่งทำแล้ว"
+                  }}
+                </span></v-chip
+              ></v-col
+            >
+            <v-col cols="3" md="2" class="hidden-xs-only">
               <div class="d-flex flex-row  flex-wrap justify-center">
-                <v-btn small fab
-                  ><v-icon color="info" @click="viewOrder(i)"
-                    >mdi-eye</v-icon
-                  ></v-btn
-                >
-                <v-btn small fab class="ml-3" @click="printorder(i)"
-                  ><v-icon color="teal">mdi-printer</v-icon></v-btn
-                >
-                <v-btn small fab class="ml-3" @click="deleteOrderOnDatabase(i)"
-                  ><v-icon color="red">mdi-delete</v-icon></v-btn
-                >
+                <v-tooltip top>
+                  <template v-slot:activator="{ attrs, on }">
+                    <v-btn
+                      v-on="on"
+                      v-bind="attrs"
+                      small
+                      fab
+                      class="ma-1"
+                      v-show="orderOnDatabase[i].status_cook === 0"
+                      ><v-icon color="indigo accent-4" @click="checkCook(i)"
+                        >mdi-format-list-checks</v-icon
+                      ></v-btn
+                    >
+                  </template>
+                  <span>ตรวจสอบการสั่งทำ</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{ attrs, on }">
+                    <v-btn v-bind="attrs" v-on="on" small fab class="ma-1"
+                      ><v-icon color="info" @click="viewOrder(i)"
+                        >mdi-eye</v-icon
+                      ></v-btn
+                    >
+                  </template>
+                  <span>ดูรายการหรือแก้ไข</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{ attrs, on }">
+                    <v-btn
+                      v-on="on"
+                      v-bind="attrs"
+                      v-show="orderOnDatabase[i].status_cook !== 0"
+                      small
+                      fab
+                      class="ma-1"
+                      @click="printorder(i)"
+                      ><v-icon color="teal">mdi-printer</v-icon></v-btn
+                    >
+                  </template>
+                  <span>สำหรับเรียกเก็บเงินลูกค้า</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{ attrs, on }">
+                    <v-btn
+                      v-on="on"
+                      v-bind="attrs"
+                      small
+                      fab
+                      class="ma-1"
+                      @click="deleteOrderOnDatabase(i)"
+                      v-show="orderOnDatabase[i].status_cook === 0"
+                      ><v-icon color="red">mdi-delete</v-icon></v-btn
+                    >
+                  </template>
+                  <span>ลบรายการสั่งซื้อ</span>
+                </v-tooltip>
               </div>
             </v-col>
-            <v-col cols="4" md="2" class="hidden-md-and-up">
-              <v-expansion-panels focusable>
+            <v-col cols="3" md="2" class="hidden-sm-and-up">
+              <v-expansion-panels focusable small>
                 <v-expansion-panel>
                   <v-expansion-panel-header
                     ><v-icon class="hidden-xs-only"
@@ -303,7 +363,7 @@
           </div>
         </v-card>
       </v-dialog>
-    </v-row>
+    </v-row> -->
 
     <ConfirmOrder
       :dialog="dialog"
@@ -316,6 +376,80 @@
       @clearOrder="clearOrder"
       :bank2="bank"
     />
+    <Cook
+      :holdDl="holdDl"
+      :orderOnDatabase="orderOnDatabase"
+      @closeHold="holdDl = false"
+      @viewOrderparent="viewOrder"
+    />
+
+    <!-- <v-dialog v-model="cook" max-width="500px">
+      <v-card>
+        <v-form>
+          <v-card-title>
+            <span class="text-h"
+              ><v-icon left> mdi-note-text-outline </v-icon> หมายเลขออเดอร์ :
+              {{ itemBy ? itemBy.order_no : "" }}<br /><v-icon left>
+                mdi-clipboard-account </v-icon
+              >พนักงานที่รับออเดอร์ :
+              {{ itemBy ? itemBy.ref_emp_id.fname : "" }}
+              {{ itemBy ? itemBy.ref_emp_id.lname : "" }}
+              <br /><v-icon left> mdi-card-account-details-outline </v-icon
+              >ชื่อบิล : {{ itemBy ? itemBy.bill_name : "" }}
+            </span>
+          </v-card-title>
+          <v-divider class="mb-3"></v-divider>
+          <v-card-text>
+            <v-row>
+              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center"
+                ><h4>รายการ</h4></v-col
+              >
+              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center"
+                ><h4>จำนวน</h4></v-col
+              >
+              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center"
+                ><h4>ราคา</h4></v-col
+              >
+            </v-row>
+            <v-row
+              no-gutters
+              style="flex-wrap: nowrap"
+              v-for="item in itemBy ? itemBy.list_product : []"
+              :key="item.name"
+            >
+              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-left">
+                {{ item.name }}
+              </v-col>
+              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center">
+                {{ item.qty }}
+              </v-col>
+              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-right">
+                {{ formatPrice(item.price) }}
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" class="flex-grow-0 flex-shrink-0 text-center"
+                ><h3>
+                  ยอดสุทธิ
+                  {{ formatPrice(itemBy ? itemBy.total_price : 0) }} บาท
+                </h3>
+              </v-col>
+            </v-row>
+          </v-card-text>
+          <v-divider class="mt-n3"></v-divider>
+          <v-card-actions>
+            <v-btn color="green" @click="checkCook2(itemBy._id)" dark>
+              <v-icon left> mdi-check-bold </v-icon>ตรวจสอบและทำใบสั่งทำ
+            </v-btn>
+            <v-spacer></v-spacer>
+
+            <v-btn color="error" @click="cook = false">
+              <v-icon left> mdi-close </v-icon>ปิด
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog> -->
   </div>
 </template>
 
@@ -323,6 +457,7 @@
 import Product from "@/components/seller/Product.vue";
 import Category from "@/components/seller/Category.vue";
 import ConfirmOrder from "@/components/seller/confirmOrder.vue";
+import Cook from "@/components/seller/Cook.vue";
 export default {
   middleware: ["auth", "checkAll", "refresh", "checkChecker"],
   layout: "layoutCashier",
@@ -353,7 +488,8 @@ export default {
   components: {
     Product,
     Category,
-    ConfirmOrder
+    ConfirmOrder,
+    Cook
   },
   data: () => ({
     cateName: "Food & Drink",
@@ -368,12 +504,9 @@ export default {
     keyword: "",
     customers: [],
     orderDl: false,
-    holdDl: false,
-    type_order: "1",
     bill_name: null,
-    orderOnDatabase: [],
-    valid: true,
-    rules: [value => !!value || "โปรดกรอกชื่อบิล"],
+    type_order: "1",
+    holdDl: false,
     idForEditOrder: null,
     checkStaff: false
   }),
@@ -519,115 +652,63 @@ export default {
         this.orderDl = true;
       } else if (this.bill_name !== null || this.orders.length === 0) {
         if (this.idForEditOrder) {
-          this.$axios.$put("/order/" + this.idForEditOrder, {
-            list_product: this.orders,
-            type_order: this.type_order,
-            total_price: this.subTotal,
-            bill_name: this.bill_name
-          });
-          this.holdDl = true;
-          this.bill_name = null;
-          this.orders = [];
-          this.subTotal = 0;
-          this.idForEditOrder = null;
+          this.$axios
+            .$put("/order/" + this.idForEditOrder, {
+              list_product: this.orders,
+              type_order: this.type_order,
+              total_price: this.subTotal,
+              bill_name: this.bill_name
+            })
+            .then(() => {
+              this.holdDl = true;
+              this.bill_name = null;
+              this.orders = [];
+              this.subTotal = 0;
+              this.idForEditOrder = null;
+            });
         } else {
           this.holdDl = true;
         }
       }
     },
-    viewOrder(i) {
+    viewOrder(item) {
       // console.log(this.orderOnDatabase[i]);
-      this.orders = this.orderOnDatabase[i].list_product;
-      this.bill_name = this.orderOnDatabase[i].bill_name;
-      this.type_order = this.orderOnDatabase[i].type_order;
-      this.idForEditOrder = this.orderOnDatabase[i]._id;
+      this.orders = item.list_product;
+      this.bill_name = item.bill_name;
+      this.type_order = item.type_order;
+      this.idForEditOrder = item._id;
       setTimeout(this.totalPrice, 200);
       this.holdDl = false;
       //console.log(this.orderOnDatabase[i]);
+    },
+    checkCook(i) {
+      this.itemBy = this.orderOnDatabase[i];
+      //console.log(this.itemBy);
+      this.cook = true;
+    },
+    checkCook2(id) {
+      const preOrder = {
+        list_product: this.itemBy.list_product,
+        type_order: this.itemBy.type_order,
+        total_price: this.itemBy.total_price,
+        bill_name: this.itemBy.bill_name,
+        status_cook: 1
+      };
+      this.$axios.$put("/order/" + id, preOrder).then(() => {
+        for (let i in this.orderOnDatabase) {
+          if (id === this.orderOnDatabase[i]._id) {
+            this.orderOnDatabase[i].status_cook = 1;
+          }
+        }
+        this.cook = false;
+        this.itemBy = null;
+      });
     },
     deleteOrderOnDatabase(i) {
       this.$axios.$delete("/order/" + this.orderOnDatabase[i]._id).then(() => {
         this.orderOnDatabase.splice(i, 1);
         this.bill_name = null;
       });
-    },
-
-    printorder(i) {
-      this.bill_name = this.orderOnDatabase[i].bill_name;
-      //const today = new Date(this.orderOnDatabase[i].datetime);
-      var WinPrint = window.open(
-        "",
-        "",
-        "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
-      );
-      WinPrint.document.write("<table>");
-      WinPrint.document.write(
-        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
-      );
-      WinPrint.document.write("</table>");
-      WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
-      WinPrint.document.write(
-        "<tr><th align='left'>บริษัท ชิฟท์ เรสเตอรองต์ จำกัด</th></tr>"
-      );
-      WinPrint.document.write(
-        "<tr><th align='left'>ที่อยู่ : 89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท</th></tr>"
-      );
-      WinPrint.document.write(
-        "<tr><th align='left'>อำเภอเมือง จังหวัดลำปาง 52000</th></tr>"
-      );
-      WinPrint.document.write(
-        "<tr><th align='left'>เบอร์มือถือ : 0917961816</th></tr>"
-      );
-      WinPrint.document.write(
-        `<tr><th align='left'>ชื่อบิล : ${this.bill_name}</th></tr>`
-      );
-      WinPrint.document.write(
-        `<tr><th align='center'>วันที่ ${this.formatDate(
-          this.orderOnDatabase[i].datetime
-        )} </th></tr>`
-      );
-      WinPrint.document.write(
-        "<tr><th align='center'>***สำหรับเรียกเก็บเงินลูกค้า***</th></tr>"
-      );
-      WinPrint.document.write("</table>");
-      WinPrint.document.write(
-        "<table   style='width: 100%;font-size: 0.5em;'>"
-      );
-      WinPrint.document.write(
-        "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th><th style='border-bottom: thin dotted;border-top: thin dotted' colspan='2' width='100px'>ราคา</th></tr>"
-      );
-      let subTotal = 0;
-      let list = this.orderOnDatabase[i].list_product;
-      for (let j in list) {
-        subTotal = subTotal + parseInt(list[j].price);
-        WinPrint.document.write("<tr style='border-bottom: thin solid'>");
-        WinPrint.document.write(
-          `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
-            list[j].name
-          }</td><td style='padding-left:20px;'>${
-            list[j].qty
-          }</td><td style='padding-left:20px;'>${this.formatPrice(
-            list[j].price
-          )} </td><td style='padding-right:20px;'>฿</td>`
-        );
-        WinPrint.document.write("</tr>");
-      }
-      WinPrint.document.write(
-        "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
-      );
-      WinPrint.document.write("</table>");
-      WinPrint.document.write(
-        "<table  style='margin-top:20px;font-size: 0.6em;'>"
-      );
-      WinPrint.document.write(
-        `<tr><th width='1000px' align=left style='padding-right:60px;'>อาหารเครื่องดื่ม</th><th width='100px'>${this.formatPrice(
-          subTotal
-        )} </th><th>บาท</th></tr>`
-      );
-      WinPrint.document.write("</table>");
-      WinPrint.document.close();
-      WinPrint.focus();
-      setTimeout(WinPrint.print(), 3000);
     }
   },
   created() {

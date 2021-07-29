@@ -33,13 +33,18 @@
         ></v-text-field>
       </v-card-title>
 
-      <v-data-table :headers="headers" :items="pointTableData" :search="search" :items-per-page="10"
-          :footer-props="{
+      <v-data-table
+        :headers="headers"
+        :items="pointTableData"
+        :search="search"
+        :items-per-page="10"
+        :footer-props="{
           'items-per-page-options': [10, 20, 30, 40, 50, -1],
-           prevIcon: 'mdi-chevron-left',
+          prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
-        }">
+        }"
+      >
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="800px">
             <v-form v-model="valid" ref="form">
@@ -181,7 +186,9 @@ export default {
     pointTableData() {
       return this.pointmanage.map(item => {
         return {
-          ref_cus_id: `${item.ref_cus_id.pname} ${item.ref_cus_id.fname} ${item.ref_cus_id.lname}`,
+          ref_cus_id: `${item.ref_cus_id ? item.ref_cus_id.pname : ""} ${
+            item.ref_cus_id ? item.ref_cus_id.fname : ""
+          } ${item.ref_cus_id ? item.ref_cus_id.lname : ""}`,
           ref_emp_id: `${item.ref_emp_id.fname} ${item.ref_emp_id.lname}`,
           point: item.point,
           status: item.status === "plus" ? "เพิ่ม" : "ลบ",

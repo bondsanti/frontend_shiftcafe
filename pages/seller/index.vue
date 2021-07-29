@@ -189,181 +189,6 @@
         </div>
       </v-col>
     </v-row>
-    <!-- <v-row class="justify-center">
-      <v-dialog v-model="orderDl" max-width="500px" persistent>
-        <v-card>
-          <v-form v-model="valid" ref="form">
-            <v-card-title>
-              โปรดกรอกชื่อลูกค้า
-            </v-card-title>
-            <v-card-text>
-              <v-text-field
-                :rules="rules"
-                autofocus
-                v-model="bill_name"
-                @keypress.enter="addOrderToDatabase"
-              ></v-text-field>
-            </v-card-text>
-          </v-form>
-          <v-card-actions>
-            <v-btn
-              color="primary"
-              @click="addOrderToDatabase"
-              :disabled="!valid"
-            >
-              บันทึกคำสั่งซื้อ
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn @click="closeOrderDl">ปิด</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-row>
-    <v-row class="justify-center">
-      <v-dialog
-        transition="dialog-bottom-transition"
-        v-model="holdDl"
-        max-width="100%"
-      >
-        <v-card>
-          <v-toolbar color="primary" dark
-            ><h3>พักการขาย/ออเดอร์</h3>
-            <v-spacer></v-spacer
-            ><v-btn outlined @click="holdDl = false">ปิด</v-btn></v-toolbar
-          >
-          <div class="d-flex flex-row mb-3 ">
-            <v-col cols="3" md="3"><h3>ชื่อบิล</h3></v-col>
-            <v-col cols="4" md="3" class="hidden-sm-and-down"
-              ><h3>เวลา</h3></v-col
-            >
-            <v-col cols="4" md="1" class="hidden-sm-and-down"
-              ><h3>รายการ</h3></v-col
-            >
-            <v-col cols="3" md="1"><h3>รวมเงิน</h3></v-col>
-            <v-col cols="3" md="2"><h3>สถานะ</h3></v-col>
-            <v-col cols="3" md="2"><h3>จัดการ</h3></v-col>
-          </div>
-          <div
-            class="d-flex flex-row m-2"
-            v-for="(order2, i) in orderOnDatabase"
-            :key="i"
-          >
-            <v-col cols="3" md="3">{{ order2.bill_name }}</v-col>
-            <v-col cols="4" md="3" class="hidden-sm-and-down">{{
-              formatDate(order2.datetime)
-            }}</v-col>
-            <v-col cols="4" md="1" class="hidden-sm-and-down">{{
-              order2.list_product.length
-            }}</v-col>
-            <v-col cols="3" md="1">{{ order2.total_price }} ฿</v-col>
-            <v-col cols="3" md="2"
-              ><v-chip
-                width="100%"
-                outlined
-                :color="orderOnDatabase[i].status_cook === 0 ? 'red' : 'green'"
-                ><span class="text-truncate">
-                  {{
-                    orderOnDatabase[i].status_cook === 0
-                      ? "ยังไม่ได้สั่งทำ"
-                      : "สั่งทำแล้ว"
-                  }}
-                </span></v-chip
-              ></v-col
-            >
-            <v-col cols="3" md="2" class="hidden-xs-only">
-              <div class="d-flex flex-row  flex-wrap justify-center">
-                <v-tooltip top>
-                  <template v-slot:activator="{ attrs, on }">
-                    <v-btn
-                      v-on="on"
-                      v-bind="attrs"
-                      small
-                      fab
-                      class="ma-1"
-                      v-show="orderOnDatabase[i].status_cook === 0"
-                      ><v-icon color="indigo accent-4" @click="checkCook(i)"
-                        >mdi-format-list-checks</v-icon
-                      ></v-btn
-                    >
-                  </template>
-                  <span>ตรวจสอบการสั่งทำ</span>
-                </v-tooltip>
-                <v-tooltip top>
-                  <template v-slot:activator="{ attrs, on }">
-                    <v-btn v-bind="attrs" v-on="on" small fab class="ma-1"
-                      ><v-icon color="info" @click="viewOrder(i)"
-                        >mdi-eye</v-icon
-                      ></v-btn
-                    >
-                  </template>
-                  <span>ดูรายการหรือแก้ไข</span>
-                </v-tooltip>
-                <v-tooltip top>
-                  <template v-slot:activator="{ attrs, on }">
-                    <v-btn
-                      v-on="on"
-                      v-bind="attrs"
-                      v-show="orderOnDatabase[i].status_cook !== 0"
-                      small
-                      fab
-                      class="ma-1"
-                      @click="printorder(i)"
-                      ><v-icon color="teal">mdi-printer</v-icon></v-btn
-                    >
-                  </template>
-                  <span>สำหรับเรียกเก็บเงินลูกค้า</span>
-                </v-tooltip>
-                <v-tooltip top>
-                  <template v-slot:activator="{ attrs, on }">
-                    <v-btn
-                      v-on="on"
-                      v-bind="attrs"
-                      small
-                      fab
-                      class="ma-1"
-                      @click="deleteOrderOnDatabase(i)"
-                      v-show="orderOnDatabase[i].status_cook === 0"
-                      ><v-icon color="red">mdi-delete</v-icon></v-btn
-                    >
-                  </template>
-                  <span>ลบรายการสั่งซื้อ</span>
-                </v-tooltip>
-              </div>
-            </v-col>
-            <v-col cols="3" md="2" class="hidden-sm-and-up">
-              <v-expansion-panels focusable small>
-                <v-expansion-panel>
-                  <v-expansion-panel-header
-                    ><v-icon class="hidden-xs-only"
-                      >mdi-menu</v-icon
-                    ></v-expansion-panel-header
-                  >
-                  <v-expansion-panel-content>
-                    <v-row class="justify-center my-1">
-                      <v-btn small fab
-                        ><v-icon color="info" @click="viewOrder(i)"
-                          >mdi-eye</v-icon
-                        ></v-btn
-                      >
-                    </v-row>
-                    <v-row class="justify-center my-2 ">
-                      <v-btn small fab @click="printorder(i)"
-                        ><v-icon color="teal">mdi-printer</v-icon></v-btn
-                      >
-                    </v-row>
-                    <v-row class="justify-center mt-1">
-                      <v-btn small fab @click="deleteOrderOnDatabase(i)"
-                        ><v-icon color="red">mdi-delete</v-icon></v-btn
-                      >
-                    </v-row>
-                  </v-expansion-panel-content>
-                </v-expansion-panel>
-              </v-expansion-panels>
-            </v-col>
-          </div>
-        </v-card>
-      </v-dialog>
-    </v-row> -->
 
     <ConfirmOrder
       :dialog="dialog"
@@ -378,78 +203,15 @@
     />
     <Cook
       :holdDl="holdDl"
+      :orderDl="orderDl"
       :orderOnDatabase="orderOnDatabase"
       @closeHold="holdDl = false"
+      @closeOrderDl="orderDl = false"
       @viewOrderparent="viewOrder"
+      @addOrderToDatabase="addOrderToDatabase"
+      @deleteOrderOnDatabase="deleteOrderOnDatabase"
+      @refreshUser="refreshUser"
     />
-
-    <!-- <v-dialog v-model="cook" max-width="500px">
-      <v-card>
-        <v-form>
-          <v-card-title>
-            <span class="text-h"
-              ><v-icon left> mdi-note-text-outline </v-icon> หมายเลขออเดอร์ :
-              {{ itemBy ? itemBy.order_no : "" }}<br /><v-icon left>
-                mdi-clipboard-account </v-icon
-              >พนักงานที่รับออเดอร์ :
-              {{ itemBy ? itemBy.ref_emp_id.fname : "" }}
-              {{ itemBy ? itemBy.ref_emp_id.lname : "" }}
-              <br /><v-icon left> mdi-card-account-details-outline </v-icon
-              >ชื่อบิล : {{ itemBy ? itemBy.bill_name : "" }}
-            </span>
-          </v-card-title>
-          <v-divider class="mb-3"></v-divider>
-          <v-card-text>
-            <v-row>
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center"
-                ><h4>รายการ</h4></v-col
-              >
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center"
-                ><h4>จำนวน</h4></v-col
-              >
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center"
-                ><h4>ราคา</h4></v-col
-              >
-            </v-row>
-            <v-row
-              no-gutters
-              style="flex-wrap: nowrap"
-              v-for="item in itemBy ? itemBy.list_product : []"
-              :key="item.name"
-            >
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-left">
-                {{ item.name }}
-              </v-col>
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center">
-                {{ item.qty }}
-              </v-col>
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-right">
-                {{ formatPrice(item.price) }}
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12" class="flex-grow-0 flex-shrink-0 text-center"
-                ><h3>
-                  ยอดสุทธิ
-                  {{ formatPrice(itemBy ? itemBy.total_price : 0) }} บาท
-                </h3>
-              </v-col>
-            </v-row>
-          </v-card-text>
-          <v-divider class="mt-n3"></v-divider>
-          <v-card-actions>
-            <v-btn color="green" @click="checkCook2(itemBy._id)" dark>
-              <v-icon left> mdi-check-bold </v-icon>ตรวจสอบและทำใบสั่งทำ
-            </v-btn>
-            <v-spacer></v-spacer>
-
-            <v-btn color="error" @click="cook = false">
-              <v-icon left> mdi-close </v-icon>ปิด
-            </v-btn>
-          </v-card-actions>
-        </v-form>
-      </v-card>
-    </v-dialog> -->
   </div>
 </template>
 
@@ -626,12 +388,12 @@ export default {
       this.customers = await this.$axios.$get("/customer2");
       this.orderOnDatabase = await this.$axios.$get("/order-hold");
     },
-    async addOrderToDatabase() {
+    async addOrderToDatabase(bill_name) {
       const preOrder = {
         list_product: this.orders,
         type_order: this.type_order,
         total_price: this.subTotal,
-        bill_name: this.bill_name
+        bill_name: bill_name
       };
       //console.log(preOrder);
       const res = await this.$axios.post("/order", preOrder);
@@ -643,7 +405,7 @@ export default {
         this.bill_name = null;
         this.orderDl = false;
       } else {
-        alert(res.data.message);
+        this.$swal(res.data.message);
       }
     },
     async confirmOrder() {
@@ -657,14 +419,16 @@ export default {
               list_product: this.orders,
               type_order: this.type_order,
               total_price: this.subTotal,
-              bill_name: this.bill_name
+              bill_name: this.bill_name,
+              status_cook: 0
             })
-            .then(() => {
+            .then(async () => {
               this.holdDl = true;
               this.bill_name = null;
               this.orders = [];
               this.subTotal = 0;
               this.idForEditOrder = null;
+              this.orderOnDatabase = await this.$axios.$get("/order-hold");
             });
         } else {
           this.holdDl = true;
@@ -681,29 +445,7 @@ export default {
       this.holdDl = false;
       //console.log(this.orderOnDatabase[i]);
     },
-    checkCook(i) {
-      this.itemBy = this.orderOnDatabase[i];
-      //console.log(this.itemBy);
-      this.cook = true;
-    },
-    checkCook2(id) {
-      const preOrder = {
-        list_product: this.itemBy.list_product,
-        type_order: this.itemBy.type_order,
-        total_price: this.itemBy.total_price,
-        bill_name: this.itemBy.bill_name,
-        status_cook: 1
-      };
-      this.$axios.$put("/order/" + id, preOrder).then(() => {
-        for (let i in this.orderOnDatabase) {
-          if (id === this.orderOnDatabase[i]._id) {
-            this.orderOnDatabase[i].status_cook = 1;
-          }
-        }
-        this.cook = false;
-        this.itemBy = null;
-      });
-    },
+
     deleteOrderOnDatabase(i) {
       this.$axios.$delete("/order/" + this.orderOnDatabase[i]._id).then(() => {
         this.orderOnDatabase.splice(i, 1);

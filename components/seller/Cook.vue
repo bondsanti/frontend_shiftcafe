@@ -25,7 +25,7 @@
               บันทึกคำสั่งซื้อ
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn @click="closeOrderDl">ปิด</v-btn>
+            <v-btn @click="$emit('closeOrderDl')">ปิด</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -35,6 +35,7 @@
         transition="dialog-bottom-transition"
         v-model="holdDl"
         max-width="100%"
+        persistent
       >
         <v-card>
           <v-toolbar color="primary" dark
@@ -101,13 +102,35 @@
                 </v-tooltip>
                 <v-tooltip top>
                   <template v-slot:activator="{ attrs, on }">
-                    <v-btn v-bind="attrs" v-on="on" small fab class="ma-1"
+                    <v-btn
+                      v-bind="attrs"
+                      v-on="on"
+                      small
+                      fab
+                      class="ma-1"
+                      v-show="orderOnDatabase[i].status_cook === 0"
                       ><v-icon color="info" @click="viewOrderChild(i)"
                         >mdi-eye</v-icon
                       ></v-btn
                     >
                   </template>
                   <span>ดูรายการหรือแก้ไข</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{ attrs, on }">
+                    <v-btn
+                      v-bind="attrs"
+                      v-on="on"
+                      small
+                      fab
+                      class="ma-1"
+                      v-show="orderOnDatabase[i].status_cook !== 0"
+                      ><v-icon color="info" @click="checkout(i)"
+                        >mdi-cash-100</v-icon
+                      ></v-btn
+                    >
+                  </template>
+                  <span>ชำระเงิน</span>
                 </v-tooltip>
                 <v-tooltip top>
                   <template v-slot:activator="{ attrs, on }">
@@ -119,10 +142,29 @@
                       fab
                       class="ma-1"
                       @click="printorder(i)"
-                      ><v-icon color="teal">mdi-printer</v-icon></v-btn
+                      ><v-icon color="light-green darken-1"
+                        >mdi-printer</v-icon
+                      ></v-btn
                     >
                   </template>
                   <span>สำหรับเรียกเก็บเงินลูกค้า</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{ attrs, on }">
+                    <v-btn
+                      v-on="on"
+                      v-bind="attrs"
+                      v-show="orderOnDatabase[i].status_cook !== 0"
+                      small
+                      fab
+                      class="ma-1"
+                      @click="for_chef(i)"
+                      ><v-icon color="teal darken-2"
+                        >mdi-printer-3d</v-icon
+                      ></v-btn
+                    >
+                  </template>
+                  <span>สำหรับสั่งทำอาหาร</span>
                 </v-tooltip>
                 <v-tooltip top>
                   <template v-slot:activator="{ attrs, on }">
@@ -242,46 +284,50 @@
         </v-form>
       </v-card>
     </v-dialog>
+    <ConfirmOrder
+      :dialog="dialog"
+      @closeDialog="dialog = false"
+      :customers="preConfirm.customers"
+      :bank2="preConfirm.banks"
+      :subtotal="preConfirm.subtotal"
+      :idOrder="preConfirm.idOrder"
+      :orders="preConfirm.orders"
+      :statusCook="preConfirm.status_cook"
+      @closeDialog_cook="closeDialog_cook"
+      ref="childRef"
+    />
   </div>
 </template>
 <script>
+import ConfirmOrder from "@/components/seller/confirmOrder.vue";
 export default {
-  created() {
-    this.$axios.$get("/order-hold").then(order => {
-      this.orderOnDatabase = order;
-    });
+  props: ["holdDl", "orderOnDatabase", "orderDl"],
+  components: {
+    ConfirmOrder
   },
-
-  props: ["holdDl"],
   data: () => ({
     valid: true,
     rules: [value => !!value || "โปรดกรอกชื่อบิล"],
     bill_name: null,
-    orderDl: false,
-    orderOnDatabase: [],
     cook: false,
-    itemBy: null
+    itemBy: null,
+    dialog: false,
+    preConfirm: {
+      banks: null,
+      customers: null,
+      orders: null,
+      subtotal: null,
+      idOrder: null,
+      status_cook: null
+    }
   }),
   methods: {
     async addOrderToDatabase() {
-      const preOrder = {
-        list_product: this.orders,
-        type_order: this.type_order,
-        total_price: this.subTotal,
-        bill_name: this.bill_name
-      };
-      //console.log(preOrder);
-      const res = await this.$axios.post("/order", preOrder);
-      if (res.status === 200) {
-        //this.refreshUser();
-        this.orderOnDatabase = await this.$axios.$get("/order-hold");
-        this.orders = [];
-        this.subTotal = 0;
-        this.bill_name = null;
-        this.orderDl = false;
-      } else {
-        alert(res.data.message);
-      }
+      this.$emit("addOrderToDatabase", this.bill_name);
+      this.bill_name = null;
+    },
+    deleteOrderOnDatabase(i) {
+      this.$emit("deleteOrderOnDatabase", i);
     },
     closeOrderDl() {
       this.bill_name = null;
@@ -301,6 +347,55 @@ export default {
     viewOrderChild(i) {
       this.$emit("viewOrderparent", this.orderOnDatabase[i]);
     },
+    checkCook(i) {
+      this.itemBy = this.orderOnDatabase[i];
+      //console.log(this.itemBy);
+      this.cook = true;
+    },
+    checkCook2(id) {
+      const preOrder = {
+        list_product: this.itemBy.list_product,
+        type_order: this.itemBy.type_order,
+        total_price: this.itemBy.total_price,
+        bill_name: this.itemBy.bill_name,
+        status_cook: 1
+      };
+      this.$axios.$put("/order/" + id, preOrder).then(() => {
+        for (let i in this.orderOnDatabase) {
+          if (id === this.orderOnDatabase[i]._id) {
+            this.orderOnDatabase[i].status_cook = 1;
+          }
+        }
+        let index = this.orderOnDatabase.findIndex(or => or._id === id);
+        this.cook = false;
+        this.itemBy = null;
+        this.for_chef(index);
+      });
+    },
+    async checkout(i) {
+      this.preConfirm.customers = await this.$axios.$get("/customer2");
+      this.preConfirm.banks = await this.$axios.$get("/bank");
+      this.preConfirm.subtotal = this.orderOnDatabase[i].total_price;
+      this.preConfirm.idOrder = this.orderOnDatabase[i]._id;
+      this.preConfirm.orders = this.orderOnDatabase[i].list_product;
+      this.preConfirm.status_cook = this.orderOnDatabase[i].status_cook;
+      this.$refs.childRef.improveCus();
+      this.dialog = true;
+      //console.log(this.preConfirm.customers);
+    },
+    async closeDialog_cook() {
+      this.$emit("refreshUser");
+      this.preConfirm = {
+        banks: null,
+        customers: null,
+        orders: null,
+        subtotal: null,
+        idOrder: null,
+        status_cook: null
+      };
+      this.dialog = false;
+    },
+
     printorder(i) {
       this.bill_name = this.orderOnDatabase[i].bill_name;
       //const today = new Date(this.orderOnDatabase[i].datetime);
@@ -311,7 +406,7 @@ export default {
       );
       WinPrint.document.write("<table>");
       WinPrint.document.write(
-        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
+        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.jpg'></th></tr>"
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
@@ -326,6 +421,9 @@ export default {
       );
       WinPrint.document.write(
         "<tr><th align='left'>เบอร์มือถือ : 0917961816</th></tr>"
+      );
+      WinPrint.document.write(
+        `<tr><th align='left'>พนักงานที่รับออเดอร์ : ${this.orderOnDatabase[i].ref_emp_id.fname} ${this.orderOnDatabase[i].ref_emp_id.lname}</th></tr>`
       );
       WinPrint.document.write(
         `<tr><th align='left'>ชื่อบิล : ${this.bill_name}</th></tr>`
@@ -374,6 +472,62 @@ export default {
         )} </th><th>บาท</th></tr>`
       );
       WinPrint.document.write("</table>");
+      WinPrint.document.close();
+      WinPrint.focus();
+      setTimeout(WinPrint.print(), 3000);
+    },
+    for_chef(i) {
+      //const today = new Date(this.orderOnDatabase[i].datetime);
+      var WinPrint = window.open(
+        "",
+        "",
+        "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
+      );
+
+      WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
+
+      WinPrint.document.write(
+        `<tr><th align='left'>พนักงานที่รับออเดอร์ : ${this.orderOnDatabase[i].ref_emp_id.fname} ${this.orderOnDatabase[i].ref_emp_id.lname}</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th align='left'>ชื่อบิล : ${this.orderOnDatabase[i].bill_name}</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th align='center'>วันที่ ${this.formatDate(
+          this.orderOnDatabase[i].datetime
+        )} </th></tr>`
+      );
+      WinPrint.document.write(
+        "<tr><th align='center'>***สำหรับจัดทำอาหารและเครื่องดื่ม***</th></tr>"
+      );
+      WinPrint.document.write("</table>");
+      WinPrint.document.write(
+        "<table   style='width: 100%;font-size: 0.5em;'>"
+      );
+      WinPrint.document.write(
+        "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th><th style='border-bottom: thin dotted;border-top: thin dotted' colspan='2' width='100px'>ราคา</th></tr>"
+      );
+      let subTotal = 0;
+      let list = this.orderOnDatabase[i].list_product;
+      for (let j in list) {
+        subTotal = subTotal + parseInt(list[j].price);
+        WinPrint.document.write("<tr style='border-bottom: thin solid'>");
+        WinPrint.document.write(
+          `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
+            list[j].name
+          }</td><td style='padding-left:20px;'>${
+            list[j].qty
+          }</td><td style='padding-left:20px;'>${this.formatPrice(
+            list[j].price
+          )} </td><td style='padding-right:20px;'>฿</td>`
+        );
+        WinPrint.document.write("</tr>");
+      }
+      WinPrint.document.write(
+        "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
+      );
+      WinPrint.document.write("</table>");
+
       WinPrint.document.close();
       WinPrint.focus();
       setTimeout(WinPrint.print(), 3000);

@@ -113,16 +113,31 @@
                           ></v-radio>
                         </v-radio-group>
                       </v-row>
-                      <v-autocomplete
-                        v-model="bank_id"
-                        chips
-                        clearable
-                        label="เลือกธนาคาร"
-                        :items="bank2"
-                        item-text="bank_name"
-                        item-value="_id"
-                        v-if="bank === 'transfer'"
-                      ></v-autocomplete>
+
+                      <v-row v-if="bank === 'transfer'">
+                        <v-card
+                          width="30%"
+                          height="10%"
+                          class="mx-1"
+                          v-for="(bank, i) in bank2"
+                          :key="i"
+                          @click="bank_id = bank._id"
+                          :color="
+                            bank_id === bank._id
+                              ? 'light-green accent-3'
+                              : 'white'
+                          "
+                        >
+                          <v-img
+                            :src="$nuxt.context.env.config.IMG_URL + bank.img"
+                            height="100px"
+                            class="grey darken-4"
+                          ></v-img>
+                          <v-card-title class="text-h6">
+                            {{ bank.bank_name }}
+                          </v-card-title>
+                        </v-card>
+                      </v-row>
                     </v-col>
                   </v-row>
 
@@ -146,6 +161,7 @@
                         block
                         color="red"
                         dark
+                        :disabled="statusCook === 1"
                         @click="cancelOrder"
                         >ยกเลิกออเดอร์</v-btn
                       >
@@ -343,7 +359,15 @@ export default {
   components: {
     Calculator
   },
-  props: ["orders", "subtotal", "dialog", "customers", "idOrder", "bank2"],
+  props: [
+    "orders",
+    "subtotal",
+    "dialog",
+    "customers",
+    "idOrder",
+    "bank2",
+    "statusCook"
+  ],
   data: () => ({
     items: ["นาย", "นาง", "น.ส.", "ด.ช.", "ด.ญ"],
     items2: [
@@ -387,6 +411,7 @@ export default {
     checkout: false,
     bank_id: null,
     tax: 0
+    //bank3: []
   }),
   methods: {
     closeDialog() {
@@ -404,6 +429,7 @@ export default {
         this.customers2.push(cus);
       }
     },
+
     async addCus() {
       this.$refs.form.validate();
       //console.log(this.cus);
@@ -466,6 +492,8 @@ export default {
             if (!money.noBill) {
               this.print(money, pay.data.data);
             }
+
+            this.$emit("closeDialog_cook");
             this.$emit("closeDialog");
             this.$emit("clearOrder");
             this.checkout = false;
@@ -509,6 +537,7 @@ export default {
             if (!money.noBill) {
               this.print(money, pay.data.data);
             }
+            this.$emit("closeDialog_cook");
             this.$emit("closeDialog");
             this.$emit("clearOrder");
             this.checkout = false;
@@ -568,6 +597,7 @@ export default {
         };
         return newPayment1;
       } else {
+        this.bank_id = "60e6e7fbc4c3411dcc562608";
         const newPayment2 = {
           ref_cus_id: this.cusId,
           ref_bank_id: this.bank_id,
@@ -590,9 +620,15 @@ export default {
     },
     cancelOrder() {
       if (this.idOrder !== null) {
-        this.$axios.$delete("/order/" + this.idOrder);
-        this.$emit("clearOrder");
-        this.$emit("closeDialog");
+        this.$axios
+          .$delete("/order/" + this.idOrder)
+          .then(() => {
+            this.$emit("clearOrder");
+            this.$emit("closeDialog");
+          })
+          .catch(e => {
+            this.$swal(e);
+          });
       } else {
         this.$emit("clearOrder");
         this.$emit("closeDialog");
@@ -608,7 +644,7 @@ export default {
       );
       WinPrint.document.write("<table >");
       WinPrint.document.write(
-        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
+        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.jpg'></th></tr>"
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
@@ -721,6 +757,7 @@ export default {
   },
   created() {
     this.improveCus();
+    //this.improveBank();
   }
 };
 </script>

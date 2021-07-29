@@ -3,7 +3,11 @@
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
       <v-row>
         <v-col cols="12" xs="12" sm="12" md="3">
-          <MenuProfile :loadData="loadData" />
+          <MenuProfile
+            :loadData="loadData"
+            :totalprice="totalprice"
+            :Sumtotal="Sumtotal"
+          />
         </v-col>
         <v-col xs="12" sm="12" md="9" class="">
           <v-card>
@@ -23,9 +27,7 @@
                   <h1 class="pa-2 mt-n2">
                     {{ formatPrice(loadData.point) }}
                   </h1>
-                  <h1 class="mt-n4 text-point">
-                    Point Coin
-                  </h1>
+                  <h1 class="mt-n4 text-point">Point Coin</h1>
                   <!-- <div class="text-center grey lighten-5">อัพเดท {{}}</div> -->
                 </v-col>
                 <v-col cols="1"> </v-col>
@@ -76,6 +78,7 @@ import MenuProfile from "~/components/memberLayout/MenuProfile";
 export default {
   layout: "layoutMember",
   middleware: ["auth"],
+
   data() {
     return {
       headers: [
@@ -121,9 +124,21 @@ export default {
     const loadPoint = await context.$axios.$get(
       "/point-manage/customer/" + context.$auth.user._id
     );
+
+    const data = await context.$axios.$get(
+      "/payment/customer/" + context.$auth.user._id
+    );
+    let totalprice = 0;
+    for (let key in data) {
+      totalprice += data[key].net_price;
+    }
+    let target_price = loadData.ref_level_id.target_price;
+
+    let Sumtotal = 0;
+    Sumtotal = (totalprice / target_price) * 100;
     //console.log(loadPoint);
     //console.log(context.$auth.user);
-    return { loadData, loadPoint };
+    return { loadData, loadPoint, totalprice, Sumtotal };
   },
   filters: {
     moment: function(date) {

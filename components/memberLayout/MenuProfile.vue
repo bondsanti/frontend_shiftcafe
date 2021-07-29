@@ -21,21 +21,36 @@
           </v-col>
         </v-row>
       </v-img>
-
-      <v-progress-linear
-        v-model="knowledge"
-        height="15"
-        color="amber"
-        class="mt-5 rounded-xl"
-      >
-        <strong class="text-right">{{ Math.ceil(knowledge) }}%</strong>
-      </v-progress-linear>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-progress-linear
+            v-bind="attrs"
+            v-on="on"
+            :value="Sumtotal"
+            height="17"
+            striped
+            color="amber"
+            class="mt-5 rounded-xl"
+          >
+            <!-- <strong>{{ formatPrice(Sumtotal) }}%</strong> -->
+            <strong
+              >{{ formatPrice(totalprice) }}/{{
+                formatPrice(loadData.ref_level_id.target_price)
+              }}</strong
+            >
+          </v-progress-linear>
+        </template>
+        <span>ยอดซื้อสะสม/เป้าหมายยอดเปลี่ยนระดับสมาชิก</span>
+      </v-tooltip>
     </div>
     <!--d-none d-sm-flex d-md-flex d-lg-flex-->
     <v-card class="mx-auto hidden-xs-and-down hidden-sm-and-down">
       <v-list mandatory nav>
         <h4 class="text-center pa-2">
-          สวัสดี คุณ : <span class="red_fix--text"> Santi</span>
+          สวัสดี คุณ :
+          <span class="red_fix--text">
+            {{ loadData.fname }} {{ loadData.lname }}</span
+          >
         </h4>
         <v-divider></v-divider>
         <v-list-item-group v-model="selectedItem" color="error">
@@ -95,13 +110,13 @@
 export default {
   //components: { Footer },
   layout: "layoutMember",
-  props: ["loadData"],
-  props: ["storyBuy"],
+  props: ["loadData", "totalprice", "Sumtotal"],
+
   data() {
     return {
-      //loadData: [],
       selectedItem: 0,
-      knowledge: 33,
+      total_price: [],
+      knowledge: 1000,
       items: [
         { text: "ข้อมูลส่วนตัว", icon: "mdi-account", to: "/member" },
         {
@@ -130,6 +145,11 @@ export default {
     async logout() {
       await this.$auth.logout();
       this.$router.push("/login");
+    },
+    formatPrice(Sumtotal) {
+      const value = parseInt(Sumtotal);
+      let val = (value / 1).toFixed(2).replace(",", ".");
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
   }
 };

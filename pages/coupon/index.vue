@@ -3,7 +3,11 @@
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
       <v-row>
         <v-col cols="12" xs="12" sm="12" md="3">
-          <MenuProfile :loadData="loadData" />
+          <MenuProfile
+            :loadData="loadData"
+            :totalprice="totalprice"
+            :Sumtotal="Sumtotal"
+          />
         </v-col>
         <v-col xs="12" sm="12" md="9" class="">
           <h2 class="text-left mb-2">คูปอง</h2>
@@ -136,9 +140,20 @@ export default {
     const loadData = await context.$axios.$get(
       "/customer/" + context.$auth.user._id
     );
+    const data = await context.$axios.$get(
+      "/payment/customer/" + context.$auth.user._id
+    );
+    let totalprice = 0;
+    for (let key in data) {
+      totalprice += data[key].net_price;
+    }
+    let target_price = loadData.ref_level_id.target_price;
+
+    let Sumtotal = 0;
+    Sumtotal = (totalprice / target_price) * 100;
     //console.log(loadData);
     //console.log(context.$auth.user);
-    return { loadData };
+    return { loadData, totalprice, Sumtotal };
   },
   components: {
     MenuProfile

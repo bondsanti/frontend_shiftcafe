@@ -160,7 +160,7 @@ export default {
         this.detailArr = [
           {
             name: "หมายเลขออเดอร์",
-            value: item.ref_order_id.order_no
+            value: item.ref_order_id ? item.ref_order_id.order_no : ""
           },
           {
             name: "พนักงานที่รับเงิน",
@@ -219,7 +219,7 @@ export default {
         this.detailArr = [
           {
             name: "หมายเลขออเดอร์",
-            value: item.ref_order_id.order_no
+            value: item.ref_order_id ? item.ref_order_id.order_no : ""
           },
           {
             name: "พนักงานที่รับเงิน",
@@ -293,8 +293,8 @@ export default {
         "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
       );
       WinPrint.document.write("<table>");
-      WinPrint.document.write(
-        "<tr><th>SHIFT CAFÉ</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.png'></th></tr>"
+      await WinPrint.document.write(
+        "<tr><th>SHIFT CAFÉ</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.jpg'></th></tr>"
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");

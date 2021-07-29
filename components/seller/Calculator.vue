@@ -13,7 +13,6 @@
                   style="font-size:2em;font-weight:900"
                   min="1"
                   label="รับเงินมา"
-                  autofocus
                   outlined
                   v-model.lazy="receive"
                   type="number"

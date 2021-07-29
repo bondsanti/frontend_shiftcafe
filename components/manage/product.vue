@@ -47,11 +47,12 @@
         :items-per-page="20"
         :footer-props="{
           'items-per-page-options': [20, 20, 30, 40, 50, -1],
-           prevIcon: 'mdi-chevron-left',
+          prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
-        }">
+        }"
       >
+        >
         <template v-slot:[`item.img`]="{ item }">
           <v-img
             :src="`${$nuxt.context.env.config.IMG_URL}${item.img}`"
@@ -128,7 +129,7 @@
                         color="#1D1D1D"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="4" class="mt-n7">
+                    <!-- <v-col cols="12" md="4" class="mt-n7">
                       <v-text-field
                         outlined
                         label="จำนวนStock"
@@ -136,7 +137,7 @@
                         required
                         color="#1D1D1D"
                       ></v-text-field>
-                    </v-col>
+                    </v-col> -->
 
                     <v-col cols="12" class="mt-n7">
                       <v-img
@@ -369,22 +370,37 @@ export default {
         formdata.append("ref_cate_id", this.productsItem.ref_cate_id);
         formdata.append("price_cost", this.productsItem.price_cost);
         formdata.append("price", this.productsItem.price);
-        formdata.append("stock", this.productsItem.stock);
+        //formdata.append("stock", this.productsItem.stock);
         formdata.append("img", this.preImg);
         //console.log(this.productsItem);
-        this.$emit("addProduct", formdata);
-        this.productsItem = {
-          product_name: "",
-          ref_uid: "",
-          ref_cate_id: " ",
-          price_cost: " ",
-          price: "",
-          stock: "",
-          img: " "
-        };
-        this.imageURL = null;
-        this.close();
-        this.preImg = null;
+        //this.$emit("addProduct", formdata);
+        this.$axios
+          .$post("/product", formdata)
+          .then(res => {
+            this.$emit("refresh");
+            this.productsItem = {
+              product_name: "",
+              ref_uid: "",
+              ref_cate_id: " ",
+              price_cost: " ",
+              price: "",
+              stock: "",
+              img: " "
+            };
+            this.imageURL = null;
+            this.close();
+            this.preImg = null;
+            this.$swal({
+              type: "success",
+              title: res.message
+            });
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
       } else {
         this.loading = true;
         let formdata = new FormData();
@@ -393,7 +409,7 @@ export default {
         formdata.append("ref_cate_id", this.productsItem.ref_cate_id);
         formdata.append("price_cost", this.productsItem.price_cost);
         formdata.append("price", this.productsItem.price);
-        formdata.append("stock", this.productsItem.stock);
+        //formdata.append("stock", this.productsItem.stock);
         if (this.preImg !== null) {
           formdata.append("img", this.preImg);
         }

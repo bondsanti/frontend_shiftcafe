@@ -63,6 +63,7 @@
             contain
           />
         </template>
+        
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="700px">
             <v-card>

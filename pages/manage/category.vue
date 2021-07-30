@@ -15,7 +15,7 @@ export default {
   },
   async asyncData(context) {
     const category = await context.$axios.$get("/category");
-    //console.log(unit);
+   
     return { category };
   },
   components: {

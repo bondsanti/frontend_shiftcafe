@@ -53,7 +53,7 @@ export default {
   },
   methods:{
    goTopayment(){
-   this.$router.push('/manage/payment'); 
+   this.$router.push('/manage/Bank'); 
       }
   }
 };

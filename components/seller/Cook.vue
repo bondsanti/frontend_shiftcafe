@@ -193,21 +193,115 @@
                   >
                   <v-expansion-panel-content>
                     <v-row class="justify-center my-1">
-                      <v-btn small fab
-                        ><v-icon color="info" @click="viewOrder(i)"
-                          >mdi-eye</v-icon
-                        ></v-btn
-                      >
+                      <v-tooltip top>
+                        <template v-slot:activator="{ attrs, on }">
+                          <v-btn
+                            v-on="on"
+                            v-bind="attrs"
+                            small
+                            fab
+                            class="ma-1"
+                            v-show="orderOnDatabase[i].status_cook === 0"
+                            ><v-icon
+                              color="indigo accent-4"
+                              @click="checkCook(i)"
+                              >mdi-format-list-checks</v-icon
+                            ></v-btn
+                          >
+                        </template>
+                        <span>ตรวจสอบการสั่งทำ</span>
+                      </v-tooltip>
                     </v-row>
-                    <v-row class="justify-center my-2 ">
-                      <v-btn small fab @click="printorder(i)"
-                        ><v-icon color="teal">mdi-printer</v-icon></v-btn
-                      >
+                    <v-row class="justify-center my-1 ">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ attrs, on }">
+                          <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            small
+                            fab
+                            class="ma-1"
+                            v-show="orderOnDatabase[i].status_cook !== 0"
+                            ><v-icon color="info" @click="checkout(i)"
+                              >mdi-cash-100</v-icon
+                            ></v-btn
+                          >
+                        </template>
+                        <span>ชำระเงิน</span>
+                      </v-tooltip>
                     </v-row>
-                    <v-row class="justify-center mt-1">
-                      <v-btn small fab @click="deleteOrderOnDatabase(i)"
-                        ><v-icon color="red">mdi-delete</v-icon></v-btn
-                      >
+                    <v-row class="justify-center my-1">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ attrs, on }">
+                          <v-btn
+                            v-bind="attrs"
+                            v-on="on"
+                            small
+                            fab
+                            class="ma-1"
+                            v-show="orderOnDatabase[i].status_cook === 0"
+                            ><v-icon color="info" @click="viewOrderChild(i)"
+                              >mdi-eye</v-icon
+                            ></v-btn
+                          >
+                        </template>
+                        <span>ดูรายการหรือแก้ไข</span>
+                      </v-tooltip>
+                    </v-row>
+                    <v-row class="justify-center my-1 ">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ attrs, on }">
+                          <v-btn
+                            v-on="on"
+                            v-bind="attrs"
+                            v-show="orderOnDatabase[i].status_cook !== 0"
+                            small
+                            fab
+                            class="ma-1"
+                            @click="printorder(i)"
+                            ><v-icon color="light-green darken-1"
+                              >mdi-printer</v-icon
+                            ></v-btn
+                          >
+                        </template>
+                        <span>สำหรับเรียกเก็บเงินลูกค้า</span>
+                      </v-tooltip>
+                    </v-row>
+                    <v-row class="justify-center my-1">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ attrs, on }">
+                          <v-btn
+                            v-on="on"
+                            v-bind="attrs"
+                            v-show="orderOnDatabase[i].status_cook !== 0"
+                            small
+                            fab
+                            class="ma-1"
+                            @click="for_chef(i)"
+                            ><v-icon color="teal darken-2"
+                              >mdi-printer-3d</v-icon
+                            ></v-btn
+                          >
+                        </template>
+                        <span>สำหรับสั่งทำอาหาร</span>
+                      </v-tooltip>
+                    </v-row>
+                    <v-row class="justify-center my-1">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ attrs, on }">
+                          <v-btn
+                            v-on="on"
+                            v-bind="attrs"
+                            small
+                            fab
+                            class="ma-1"
+                            @click="deleteOrderOnDatabase(i)"
+                            v-show="orderOnDatabase[i].status_cook === 0"
+                            ><v-icon color="red">mdi-delete</v-icon></v-btn
+                          >
+                        </template>
+                        <span>ลบรายการสั่งซื้อ</span>
+                      </v-tooltip>
                     </v-row>
                   </v-expansion-panel-content>
                 </v-expansion-panel>

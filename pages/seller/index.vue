@@ -453,12 +453,14 @@ export default {
       });
     }
   },
+
   created() {
     if (this.$store.getters["position"] === "staff") {
       this.checkStaff = false;
     } else {
       this.checkStaff = true;
     }
+    this.$;
   }
 };
 </script>

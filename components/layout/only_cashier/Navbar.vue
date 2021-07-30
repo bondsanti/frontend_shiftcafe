@@ -47,35 +47,15 @@
           <h3>{{ item.title }}</h3>
         </v-list-item-content>
       </v-list-item>
-      <!-- 2 -->
-      <!-- <template v-slot:append>
-        <div class="pa-2">
-          <v-list>
-            <v-list-item
-              v-for="(item, i) in below"
-              :key="i"
-              :to="item.to"
-              router
-              exact
-            >
-              <v-list-item-action>
-                <v-icon>{{ item.icon }}</v-icon>
-              </v-list-item-action>
-
-              <v-list-item-content>
-                <v-list-item-title class="pa-3" v-text="item.title" />
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </div>
-      </template> -->
-      <!-- 2 -->
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app color="#1d1d1d" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title class="hidden-xs-only">SHIFT CAFÉ</v-toolbar-title>
+      <v-btn icon @click="$nuxt.refresh()">
+        <v-icon>mdi-refresh</v-icon>
+      </v-btn>
       <v-spacer></v-spacer>
-
+      <span class="mr-4  hidden-xs-only font-weight-bold">{{ timer }}</span>
       <v-avatar size="36px" class="mr-2 hidden-xs-only">
         <v-icon x-large>mdi-account-circle</v-icon>
       </v-avatar>
@@ -130,7 +110,8 @@ export default {
         }
       ],
       miniVariant: false,
-      below: []
+      below: [],
+      timer: null
     };
   },
   methods: {
@@ -164,10 +145,23 @@ export default {
           }
         ];
       }
+    },
+    getTime() {
+      let now = new Date();
+      return `${
+        now.getHours() < 10 ? "0" + now.getHours() : now.getHours()
+      } : ${
+        now.getMinutes() < 10 ? "0" + now.getMinutes() : now.getMinutes()
+      } : ${now.getSeconds() < 10 ? "0" + now.getSeconds() : now.getSeconds()}`;
+      //let now = new Date();
     }
   },
   created() {
     this.checkStaff();
+
+    setInterval(() => {
+      this.timer = this.getTime();
+    }, 1000);
   }
 };
 </script>

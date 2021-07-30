@@ -78,10 +78,19 @@
               <template v-slot:[`item.withdraw_money`]="{ item }">
                 <span class="">{{ formatPrice(item.withdraw_money) }} ฿</span>
               </template>
+              <template v-slot:[`item.status`]="{ item }">
+                <v-chip
+                  :color="item.status === 'ใช้งานอยู่' ? 'green' : 'red'"
+                  dark
+                  small
+                >
+                  {{ item.status }}
+                </v-chip>
+              </template>
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn
                   class="mr2"
-                  color="warning"
+                  color="light-green accent-3"
                   @click="Detail(item.actions)"
                   small
                 >
@@ -89,6 +98,17 @@
                     mdi-eye-settings
                   </v-icon>
                   ดูรายละเอียด
+                </v-btn>
+                <v-btn
+                  class="ml-2"
+                  color="red accent-3"
+                  @click="disableBill(item.actions)"
+                  small
+                >
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-stop-circle-outline
+                  </v-icon>
+                  ยกเลิกบิล
                 </v-btn>
               </template>
             </v-data-table>
@@ -119,6 +139,7 @@ export default {
         { text: "ยอดสุทธิ", value: "net_price" },
         { text: "เงินรับมา", value: "receive_money" },
         { text: "เงินทอน", value: "withdraw_money" },
+        { text: "สถานะ", value: "status" },
         { text: "หมายเหตุ", value: "actions", sortable: false }
       ],
       detailArr: [],
@@ -136,6 +157,7 @@ export default {
           net_price: item.net_price,
           receive_money: item.receive_money,
           withdraw_money: item.withdraw_money,
+          status: item.status === 0 ? "ใช้งานอยู่" : "ยกเลิกใบเสร็จรับเงิน",
           actions: item
         };
       });
@@ -279,6 +301,7 @@ export default {
     close() {
       this.dialog = false;
     },
+    disableBill(item) {},
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");

@@ -63,14 +63,14 @@
             contain
           />
         </template>
-        
+
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="700px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left> mdi-ticket-percent-outline </v-icon>
-                  {{ formTitle }}</span
+                  {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
                 >
               </v-card-title>
 
@@ -111,49 +111,48 @@
                         v-model="productsItem.ref_uid"
                       ></v-select>
                     </v-col>
-                    <v-col cols="12" md="4" class="mt-n7">
+                    <v-col cols="12" md="6" class="mt-n7">
                       <v-text-field
                         outlined
                         label="ราคาต้นทุน"
+                        suffix="฿"
+                        type="number"
+                        min="0"
                         v-model="productsItem.price_cost"
                         required
                         color="#1D1D1D"
                       ></v-text-field>
                     </v-col>
 
-                    <v-col cols="12" md="4" class="mt-n7">
+                    <v-col cols="12" md="6" class="mt-n7">
                       <v-text-field
                         outlined
                         label="ราคาขาย"
+                        suffix="฿"
+                        type="number"
+                        min="0"
                         v-model="productsItem.price"
                         required
                         color="#1D1D1D"
                       ></v-text-field>
                     </v-col>
-                    <!-- <v-col cols="12" md="4" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="จำนวนStock"
-                        v-model="productsItem.stock"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col> -->
 
                     <v-col cols="12" class="mt-n7">
+                      <h3 class="text-center ml-12  mt-3">รูปภาพประกอบ</h3>
+
                       <v-img
                         v-if="imageURL"
                         :src="imageURL"
                         contain
-                        max-height="300px"
-                        max-width="300px"
-                        class="mb-3"
+                        :aspect-ratio="16 / 9"
+                        class="mb-3 ml-12"
                       ></v-img>
                       <input
-                        accept="image/*"
-                        type="file"
+                       type="file"  accept="image/*" required
                         @change="onFileSelected"
                       />
+                    
+                    
                     </v-col>
                   </v-row>
                 </div>
@@ -265,7 +264,6 @@ export default {
       ref_cate_id: " ",
       price_cost: " ",
       price: "",
-      stock: "",
       img: ""
     },
     type: null,
@@ -312,7 +310,6 @@ export default {
         ref_cate_id: item.ref_cate_id._id,
         price_cost: item.price_cost,
         price: item.price,
-        stock: item.stock,
         img: item.img
       };
       this.dialog = true;
@@ -351,8 +348,9 @@ export default {
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedItem = Object.assign({}, this.defaultItem);    
         this.editedIndex = -1;
+         this.$emit("refresh");
       });
     },
     closeDelete() {
@@ -360,6 +358,7 @@ export default {
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+        this.$emit("refresh");
       });
     },
     save() {

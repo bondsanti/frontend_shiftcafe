@@ -54,7 +54,7 @@
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left> mdi-ticket-account </v-icon>
-                  {{ formTitle }}</span
+                   {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
                 >
               </v-card-title>
               <v-form v-model="valid" ref="form">
@@ -117,7 +117,7 @@
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
                   </v-icon>
-                  เพิ่มข้อมูล
+                    {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -219,11 +219,11 @@ export default {
     valid: true
   }),
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "จัดการข้อมูล " : "จัดการข้อมูล ";
-    }
-  },
+  // computed: {
+  //   formTitle() {
+  //     return this.editedIndex === -1 ? "จัดการข้อมูล " : "จัดการข้อมูล ";
+  //   }
+  // },
   watch: {
     dialog(val) {
       val || this.close();
@@ -306,6 +306,7 @@ export default {
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
+        this.$emit("refresh");
         this.editedIndex = -1;
       });
     },
@@ -313,6 +314,7 @@ export default {
       this.dialogDelete = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
+        this.$emit("refresh");
         this.editedIndex = -1;
       });
     },

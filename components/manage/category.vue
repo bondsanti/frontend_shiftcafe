@@ -54,7 +54,7 @@
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left> mdi-food-fork-drink </v-icon>
-                  {{ formTitle }}</span
+                   {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
                 >
               </v-card-title>
               <v-form v-model="valid" ref="form">
@@ -75,9 +75,8 @@
                           v-if="imageURL"
                           :src="imageURL"
                           contain
-                          max-height="300px"
-                          max-width="300px"
-                          class="mb-3 ml-12"
+                         :aspect-ratio="16 / 9"
+                          class="mb-3 ml-6"
                         ></v-img>
                         <input
                           accept="image/*"
@@ -110,7 +109,7 @@
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
                   </v-icon>
-                  เพิ่มข้อมูลหมวดหมูสินค้า
+                     {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
                 </v-btn>
               </v-card-actions>
             </v-card>

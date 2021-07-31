@@ -2,33 +2,23 @@
   <section class="container">
     <div>
       <logo />
-      <h1 class="title">
-        test
-      </h1>
+      <span
+        :class="[$vuetify.breakpoint.smAndDown ? 'display-3' : 'display-4']"
+        class="font-weight-black"
+      >
+        CAFE SHIFT
+      </span>
       <h2 class="subtitle">
-        My premium Nuxt.js project
+       
       </h2>
-      <div class="links">
-        <v-btn>Documentation</v-btn>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-          >GitHub</a
-        >
-      </div>
+      <NuxtLink to="/">กลับไปหน้าหลัก</NuxtLink>
     </div>
   </section>
 </template>
 
 <script>
-import Logo from "~/components/Logo.vue";
-
 export default {
   middleware: ["auth", "checkAll", "refresh"],
-  components: {
-    Logo
-  },
   created() {
     const position = this.$store.getters["position"];
     //console.log(position);

@@ -55,6 +55,7 @@
                         <v-date-picker
                           v-model="cashdraw.datetime"
                           @input="menu2 = false"
+                          locale="th-TH"
                         ></v-date-picker>
                       </v-menu>
                     </v-col>

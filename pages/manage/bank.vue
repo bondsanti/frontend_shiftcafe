@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Bank from "@/components/seller/Bank.vue";
+import Bank from "@/components/manage/Bank.vue";
 export default {
   head: {
     title: "ใบสั่งซื้อ"

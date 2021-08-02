@@ -6,7 +6,7 @@
           <v-form>
             <v-card-title>
               <span class="text-h"
-                ><v-icon left> mdi-note-text-outline </v-icon>
+                ><v-icon left id="printable"> mdi-note-text-outline </v-icon>
                 หมายเลขใบเสร็จรับเงิน : {{ itemBy.invoice }}</span
               >
             </v-card-title>
@@ -104,11 +104,26 @@
                   color="red accent-3"
                   @click="disableBill(item.actions)"
                   small
+                  v-if="item.actions.status === 0"
+                  dark
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-stop-circle-outline
                   </v-icon>
                   ยกเลิกบิล
+                </v-btn>
+                <v-btn
+                  class="ml-2"
+                  color="blue"
+                  @click="enableBill(item.actions)"
+                  small
+                  v-if="item.actions.status === 1"
+                  dark
+                >
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-check-bold
+                  </v-icon>
+                  เปิดใช้งานบิล
                 </v-btn>
               </template>
             </v-data-table>
@@ -116,6 +131,36 @@
         </v-col>
       </v-row>
     </v-card>
+    <v-dialog v-model="dialogDelete" max-width="450px" width="auto">
+      <v-card>
+        <v-card-title class="text-h5 white--text  primary text-center">
+          {{
+            typePayment === "disable"
+              ? "แน่ใจแล้วใช่มั้ยที่จะยกเลิกบิล"
+              : "แน่ใจแล้วใช่มั้ยที่จะเปิดการใช้งานบิล"
+          }}
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" class="ma-2" @click="dialogDelete = false">
+            <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon
+            >ไม่ละ เปลี่ยนใจแล้ว</v-btn
+          >
+          <v-btn color="red" class="ma-2" @click="manageBill" dark>
+            <v-icon aria-hidden="false"
+              >{{
+                typePayment === "disable"
+                  ? "mdi-delete-forever"
+                  : "mdi-newspaper-variant-outline"
+              }} </v-icon
+            >{{
+              typePayment === "disable" ? "ยกเลิกบิล" : "เปิดการใช้งานบิล"
+            }}</v-btn
+          >
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -143,7 +188,10 @@ export default {
         { text: "หมายเหตุ", value: "actions", sortable: false }
       ],
       detailArr: [],
-      order_id: ""
+      order_id: "",
+      dialogDelete: false,
+      idPayment: null,
+      typePayment: null
     };
   },
   computed: {
@@ -301,37 +349,70 @@ export default {
     close() {
       this.dialog = false;
     },
-    disableBill(item) {},
+    disableBill(item) {
+      this.typePayment = "disable";
+      this.idPayment = item._id;
+      this.dialogDelete = true;
+    },
+    enableBill(item) {
+      this.typePayment = "enable";
+      this.idPayment = item._id;
+      this.dialogDelete = true;
+    },
+    manageBill() {
+      this.$axios
+        .$put("/payment/" + this.idPayment, {
+          status: this.typePayment === "disable" ? 1 : 0
+        })
+        .then(res => {
+          this.idPayment = null;
+          this.dialogDelete = false;
+          this.$nuxt.refresh();
+          this.$swal.fire({
+            type: "success",
+            title: res.message
+          });
+          this.typePayment = null;
+        })
+        .catch(e => {
+          this.$swal.fire({
+            type: "warning",
+            title: e
+          });
+        });
+    },
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
       return this.$moment(strdate).format("D MMMM YYYY H:mm");
     },
     async printInvoice() {
+      //console.log(window.location.href);
       const order = await this.$axios.$get("/order/" + this.order_id);
-      const today = new Date(order.datetime);
+      //const today = new Date(order.datetime);
+
       var WinPrint = window.open(
         "",
         "",
         "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
       );
+
       WinPrint.document.write("<table>");
-      await WinPrint.document.write(
-        "<tr><th>SHIFT CAFÉ</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.jpg'></th></tr>"
+
+      WinPrint.document.write(
+        `<tr><th>${this.$store.getters["setting"][0].head_title}</th><th style='padding-left:60px'><img width='70px' height='70px' src='${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}'></th></tr>`
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
       WinPrint.document.write(
-        "<tr><th align='left'>บริษัท ชิฟท์ เรสเตอรองต์ จำกัด</th></tr>"
+        `<tr><th align='left'>${this.$store.getters["setting"][0].restaurant}</th></tr>`
       );
       WinPrint.document.write(
-        "<tr><th align='left'>ที่อยู่ : 89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท</th></tr>"
+        `<tr><th align='left'>ที่อยู่ : ${this.$store.getters["setting"][0].address}</th></tr>`
       );
+
       WinPrint.document.write(
-        "<tr><th align='left'>อำเภอเมือง จังหวัดลำปาง 52000</th></tr>"
-      );
-      WinPrint.document.write(
-        "<tr><th align='left'>เบอร์มือถือ : 0917961816</th></tr>"
+        `<tr><th align='left'>เบอร์มือถือ : ${this.$store.getters["setting"][0].tel}</th></tr>`
       );
       WinPrint.document.write(
         `<tr><th align='left'>พนักงานรับเงิน : ${this.itemBy.ref_emp_id.fname} ${this.itemBy.ref_emp_id.fname}</th></tr>`
@@ -412,12 +493,16 @@ export default {
         )} </th><th>บาท</th></tr>`
       );
       WinPrint.document.write(
-        `<tr><th  align=center style='padding-left:60px' >**ขอบคุณที่ใช้บริการ**</th></tr>`
+        `<tr><th  align=center style='padding-left:60px' >**ขอบคุณที่ใช้บริการ**</th></tr>
+        `
       );
       WinPrint.document.write("</table>");
+
       WinPrint.document.close();
       WinPrint.focus();
-      setTimeout(WinPrint.print(), 3000);
+      await setTimeout(WinPrint.print(), 50000);
+      //WinPrint.print();
+      //WinPrint.close();
     }
   },
 

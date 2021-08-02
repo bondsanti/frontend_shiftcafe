@@ -10,15 +10,15 @@ module.exports = {
     config
   },
   head: {
-    titleTemplate: "shift café  | %s",
-    title: "shift café",
+    titleTemplate: "DEV FONG  | %s",
+    title: "DEV FONG",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       {
         hid: "description",
         name: "description",
-        content: "shift café powered by Dev Fong Co.,Ltd."
+        content: "powered by Dev Fong Co.,Ltd."
       }
     ],
     link: [

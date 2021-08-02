@@ -45,17 +45,34 @@
 import setpayoutspoints from "@/components/manage/settings/setpayoutspoints.vue";
 
 export default {
-  head: {
-    title: "ตั้งค่า"
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: "ตั้งค่า",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
   },
   middleware: ["auth", "check", "refresh", "checkChecker"],
   components: {
     setpayoutspoints
   },
-  methods:{
-   goTopayment(){
-   this.$router.push('/manage/Bank'); 
-      }
+  methods: {
+    goTopayment() {
+      this.$router.push("/manage/Bank");
+    }
   }
 };
 

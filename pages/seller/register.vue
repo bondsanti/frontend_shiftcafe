@@ -10,8 +10,25 @@
 import register from "@/components/manage/customer.vue";
 export default {
   layout: "layoutCashier",
-  head: {
-    title: "ข้อมูลลูกค้า"
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: "จัดการข้อมูลลูกค้า",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
   },
   middleware: ["auth", "checkAll", "refresh", "checkChecker", "checkStaff"],
   async asyncData(context) {

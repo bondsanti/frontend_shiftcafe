@@ -1,7 +1,9 @@
 <template>
   <v-app-bar :clipped-left="clipped" fixed app color="#1d1d1d" dark>
     <v-app-bar-nav-icon @click.stop="toggleDrawer" />
-    <v-toolbar-title class="hidden-xs-only">SHIFT CAFÉ</v-toolbar-title>
+    <v-toolbar-title class="hidden-xs-only">{{
+      this.$store.getters["setting"][0].head_title
+    }}</v-toolbar-title>
     <v-btn icon @click="$nuxt.refresh()">
       <v-icon>mdi-refresh</v-icon>
     </v-btn>
@@ -50,6 +52,7 @@ export default {
     setInterval(() => {
       this.timer = this.getTime();
     }, 1000);
+    //console.log(this.$store.getters["setting"]);
   }
 };
 </script>

@@ -5,8 +5,25 @@
 <script>
 import cash from "@/components/seller/cashdraw.vue";
 export default {
-  head: {
-    title: "เงินทอน"
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: "จัดการเงินทอน",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
   },
   layout: "default",
   middleware: ["auth", "check", "refresh"],

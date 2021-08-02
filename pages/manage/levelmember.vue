@@ -10,8 +10,25 @@
 import levelmember from "@/components/manage/levelmember.vue";
 export default {
   middleware: ["auth", "check", "refresh", "checkChecker"],
-  head: {
-    title: "ระดับสมาชิก"
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: "จัดการระดับสมาชิก",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
   },
   async asyncData(context) {
     const levelmember = await context.$axios.$get("/level-member");

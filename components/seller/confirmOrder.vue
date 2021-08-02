@@ -643,23 +643,22 @@ export default {
         "",
         "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
       );
-      WinPrint.document.write("<table >");
+      WinPrint.document.write("<table>");
+
       WinPrint.document.write(
-        "<tr><th>SHIFT restaurant</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.jpg'></th></tr>"
+        `<tr><th>${this.$store.getters["setting"][0].head_title}</th><th style='padding-left:60px'><img width='70px' height='70px' src='${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}'></th></tr>`
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
       WinPrint.document.write(
-        "<tr><th align='left'>บริษัท ชิฟท์ เรสเตอรองต์ จำกัด</th></tr>"
+        `<tr><th align='left'>${this.$store.getters["setting"][0].restaurant}</th></tr>`
       );
       WinPrint.document.write(
-        "<tr><th align='left'>ที่อยู่ : 89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท</th></tr>"
+        `<tr><th align='left'>ที่อยู่ : ${this.$store.getters["setting"][0].address}</th></tr>`
       );
+
       WinPrint.document.write(
-        "<tr><th align='left'>อำเภอเมือง จังหวัดลำปาง 52000</th></tr>"
-      );
-      WinPrint.document.write(
-        "<tr><th align='left'>เบอร์มือถือ : 0917961816</th></tr>"
+        `<tr><th align='left'>เบอร์มือถือ : ${this.$store.getters["setting"][0].tel}</th></tr>`
       );
       WinPrint.document.write(
         `<tr><th align='left'>พนักงานรับเงิน : ${this.$store.getters["displayName"]}</th></tr>`

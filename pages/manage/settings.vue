@@ -8,7 +8,6 @@
          <setpayoutspoints />
       </v-col> -->
 
-
       <v-col cols="12" sm="4" md="4" class="pa-4">
         <v-hover v-slot="{ hover }" open-delay="300">
           <v-card
@@ -24,7 +23,12 @@
                 </v-card-title>
                 <v-card-subtitle> จะมาในอีกอนาคต.</v-card-subtitle>
                 <v-card-actions>
-                  <v-btn class="ml-2 mt-2" outlined roundedtext @click="goTopayment()">
+                  <v-btn
+                    class="ml-2 mt-2"
+                    outlined
+                    roundedtext
+                    @click="goTopayment()"
+                  >
                     ไปหน้าตั้งค่า
                   </v-btn>
                 </v-card-actions>
@@ -44,17 +48,34 @@
 import setpayoutspoints from "@/components/manage/settings/setpayoutspoints.vue";
 
 export default {
-  head: {
-    title: "ตั้งค่า"
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: "ตั้งค่า",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
   },
   middleware: ["auth", "check", "refresh", "checkChecker"],
   components: {
     setpayoutspoints
   },
-  methods:{
-   goTopayment(){
-   this.$router.push('/manage/Bank'); 
-      }
+  methods: {
+    goTopayment() {
+      this.$router.push("/manage/Bank");
+    }
   }
 };
 </script>

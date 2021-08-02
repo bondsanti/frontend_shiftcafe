@@ -1,5 +1,5 @@
 <template>
   <v-footer app dark color="#1d1d1d" fi>
-    <span>&copy; DEV FONG Co., Ltd.</span> <span> {{ new Date().getFullYear() }}</span>
+    <span>{{ this.$store.getters["setting"][0].footer }}</span>
   </v-footer>
 </template>

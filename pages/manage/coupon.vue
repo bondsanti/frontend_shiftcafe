@@ -11,8 +11,25 @@
 import coupon from "@/components/manage/coupon.vue";
 export default {
   middleware: ["auth", "check", "refresh", "checkChecker"],
-  head: {
-    title: "คูปอง"
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: "จัดการคูปอง",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
   },
   async asyncData(context) {
     const [coupon, employee, user] = await Promise.all([

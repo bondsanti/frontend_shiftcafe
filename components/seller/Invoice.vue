@@ -6,7 +6,7 @@
           <v-form>
             <v-card-title>
               <span class="text-h"
-                ><v-icon left> mdi-note-text-outline </v-icon>
+                ><v-icon left id="printable"> mdi-note-text-outline </v-icon>
                 หมายเลขใบเสร็จรับเงิน : {{ itemBy.invoice }}</span
               >
             </v-card-title>
@@ -387,30 +387,32 @@ export default {
       return this.$moment(strdate).format("D MMMM YYYY H:mm");
     },
     async printInvoice() {
+      //console.log(window.location.href);
       const order = await this.$axios.$get("/order/" + this.order_id);
-      const today = new Date(order.datetime);
+      //const today = new Date(order.datetime);
+
       var WinPrint = window.open(
         "",
         "",
         "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
       );
+
       WinPrint.document.write("<table>");
-      await WinPrint.document.write(
-        "<tr><th>SHIFT CAFÉ</th><th style='padding-left:60px'><iframe style='display:block;text-align: center ' frameBorder='0' scrolling='no' width='80px' height='80px' ><img src='https://scontent.fbkk5-5.fna.fbcdn.net/v/t1.6435-9/219450243_4086047634796848_3537943022672512165_n.jpg?_nc_cat=100&ccb=1-3&_nc_sid=730e14&_nc_eui2=AeHpyQlDQ4fnuDnQCHqsf0_92CbBUknPEC_YJsFSSc8QL51TH-e2dwv5ue5CLNbxX09RoM51QNz2FRdhTELx4auY&_nc_ohc=7LGKvqar7ZAAX9ui_i3&tn=Mm9FQaRVEP9MiGWq&_nc_ht=scontent.fbkk5-5.fna&oh=8a67be80eef6580c3f4e1d9b3ffa282c&oe=612A9BF8'></iframe></th></tr>"
+
+      WinPrint.document.write(
+        `<tr><th>${this.$store.getters["setting"][0].head_title}</th><th style='padding-left:60px'><img width='70px' height='70px' src='${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}'></th></tr>`
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
       WinPrint.document.write(
-        "<tr><th align='left'>บริษัท ชิฟท์ เรสเตอรองต์ จำกัด</th></tr>"
+        `<tr><th align='left'>${this.$store.getters["setting"][0].restaurant}</th></tr>`
       );
       WinPrint.document.write(
-        "<tr><th align='left'>ที่อยู่ : 89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท</th></tr>"
+        `<tr><th align='left'>ที่อยู่ : ${this.$store.getters["setting"][0].address}</th></tr>`
       );
+
       WinPrint.document.write(
-        "<tr><th align='left'>อำเภอเมือง จังหวัดลำปาง 52000</th></tr>"
-      );
-      WinPrint.document.write(
-        "<tr><th align='left'>เบอร์มือถือ : 0917961816</th></tr>"
+        `<tr><th align='left'>เบอร์มือถือ : ${this.$store.getters["setting"][0].tel}</th></tr>`
       );
       WinPrint.document.write(
         `<tr><th align='left'>พนักงานรับเงิน : ${this.itemBy.ref_emp_id.fname} ${this.itemBy.ref_emp_id.fname}</th></tr>`
@@ -491,12 +493,16 @@ export default {
         )} </th><th>บาท</th></tr>`
       );
       WinPrint.document.write(
-        `<tr><th  align=center style='padding-left:60px' >**ขอบคุณที่ใช้บริการ**</th></tr>`
+        `<tr><th  align=center style='padding-left:60px' >**ขอบคุณที่ใช้บริการ**</th></tr>
+        `
       );
       WinPrint.document.write("</table>");
+
       WinPrint.document.close();
       WinPrint.focus();
-      setTimeout(WinPrint.print(), 3000);
+      await setTimeout(WinPrint.print(), 50000);
+      //WinPrint.print();
+      //WinPrint.close();
     }
   },
 

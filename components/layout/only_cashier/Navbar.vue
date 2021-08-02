@@ -4,10 +4,10 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
-            SHIFT CAFÉ
+            {{ this.$store.getters["setting"][0].head_title }}
           </v-list-item-title>
           <v-list-item-subtitle>
-            คาเฟ่ no.1 ของเอเชียตะวันออกเฉียงใต้
+            {{ this.$store.getters["setting"][0].sub_title }}
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -50,7 +50,9 @@
     </v-navigation-drawer>
     <v-app-bar :clipped-left="clipped" fixed app color="#1d1d1d" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title class="hidden-xs-only">SHIFT CAFÉ</v-toolbar-title>
+      <v-toolbar-title class="hidden-xs-only">{{
+        this.$store.getters["setting"][0].head_title
+      }}</v-toolbar-title>
       <v-btn icon @click="$nuxt.refresh()">
         <v-icon>mdi-refresh</v-icon>
       </v-btn>

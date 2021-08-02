@@ -517,6 +517,7 @@ export default {
       } else {
         const newOrder = {
           status: 1,
+          status_cook: 1,
           list_product: this.orders,
           type_order: this.type_order,
           total_price: this.subtotal,

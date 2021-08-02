@@ -104,11 +104,26 @@
                   color="red accent-3"
                   @click="disableBill(item.actions)"
                   small
+                  v-if="item.actions.status === 0"
+                  dark
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-stop-circle-outline
                   </v-icon>
                   ยกเลิกบิล
+                </v-btn>
+                <v-btn
+                  class="ml-2"
+                  color="blue"
+                  @click="enableBill(item.actions)"
+                  small
+                  v-if="item.actions.status === 1"
+                  dark
+                >
+                  <v-icon aria-hidden="false" class="mx-2">
+                    mdi-check-bold
+                  </v-icon>
+                  เปิดใช้งานบิล
                 </v-btn>
               </template>
             </v-data-table>
@@ -116,6 +131,36 @@
         </v-col>
       </v-row>
     </v-card>
+    <v-dialog v-model="dialogDelete" max-width="450px" width="auto">
+      <v-card>
+        <v-card-title class="text-h5 white--text  primary text-center">
+          {{
+            typePayment === "disable"
+              ? "แน่ใจแล้วใช่มั้ยที่จะยกเลิกบิล"
+              : "แน่ใจแล้วใช่มั้ยที่จะเปิดการใช้งานบิล"
+          }}
+        </v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" class="ma-2" @click="dialogDelete = false">
+            <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon
+            >ไม่ละ เปลี่ยนใจแล้ว</v-btn
+          >
+          <v-btn color="red" class="ma-2" @click="manageBill" dark>
+            <v-icon aria-hidden="false"
+              >{{
+                typePayment === "disable"
+                  ? "mdi-delete-forever"
+                  : "mdi-newspaper-variant-outline"
+              }} </v-icon
+            >{{
+              typePayment === "disable" ? "ยกเลิกบิล" : "เปิดการใช้งานบิล"
+            }}</v-btn
+          >
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -143,7 +188,10 @@ export default {
         { text: "หมายเหตุ", value: "actions", sortable: false }
       ],
       detailArr: [],
-      order_id: ""
+      order_id: "",
+      dialogDelete: false,
+      idPayment: null,
+      typePayment: null
     };
   },
   computed: {
@@ -301,7 +349,38 @@ export default {
     close() {
       this.dialog = false;
     },
-    disableBill(item) {},
+    disableBill(item) {
+      this.typePayment = "disable";
+      this.idPayment = item._id;
+      this.dialogDelete = true;
+    },
+    enableBill(item) {
+      this.typePayment = "enable";
+      this.idPayment = item._id;
+      this.dialogDelete = true;
+    },
+    manageBill() {
+      this.$axios
+        .$put("/payment/" + this.idPayment, {
+          status: this.typePayment === "disable" ? 1 : 0
+        })
+        .then(res => {
+          this.idPayment = null;
+          this.dialogDelete = false;
+          this.$nuxt.refresh();
+          this.$swal.fire({
+            type: "success",
+            title: res.message
+          });
+          this.typePayment = null;
+        })
+        .catch(e => {
+          this.$swal.fire({
+            type: "warning",
+            title: e
+          });
+        });
+    },
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
@@ -317,7 +396,7 @@ export default {
       );
       WinPrint.document.write("<table>");
       await WinPrint.document.write(
-        "<tr><th>SHIFT CAFÉ</th><th style='padding-left:60px'><img width='70px' height='70px' src='https://api.shift-cafe.com/logo.jpg'></th></tr>"
+        "<tr><th>SHIFT CAFÉ</th><th style='padding-left:60px'><iframe style='display:block;text-align: center ' frameBorder='0' scrolling='no' width='80px' height='80px' ><img src='https://scontent.fbkk5-5.fna.fbcdn.net/v/t1.6435-9/219450243_4086047634796848_3537943022672512165_n.jpg?_nc_cat=100&ccb=1-3&_nc_sid=730e14&_nc_eui2=AeHpyQlDQ4fnuDnQCHqsf0_92CbBUknPEC_YJsFSSc8QL51TH-e2dwv5ue5CLNbxX09RoM51QNz2FRdhTELx4auY&_nc_ohc=7LGKvqar7ZAAX9ui_i3&tn=Mm9FQaRVEP9MiGWq&_nc_ht=scontent.fbkk5-5.fna&oh=8a67be80eef6580c3f4e1d9b3ffa282c&oe=612A9BF8'></iframe></th></tr>"
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");

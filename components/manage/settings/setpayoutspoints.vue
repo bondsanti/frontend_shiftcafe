@@ -13,7 +13,7 @@
               ตั้งค่าอัตราการจ่ายแต้ม
             </v-card-title>
 
-            <v-card-subtitle class="mt-2 ml-12">
+            <v-card-subtitle>
               <v-alert dense text color="success" >
                 100(฿) - ได้  - 1(P)
               </v-alert>
@@ -21,7 +21,7 @@
 
             <v-card-actions>
               <v-btn
-                class="ml-12"
+             
                 outlined
                 roundedtext
                 @click.stop="dialog = true"

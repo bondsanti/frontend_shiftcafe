@@ -3,3 +3,13 @@
     <span>{{ this.$store.getters["setting"][0].footer }}</span>
   </v-footer>
 </template>
+<script>
+  export default {
+    data: () => ({
+      icons: [
+        'mdi-facebook'
+       
+      ],
+    }),
+  }
+</script>

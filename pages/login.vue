@@ -37,6 +37,7 @@
                   label="PASSWORD"
                   color="secondary"
                   :rules="rules"
+                  
                   dark
                   outlined
                   :type="!showPass ? 'password' : 'text'"

@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import Bank from "@/components/manage/Bank.vue";
+import Bank from "@/components/manage/settings/Bank.vue";
 export default {
   head() {
     return {

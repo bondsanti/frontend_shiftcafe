@@ -31,6 +31,7 @@
                   class="mb-3"
                   append-icon="mdi-account-circle-outline"
                   v-model="username"
+                  autocomplete 
                 ></v-text-field>
                 <v-text-field
                   label="PASSWORD"
@@ -42,6 +43,7 @@
                   @click:append="showPass = !showPass"
                   append-icon="mdi-eye-off"
                   v-model="password"
+                  autocomplete 
                   @keypress.prevent.enter="login"
                 ></v-text-field>
               </v-form>

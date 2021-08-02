@@ -3,11 +3,27 @@
 </template>
 
 <script>
-
 import Invoice from "@/components/seller/Invoice.vue";
 export default {
-  head: {
-    title: "ข้อมูลการชำระเงิน"
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: "จัดการใบเสร็จรับเงิน",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
   },
   middleware: ["auth", "checkAll", "refresh"],
 

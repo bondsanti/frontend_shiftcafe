@@ -3,11 +3,28 @@
 </template>
 
 <script>
-import Order from "@/components/seller/Order.vue";;
+import Order from "@/components/seller/Order.vue";
 
 export default {
-  head: {
-    title: "ประวัติสั่งชื่อ"
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: "จัดการใบสั่งซื้อ",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
   },
   layout: "default",
   middleware: ["auth", "check", "refresh"],

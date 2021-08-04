@@ -6,11 +6,9 @@
         :class="[$vuetify.breakpoint.smAndDown ? 'display-3' : 'display-4']"
         class="font-weight-black"
       >
-        CAFE SHIFT
+        {{ $store.getters["setting"][0].head_title }}
       </span>
-      <h2 class="subtitle">
-       
-      </h2>
+      <h2 class="subtitle"></h2>
       <NuxtLink to="/">กลับไปหน้าหลัก</NuxtLink>
     </div>
   </section>
@@ -19,6 +17,26 @@
 <script>
 export default {
   middleware: ["auth", "checkAll", "refresh"],
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: "ยินดีต้อนรับ",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
+  },
   created() {
     const position = this.$store.getters["position"];
     //console.log(position);

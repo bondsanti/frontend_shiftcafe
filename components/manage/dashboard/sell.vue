@@ -6,7 +6,7 @@
         <v-card
           class="pa-1 rounded-lg"
           color="primary"
-          :elevation="hover ? 16 : 2"
+          :elevation="hover ? 24 : 2"
           dark
         >
           <div class="d-flex flex-no-wrap justify-space-between">
@@ -96,7 +96,7 @@
 <script>
 import moment from "moment";
 export default {
-  props: ["today", "month", "year"],
+  props: ["year", "dateNow"],
   data: () => ({
     todayPrice: 0,
     monthPrice: 0,
@@ -117,18 +117,38 @@ export default {
     ]
   }),
   methods: {
-    thinkToday() {
+    thinkMonth(datePara) {
+      //let date = new Date();
+      let date = new Date(datePara);
+      let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+      let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+      const month = this.year.filter(y => {
+        return (
+          new Date(y.datetime).getTime() >= firstDay.getTime() &&
+          new Date(y.datetime).getTime() <= lastDay.getTime()
+        );
+      });
+
+      const day = this.year.filter(d => {
+        return (
+          new Date(d.datetime).getDate() === date.getDate() &&
+          new Date(d.datetime).getMonth() === date.getMonth() &&
+          new Date(d.datetime).getFullYear() === date.getFullYear()
+        );
+      });
+      //console.log(day);
+
       let todayTotal = 0;
-      for (let i in this.today) {
-        todayTotal += this.today[i].net_price;
+      for (let i in day) {
+        todayTotal += day[i].net_price;
       }
 
       this.todayPrice = todayTotal;
-    },
-    thinkMonth() {
+
       let monthTotal = 0;
-      for (let i in this.month) {
-        monthTotal += this.month[i].net_price;
+      for (let i in month) {
+        monthTotal += month[i].net_price;
       }
 
       this.monthPrice = monthTotal;
@@ -142,7 +162,7 @@ export default {
       this.yearPrice = yearTotal;
     },
     rangeMonth() {
-      const today = new Date();
+      const today = new Date(this.dateNow);
       let month2 = today.getMonth();
       let endDay = new Date(today.getFullYear(), month2 + 1, 0);
 
@@ -152,24 +172,19 @@ export default {
         this.monthNamesThai[today.getMonth()]
       }/${today.getFullYear() + 543} `;
     },
-    formatDate(date) {
-      moment.locale("th");
-      var strdate = moment(date).add(543, "years");
 
-      return moment(strdate).format("D/MMMM/YYYY ");
-    },
     formatDate2() {
-      const today = new Date();
+      const today = new Date(this.dateNow);
 
-      return `${this.monthNamesThai[today.getMonth()]} - ${today.getFullYear() +
+      return `${this.monthNamesThai[today.getMonth()]} / ${today.getFullYear() +
         543}`;
     },
     formatDate3() {
-      const today = new Date();
+      const today = new Date(this.dateNow);
 
-      return `${today.getDate()} - ${
+      return `${today.getDate()} / ${
         this.monthNamesThai[today.getMonth()]
-      } - ${today.getFullYear() + 543}`;
+      } / ${today.getFullYear() + 543}`;
     },
     formatPrice(value2) {
       const value = parseInt(value2);
@@ -178,8 +193,7 @@ export default {
     }
   },
   created() {
-    this.thinkToday();
-    this.thinkMonth();
+    this.thinkMonth(new Date());
     this.thinkYear();
   }
 };

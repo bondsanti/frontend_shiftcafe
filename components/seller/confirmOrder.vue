@@ -118,22 +118,28 @@
                         <v-card
                           width="30%"
                           height="10%"
-                          class="mx-1"
+                          class="ma-1"
                           v-for="(bank, i) in bank2"
                           :key="i"
                           @click="bank_id = bank._id"
                           :color="
-                            bank_id === bank._id
-                              ? 'light-green accent-3'
-                              : 'white'
+                            bank_id === bank._id ? 'primary' : 'secondary'
                           "
                         >
                           <v-img
-                            :src="$nuxt.context.env.config.IMG_URL + bank.img"
+                            :src="
+                              $nuxt.context.env.config.IMG_URL + bank.img_cover
+                            "
                             height="100px"
                             class="grey darken-4"
                           ></v-img>
-                          <v-card-title class="text-h6">
+                          <v-card-title
+                            :class="
+                              bank_id === bank._id
+                                ? 'text-h6 white--text'
+                                : 'text-h6'
+                            "
+                          >
                             {{ bank.bank_name }}
                           </v-card-title>
                         </v-card>
@@ -598,7 +604,7 @@ export default {
         };
         return newPayment1;
       } else {
-        this.bank_id = "60e6e7fbc4c3411dcc562608";
+        this.bank_id = this.bank2[0]._id;
         const newPayment2 = {
           ref_cus_id: this.cusId,
           ref_bank_id: this.bank_id,

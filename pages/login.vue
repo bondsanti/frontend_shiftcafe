@@ -12,7 +12,9 @@
             <v-row justify="center" width="100">
               <v-img
                 class="white--text align-end mb-7"
-                :src="`${$nuxt.context.env.config.IMG_URL}${setting[0].logo}`"
+                :src="
+                  `${$nuxt.context.env.config.IMG_URL}${$store.getters['setting'][0].logo}`
+                "
                 max-height="300"
                 contain
               >
@@ -77,20 +79,20 @@ export default {
   },
   head() {
     return {
-      titleTemplate: `${this.setting[0].head_title}  | %s`,
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
       title: "เข้าสู่ระบบ",
       meta: [
         {
           hid: "description",
           name: "description",
-          content: this.setting[0].sub_title
+          content: this.$store.getters["setting"][0].sub_title
         }
       ],
       link: [
         {
           rel: "icon",
           type: "image/x-icon",
-          href: `${this.$nuxt.context.env.config.IMG_URL}${this.setting[0].logo}`
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
         }
       ]
     };

@@ -140,7 +140,7 @@
                   <h3 class="text-center white--text ml-12 mb-6">
                     <v-icon class="ma-2" color="white"
                       >mdi-credit-card-scan-outline</v-icon
-                    >รูปปก
+                    >รูปคิวอาร์โค้ด
                   </h3>
                   <v-img
                     v-if="imageURL"
@@ -160,7 +160,7 @@
                 <v-col cols="12" sm="6">
                   <h3 class="text-center ml-12 mb-6 white--text">
                     <v-icon color="white" class="ma-2">mdi-qrcode</v-icon
-                    >รูปคิวอาร์โค้ด
+                    >รูปปก 
                   </h3>
                   <v-img
                     v-if="imageURL2"
@@ -253,7 +253,7 @@
             <v-btn
               dark
               class="mr-5 "
-                elevation="15"
+              elevation="15"
               color="white"
               @click="
                 addItem();
@@ -284,7 +284,7 @@
               hide-details
             ></v-text-field>
           </v-card-title>
-
+<!-- g -->
           <v-data-iterator
             :headers="headers"
             :items="bank"
@@ -319,7 +319,7 @@
                         height="200px"
                         contain
                         :aspect-ratio="16 / 9"
-                        :src="`${$nuxt.context.env.config.IMG_URL}${item.img}`"
+                        :src="`${$nuxt.context.env.config.IMG_URL}${item.img_cover}`"
                       >
                         <v-app-bar flat color="rgba(0, 0, 0, 0)">
                           <v-toolbar-title

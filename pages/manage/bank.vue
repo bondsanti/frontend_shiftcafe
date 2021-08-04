@@ -25,6 +25,7 @@ export default {
       ]
     };
   },
+  layout: "layoutManage",
   middleware: ["auth", "checkAll", "refresh", "checkChecker"],
   async asyncData(context) {
     const [bank] = await Promise.all([context.$axios.$get("/bank")]);

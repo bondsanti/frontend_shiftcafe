@@ -9,6 +9,7 @@
 <script>
 import pointmanage from "@/components/manage/pointmanage.vue";
 export default {
+  layout: "layoutManage",
   middleware: ["auth", "check", "refresh", "checkChecker"],
   head() {
     return {

@@ -90,12 +90,12 @@ export default {
         },
         {
           icon: "mdi-barley ",
-          title: "จัดการหน่วยนับ",
+          title: "ประเภทอาหาร",
           to: "/manage/unit"
         },
         {
           icon: "mdi-food-fork-drink  ",
-          title: "จัดหมวดหมู่",
+          title: "ประเภทอาหาร",
           to: "/manage/category"
         },
         {

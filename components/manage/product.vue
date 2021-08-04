@@ -91,7 +91,7 @@
 
                     <v-col cols="12" md="6" class="mt-n7">
                       <v-select
-                        label="ประเภท"
+                        label="หมวดหมู่"
                         outlined
                         color="#1D1D1D"
                         item-text="name"
@@ -102,7 +102,7 @@
                     </v-col>
                     <v-col cols="12" md="6" class="mt-n7">
                       <v-select
-                        label="หน่วย"
+                        label="ประเภท"
                         outlined
                         color="#1D1D1D"
                         item-text="name"
@@ -247,8 +247,8 @@ export default {
       { text: "ลำดับ", sortable: false, value: "No" },
       { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อสิ้นค้า", sortable: false, value: "product_name" },
-      { text: "หน่วย", sortable: false, value: "ref_uid.u_name" },
-      { text: "ประเภท", sortable: false, value: "ref_cate_id.cate_name" },
+      { text: "ประเภท", sortable: false, value: "ref_uid.u_name" },
+      { text: "หมวดหมู่", sortable: false, value: "ref_cate_id.cate_name" },
       { text: "ราคาต้นทุน", sortable: false, value: "price_cost" },
       { text: "ราคา", sortable: false, value: "price" },
       // { text: "สต็อก", sortable: false, value: "stock" },

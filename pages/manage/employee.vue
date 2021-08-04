@@ -5,6 +5,7 @@
 <script>
 import employee from "@/components/manage/employee.vue";
 export default {
+  layout: "layoutManage",
   middleware: ["auth", "check", "refresh", "checkChecker"],
   head() {
     return {

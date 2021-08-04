@@ -10,6 +10,7 @@
 import category from "@/components/manage/category.vue";
 export default {
   middleware: ["auth", "check", "refresh", "checkManager", "checkChecker"],
+  layout: "layoutManage",
   head() {
     return {
       titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,

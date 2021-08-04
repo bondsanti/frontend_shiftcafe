@@ -25,6 +25,7 @@ export default {
       ]
     };
   },
+  layout: "layoutManage",
   middleware: ["auth", "checkAll", "refresh"],
 
   async asyncData(context) {

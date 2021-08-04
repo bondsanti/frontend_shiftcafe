@@ -12,7 +12,8 @@
               v-on="on"
               @click="addItem"
             >
-              <v-icon left> mdi-barley </v-icon> จัดการหน่วยนับ
+              <v-icon left> mdi-barley </v-icon>
+              <span>ประเภทอาหาร</span>
             </v-btn>
           </template>
         </v-dialog>
@@ -33,11 +34,12 @@
         :items-per-page="15"
         :footer-props="{
           'items-per-page-options': [15, 20, 30, 40, 50, -1],
-           prevIcon: 'mdi-chevron-left',
+          prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
-        }">
+        }"
       >
+        >
         <template v-slot:[`item.img`]="{}">
           <img
             src="@/assets/img/photo-1.jpg"
@@ -51,8 +53,9 @@
             <v-card>
               <v-card-title>
                 <span class="text-h5"
-                  ><v-icon left> mdi-barley </v-icon> {{ formTitle }}</span
-                >
+                  ><v-icon left> mdi-barley </v-icon>
+                  {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
+                </span>
               </v-card-title>
               <v-form v-model="valid" ref="form">
                 <v-card-text>
@@ -85,13 +88,13 @@
                   :disabled="!valid"
                   @click="
                     save();
-                    showAlert();
+                  
                   "
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
                   </v-icon>
-                  เพิ่มข้อมูลหน่วยนับ
+                  {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -112,8 +115,7 @@
                   color="primary"
                   class="ma-2"
                   @click="
-                    deleteItemConfirm();
-                    showAlert();
+                    deleteItemConfirm();                  
                   "
                 >
                   <v-icon aria-hidden="false" class="mx-4">
@@ -155,12 +157,18 @@
         </template>
       </v-data-table>
       <v-card-text>
-         <v-alert outlined  color="info" prominent border="left" class="text-center">
-                  โปรดตวรจสอบหน่วยนับให้ดีก่อนลบหน่วยนับที่ใช้อยู่
-                  <q class="font-weight-black ">
-                    ระบบจะมีปัญหาได้
-                  </q>
-                </v-alert>
+        <v-alert
+          outlined
+          color="info"
+          prominent
+          border="left"
+          class="text-center"
+        >
+          โปรดตวรจสอบหน่วยนับให้ดีก่อนลบประเภทอหารที่ใช้อยู่
+          <q class="font-weight-black ">
+            ระบบจะมีปัญหาได้
+          </q>
+        </v-alert>
       </v-card-text>
     </v-card>
   </div>
@@ -185,11 +193,7 @@ export default {
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"]
   }),
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "เพิ่มหน่วยนับ" : "เพิ่มหน่วยนับ";
-    }
-  },
+
   watch: {
     dialog(val) {
       val || this.close();
@@ -198,22 +202,7 @@ export default {
       val || this.closeDelete();
     }
   },
-  mounted() {
-    this.toast = this.$swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000
-    });
-  },
   methods: {
-    showAlert() {
-      this.toast({
-        type: "success",
-        title: "ดำเนิการสำเร็จ"
-      });
-      this.text_val_for_test = Date.now();
-    },
     someFn(ev) {
       console.log(ev);
     },
@@ -240,6 +229,10 @@ export default {
       this.unit.splice(this.editedIndex, 1);
       this.$axios.$delete("/unit/" + this.deleteId).then(() => {});
       this.closeDelete();
+        this.$swal({
+              type: "success",
+              title: 'ดำเนินการสำเร็จ'
+            });
     },
     close() {
       this.dialog = false;
@@ -260,15 +253,24 @@ export default {
       this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
-
         this.$emit("addUnit", { ...this.units });
+      
         this.close();
+        this.$swal({
+              type: "success",
+              title: 'เพิ่มข้อมูลสำเร็จ'
+            });
+      
       } else {
         this.loading = true;
         this.$axios
           .$put("/unit/" + this.units._id, this.units)
           .then(() => {
             this.close();
+              this.$swal({
+              type: "success",
+              title: 'ดำเนินการสำเร็จ'
+            });
           })
           .catch(e => {
             console.log(e);

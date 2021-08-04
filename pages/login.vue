@@ -12,7 +12,7 @@
             <v-row justify="center" width="100">
               <v-img
                 class="white--text align-end mb-7"
-                src="logo.png"
+                :src="`${$nuxt.context.env.config.IMG_URL}${setting[0].logo}`"
                 max-height="300"
                 contain
               >
@@ -31,20 +31,19 @@
                   class="mb-3"
                   append-icon="mdi-account-circle-outline"
                   v-model="username"
-                  autocomplete 
+                  autocomplete
                 ></v-text-field>
                 <v-text-field
                   label="PASSWORD"
                   color="secondary"
                   :rules="rules"
-                  
                   dark
                   outlined
                   :type="!showPass ? 'password' : 'text'"
                   @click:append="showPass = !showPass"
                   append-icon="mdi-eye-off"
                   v-model="password"
-                  autocomplete 
+                  autocomplete
                   @keypress.prevent.enter="login"
                 ></v-text-field>
               </v-form>
@@ -72,8 +71,29 @@ import { mapState } from "vuex";
 export default {
   layout: "login",
   middleware: "isLoggedIn",
-  head: {
-    title: "เข้าสู่ระบบ"
+  async asyncData(context) {
+    const setting = await context.$axios.$get("/setting");
+    return { setting };
+  },
+  head() {
+    return {
+      titleTemplate: `${this.setting[0].head_title}  | %s`,
+      title: "เข้าสู่ระบบ",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.setting[0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.setting[0].logo}`
+        }
+      ]
+    };
   },
   data() {
     return {

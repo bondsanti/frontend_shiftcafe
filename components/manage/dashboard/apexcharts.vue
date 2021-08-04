@@ -7,18 +7,30 @@
       <v-spacer></v-spacer>
 
       <div class="text-center">
-        <v-menu offset-y>
+        <v-menu
+          v-model="menu2"
+          :close-on-content-click="false"
+          :nudge-left="280"
+          transition="scale-transition"
+          offset-y
+          min-width="auto"
+        >
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark v-bind="attrs" v-on="on">
-              วันที่ {{ formatDate(Date.now()) }}
+              วันที่ {{ formatDate(dateNow) }}
             </v-btn>
           </template>
-          <v-list> </v-list>
+          <v-date-picker
+            v-model="dateNow"
+            @input="sendDate"
+            locale="th-TH"
+            @change="sendDate"
+          ></v-date-picker>
         </v-menu>
       </div>
     </v-app-bar>
     <client-only>
-      <div>
+      <div class="ml-3">
         <component
           :is="apexchart"
           max-width="100"
@@ -34,28 +46,21 @@
 
 <script>
 import moment from "moment";
-const today = new Date();
+//const today = new Date();
 export default {
   props: {
-    chartData: {
-      type: Array,
-      default: () => []
-    },
     animations: {
       type: Boolean,
       default: true
-    }
+    },
+    year: Array
   },
   data() {
     return {
       series: [
         {
-          name: "อาหาร",
-          data: [11, 32, 45, 32, 34, 52, 41, 25, 63, 50, 32, 4, 10]
-        },
-        {
-          name: "เครื่องดื่ม",
-          data: [15, 50, 55, 60, 62, 0, 56, 46, 50, 49, 44, 40, 25]
+          name: "อาหารและเครื่องดื่ม",
+          data: []
         }
       ],
       chartOptions: {
@@ -70,23 +75,30 @@ export default {
           curve: "smooth"
         },
         xaxis: {
-          type: "datetime",
           categories: [
-            "2018-09-19T00:00:00.000Z",
-            "2018-09-19T01:30:00.000Z",
-            "2018-09-19T02:30:00.000Z",
-            "2018-09-19T03:30:00.000Z",
-            "2018-09-19T04:30:00.000Z",
-            "2018-09-19T05:30:00.000Z",
-            "2018-09-19T06:30:00.000Z"
+            "09:00 น. - 10:00 น.",
+            "10:00 น. - 11:00 น.",
+            "11:00 น. - 12:00 น.",
+            "12:00 น. - 12:00 น.",
+            "13:00 น. - 14:00 น.",
+            "14:00 น. - 15:00 น.",
+            "15:00 น. - 16:00 น.",
+            "16:00 น. - 17:00 น.",
+            "17:00 น. - 18:00 น.",
+            "18:00 น. - 19:00 น.",
+            "19:00 น. - 20:00 น."
           ]
         },
         tooltip: {
           x: {
-            format: "dd/MM/yy HH:mm"
+            //format: "dd/MM/yy HH:mm"
           }
         }
-      }
+      },
+      menu2: false,
+      dateNow: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10)
     };
   },
   computed: {
@@ -97,176 +109,69 @@ export default {
         }
       };
     }
-    // chartOptions() {
-    //   return {
-    //     title: {
-    //     //  text: 'Sieben Sterngasse 3 Location Campaign Grosser',
-    //      // align: "left",
-    //     },
-    //     chart: {
-    //       animations: {
-    //         enabled: this.animations,
-    //       },
-    //     },
-    //     xaxis: {
-    //       type: "datetime",
-    //     },
-    //     yaxis: [
-    //       // {
-    //       //   title: {
-    //       //     text: "ความชื้นใน %",
-    //       //     style: {
-    //       //       //fontSize:  '14px',
-    //       //       //fontWeight:  'bold',
-    //       //       color: "rgb(0, 143, 251)",
-    //       //     },
-    //       //   },
-    //       //   labels: {
-    //       //     formatter: (val) => val * 1,
-    //       //   },
-    //       // },
-    //       {
-    //         opposite: true,
-    //         title: {
-    //           text: "อุณหภูมิ (ในเซลเซียส)",
-    //           style: {
-    //             //fontSize:  '14px',
-    //             //fontWeight:  'bold',
-    //             color: "rgb(0, 227, 150)",
-    //           },
-    //         },
-    //       },
-    //     ],
-
-    //     labels: this.formattedLabels,
-    //   };
-    // },
-    // formattedLabels() {
-    //   return this.chartData.map((d) => d.date);
-    // },
-    // formattedData() {
-    // //  const volumeSeries = this.chartData.map((d) => d.Feuchtigkeit);
-    //   const closeSeries = this.chartData.map((d) => d.Temperatur);
-    //   return [
-    //     // {
-    //     //   name: "Feuchtigkeit",
-    //     //   //type: "column",
-    //     //   type: "line",
-    //     //   data: volumeSeries,
-    //     // },
-    //     {
-    //       name: "Temperatur",
-    //       type: "line",
-    //       data: closeSeries,
-    //     },
-    //   ];
-    // },
   },
   methods: {
     formatDate(date) {
       var strdate = moment(date).add(543, "years");
       return moment(strdate).format("D/MM/YY ");
     },
-    rangeTime() {
-      const today = new Date();
-      this.chartOptions.xaxis.categories = [
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate(),
-          "16",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate(),
-          "17",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate(),
-          "18",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate(),
-          "19",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate(),
-          "20",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate(),
-          "21",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate(),
-          "22",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate(),
-          "23",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate(),
-          "24",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate() + 1,
-          "01",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate() + 1,
-          "02",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate() + 1,
-          "03",
-          "00"
-        )}`,
-        `${new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate() + 1,
-          "04",
-          "00"
-        )}`
+    sendDate() {
+      this.$emit("sendDateIndex", this.dateNow);
+      this.getTime2();
+      this.menu2 = false;
+      //console.log(this.dateNow);
+    },
+    thinkTime(hours) {
+      let date = new Date(this.dateNow);
+      let date2 = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        hours,
+        "00"
+      );
+      //console.log(date2);
+      return date2;
+    },
+    getTime(min, max) {
+      const minTime = this.thinkTime(min);
+      const maxTime = this.thinkTime(max);
+      const result = this.year.filter(n => {
+        return (
+          new Date(n.datetime).getTime() >= minTime.getTime() &&
+          new Date(n.datetime).getTime() <= maxTime.getTime()
+        );
+      });
+      //console.log(result);
+      return result;
+    },
+    getTime2() {
+      this.series = [
+        {
+          name: "อาหารและเครื่องดื่ม",
+          data: [
+            this.getTime("09", "10").length,
+            this.getTime("10", "11").length,
+            this.getTime("11", "12").length,
+            this.getTime("12", "13").length,
+            this.getTime("13", "14").length,
+            this.getTime("14", "15").length,
+            this.getTime("15", "16").length,
+            this.getTime("16", "17").length,
+            this.getTime("18", "18").length,
+            this.getTime("18", "19").length,
+            this.getTime("19", "20").length
+          ]
+        }
       ];
+      //this.series[0].data =
+      //console.log(this.getTime("14", "15").length);
     }
   },
   created() {
-    this.rangeTime();
-    //console.log(this.chartOptions.xaxis.categories);
+    //this.rangeTime();
+    //console.log(this.year);
+    this.getTime2();
   }
 };
 </script>

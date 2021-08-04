@@ -106,6 +106,7 @@
                   small
                   v-if="item.actions.status === 0"
                   dark
+                  :disabled="$store.getters['position'] === 'cashier'"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-stop-circle-outline
@@ -119,6 +120,7 @@
                   small
                   v-if="item.actions.status === 1"
                   dark
+                  :disabled="$store.getters['position'] === 'cashier'"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-check-bold

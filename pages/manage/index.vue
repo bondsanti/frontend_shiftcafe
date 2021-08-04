@@ -1,12 +1,16 @@
 <template>
   <div>
     <div class="text-center  py-6 pl-4 pr-4">
-      <sell :today="today" :month="month" :year="year" />
+      <sell :year="year" :dateNow="dateNow" ref="sellChild" />
 
       <v-row>
         <v-col cols="12" sm="12">
-          <p class="mb-4">วันที่ {{ now }}</p>
-          <apexcharts :chart-data="chartData" :animations="animations" />
+          <p class="mb-4">ยอดขายประจำวันที่ {{ formatDate(dateNow) }}</p>
+          <apexcharts
+            :animations="animations"
+            @sendDateIndex="sendDateIndex"
+            :year="year"
+          />
         </v-col>
         <!-- <v-col cols="12" sm="6"><topsell /> </v-col>
           <v-col cols="12" sm="6"><datasell /></v-col> -->
@@ -47,38 +51,52 @@ export default {
   },
   data() {
     return {
-      chartData: this.chartData,
       loading: true,
       errored: false,
       animations: true,
-      now: new Date().toJSON().slice(0, 10) //.replace(/-/g,'/')
+      now: new Date().toJSON().slice(0, 10),
+      dateNow: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10)
     };
   },
   async asyncData(context) {
-    const [today, month, year] = await Promise.all([
-      context.$axios.$get("/payment-today"),
-      context.$axios.$get("/payment-month"),
+    const [year] = await Promise.all([
+      // context.$axios.$get("/payment-today"),
+      // context.$axios.$get("/payment-month"),
       context.$axios.$get("/payment-year")
     ]);
-    return { today, month, year };
+    return { year };
   },
 
-  methods: {},
+  methods: {
+    sendDateIndex(date) {
+      this.dateNow = date;
+      this.$refs.sellChild.thinkMonth(date);
+
+      //this.$refs.sellChild.thinkYear();
+    },
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("DD MMMM YYYY ");
+    }
+  },
 
   mounted() {
-    this.$axios
-      .get(
-        "https://campaign-admin.gewista.at/chart/12/2021-07-01T10:03:23/2021-07-10T10:03:2"
-      )
-      .then(response => {
-        this.chartData = response.data;
-        //  console.log(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-        this.errored = true;
-      })
-      .finally(() => (this.loading = false));
+    // this.$axios
+    //   .get(
+    //     "https://campaign-admin.gewista.at/chart/12/2021-07-01T10:03:23/2021-07-10T10:03:2"
+    //   )
+    //   .then(response => {
+    //     this.chartData = response.data;
+    //     //  console.log(response.data);
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //     this.errored = true;
+    //   })
+    //   .finally(() => (this.loading = false));
   }
 };
 </script>

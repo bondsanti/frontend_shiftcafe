@@ -44,6 +44,7 @@ export default {
       ]
     };
   },
+  layout: "layoutManage",
   middleware: ["auth", "check", "refresh"],
   components: {
     sell,

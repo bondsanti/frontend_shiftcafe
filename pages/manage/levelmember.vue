@@ -9,6 +9,7 @@
 <script>
 import levelmember from "@/components/manage/levelmember.vue";
 export default {
+  layout: "layoutManage",
   middleware: ["auth", "check", "refresh", "checkChecker"],
   head() {
     return {

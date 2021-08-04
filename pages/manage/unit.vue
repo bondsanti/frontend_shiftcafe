@@ -5,6 +5,7 @@
 <script>
 import unit from "@/components/manage/unit.vue";
 export default {
+  layout: "layoutManage",
   middleware: ["auth", "check", "refresh", "checkManager", "checkChecker"],
   head() {
     return {

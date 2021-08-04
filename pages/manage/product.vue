@@ -10,6 +10,7 @@
 <script>
 import product from "@/components/manage/product.vue";
 export default {
+  layout: "layoutManage",
   middleware: ["auth", "check", "refresh", "checkChecker"],
   head() {
     return {

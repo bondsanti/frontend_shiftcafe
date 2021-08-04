@@ -11,6 +11,7 @@
 import customer from "@/components/manage/customer.vue";
 export default {
   middleware: ["auth", "check", "refresh", "checkChecker"],
+  layout: "layoutManage",
   head() {
     return {
       titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,

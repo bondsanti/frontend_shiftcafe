@@ -4,7 +4,6 @@
       <v-col cols="12" sm="4" md="4" class="pa-2">
         <v-hover v-slot="{ hover }" open-delay="300">
           <v-card
-          
             class="pa-1 rounded-lg"
             color="primary"
             :elevation="hover ? 16 : 15"
@@ -16,10 +15,15 @@
                   ตั้งค่าการชำระเงิน
                 </v-card-title>
                 <v-card-subtitle>
-                  
-                   เพิ่มวิธีการชำระเงินสำรองสำหรับการใช้บริการ</v-card-subtitle>
+                  เพิ่มวิธีการชำระเงินสำรองสำหรับการใช้บริการ</v-card-subtitle
+                >
                 <v-card-actions>
-                  <v-btn class="ml-2 mt-8" outlined roundedtext @click="goTopayment()">
+                  <v-btn
+                    class="ml-2 mt-8"
+                    outlined
+                    roundedtext
+                    @click="goTopayment()"
+                  >
                     ไปหน้าตั้งค่า
                   </v-btn>
                 </v-card-actions>
@@ -32,10 +36,9 @@
         </v-hover>
       </v-col>
       <!--  -->
-<v-col cols="12" sm="4" md="4" class="pa-2">
+      <v-col cols="12" sm="4" md="4" class="pa-2">
         <v-hover v-slot="{ hover }" open-delay="300">
           <v-card
-          
             class="pa-1 rounded-lg"
             color="primary"
             :elevation="hover ? 16 : 15"
@@ -47,10 +50,15 @@
                   ตั้งค่าปรับแต่งเว็บ
                 </v-card-title>
                 <v-card-subtitle>
-                  
-                   เพิ่มวิธีการชำระเงินสำรองสำหรับการใช้บริการ</v-card-subtitle>
+                  เพิ่มวิธีการชำระเงินสำรองสำหรับการใช้บริการ</v-card-subtitle
+                >
                 <v-card-actions>
-                  <v-btn class="ml-2 mt-8" outlined roundedtext @click="Customizer()">
+                  <v-btn
+                    class="ml-2 mt-8"
+                    outlined
+                    roundedtext
+                    @click="Customizer()"
+                  >
                     ไปหน้าตั้งค่า
                   </v-btn>
                 </v-card-actions>
@@ -63,10 +71,9 @@
         </v-hover>
       </v-col>
       <!--  -->
-       <v-col cols="12" sm="4" md="4" class="pa-2">
+      <v-col cols="12" sm="4" md="4" class="pa-2">
         <setpayoutspoints />
       </v-col>
-
     </v-row>
   </div>
 </template>
@@ -75,6 +82,7 @@
 import setpayoutspoints from "@/components/manage/settings/setpayoutspoints.vue";
 
 export default {
+  layout: "layoutManage",
   head() {
     return {
       titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
@@ -103,14 +111,11 @@ export default {
     goTopayment() {
       this.$router.push("/manage/Bank");
     },
-    Customizer(){
-      this.$router.push("customizer")
+    Customizer() {
+      this.$router.push("customizer");
     }
   }
 };
-
 </script>
 
-<style>
-
-</style>
+<style></style>

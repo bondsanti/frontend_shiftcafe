@@ -25,7 +25,7 @@ export default {
       ]
     };
   },
-  layout: "default",
+  layout: "layoutManage",
   middleware: ["auth", "check", "refresh"],
   data() {
     return {

@@ -11,7 +11,7 @@
             md="12"
             lg="12"
           >
-            <v-card color="primary">
+            <v-card color="primary" elevation="24" class="rounded-xl">
               <v-card-title class="subheading font-weight-bold  white--text">
                 ตั้งค่า
               </v-card-title>
@@ -83,7 +83,14 @@
                 </v-list-item>
                 <v-list-item>
                   <v-list-item-content class="align-end">
-                    <v-btn text color="pink lighten-4" @click="editItem(item)">
+                    <v-btn
+                      text
+                      color="pink lighten-4"
+                      @click="
+                        editItem(item);
+                        expand = !expand;
+                      "
+                    >
                       <span class="primary--text">
                         <v-icon>mdi-pencil</v-icon>
                         แก้ไขข้อมูล
@@ -99,127 +106,137 @@
     </v-data-iterator>
     <!-- 1 -->
     <!-- add  edit -->
-    <v-dialog v-model="dialog" max-width="700px">
-      <v-card>
-        <v-card-title>
-          <h2 class="text-h5 ">
-            <v-icon> mdi-ticket-percent-outline </v-icon>
-            {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
-          </h2>
-        </v-card-title>
+    <v-dialog v-model="dialog" max-width="1200px" persistent>
+      <v-expand-x-transition>
+        <v-card v-show="expand">
+          <v-card-title>
+            <h2 class="text-h5 ">
+              <v-icon> mdi-home-edit</v-icon>
+              {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
+            </h2>
+          </v-card-title>
 
-        <v-card-text>
-          <div>
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  outlined
-                  label="ชื่อร้าน"
-                  v-model="settingitem.head_title"
-                  required
-                  append-icon="mdi-credit-card"
-                ></v-text-field>
-              </v-col>
+          <v-card-text>
+            <div>
+              <v-row>
+                <v-col cols="12" sm="4">
+                  <v-text-field
+                    outlined
+                    label="ชื่อร้าน"
+                    v-model="settingitem.head_title"
+                    required
+                    append-icon="mdi-home-city"
+                  ></v-text-field>
+                </v-col>
 
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  outlined
-                  label="หัวเรื่องย่อย"
-                  v-model="settingitem.head_title"
-                  required
-                  append-icon="mdi-credit-card-plus-outline"
-                ></v-text-field>
-              </v-col>
+                <v-col cols="12" sm="4">
+                  <v-text-field
+                    outlined
+                    label="หัวเรื่องย่อย"
+                    v-model="settingitem.sub_title"
+                    required
+                    append-icon="mdi-text-subject"
+                  ></v-text-field>
+                </v-col>
 
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  outlined
-                  label="ชื่อร้าน"
-                  v-model="settingitem.restaurant"
-                  required
-                  append-icon="mdi-credit-card-plus-outline"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-textarea
-                  rows="1"
-                  label="ที่อยู่"
-                  v-model="settingitem.address"
-                  required
-                  outlined
-                  append-icon="mdi-map-marker"
-                ></v-textarea>
-              </v-col>
+                <v-col cols="12" sm="4">
+                  <v-text-field
+                    outlined
+                    label="ชื่อใบเสร็จ"
+                    v-model="settingitem.restaurant"
+                    required
+                    append-icon="mdi-receipt"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <v-textarea
+                    rows="2"
+                    label="ที่อยู่"
+                    v-model="settingitem.address"
+                    required
+                    outlined
+                    append-icon="mdi-map-marker"
+                  ></v-textarea>
+                </v-col>
 
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  outlined
-                  label="เบอร์โทรติดต่อ"
-                  v-model="settingitem.tel"
-                  required
-                  append-icon="mdi-credit-card-plus-outline"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  outlined
-                  label="ส่วนแสดงผลที่อยู่ด้านล่างสุดของเว็บไซต์"
-                  v-model="settingitem.footer"
-                  required
-                  append-icon="mdi-credit-card-plus-outline"
-                ></v-text-field>
-              </v-col>
+                <v-col cols="12" sm="4">
+                  <v-text-field
+                    outlined
+                    label="เบอร์โทรติดต่อ"
+                    v-model="settingitem.tel"
+                    required
+                    append-icon="mdi-cellphone"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="4">
+                  <v-text-field
+                    outlined
+                    label="ส่วนแสดงผลที่อยู่ด้านล่างสุดของเว็บไซต์"
+                    v-model="settingitem.footer"
+                    required
+                    append-icon="mdi-page-layout-footer"
+                  ></v-text-field>
+                </v-col>
 
-              <v-col cols="12" sm="6" md="6">
-                <h3 class="text-center white--text ml-12 mb-6">
-                  <v-icon class="ma-2" color="white"
-                    >mdi-credit-card-scan-outline</v-icon
-                  >รูปคิวอาร์โค้ด
-                </h3>
-                <v-img
-                  v-if="imageURL"
-                  :src="imageURL"
-                  contain
-                  max-height="300px"
-                  max-width="250px"
-                  class="mb-3"
-                >
-                </v-img>
-                <input accept="image/*" type="file" @change="onFileSelected" />
-              </v-col>
-            </v-row>
-          </div>
-        </v-card-text>
+                <v-col cols="12" sm="12">
+                  <h2 class="text-end ">
+                    <v-icon class="ma-2">mdi-flower</v-icon>โลโก้
+                  </h2>
+                 
+                    <v-img
+                      v-if="imageURL"
+                      :src="imageURL"
+                      max-height="300px"
+                      max-width="250px"
+                      class="mb-3"
+                    >
+                    </v-img>
+                  
+                    
+                  <input
+                    accept="image/*"
+                    type="file"
+                    class="ml-12"
+                    @change="onFileSelected"
+                  />
+               
+              
+                </v-col>
+              </v-row>
+            </div>
+          </v-card-text>
 
-        <v-card-actions>
-          <v-btn
-            class="ma-1"
-            color="primary"
-            dark
-            @click="close()"
-            style=" padding: 0.5rem 1rem; border: none; outline: none;"
-          >
-            <v-icon aria-hidden="false" class="mx-2">
-              mdi-ticket-percent-outline
-            </v-icon>
-            ยกเลิก
-          </v-btn>
+          <v-card-actions>
+            <v-btn
+              class="ma-1"
+              color="primary"
+              dark
+              @click="
+                close();
+                expand = false;
+              "
+              style=" padding: 0.5rem 1rem; border: none; outline: none;"
+            >
+              <v-icon aria-hidden="false" class="mx-2"> </v-icon>
+              ยกเลิก
+            </v-btn>
 
-          <v-spacer></v-spacer>
+            <v-spacer></v-spacer>
 
-          <v-btn
-            class="ma-1"
-            color="info2"
-            @click="save()"
-            style="color: #fff;border-radius: 0.25rem; padding: 0.5rem 1rem; border: none; outline: none;"
-          >
-            <v-icon aria-hidden="false" class="mx-2">
-              mdi-ticket-percent-outline
-            </v-icon>
-            {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+            <v-btn
+              class="ma-1"
+              color="info2"
+              @click="save()"
+              style="color: #fff;border-radius: 0.25rem; padding: 0.5rem 1rem; border: none; outline: none;"
+            >
+              <v-icon aria-hidden="false" class="mx-2">
+                mdi-ticket-percent-outline
+              </v-icon>
+              {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-expand-x-transition>
     </v-dialog>
     <!-- 1 -->
   </div>
@@ -229,6 +246,7 @@
 export default {
   data() {
     return {
+      expand: false,
       dialog: false,
       type: null,
       imageURL: null,
@@ -237,9 +255,12 @@ export default {
         state: false,
         msg: ""
       },
+      uploadState: false,
+      editedIndex: -1,
+      items: [],
       logo: [],
       settingitem: {
-        _id:"",
+        _id: "",
         head_title: "",
         sub_title: "",
         restaurant: "",
@@ -291,7 +312,8 @@ export default {
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedItem = Object.assign({});
+        this.$emit("refresh");
       });
     },
     save() {
@@ -310,12 +332,13 @@ export default {
       // }
       console.log(formdata);
       this.$axios
-        .$put("/bank/" + this.bankitem._id, formdata)
+        .$put("/setting/" + this.settingitem._id, formdata)
         .then(() => {
           this.$emit("refresh");
           //this.$nuxt.refresh()
           this.close();
-          this.bankitem = {
+          this.settingitem = {
+            _id: "",
             head_title: "",
             sub_title: "",
             restaurant: "",
@@ -325,7 +348,6 @@ export default {
           };
           this.imageURL = null;
           this.preImg = null;
-         
         })
         .catch(e => {
           console.log(e);
@@ -335,7 +357,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 @media (hover: none) and (pointer: coarse) {
   .v-list-item {
     align-items: center;

@@ -33,14 +33,14 @@ components: {
 middleware: ["auth", "checkAll", "refresh", "checkChecker"],
 async asyncData(context) {
     const [settings] = await Promise.all([context.$axios.$get("/setting")]);
-   console.log(settings);
+   //console.log(settings);
     return { settings };
    
   },
   
   methods: {
     async refresh() {
-      this.settings = await this.$axios.$get("/settings");
+      this.settings = await this.$axios.$get("/setting");
     }
   },
 

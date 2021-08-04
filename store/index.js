@@ -2,7 +2,19 @@ export const state = () => ({
   position: "",
   drawer: false,
   img: "/logo.jpg",
-  setting: null
+  setting: [
+    {
+      head_title: "DEV FONG",
+      sub_title: "DEV FONG Co., Ltd.2021",
+      address: "89/1 ถนนสุขสวัสดิ์ 4 ตำบลพระบาท อำเภอเมือง จังหวัดลำปาง 52000",
+      tel: "0917961816",
+      point: 100,
+      footer: "DEV FONG Co., Ltd.2021",
+
+      logo: "logo.ico",
+      restaurant: "บริษัท ซิฟท์ เรสเตอรองต์ จำกัด"
+    }
+  ]
 });
 
 export const mutations = {
@@ -42,7 +54,11 @@ export const actions = {
 
 export const getters = {
   displayName(state) {
-    return state.auth.user.fname + " " + state.auth.user.lname;
+    if (state.auth.user) {
+      return state.auth.user.fname + " " + state.auth.user.lname;
+    } else {
+      return "DEV FONG";
+    }
   },
   position(state) {
     return state.position;

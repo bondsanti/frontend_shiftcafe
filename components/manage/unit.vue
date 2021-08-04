@@ -175,9 +175,7 @@ export default {
     search: "",
     headers: [
       { text: "ลำดับ", value: "No" },
-      //     { text: "ภาพ", sortable: false, value: "img" },
       { text: "ชื่อหม่วดหมู่", align: "start", value: "u_name", divider: true },
-      // { text: "ID", align: "start", value: "_id", divider: true },
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,

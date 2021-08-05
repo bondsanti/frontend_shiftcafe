@@ -52,10 +52,10 @@
           <v-dialog v-model="dialog" max-width="500px">
             <v-card>
               <v-card-title>
-                <span class="text-h5"
-                  ><v-icon left> mdi-ticket-account </v-icon>
-                  {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
-                >
+                <span class="text-h5">
+                  <v-icon left> mdi-ticket-account </v-icon>
+                  {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
+                </span>
               </v-card-title>
               <v-divider></v-divider>
               <v-form v-model="valid" ref="form">
@@ -149,8 +149,8 @@
                 <v-btn color="info" class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box </v-icon
-                  >ยกเลิก</v-btn
-                >
+                  >ยกเลิก
+                </v-btn>
                 <v-btn
                   color="primary"
                   class="ma-2"
@@ -161,8 +161,8 @@
                 >
                   <v-icon aria-hidden="false" class="mx-4">
                     mdi-delete-forever </v-icon
-                  >ลบ</v-btn
-                >
+                  >ลบ
+                </v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -175,8 +175,8 @@
                 </v-card-title>
                 <v-divider class="mb-3"></v-divider>
                 <v-card-text>
-                  <p>{{ itemDetail }}</p></v-card-text
-                >
+                  <p>{{ itemDetail }}</p>
+                </v-card-text>
                 <v-divider class="mt-n3"></v-divider>
                 <v-card-actions>
                   <v-spacer></v-spacer>
@@ -251,13 +251,37 @@ export default {
     valiid: true,
     search: "",
     headers: [
-      { text: "ลำดับ", sortable: false, value: "No" },
-      { text: "วันที่อัพเดท", value: "datetime" },
-      { text: "ภาพ", sortable: false, value: "img" },
-      { text: "ชื่อระดับสมาชิก", value: "level_name" },
-      { text: "ส่วนลด(%)", value: "discount" },
-      { text: "รายละเอียด", value: "detail" },
-      { text: "หมายเหตุ", value: "actions", sortable: false }
+      {
+        text: "ลำดับ",
+        sortable: false,
+        value: "No"
+      },
+      {
+        text: "วันที่อัพเดท",
+        value: "datetime"
+      },
+      {
+        text: "ภาพ",
+        sortable: false,
+        value: "img"
+      },
+      {
+        text: "ชื่อระดับสมาชิก",
+        value: "level_name"
+      },
+      {
+        text: "ส่วนลด(%)",
+        value: "discount"
+      },
+      {
+        text: "รายละเอียด",
+        value: "detail"
+      },
+      {
+        text: "หมายเหตุ",
+        value: "actions",
+        sortable: false
+      }
     ],
     editedIndex: -1,
     levelmemberitme: {
@@ -272,7 +296,10 @@ export default {
     deleteId: null,
     uploadState: false,
     img: [],
-    error: { state: false, msg: "" },
+    error: {
+      state: false,
+      msg: ""
+    },
     imageURL: null,
     preImg: null,
     valid: true,

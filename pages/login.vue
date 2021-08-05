@@ -68,6 +68,7 @@
     </v-snackbar>
   </v-row>
 </template>
+
 <script>
 import { mapState } from "vuex";
 export default {
@@ -75,7 +76,9 @@ export default {
   middleware: "isLoggedIn",
   async asyncData(context) {
     const setting = await context.$axios.$get("/setting");
-    return { setting };
+    return {
+      setting
+    };
   },
   head() {
     return {
@@ -152,6 +155,7 @@ export default {
   created() {}
 };
 </script>
+
 <style scoped>
 .img-logo {
   width: 200px;

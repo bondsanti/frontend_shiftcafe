@@ -1,9 +1,6 @@
 <template>
   <v-card class="rounded-lg" color="">
     <v-app-bar flat color="rgba(0,0,0,0)">
-      <v-toolbar-title class="title white--text pl-0 ml-2">
-        ภาพรวมร้านค้าในวันนี้
-      </v-toolbar-title>
       <v-spacer></v-spacer>
 
       <div class="text-center">
@@ -35,7 +32,7 @@
           :is="apexchart"
           max-width="100"
           height="350"
-          type="area"
+          type="bar"
           :options="chartOptions"
           :series="series"
         ></component>
@@ -64,12 +61,26 @@ export default {
         }
       ],
       chartOptions: {
+        colors: ["#F44336"],
         chart: {
           height: 350,
-          type: "area"
+          type: "bar"
+        },
+        plotOptions: {
+          bar: {
+            borderRadius: 10,
+            dataLabels: {
+              position: "top" // top, center, bottom
+            }
+          }
         },
         dataLabels: {
-          enabled: false
+          enabled: true,
+          offsetY: -20,
+          style: {
+            fontSize: "16px",
+            colors: ["#304758"]
+          } // top, center, bottom
         },
         stroke: {
           curve: "smooth"
@@ -79,7 +90,7 @@ export default {
             "09:00 น. - 10:00 น.",
             "10:00 น. - 11:00 น.",
             "11:00 น. - 12:00 น.",
-            "12:00 น. - 12:00 น.",
+            "12:00 น. - 13:00 น.",
             "13:00 น. - 14:00 น.",
             "14:00 น. - 15:00 น.",
             "15:00 น. - 16:00 น.",
@@ -158,7 +169,7 @@ export default {
             this.getTime("14", "15").length,
             this.getTime("15", "16").length,
             this.getTime("16", "17").length,
-            this.getTime("18", "18").length,
+            this.getTime("17", "18").length,
             this.getTime("18", "19").length,
             this.getTime("19", "20").length
           ]

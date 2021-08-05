@@ -174,13 +174,21 @@
           </v-card>
 
           <v-row class="">
-            <v-col sm="6" md="3" xs="6" class="mt-5">
+            <v-col
+              sm="6"
+              md="3"
+              xs="6"
+              class="mt-5"
+              v-for="(items, i) in levelMember"
+              :key="i"
+            >
               <v-card class="">
-                <v-img src="classic.png" height="100%"></v-img>
+                <v-img
+                  :src="`${$nuxt.context.env.config.IMG_URL}${items.img}`"
+                  height="100%"
+                ></v-img>
 
-                <v-card-title>
-                  บัตรสมาชิก Classic
-                </v-card-title>
+                <v-card-title> บัตรสมาชิก {{ items.level_name }} </v-card-title>
 
                 <v-card-subtitle>
                   ส่วนลด 0%
@@ -414,10 +422,10 @@ export default {
     let Sumtotal = 0;
     Sumtotal = (totalprice / target_price) * 100;
 
-    //console.log(totalprice);
+    console.log(levelMember);
     //console.log(loadData);
     //console.log(context.$auth.user);
-    return { loadData, totalprice, Sumtotal,levelMember };
+    return { loadData, totalprice, Sumtotal, levelMember };
   },
 
   methods: {

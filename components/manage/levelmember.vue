@@ -12,7 +12,7 @@
               v-on="on"
               @click="addItem"
             >
-              <v-icon left> mdi-ticket-account </v-icon> จัดการข้อมูล
+              <v-icon left> mdi-card-account-details-star </v-icon> เพิ่มข้อมูล
             </v-btn>
           </template>
         </v-dialog>
@@ -31,16 +31,16 @@
         :items="levelmember"
         :search="search"
         :items-per-page="10"
-          :footer-props="{
+        :footer-props="{
           'items-per-page-options': [10, 20, 30, 40, 50, -1],
-           prevIcon: 'mdi-chevron-left',
+          prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
         }"
       >
         <template v-slot:[`item.img`]="{ item }">
           <v-img
-            :src="`https://api.shift-cafe.com/${item.img}`"
+            :src="`${$nuxt.context.env.config.IMG_URL}${item.img}`"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
             width="180px"
@@ -54,9 +54,10 @@
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left> mdi-ticket-account </v-icon>
-                   {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
+                  {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
                 >
               </v-card-title>
+              <v-divider></v-divider>
               <v-form v-model="valid" ref="form">
                 <v-card-text>
                   <div>
@@ -70,13 +71,29 @@
                           label="ชื่อระดับสมาชิก"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" class="mt-n7">
+                      <v-col cols="6" class="mt-n7">
                         <v-text-field
                           outlined
                           v-model="levelmemberitme.discount"
                           :rules="rules"
                           label="ส่วนลด(%)"
                         ></v-text-field>
+                      </v-col>
+                      <v-col cols="6" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          v-model="levelmemberitme.target_price"
+                          :rules="rules"
+                          label="กำหนดราคาที่ต้องการเปลี่ยนระดับ"
+                        ></v-text-field>
+                      </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-textarea
+                          outlined
+                          v-model="levelmemberitme.detail"
+                          :rules="rules"
+                          label="รายละเอียดบัตร"
+                        ></v-textarea>
                       </v-col>
                       <v-col cols="12" class="mt-n7">
                         <v-img
@@ -117,7 +134,7 @@
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
                   </v-icon>
-                    {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
+                  {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -150,24 +167,53 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-dialog v-model="dialogDetail" max-width="500px">
+            <v-card>
+              <v-form>
+                <v-card-title>
+                  รายละเอียดบัตร
+                </v-card-title>
+                <v-divider class="mb-3"></v-divider>
+                <v-card-text>
+                  <p>{{ itemDetail }}</p></v-card-text
+                >
+                <v-divider class="mt-n3"></v-divider>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+
+                  <v-btn color="error" @click="close">
+                    <v-icon left> mdi-close </v-icon>ปิด
+                  </v-btn>
+                </v-card-actions>
+              </v-form>
+            </v-card>
+          </v-dialog>
+        </template>
+        <template v-slot:[`item.detail`]="{ item }">
+          <v-btn class="mr1" small color="teal" @click="Detail(item.detail)">
+            <div class="d-block  white--text">
+              <v-icon small left> mdi-eye </v-icon>ดูรายละเอียด
+            </div>
+          </v-btn>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr2" color="warning" @click="editItem(item)">
-            <v-icon aria-hidden="false" class="mx-2">
+          <v-btn class="mr2" color="warning" @click="editItem(item)" small>
+            <v-icon left dark>
               mdi-close-box
             </v-icon>
-            แก้ไขข้อมูล
+            แก้ไข
           </v-btn>
           <v-btn
             rounded-lx
             class="mr-2"
             color="error"
             @click="deleteItem(item)"
+            small
           >
-            <v-icon dark class="mx-2">
+            <v-icon left dark>
               mdi-delete-forever
             </v-icon>
-            ลบระดับสมาชิก
+            ลบ
           </v-btn>
         </template>
         <template v-slot:[`item.No`]="{ index }">
@@ -181,6 +227,9 @@
             {{ item.discount }}
           </v-chip>
         </template>
+        <template v-slot:[`item.datetime`]="{ item }">
+          <span>{{ item.datetime | moment }}</span>
+        </template>
         <template v-slot:no-data>
           <v-btn color="primary" @click="initialize">
             Reset
@@ -192,23 +241,33 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
+    dialogDetail: false,
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valiid: true,
     search: "",
     headers: [
       { text: "ลำดับ", sortable: false, value: "No" },
+      { text: "วันที่อัพเดท", value: "datetime" },
       { text: "ภาพ", sortable: false, value: "img" },
-      { text: "ชื่อหม่วดหมู่", align: "start", value: "level_name" },
-      //{ text: "ID", align: "start", value: "_id", divider: true },
-      { text: "ส่วนลด(%)", align: "start", value: "discount" },
+      { text: "ชื่อระดับสมาชิก", value: "level_name" },
+      { text: "ส่วนลด(%)", value: "discount" },
+      { text: "รายละเอียด", value: "detail" },
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
-    levelmemberitme: { _id: "", level_name: "", discount: " ", img: "" },
+    levelmemberitme: {
+      _id: "",
+      level_name: "",
+      discount: "",
+      img: "",
+      target_price: "",
+      detail: ""
+    },
     type: null,
     deleteId: null,
     uploadState: false,
@@ -216,7 +275,8 @@ export default {
     error: { state: false, msg: "" },
     imageURL: null,
     preImg: null,
-    valid: true
+    valid: true,
+    itemDetail: []
   }),
 
   // computed: {
@@ -230,6 +290,13 @@ export default {
     },
     dialogDelete(val) {
       val || this.closeDelete();
+    }
+  },
+  filters: {
+    moment: function(date) {
+      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("D/MM/YY H:mm");
     }
   },
   mounted() {
@@ -268,26 +335,37 @@ export default {
       if (this.cate.img.length > 0) {
         return this.cate.img;
       } else {
-        return `https://api.shift-cafe.com/${item.img}`;
+        return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       }
     },
     editItem(item) {
       this.type = "edit";
-      this.imageURL = `https://api.shift-cafe.com/${item.img}`;
+      this.imageURL = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       this.levelmemberitme = {
         _id: item._id,
         level_name: item.level_name,
         discount: item.discount,
+        target_price: item.target_price,
+        detail: item.detail,
         img: item.img
       };
       this.dialog = true;
+    },
+    Detail(item) {
+      this.itemDetail = item;
+      // return itemDetail
+      // console.log("aa" + JSON.stringify(this.itemDetail));
+
+      this.dialogDetail = true;
     },
     addItem() {
       this.type = "add";
       this.levelmemberitme = {
         _id: "",
         level_name: "",
-        discount: " "
+        discount: "",
+        target_price: "",
+        detail: ""
       };
       this.dialog = true;
     },
@@ -303,7 +381,7 @@ export default {
       this.closeDelete();
     },
     close() {
-      this.dialog = false;
+      (this.dialogDetail = false), (this.dialog = false);
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.$emit("refresh");
@@ -325,23 +403,45 @@ export default {
         let formdata = new FormData();
         formdata.append("level_name", this.levelmemberitme.level_name);
         formdata.append("discount", this.levelmemberitme.discount);
+        formdata.append("target_price", this.levelmemberitme.target_price);
+        formdata.append("detail", this.levelmemberitme.detail);
         formdata.append("img", this.preImg);
         //console.log(this.productsItem);
-        this.$emit("addCategory", formdata);
-        this.levelmemberitme = {
-          level_name: "",
-          discount: " ",
-          img: ""
-        };
-        this.imageURL = null;
-        this.close();
-        this.preImg = null;
+        this.$axios
+          .$post("/level-member", formdata)
+          .then(res => {
+            this.$emit("refresh");
+            ///this.$emit("addCategory", formdata);
+            this.levelmemberitme = {
+              level_name: "",
+              discount: "",
+              target_price: "",
+              detail: "",
+              img: ""
+            };
+
+            this.imageURL = null;
+            this.close();
+            this.preImg = null;
+            this.$swal({
+              type: "success",
+              title: res.message
+            });
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
       } else {
         this.loading = true;
 
         let formdata = new FormData();
         formdata.append("level_name", this.levelmemberitme.level_name);
         formdata.append("discount", this.levelmemberitme.discount);
+        formdata.append("target_price", this.levelmemberitme.target_price);
+        formdata.append("detail", this.levelmemberitme.detail);
         if (this.preImg !== null) {
           formdata.append("img", this.preImg);
         }
@@ -355,6 +455,8 @@ export default {
             this.levelmemberitme = {
               level_name: "",
               discount: " ",
+              target_price: "",
+              detail: "",
               img: ""
             };
             this.imageURL = null;

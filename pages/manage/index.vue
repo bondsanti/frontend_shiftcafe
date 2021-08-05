@@ -12,8 +12,23 @@
             :year="year"
           />
         </v-col>
-        <!-- <v-col cols="12" sm="6"><topsell /> </v-col>
-          <v-col cols="12" sm="6"><datasell /></v-col> -->
+        <v-col cols="12" sm="12" md="6">
+          <pieCharts
+            :year="year"
+            :category="category"
+            title="จำนวนออเดอร์แยกตามหมวดหมู่ย่อย"
+            phylum="category"
+          />
+        </v-col>
+        <v-col cols="12" sm="12" md="6">
+          <pieCharts
+            :year="year"
+            :category="unit"
+            title="จำนวนออเดอร์แยกตามหมวดหมู่ใหญ่"
+            phylum="unit"
+          />
+        </v-col>
+        <!-- <v-col cols="12" sm="6"><datasell /></v-col> -->
       </v-row>
     </div>
 
@@ -23,6 +38,7 @@
 <script>
 import sell from "@/components/manage/dashboard/sell.vue";
 import apexcharts from "@/components/manage/dashboard/apexcharts.vue";
+import pieCharts from "@/components/manage/dashboard/pieCharts.vue";
 export default {
   head() {
     return {
@@ -48,7 +64,8 @@ export default {
   middleware: ["auth", "check", "refresh"],
   components: {
     sell,
-    apexcharts
+    apexcharts,
+    pieCharts
   },
   data() {
     return {
@@ -62,12 +79,13 @@ export default {
     };
   },
   async asyncData(context) {
-    const [year] = await Promise.all([
+    const [year, category, unit] = await Promise.all([
       // context.$axios.$get("/payment-today"),
-      // context.$axios.$get("/payment-month"),
-      context.$axios.$get("/payment-year")
+      context.$axios.$get("/payment-year"),
+      context.$axios.$get("/category"),
+      context.$axios.$get("/unit")
     ]);
-    return { year };
+    return { year, category, unit };
   },
 
   methods: {

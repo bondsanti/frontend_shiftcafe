@@ -1,119 +1,119 @@
 <template>
-  <div class="pa-6 ma-6">
-    <v-data-iterator :items="settings" hide-default-footer>
-      <template v-slot:default="props">
-        <v-row>
-          <v-col
-            v-for="item in props.items"
-            :key="item.name"
-            cols="12"
-            sm="12"
-            md="12"
-            lg="12"
-          >
-            <v-card color="primary" elevation="24" class="rounded-xl">
-              <v-card-title class="subheading font-weight-bold  white--text">
-                <v-icon class="mr-3" color="white">mdi-cog-outline</v-icon>
-                ตั้งค่า
-              </v-card-title>
+  <div class="pa-3 ma-3">
+    <!-- <v-card class=" ma-2 rounded-xl" elevation="24">
+      <v-breadcrumbs :items="items" divider=">" three-line></v-breadcrumbs>
+      <v-spacer></v-spacer>
+      <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+        กลับไปหน้าหลัก
+      </v-btn>
+    </v-card> -->
+    <v-row style="min-height: 100px;">
+      <v-col class="shrink"></v-col>
+      <v-breadcrumbs large :items="items" divider=">"></v-breadcrumbs>
+    </v-row>
 
-              <v-divider></v-divider>
+    <v-card
+      color="primary"
+      elevation="24"
+      class="rounded-xl"
+      v-for="(settings, i) in settings"
+      :key="i"
+    >
+      <v-card-title flat class="subheading font-weight-bold  white--text">
+        <v-icon class="mr-3" color="white">mdi-cog-outline</v-icon>
+        ตั้งค่า
+      </v-card-title>
 
-              <v-list dense>
-                <v-list-item>
-                  <v-list-item-content><h3>ชื่อร้าน:</h3></v-list-item-content>
-                  <v-list-item-content class="align-end">
-                    {{ item.head_title }}
-                  </v-list-item-content>
-                </v-list-item>
-                <v-list-item>
-                  <v-list-item-content
-                    ><h3>หัวเรื่องย่อย:</h3></v-list-item-content
-                  >
-                  <v-list-item-content class="align-end">
-                    {{ item.sub_title }}
-                  </v-list-item-content>
-                </v-list-item>
+      <v-divider></v-divider>
 
-                <v-list-item>
-                  <v-list-item-content
-                    ><h3>ขื่อร้านอาหาร:</h3></v-list-item-content
-                  >
-                  <v-list-item-content class="align-end">
-                    {{ item.restaurant }}
-                  </v-list-item-content>
-                </v-list-item>
+      <v-list dense>
+        <v-list-item>
+          <v-list-item-content><h3>ชื่อร้าน:</h3></v-list-item-content>
+          <v-list-item-content class="align-end">
+            {{ settings.head_title }}
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content><h3>หัวเรื่องย่อย:</h3></v-list-item-content>
+          <v-list-item-content class="align-end">
+            {{ settings.sub_title }}
+          </v-list-item-content>
+        </v-list-item>
 
-                <v-list-item>
-                  <v-list-item-content><h3>ที่อยู่:</h3></v-list-item-content>
-                  <v-list-item-content class="align-end">
-                    {{ item.address }}
-                  </v-list-item-content>
-                </v-list-item>
+        <v-list-item>
+          <v-list-item-content><h3>ขื่อร้านอาหาร:</h3></v-list-item-content>
+          <v-list-item-content class="align-end">
+            {{ settings.restaurant }}
+          </v-list-item-content>
+        </v-list-item>
 
-                <v-list-item>
-                  <v-list-item-content>
-                    <h3>เบอร์โทรติดต่อ:</h3>
-                  </v-list-item-content>
-                  <v-list-item-content class="align-end">
-                    {{ item.tel }}
-                  </v-list-item-content>
-                </v-list-item>
+        <v-list-item>
+          <v-list-item-content><h3>ที่อยู่:</h3></v-list-item-content>
+          <v-list-item-content class="align-end">
+            {{ settings.address }}
+          </v-list-item-content>
+        </v-list-item>
 
-                <v-list-item>
-                  <v-list-item-content>
-                    <h3>ส่วนแสดงผลที่อยู่ด้านล่างสุดของเว็บไซต์ :</h3>
-                  </v-list-item-content>
-                  <v-list-item-content class="align-end">
-                    {{ item.footer }}
-                  </v-list-item-content>
-                </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+            <h3>เบอร์โทรติดต่อ:</h3>
+          </v-list-item-content>
+          <v-list-item-content class="align-end">
+            {{ settings.tel }}
+          </v-list-item-content>
+        </v-list-item>
 
-                <v-list-item>
-                  <v-list-item-content><h3>โลโก้:</h3></v-list-item-content>
-                  <v-spacer></v-spacer>
-                  <v-card color="#BA9F9A" class="px-1 mt-2 " elevation-12>
-                    <v-img
-                      :src="`${$nuxt.context.env.config.IMG_URL}${item.logo}`"
-                      class=""
-                      aspect-ratio="1"
-                      width="250px"
-                      height="200px"
-                      contain
-                    />
-                  </v-card>
-                  <v-spacer></v-spacer>
-                </v-list-item>
-            
-                <v-list-item>                 
-                  <v-spacer></v-spacer>
-                  <v-list-item-content class="align-end">
-                    <v-btn  text color="pink lighten-4" class="mt-3" @click="editItem(item)">
-                      <span class="primary--text" >
-                        <v-icon>mdi-pencil</v-icon>
-                        แก้ไขข้อมูล
-                      </span>
-                    </v-btn>
-                  </v-list-item-content>
-                  <v-spacer></v-spacer>
-                </v-list-item>
-                
-              </v-list>
-              
-            </v-card>
-          </v-col>
-        </v-row>
-      </template>
-    </v-data-iterator>
+        <v-list-item>
+          <v-list-item-content>
+            <h3>ส่วนแสดงผลที่อยู่ด้านล่างสุดของเว็บไซต์ :</h3>
+          </v-list-item-content>
+          <v-list-item-content class="align-end">
+            {{ settings.footer }}
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item>
+          <v-list-item-content><h3>โลโก้:</h3></v-list-item-content>
+          <v-spacer></v-spacer>
+          <v-card color="#ccd1d6" class="px-1 pa-3 mt-2 ">
+            <v-img
+              :src="`${$nuxt.context.env.config.IMG_URL}${settings.logo}`"
+              class=""
+              aspect-ratio="1"
+              width="250px"
+              height="200px"
+              contain
+            />
+          </v-card>
+          <v-spacer></v-spacer>
+        </v-list-item>
+
+        <v-list-item>
+          <v-spacer></v-spacer>
+          <v-list-item-content class="align-end">
+            <v-btn
+              text
+              color="pink lighten-4"
+              class="mt-3"
+              @click="editItem(settings)"
+            >
+              <span class="primary--text">
+                <v-icon>mdi-pencil</v-icon>
+                แก้ไขข้อมูล
+              </span>
+            </v-btn>
+          </v-list-item-content>
+          <v-spacer></v-spacer>
+        </v-list-item>
+      </v-list>
+    </v-card>
+
     <!-- 1 -->
     <!-- add  edit -->
     <v-dialog v-model="dialog" max-width="1200px" persistent>
       <v-card>
-        <v-card-title>
-          <h2 class="text-h5 ">
-            <v-icon> mdi-home-edit</v-icon>
-            {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
-          </h2>
+        <v-card-title class="text-h5 grey lighten-2 mb-6">
+          ตั้งค่า
         </v-card-title>
 
         <v-card-text>
@@ -179,30 +179,31 @@
               </v-col>
 
               <!-- รูป -->
-              <v-col cols="4" sm="4" md="4">
-               
-              </v-col>
+              <v-col cols="4" sm="4" md="4"> </v-col>
 
               <v-col cols="12" sm="12" md="4">
                 <h2><v-icon class="ma-2">mdi-flower</v-icon>โลโก้</h2>
-               <v-card color="#BA9F9A" class="px-1 mt-2 " elevation-12>
-                <v-img
-                  v-if="imageURL"
-                  :src="imageURL"
-                  max-height="350px"
-                  max-width="350px"
-                  class="ma-auto pa-auto mt-auto"
-                >
-                </v-img>
-               </v-card>
+                <v-card color="#ccd1d6" class="px-1 pa-3 mt-2 " elevation-12>
+                  <v-img
+                    v-if="imageURL"
+                    :src="imageURL"
+                    max-height="200px"
+                    max-width="200px"
+                    class="ma-auto pa-auto mt-auto"
+                  >
+                  </v-img>
+                </v-card>
                 <v-spacer></v-spacer>
-                <input accept="image/*" class="mt-3" type="file" @change="onFileSelected" />
+                <input
+                  accept="image/*"
+                  class="mt-3"
+                  type="file"
+                  @change="onFileSelected"
+                />
               </v-col>
 
               <!-- รูป -->
-              <v-col cols="4" sm="4" md="4">
-               
-              </v-col>
+              <v-col cols="4" sm="4" md="4"> </v-col>
             </v-row>
           </div>
         </v-card-text>
@@ -215,7 +216,7 @@
             @click="close()"
             style=" padding: 0.5rem 1rem; border: none; outline: none;"
           >
-            <v-icon aria-hidden="false" class="mx-2">  mdi-close-box </v-icon>
+            <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon>
             ยกเลิก
           </v-btn>
 
@@ -243,6 +244,18 @@
 export default {
   data() {
     return {
+      items: [
+        {
+          text: "ตั้งค่า",
+          disabled: false,
+          href: "/manage/settings"
+        },
+        {
+          text: "ปรับแต่ง",
+          disabled: true,
+          href: "Customizer"
+        }
+      ],
       dialog: false,
       type: null,
       imageURL: null,
@@ -253,7 +266,6 @@ export default {
       },
       uploadState: false,
       editedIndex: -1,
-      items: [],
       logo: [],
       settingitem: {
         _id: "",
@@ -272,6 +284,7 @@ export default {
       val || this.close();
     }
   },
+
   methods: {
     onFileSelected(event) {
       const reader = new FileReader();
@@ -282,25 +295,25 @@ export default {
       this.preImg = event.target.files[0];
       //console.log(this.preImg);
     },
-    getProductImage(item) {
+    getProductImage(settings) {
       if (this.settingitem.img.length > 0) {
-        return this.bankitem.logo;
+        return this.settingitem.logo;
       } else {
-        return `${$nuxt.context.env.config.IMG_URL}${item.logo}`;
+        return `${$nuxt.context.env.config.IMG_URL}${settings.logo}`;
       }
     },
-    editItem(item) {
+    editItem(settings) {
       this.type = "edit";
-      this.imageURL = `${$nuxt.context.env.config.IMG_URL}${item.logo}`;
+      this.imageURL = `${$nuxt.context.env.config.IMG_URL}${settings.logo}`;
       // this.imageURL2 = `${$nuxt.context.env.config.IMG_URL}${item.img_cover}`;
       this.settingitem = {
-        _id: item._id,
-        head_title: item.head_title,
-        sub_title: item.sub_title,
-        restaurant: item.restaurant,
-        address: item.address,
-        tel: item.tel,
-        footer: item.footer
+        _id: settings._id,
+        head_title: settings.head_title,
+        sub_title: settings.sub_title,
+        restaurant: settings.restaurant,
+        address: settings.address,
+        tel: settings.tel,
+        footer: settings.footer
       };
       this.dialog = true;
     },
@@ -333,6 +346,8 @@ export default {
           this.$emit("refresh");
           //this.$nuxt.refresh()
           this.close();
+          window.location.reload();
+          this.$forceUpdate();
           this.settingitem = {
             _id: "",
             head_title: "",

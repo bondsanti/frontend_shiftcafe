@@ -256,11 +256,11 @@
           <v-tabs-items v-model="tab">
             <v-tab-item value="tab-2">
               <v-container>
-                <v-row class="justify-center ma-3">
-                  <h1>ข้อมูลลูกค้า</h1>
-                </v-row>
                 <v-form v-model="valid" ref="form">
                   <v-row class="mx-16">
+                    <v-col cols="12">
+                      <h1>ข้อมูลลูกค้า</h1>
+                    </v-col>
                     <v-col cols="12">
                       <v-select
                         v-model="cus.pname"
@@ -334,13 +334,14 @@
                         :rules="rules"
                       ></v-textarea>
                     </v-col>
+                    <v-col cols="12">
+                      <v-btn color="primary" @click="addCus" :disabled="!valid"
+                        >บันทึก</v-btn
+                      >
+                    </v-col>
                   </v-row>
                 </v-form>
-                <v-row class="justify-center">
-                  <v-btn color="primary" @click="addCus" :disabled="!valid"
-                    >บันทึก</v-btn
-                  >
-                </v-row>
+
                 <v-row justify="center">
                   <v-dialog v-model="dialog2" persistent max-width="350">
                     <v-card>
@@ -403,7 +404,7 @@ export default {
       { value: 18, name: "18 %" }
     ],
     cus_type: "guest",
-    discount_type: "coupong",
+    discount_type: "no",
     type_order: "1",
     bank: "cash",
     cusId: "60fa3812dc42a9589e33ba1b",
@@ -510,7 +511,8 @@ export default {
           ...prePayment,
           ref_order_id: this.idOrder,
           receive_money: money.receive,
-          withdraw_money: money.withdraw
+          withdraw_money: money.withdraw,
+          coupon_id: this.coupon_id
         };
         this.$axios.post("/payment", newPayment).then(pay => {
           //console.log(pay);
@@ -529,6 +531,17 @@ export default {
             this.bank = "cash";
             this.cusId = "60fa3812dc42a9589e33ba1b";
             this.vat = "1";
+            this.alert = false;
+            this.coupon_id = null;
+            this.coupon = 0;
+            this.discount_type === "no";
+            this.$swal.fire({
+              position: "center",
+              type: "success",
+              title: pay.data.message,
+              showConfirmButton: false,
+              timer: 2500
+            });
           } else {
             this.$swal.fire({
               position: "center",
@@ -556,7 +569,8 @@ export default {
           ref_order_id: "no",
           receive_money: money.receive,
           withdraw_money: money.withdraw,
-          new_order: newOrder
+          new_order: newOrder,
+          coupon_id: this.coupon_id
         };
         this.$axios.post("/payment", newPayment).then(pay => {
           //console.log(pay);
@@ -575,6 +589,17 @@ export default {
             this.bank = "cash";
             this.cusId = "60fa3812dc42a9589e33ba1b";
             this.vat = "1";
+            this.alert = false;
+            this.coupon_id = null;
+            this.coupon = 0;
+            this.discount_type === "no";
+            this.$swal.fire({
+              position: "center",
+              type: "success",
+              title: pay.data.message,
+              showConfirmButton: false,
+              timer: 2500
+            });
           } else {
             //this.idOrder = order.data._id;
             this.$swal.fire({
@@ -594,14 +619,17 @@ export default {
         const res = await this.$axios.$get("/customer/" + this.cusId);
         //console.log(res);
         this.coupon = res.ref_level_id.discount;
+        this.alert = false;
         //this.cusId = "";
         //console.log(this.cusId);
+        this.coupon_id = null;
       } else {
         if (this.cus_type === "guest") {
           this.cusId = "60fa3812dc42a9589e33ba1b";
         }
         this.coupon = 0;
         this.coupon_id = null;
+        this.alert = false;
         //console.log(this.cusId);
       }
     },
@@ -620,9 +648,15 @@ export default {
             date.getTime() >= new Date(selectCoupon[0].start).getTime() &&
             date.getTime() <= new Date(selectCoupon[0].end).getTime()
           ) {
-            this.alertText = "";
-            this.alert = false;
-            this.coupon = selectCoupon[0].discount;
+            if (selectCoupon[0].num_use === 0) {
+              this.alertText = "คูปองนี้ใช้ครบจำนวนครั้งที่กำหนดแล้ว";
+              this.alert = true;
+              this.coupon = 0;
+            } else {
+              this.alertText = "";
+              this.alert = false;
+              this.coupon = selectCoupon[0].discount;
+            }
           } else {
             this.alertText = `วันที่ใช้คูปองไม่อยู่ในระยะเวลาที่กำหนดคือวันที่ ${this.formatDate2(
               selectCoupon[0].start

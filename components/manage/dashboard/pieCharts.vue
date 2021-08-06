@@ -142,7 +142,7 @@ export default {
       let pro = [];
 
       this.getItemByDay().map(item => {
-        pro.push(...item.ref_order_id.list_product);
+        item.ref_order_id ? pro.push(...item.ref_order_id.list_product) : "";
       });
       this.category.map(c => {
         this.series.push(this.getProductByCategory(pro, c._id).length);

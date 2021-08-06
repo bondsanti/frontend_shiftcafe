@@ -1,14 +1,11 @@
 <template>
   <v-app>
     <v-app-bar fixed app color="#1d1d1d" dark>
-      <v-toolbar-title class="hidden-xs-only"
-        >บริษัท เดฟ ฟอง จำกัด</v-toolbar-title
-      >
+      <v-toolbar-title>บริษัท เดฟ ฟอง จำกัด</v-toolbar-title>
 
       <v-spacer></v-spacer>
-      <span class="mr-4  hidden-xs-only font-weight-bold"></span>
 
-      <v-toolbar-title>
+      <v-toolbar-title class="hidden-xs-only">
         <strong>{{ timer }}</strong></v-toolbar-title
       >
     </v-app-bar>
@@ -24,19 +21,26 @@
           >
 
           <v-spacer></v-spacer>
-
-          <v-icon size="24px">
-            mdi-phone
-          </v-icon>
-          <span class="ml-1">054-010-691</span>
-          <v-icon size="24px" class="ml-3">
-            mdi-cellphone
-          </v-icon>
-          <span class="mr-3 ทส-1">080-245-0120</span>
-          <v-icon size="24px">
-            mdi-email-variant
-          </v-icon>
-          <span class="ml-1">info@devfong.co.th</span>
+          <v-row class="justify-center">
+            <v-col cols="12" sm="4">
+              <v-icon size="24px">
+                mdi-phone
+              </v-icon>
+              <span>054-010-691</span>
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-icon size="24px">
+                mdi-cellphone
+              </v-icon>
+              <span>080-245-0120</span>
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-icon size="24px">
+                mdi-email-variant
+              </v-icon>
+              <span>info@devfong.co.th</span>
+            </v-col>
+          </v-row>
         </v-card-title>
 
         <v-card-text class="py-2 white--text text-center">

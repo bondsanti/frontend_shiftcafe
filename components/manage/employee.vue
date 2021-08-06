@@ -60,7 +60,7 @@
         :items-per-page="15"
         :footer-props="{
           'items-per-page-options': [15, 20, 30, 40, 50, -1],
-           prevIcon: 'mdi-chevron-left',
+          prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
         }"
@@ -294,7 +294,7 @@
                       <v-col cols="12">
                         <v-select
                           label="คำนำหน้า"
-                         append-icon="mdi-account"
+                          append-icon="mdi-account"
                           outlined
                           color="#1D1D1D"
                           :items="pnamesec"
@@ -340,8 +340,7 @@
                       </v-col>
 
                       <v-col cols="12" sm="6">
-                     <date-picker
-                         
+                        <date-picker
                           placeholder="วันเกิด"
                           :rules="requiredRules"
                           :max="
@@ -478,7 +477,7 @@
                           outlined
                           required
                           color="#1D1D1D"
-                           append-icon="mdi-lock"
+                          append-icon="mdi-lock"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -516,6 +515,77 @@
             </v-card>
           </v-dialog>
           <!-- ---------------------------------------------------password -->
+
+          <v-dialog v-model="dialogManager" max-width="500px">
+            <v-stepper v-model="e1">
+              <v-stepper-header>
+                <v-stepper-step :complete="e1 > 1" step="1">
+                  เลือกผู้จัดการ
+                </v-stepper-step>
+
+                <v-divider></v-divider>
+
+                <v-stepper-step :complete="e1 > 2" step="2">
+                  โปรดกรอกรหัส OTP
+                </v-stepper-step>
+              </v-stepper-header>
+
+              <v-stepper-items>
+                <v-stepper-content step="1">
+                  <v-autocomplete
+                    v-model="telManager"
+                    :items="manager"
+                    outlined
+                    dense
+                    chips
+                    small-chips
+                    label="โปรดเลือกผู้จัดการ"
+                    multiple
+                  ></v-autocomplete>
+
+                  <v-btn color="primary" @click="e1 = 2">
+                    ถัดไป
+                  </v-btn>
+
+                  <v-btn text @click="dialogManager = false">
+                    ยกเลิก
+                  </v-btn>
+                </v-stepper-content>
+
+                <v-stepper-content step="2">
+                  <v-card
+                    class="mb-12"
+                    color="secondary"
+                    height="200px"
+                  ></v-card>
+
+                  <v-btn color="primary" @click="e1 = 1">
+                    ยืนยัน
+                  </v-btn>
+
+                  <v-btn text @click="dialogManager = false">
+                    ยกเลิก
+                  </v-btn>
+                </v-stepper-content>
+
+                <v-stepper-content step="3">
+                  <v-card
+                    class="mb-12"
+                    color="grey lighten-1"
+                    height="200px"
+                  ></v-card>
+
+                  <v-btn color="primary" @click="e1 = 1">
+                    Continue
+                  </v-btn>
+
+                  <v-btn text>
+                    Cancel
+                  </v-btn>
+                </v-stepper-content>
+              </v-stepper-items>
+            </v-stepper>
+          </v-dialog>
 
           <!-- ********************************************************************************************************************************************************************** -->
 
@@ -594,6 +664,21 @@
           </v-btn>
         </template>
         <!-- ----------------- ---------------------------------btn view -->
+        <template v-slot:[`item.private`]="{ item }">
+          <v-btn
+            class="mr1"
+            small
+            color="purple darken-2"
+            @click="selectManager(item)"
+          >
+            <div class="d-block  white--text">
+              <v-icon aria-hidden="false">
+                mdi-shield-account
+              </v-icon>
+              สวมสิทธิ์
+            </div>
+          </v-btn>
+        </template>
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
@@ -610,7 +695,7 @@
         </template>
         <template v-slot:[`item.username`]="{ item }">
           <v-icon class="ma-2 ml-2" color="primary">
-           mdi-identifier
+            mdi-identifier
           </v-icon>
           {{ item.username }}
         </template>
@@ -638,13 +723,14 @@ import "moment/locale/th";
 
 import DatePicker from "vue2-datepicker";
 import "@/assets/css/datepicker.css";
-import 'vue2-datepicker/locale/th'
+import "vue2-datepicker/locale/th";
 
 export default {
   data: () => ({
     //
     dialog: false,
     dialogpass: false,
+    dialogManager: false,
     dialogDelete: false,
     dialogadd: false,
     dialogView: false,
@@ -671,6 +757,7 @@ export default {
       //  { text: "ที่อยู่", align: "start", value: "address" },
       { text: "ข้อมูลส่วนตัว", value: "view", sortable: false },
       { text: "เปลียนรหัสผ่าน", value: "pasword", sortable: false },
+      { text: "สวมสิทธิ์พนักงาน", value: "private" },
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
@@ -725,7 +812,10 @@ export default {
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ],
     usernametrue: false,
-    usernameErr: false
+    usernameErr: false,
+    e1: 1,
+    telManager: null,
+    manager: []
   }),
   components: { DatePicker },
   computed: {},
@@ -762,6 +852,19 @@ export default {
     });
   },
   methods: {
+    selectManager() {
+      const managerFilter = this.employee.filter(e => {
+        return e.ref_id_role.position === "manager";
+      });
+      managerFilter.map(m => {
+        this.manager.push({
+          text: `${m.pname} ${m.fname} ${m.lname}`,
+          value: m.tel
+        });
+      });
+      this.dialogManager = true;
+      console.log(this.manager);
+    },
     moment2(date) {
       // moment.locale('th');
       var strdate = moment("th").format("LLLL");

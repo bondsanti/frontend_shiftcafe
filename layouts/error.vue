@@ -30,7 +30,7 @@
 
           <v-list-item-content>
             <v-list-item-title
-              >กับรหัสข้อผิดพลาด
+              >รหัสข้อผิดพลาด
               <strong>{{ error.statusCode }}</strong></v-list-item-title
             >
           </v-list-item-content>

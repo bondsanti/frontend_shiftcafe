@@ -87,6 +87,7 @@ export default {
         },
         xaxis: {
           categories: [
+            "08:00 น. - 09:00 น.",
             "09:00 น. - 10:00 น.",
             "10:00 น. - 11:00 น.",
             "11:00 น. - 12:00 น.",
@@ -161,6 +162,7 @@ export default {
         {
           name: "อาหารและเครื่องดื่ม",
           data: [
+            this.getTime("08", "09").length,
             this.getTime("09", "10").length,
             this.getTime("10", "11").length,
             this.getTime("11", "12").length,

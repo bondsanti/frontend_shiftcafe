@@ -200,6 +200,7 @@
       :idOrder="idForEditOrder"
       @clearOrder="clearOrder"
       :bank2="bank"
+      :couponParent="coupon"
     />
     <Cook
       :holdDl="holdDl"
@@ -229,13 +230,15 @@ export default {
       categories,
       customers,
       orderOnDatabase,
-      bank
+      bank,
+      coupon
     ] = await Promise.all([
       context.$axios.$get("/product"),
       context.$axios.$get("/category"),
       context.$axios.$get("/customer2"),
       context.$axios.$get("/order-hold"),
-      context.$axios.$get("/bank")
+      context.$axios.$get("/bank"),
+      context.$axios.$get("/coupon")
     ]);
 
     return {
@@ -244,7 +247,8 @@ export default {
       product2: products,
       customers,
       orderOnDatabase,
-      bank
+      bank,
+      coupon
     };
   },
   components: {

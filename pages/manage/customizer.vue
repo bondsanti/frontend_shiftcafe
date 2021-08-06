@@ -32,7 +32,7 @@ export default {
   middleware: ["auth", "checkAll", "refresh", "checkChecker"],
   async asyncData(context) {
     const [settings] = await Promise.all([context.$axios.$get("/setting")]);
-   //console.log(settings);
+    //console.log(settings);
     return { settings };
   },
 

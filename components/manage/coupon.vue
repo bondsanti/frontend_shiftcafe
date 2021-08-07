@@ -41,11 +41,13 @@
           </template>
         </v-dialog>
         <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
           label="ค้นหา"
           single-line
+          solo
           hide-details
         ></v-text-field>
       </v-card-title>
@@ -111,7 +113,7 @@
                           item-value="_id"
                           v-model="couponitem.ref_emp_id_by"
                           :items="useronline.flat()"
-                           :rules="[v => !!v || 'Item is required']"
+                          :rules="[v => !!v || 'Item is required']"
                         ></v-select>
                       </v-col>
                       <v-col cols="12" md="6" sm="6">
@@ -337,10 +339,12 @@
           </v-dialog>
           <!--------------------------------------------------- edit -------------------------->
 
-          <v-dialog v-model="dialogDelete" max-width="270px">
+          <v-dialog v-model="dialogDelete" max-width="310px">
             <v-card>
-              <v-card-title class="text-h5 white--text  primary">
-                แน่ใจแล้วใช่มั้ยที่จะลบ
+              <v-card-title class=" white--text  primary">
+                 <p class="text-center">
+                 คุณแน่ใจแล้วใช้มั้ยที่จะลบข้อมูล
+                </p>
               </v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -368,26 +372,40 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn small class="mr2" color="warning" @click="editItem(item)">
-            <v-icon aria-hidden="false" class="mx-2">
+          <v-btn
+            small
+            class=" white--text"
+            color="teal"
+            @click="Detail(item)"
+          >
+            <v-icon aria-hidden="false" class="">
+              mdi-eye-settings-outline
+            </v-icon>
+            ดูข้อมูล
+          </v-btn>
+
+          <v-btn small class="" color="warning" @click="editItem(item)">
+            <v-icon aria-hidden="false" class="">
               mdi-pencil
             </v-icon>
             แก้ไข
           </v-btn>
+
           <v-btn
             rounded-lx
-            class="mr-2"
+            class=""
             color="error"
             small
             @click="deleteItem(item)"
           >
-            <v-icon dark class="mx-2">
+            <v-icon dark class="">
               mdi-delete-forever
             </v-icon>
             ลบ
           </v-btn>
+
         </template>
-        <template v-slot:[`item.view`]="{ item }">
+        <!-- <template v-slot:[`item.view`]="{ item }">
           <v-btn
             small
             class="mr2 white--text"
@@ -399,7 +417,7 @@
             </v-icon>
             ดูข้อมูล
           </v-btn>
-        </template>
+        </template> -->
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
@@ -454,7 +472,7 @@ export default {
     DatePicker
   },
   data: () => ({
-     select: null,
+    select: null,
     detailArr: [],
     dialog: false,
     dialogView: false,
@@ -463,11 +481,11 @@ export default {
 
     search: "",
     // rules
-     name: '',
-      nameRules: [
-        v => !!v || 'Name is required',
-        v => (v && v.length <= 10) || 'Name must be less than 10 characters',
-      ],
+    name: "",
+    nameRules: [
+      v => !!v || "โปรดกรอกข้อมูล",
+      v => (v && v.length <= 10) || "Name must be less than 10 characters"
+    ],
     valid: true,
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     requiredRules: [
@@ -613,7 +631,7 @@ export default {
         value: "discount"
       },
       {
-        text: "จำนวลคูปองที่สมารถใช้ได้ต่อครั้ง",
+        text: "จำนวลคูปอง",
         align: "start",
         value: "num_use"
       },
@@ -622,11 +640,11 @@ export default {
         align: "start",
         value: "status"
       },
-      {
-        text: "คนที่ใช้คูปอง",
-        align: "start",
-        value: "view"
-      },
+      // {
+      //   text: "คนที่ใช้คูปอง",
+      //   align: "start",
+      //   value: "view"
+      // },
       {
         text: "หมายเหตุ",
         value: "actions",
@@ -690,6 +708,7 @@ export default {
       }
     },
     Detail(item) {
+
       this.itemBy = item;
       this.detailArr = [
         {
@@ -743,7 +762,7 @@ export default {
       this.type = "add";
       this.couponitem = {
         status: 0,
-        codename:"",
+        codename: "",
         ref_emp_id_by: "",
         ref_emp_id: "",
         start: "",
@@ -791,7 +810,7 @@ export default {
 
     save() {
       this.$refs.form.validate();
-      if (this.type === "add") {       
+      if (this.type === "add") {
         this.loading = true;
         this.$emit("addCoupon", {
           ...this.couponitem

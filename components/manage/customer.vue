@@ -43,12 +43,14 @@
           </template>
         </v-dialog>
         <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
           label="ค้นหา"
           single-line
           hide-details
+          solo
         ></v-text-field>
       </v-card-title>
 
@@ -80,8 +82,9 @@
               <v-card-title>
                 <v-icon left> mdi-account-plus </v-icon> ลงทะเบียนลูกค้า
               </v-card-title>
+                <v-divider class="mb-3"></v-divider>
               <v-card-text>
-                <v-divider class="mx-auto" inset></v-divider>
+               
               </v-card-text>
               <v-card-text>
                 <v-form v-model="valid" ref="form">
@@ -254,8 +257,9 @@
                   แก้ไขข้อมูลลูกค้า
                 </span>
               </v-card-title>
+                <v-divider class="mb-3"></v-divider>
               <v-card-text>
-                <v-divider class="mx-auto" inset></v-divider>
+              
               </v-card-text>
               <v-card-text>
                 <v-form v-model="valid" ref="form">
@@ -415,14 +419,15 @@
             </v-card>
           </v-dialog>
           <!--****************************** edi ********************************************************************************************************* -->
-          <v-dialog v-model="dialogDelete" max-width="300">
-            <v-card color="">
-              <v-card-title class="mb-4 ml-4 primary--text">
-                <v-alert dense outlined color="" type="warning">
-                  แน่ใจแล้วใช่มั้ยที่จะลบ
-                </v-alert>
+          <!-- dialogDelete -->
+          <v-dialog v-model="dialogDelete" max-width="410">
+            <v-card>
+              <v-card-title class="primary--text text-center">
+              
+                 คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
+              
               </v-card-title>
-              <v-divider class="mx-2"></v-divider>
+              <v-divider class="mx-auto"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
 
@@ -457,6 +462,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+            <!-- dialogDelete -->
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr1" small color="warning" @click="editItem(item)">
@@ -803,10 +809,11 @@ export default {
     },
 
     getColor(status) {
-      if (status === "platinum") return "cyan";
-      else if (status === "gold") return "amber";
+      if (status === "classic") return "brown";
       else if (status === "silver") return "blue-grey";
-      return "brown";
+      else if (status === "gold") return "amber";
+      else if (status === "Platinnum") return "cyan";
+      return "black";
     },
 
     getPnameColor(status) {

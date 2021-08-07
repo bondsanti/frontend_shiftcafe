@@ -64,10 +64,12 @@
             <v-card-title>
               <h2 class="text-center">ข้อมูลการสั่งซื้อ</h2>
               <v-spacer></v-spacer>
+              <v-spacer></v-spacer>
               <v-text-field
                 v-model="search"
+                solo
                 append-icon="mdi-magnify"
-                label="Search"
+                label="ค้นหา"
                 single-line
                 hide-details
               ></v-text-field>

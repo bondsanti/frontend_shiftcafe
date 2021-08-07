@@ -17,27 +17,16 @@
           </template>
         </v-dialog>
         <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="ค้นหา"
-          single-line
-          hide-details
-          solo-inverted
-          flat
-        ></v-text-field>
         <v-spacer></v-spacer>
-        <v-select
-          v-model="sortBy"
-          flat
-          solo-inverted
+        <v-text-field
+         v-model="search"
+          append-icon="mdi-magnify"
+          label="ค้นหาข้อมูล"
+          single-line
+          solo
           hide-details
-          item-text="name"
-          item-value="_id"
-          :items="categoryname.flat()"
-          prepend-inner-icon="mdi-magnify"
-          label="ประเภท"
-        ></v-select>
+        ></v-text-field>
+        
       </v-card-title>
 
       <v-data-table

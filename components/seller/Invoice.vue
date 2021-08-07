@@ -41,10 +41,12 @@
             <v-card-title>
               <h2 class="text-center">ข้อมูลใบสั่งซื้อ</h2>
               <v-spacer></v-spacer>
+              <v-spacer></v-spacer>
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
-                label="Search"
+                label="ค้นหา"
+                solo
                 single-line
                 hide-details
               ></v-text-field>

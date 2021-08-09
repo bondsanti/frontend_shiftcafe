@@ -76,7 +76,7 @@
         <template v-slot:top>
           <!-- ********************************************************************************************************************************************************************** -->
           <!-- add------------------dialogadd--------------------------------- -->
-          <v-dialog v-model="dialogadd" max-width="650px">
+          <v-dialog v-model="dialogadd" max-width="650px" persistent>
             <v-card>
               <v-card-title>
                 <span class="text-h5"
@@ -788,7 +788,7 @@ export default {
       { text: "ลำดับ", sortable: false, value: "No" },
       { text: "คำนำหน้า", align: "start", value: "pname" },
       { text: "ชื่อ", align: "start", value: "fname" },
-      { text: "นามสกุล", align: "start", value: "fname" },
+      { text: "นามสกุล", align: "start", value: "lname" },
       // { text: "ภาพ", sortable: false, value: "img" },
       { text: "ไอดีใช้เข้าระบบ", align: "start", value: "username" },
       { text: "ตำแหน่ง", align: "start", value: "ref_id_role.position" },

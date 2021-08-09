@@ -144,9 +144,7 @@
           <v-dialog v-model="dialogDelete" max-width="410">
             <v-card>
               <v-card-title class="primary--text text-center">
-              
-                 คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
-              
+                คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
               </v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -236,7 +234,7 @@
           <span>{{ item.datetime | moment }}</span>
         </template>
         <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize">
+          <v-btn color="primary" @click="$nuxt.refresh()">
             Reset
           </v-btn>
         </template>

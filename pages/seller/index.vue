@@ -419,9 +419,13 @@ export default {
       this.product2 = this.products;
       //console.log(this.product2[0]);
       this.cateId = cate._id;
-      this.product2 = this.product2.filter(
-        pro => pro.ref_cate_id._id === this.cateId
-      );
+
+      this.product2 = this.product2.filter(pro => {
+        if (pro.ref_cate_id) return pro.ref_cate_id._id === this.cateId;
+      });
+
+      console.log(this.product2);
+
       this.cateName = cate.cate_name;
     },
     closeOrderDl() {

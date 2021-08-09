@@ -179,7 +179,7 @@
               md="3"
               xs="6"
               class="mt-5"
-              v-for="(items, i) in levelMember"
+              v-for="(items, i) in dataMember"
               :key="i"
             >
               <v-card class="">
@@ -191,7 +191,7 @@
                 <v-card-title> บัตรสมาชิก {{ items.level_name }} </v-card-title>
 
                 <v-card-subtitle>
-                  ส่วนลด 0%
+                  ส่วนลด {{ items.discount }}%
                 </v-card-subtitle>
 
                 <v-card-actions>
@@ -201,134 +201,19 @@
 
                   <v-spacer></v-spacer>
 
-                  <v-btn icon @click="showCardMember1 = !showCardMember1">
+                  <v-btn icon @click="items.show = !items.show">
                     <v-icon>{{
-                      showCardMember1 ? "mdi-chevron-up" : "mdi-chevron-down"
+                      items.show ? "mdi-chevron-up" : "mdi-chevron-down"
                     }}</v-icon>
                   </v-btn>
                 </v-card-actions>
 
                 <v-expand-transition>
-                  <div v-show="showCardMember1">
+                  <div v-show="items.show">
                     <v-divider></v-divider>
 
                     <v-card-text>
-                      เป็นสมาชิก Shift-cafe คุณจะได้รับบัตรสมาชิก Classic ทันที
-                      ทุก ๆ การซื้อของคุณจะได้รับพอยท์
-                    </v-card-text>
-                  </div>
-                </v-expand-transition>
-              </v-card>
-            </v-col>
-            <v-col sm="6" md="3" xs="6" class="mt-5">
-              <v-card class="" max-width="">
-                <v-img src="silver.png" height="100%"></v-img>
-
-                <v-card-title>
-                  บัตรสมาชิก Silver
-                </v-card-title>
-
-                <v-card-subtitle>
-                  ส่วนลด 5%
-                </v-card-subtitle>
-
-                <v-card-actions>
-                  <v-btn color="blue darken-4" text>
-                    รายละเอียดบัตร
-                  </v-btn>
-
-                  <v-spacer></v-spacer>
-
-                  <v-btn icon @click="showCardMember2 = !showCardMember2">
-                    <v-icon>{{
-                      showCardMember2 ? "mdi-chevron-up" : "mdi-chevron-down"
-                    }}</v-icon>
-                  </v-btn>
-                </v-card-actions>
-
-                <v-expand-transition>
-                  <div v-show="showCardMember2">
-                    <v-divider></v-divider>
-
-                    <v-card-text>
-                      เป็นสมาชิก Shift-Cafe และมียอดสั่งซื้อสะสมต่อปี 2,000 บาท
-                      ขึ้นไป
-                    </v-card-text>
-                  </div>
-                </v-expand-transition>
-              </v-card>
-            </v-col>
-            <v-col sm="6" md="3" xs="6" class="mt-5">
-              <v-card class="" max-width="">
-                <v-img src="gold.png" height="100%"></v-img>
-
-                <v-card-title>
-                  บัตรสมาชิก Gold
-                </v-card-title>
-
-                <v-card-subtitle>
-                  ส่วนลด 7%
-                </v-card-subtitle>
-
-                <v-card-actions>
-                  <v-btn color="blue darken-4" text>
-                    รายละเอียดบัตร
-                  </v-btn>
-
-                  <v-spacer></v-spacer>
-
-                  <v-btn icon @click="showCardMember3 = !showCardMember3">
-                    <v-icon>{{
-                      showCardMember3 ? "mdi-chevron-up" : "mdi-chevron-down"
-                    }}</v-icon>
-                  </v-btn>
-                </v-card-actions>
-
-                <v-expand-transition>
-                  <div v-show="showCardMember3">
-                    <v-divider></v-divider>
-
-                    <v-card-text>
-                      เป็นสมาชิก Shift-Cafe และมียอดสั่งซื้อสะสมต่อปี 5,000 บาท
-                      ขึ้นไป
-                    </v-card-text>
-                  </div>
-                </v-expand-transition>
-              </v-card>
-            </v-col>
-            <v-col sm="6" md="3" xs="6" class="mt-5">
-              <v-card class="" max-width="">
-                <v-img src="platinum.png" height="100%"></v-img>
-
-                <v-card-title>
-                  บัตรสมาชิก Platinum
-                </v-card-title>
-
-                <v-card-subtitle>
-                  ส่วนลด 10%
-                </v-card-subtitle>
-
-                <v-card-actions>
-                  <v-btn color="blue darken-4" text>
-                    รายละเอียดบัตร
-                  </v-btn>
-
-                  <v-spacer></v-spacer>
-
-                  <v-btn icon @click="showCardMember4 = !showCardMember4">
-                    <v-icon>{{
-                      showCardMember4 ? "mdi-chevron-up" : "mdi-chevron-down"
-                    }}</v-icon>
-                  </v-btn>
-                </v-card-actions>
-
-                <v-expand-transition>
-                  <div v-show="showCardMember4">
-                    <v-divider></v-divider>
-
-                    <v-card-text>
-                      เป็นสมาชิก Shift-Cafe และมียอดสั่งซื้อสะสมต่อปี 8,000 บาท
-                      ขึ้นไป
+                      {{ items.detail }}
                     </v-card-text>
                   </div>
                 </v-expand-transition>
@@ -392,10 +277,7 @@ export default {
   },
   data() {
     return {
-      showCardMember1: false,
-      showCardMember2: false,
-      showCardMember3: false,
-      showCardMember4: false,
+      levelMember: [],
       dialog: false,
       formEdit: {
         password: ""
@@ -409,6 +291,12 @@ export default {
       "/customer/" + context.$auth.user._id
     );
     const levelMember = await context.$axios.$get("/level-member");
+    let dataMember=[]
+    for (let i in levelMember) {
+      dataMember.push({ ...levelMember[i], show: false });
+    }
+
+    console.log(dataMember);
 
     const data = await context.$axios.$get(
       "/payment/customer/" + context.$auth.user._id
@@ -422,10 +310,9 @@ export default {
     let Sumtotal = 0;
     Sumtotal = (totalprice / target_price) * 100;
 
-    console.log(levelMember);
     //console.log(loadData);
     //console.log(context.$auth.user);
-    return { loadData, totalprice, Sumtotal, levelMember };
+    return { loadData, totalprice, Sumtotal, dataMember };
   },
 
   methods: {

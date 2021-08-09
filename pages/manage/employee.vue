@@ -1,5 +1,10 @@
 <template>
-  <employee :employee="employee" :role="role" @addEmployee="addEmployee" />
+  <employee
+    :employee="employee"
+    :role="role"
+    @addEmployee="addEmployee"
+    @refresh="refresh"
+  />
 </template>
 
 <script>

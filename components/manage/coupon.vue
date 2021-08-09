@@ -6,7 +6,7 @@
         <v-form>
           <v-card-title>
             <span class="text-h">
-              <v-icon left> mdi-account-search</v-icon> ลูกค้า
+              <v-icon left> mdi-account-search</v-icon>
             </span>
           </v-card-title>
           <v-divider class="mb-3"></v-divider>
@@ -41,11 +41,13 @@
           </template>
         </v-dialog>
         <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
           label="ค้นหา"
           single-line
+          solo
           hide-details
         ></v-text-field>
       </v-card-title>
@@ -73,41 +75,48 @@
                 </span>
               </v-card-title>
 
-              <v-form v-model="valid" ref="form">
-                <v-card-text>
+              <v-card-text>
+                <v-form v-model="valid" ref="form" lazy-validation>
                   <div>
                     <v-row>
                       <v-col cols="12"> </v-col>
-                      <v-col cols="12" md="10">
+                      <v-col cols="6" md="10" sm="9">
                         <v-text-field
                           outlined
                           label="ชื่อคูปอง"
-                          v-model="coupone.codename"
-                          :rules="rules"
+                          v-model="couponitem.codename"
+                          :rules="nameRules"
                           color="#1D1D1D"
+                          @keypress.enter="check"
                         ></v-text-field>
                       </v-col>
                       <v-col
-                        cols="12"
+                        cols="6"
                         sm="2"
                         class="justify-center align-center"
                       >
-                        <v-btn color="warning"> ตรวจสอบ</v-btn>
+                        <v-btn @click="check" color="warning"> ตรวจสอบ</v-btn>
+                        <div class="mt-2 ml-4" v-if="nametrue">
+                          <span class="green--text ">ใช้ได้</span>
+                        </div>
+                        <div class="mt-2 ml-4" v-if="nameErr">
+                          <span class="red--text ">ซ้ำ</span>
+                        </div>
                       </v-col>
 
-                      <v-col cols="12" md="6">
+                      <v-col cols="12" md="6" sm="6">
                         <v-select
                           label=" ชื่อคนออกคูปอง"
                           outlined
                           color="#1D1D1D"
                           item-text="name"
                           item-value="_id"
-                          v-model="coupone.ref_emp_id_by"
+                          v-model="couponitem.ref_emp_id_by"
                           :items="useronline.flat()"
-                          :rules="rules"
+                          :rules="[v => !!v || 'Item is required']"
                         ></v-select>
                       </v-col>
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" md="6" sm="6">
                         <v-select
                           label="ออกให้"
                           outlined
@@ -115,56 +124,60 @@
                           item-text="name"
                           item-value="_id"
                           :items="Empname.flat()"
-                          v-model="coupone.ref_emp_id"
-                          :rules="rules"
+                          v-model="couponitem.ref_emp_id"
+                          :rules="[v => !!v || 'Item is required']"
                         ></v-select>
                       </v-col>
 
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" md="6" sm="6">
                         <date-picker
                           class="my-datepicker"
                           placeholder="วันหมดอายุ"
+                          oninput="validity.valid||(value='');"
+                          v-model="couponitem.start"
                           :rules="rules"
-                          :max="
-                            new Date(
-                              Date.now() -
-                                new Date().getTimezoneOffset() * 60000
-                            )
-                              .toISOString()
-                              .substr(0, 10)
-                          "
-                          min="1950-01-01"
-                          v-model="coupone.exp"
+                          valueType="format"
+                        ></date-picker>
+                      </v-col>
+                      <v-col cols="12" md="6" sm="6">
+                        <date-picker
+                          class="my-datepicker"
+                          placeholder="วันหมดอายุ"
+                          oninput="validity.valid||(value='');"
+                          v-model="couponitem.end"
+                          :rules="rules"
                           valueType="format"
                         ></date-picker>
                       </v-col>
 
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" md="6" sm="6">
                         <v-select
                           label="ส่วนลดในคูปอง"
                           outlined
                           color="#1D1D1D"
                           :items="discount"
-                          v-model="coupone.discount"
-                          :rules="rules"
+                          v-model="couponitem.discount"
+                          oninput="validity.valid||(value='');"
+                          type="number"
+                          :rules="[v => !!v || 'Item is required']"
                         ></v-select>
                       </v-col>
 
-                      <v-col cols="12" sm="12">
+                      <v-col cols="12" md="6" sm="6">
                         <v-text-field
                           outlined
                           label="จำนวลคูปองที่สมารถใช้ได้ต่อครั้ง"
-                          v-model="coupone.num_use"
+                          v-model="couponitem.num_use"
                           :rules="rules"
+                          oninput="validity.valid||(value='');"
                           type="number"
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
                     </v-row>
                   </div>
-                </v-card-text>
-              </v-form>
-
+                </v-form>
+              </v-card-text>
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
@@ -177,11 +190,11 @@
                 <v-btn
                   class="ma-1"
                   color="info"
+                  :disabled="!valid"
                   @click="
                     save();
                     showAlert();
                   "
-                  :disabled="!valid"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -191,7 +204,9 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
           <!--------------------------------------------------- add -------------------------->
+
           <!--------------------------------------------------- edit -------------------------->
           <v-dialog v-model="dialogedit" max-width="700px">
             <v-card>
@@ -202,108 +217,100 @@
                 </span>
               </v-card-title>
 
-              <v-form v-model="valid" ref="form">
-                <v-card-text>
-                  <div>
-                    <v-row>
-                      <v-col cols="12"> </v-col>
-                      <v-col cols="12" md="10">
-                        <v-text-field
-                          outlined
-                          label="ชื่อคูปอง"
-                          v-model="coupone.codename"
-                          :rules="rules"
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="2"
-                        class="justify-center align-center"
-                      >
-                        <v-btn color="warning"> ตรวจสอบ</v-btn>
-                      </v-col>
+              <v-card-text>
+                <div>
+                  <v-row>
+                    <v-col cols="12"> </v-col>
+                    <v-col cols="6" md="9" sm="9" xs="6">
+                      <v-text-field
+                        outlined
+                        label="ชื่อคูปอง"
+                        v-model="couponitem.codename"
+                        @keypress.enter="check"
+                        color="#1D1D1D"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="6" sm="2" class="justify-center align-center">
+                      <v-btn @click="check" color="warning"> ตรวจสอบ</v-btn>
+                      <div class="mt-2 ml-4" v-if="nametrue">
+                        <span class="green--text ">ใช้ได้</span>
+                      </div>
+                      <div class="mt-2 ml-4" v-if="nameErr">
+                        <span class="red--text ">ซ้ำ</span>
+                      </div>
+                    </v-col>
 
-                      <v-col cols="12" md="6">
-                        <v-select
-                          label=" ชื่อคนออกคูปอง"
-                          outlined
-                          color="#1D1D1D"
-                          item-text="name"
-                          item-value="_id"
-                          v-model="coupone.ref_emp_id_by"
-                          :items="useronline.flat()"
-                          :rules="rules"
-                        ></v-select>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-select
-                          label="ออกให้"
-                          outlined
-                          color="#1D1D1D"
-                          item-text="name"
-                          item-value="_id"
-                          :items="Empname.flat()"
-                          v-model="coupone.ref_emp_id"
-                          :rules="rules"
-                        ></v-select>
-                      </v-col>
+                    <v-col cols="12" md="6" sm="6">
+                      <v-select
+                        label=" ชื่อคนออกคูปอง"
+                        outlined
+                        color="#1D1D1D"
+                        item-text="name"
+                        item-value="_id"
+                        v-model="couponitem.ref_emp_id_by"
+                        :items="useronline.flat()"
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-select
+                        label="ออกให้"
+                        outlined
+                        color="#1D1D1D"
+                        item-text="name"
+                        item-value="_id"
+                        :items="Empname.flat()"
+                        v-model="couponitem.ref_emp_id"
+                      ></v-select>
+                    </v-col>
 
-                      <v-col cols="12" sm="6">
-                        <date-picker
-                          class="my-datepicker"
-                          placeholder="วันหมดอายุ"
-                          :rules="rules"
-                          v-model="coupone.exp"
-                          valueType="format"
-                        ></date-picker>
-                      </v-col>
+                    <v-col cols="12" sm="6">
+                      <date-picker
+                        class="my-datepicker"
+                        placeholder="วันเริ่มใช้งาน"
+                        v-model="couponitem.start"
+                        valueType="format"
+                      ></date-picker>
+                    </v-col>
+                    <v-col cols="12" sm="6">
+                      <date-picker
+                        class="my-datepicker"
+                        placeholder="วันหมดอายุ"
+                        v-model="couponitem.end"
+                        valueType="format"
+                      ></date-picker>
+                    </v-col>
 
-                      <v-col cols="12" sm="6">
-                        <v-select
-                          label="ส่วนลดในคูปอง"
-                          outlined
-                          color="#1D1D1D"
-                          :items="discount"
-                          v-model="coupone.discount"
-                          :rules="rules"
-                        ></v-select>
-                      </v-col>
+                    <v-col cols="12" sm="6">
+                      <v-select
+                        label="ส่วนลดในคูปอง"
+                        outlined
+                        color="#1D1D1D"
+                        :items="discount"
+                        v-model="couponitem.discount"
+                      ></v-select>
+                    </v-col>
 
-                      <v-col cols="12" sm="6">
-                        <v-text-field
-                          outlined
-                          label="จำนวลคูปองที่สมารถใช้ได้ต่อครั้ง"
-                          v-model="coupone.num_use"
-                          :rules="rules"
-                          type="number"
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" sm="6">
-                        <v-select
-                          label="ปรับสถานะคูปอง"
-                          outlined
-                          color="#1D1D1D"
-                          :items="status_edit"
-                          v-model="coupone.status_edit"
-                          :rules="rules"
-                        ></v-select>
-                      </v-col>
-                    </v-row>
-                  </div>
-                </v-card-text>
-                <v-card-text>
-                  <v-alert
-                    text
-                    outlined
-                    color="deep-orange"
-                    icon="mdi-ticket-percent-outline"
-                  >
-                    <q class="font-weight-bold">{{ status_edit }}</q>
-                  </v-alert>
-                </v-card-text>
-              </v-form>
+                    <v-col cols="12" sm="6">
+                      <v-text-field
+                        outlined
+                        label="จำนวลคูปองที่สมารถใช้ได้ต่อครั้ง"
+                        v-model="couponitem.num_use"
+                        type="number"
+                        color="#1D1D1D"
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="12">
+                      <v-select
+                        label="ปรับสถานะคูปอง"
+                        outlined
+                        color="#1D1D1D"
+                        :items="status"
+                        v-model="couponitem.status"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+                </div>
+              </v-card-text>
 
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="closeedit">
@@ -321,22 +328,23 @@
                     save();
                     showAlert();
                   "
-                  :disabled="!valid"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
                   </v-icon>
-                  เพิ่มข้อมูลคูปอง
+                  เพิ่มข้อมูล
                 </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
           <!--------------------------------------------------- edit -------------------------->
 
-          <v-dialog v-model="dialogDelete" max-width="270px">
+          <v-dialog v-model="dialogDelete" max-width="310px">
             <v-card>
-              <v-card-title class="text-h5 white--text  primary">
-                แน่ใจแล้วใช่มั้ยที่จะลบ
+              <v-card-title class=" white--text  primary">
+                 <p class="text-center">
+                 คุณแน่ใจแล้วใช้มั้ยที่จะลบข้อมูล
+                </p>
               </v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
@@ -364,38 +372,60 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn small class="mr2" color="warning" @click="editItem(item)">
-            <v-icon aria-hidden="false" class="mx-2">
+          <v-btn
+            small
+            class=" white--text"
+            color="teal"
+            @click="Detail(item)"
+          >
+            <v-icon aria-hidden="false" class="">
+              mdi-eye-settings-outline
+            </v-icon>
+            ดูข้อมูล
+          </v-btn>
+
+          <v-btn small class="" color="warning" @click="editItem(item)">
+            <v-icon aria-hidden="false" class="">
               mdi-pencil
             </v-icon>
-            แก้ไขคูปอง
+            แก้ไข
           </v-btn>
+
           <v-btn
             rounded-lx
-            class="mr-2"
+            class=""
             color="error"
             small
             @click="deleteItem(item)"
           >
-            <v-icon dark class="mx-2">
+            <v-icon dark class="">
               mdi-delete-forever
             </v-icon>
-            ลบคูปอง
+            ลบ
           </v-btn>
+
         </template>
-        <template v-slot:[`item.view`]="{ item }">
-          <v-btn small class="mr2" color="warning" @click="Detail(item)">
+        <!-- <template v-slot:[`item.view`]="{ item }">
+          <v-btn
+            small
+            class="mr2 white--text"
+            color="teal"
+            @click="Detail(item)"
+          >
             <v-icon aria-hidden="false" class="mx-2">
               mdi-eye-settings-outline
             </v-icon>
             ดูข้อมูล
           </v-btn>
-        </template>
+        </template> -->
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
-        <template v-slot:[`item.exp`]="{ item }">
-          <span>{{ item.exp | moment }}</span>
+        <template v-slot:[`item.end`]="{ item }">
+          <span>{{ item.end | moment }}</span>
+        </template>
+        <template v-slot:[`item.start`]="{ item }">
+          <span>{{ item.start | moment }}</span>
         </template>
         <template v-slot:[`item.discount`]="{ item }">
           <v-chip :color="getColorstatus(item.discount)" dark small>
@@ -414,9 +444,9 @@
           </v-chip>
         </template>
 
-        <template v-slot:[`item.status_edit`]="{ item }">
-          <v-chip :color="getColorstatususe(item.status_edit)" dark small>
-            {{ item.status_edit }}
+        <template v-slot:[`item.status`]="{ item }">
+          <v-chip :color="getColor(item.status)" dark small>
+            {{ getTxt(item.status) }}
           </v-chip>
         </template>
 
@@ -442,32 +472,53 @@ export default {
     DatePicker
   },
   data: () => ({
+    select: null,
     detailArr: [],
     dialog: false,
     dialogView: false,
     dialogedit: false,
     dialogDelete: false,
-    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
-    valid: true,
+
     search: "",
+    // rules
+    name: "",
+    nameRules: [
+      v => !!v || "โปรดกรอกข้อมูล",
+      v => (v && v.length <= 10) || "Name must be less than 10 characters"
+    ],
+    valid: true,
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    requiredRules: [
+      v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+      v => (v && v.length <= 280) || "ชื่อไม่ควรเกิน 280 ตัวอักษร"
+    ],
+    numberRules: [
+      v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
+      v => (/\d{2,2}/.test(v) && v.length <= 2) || "เบอร์โทรศัพท์ไม่ถูกต้อง",
+      v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
+    ],
+    //
+
     Empname: [],
     useronline: [],
-    status_edit: [
+    nameErr: false,
+    nametrue: true,
+    status: [
       {
         text: "รอใช้งาน",
-        value: "รอใช้งาน"
+        value: 0
       },
       {
         text: "ใช้งานแล้ว",
-        value: "ใช้งาน"
+        value: 1
       },
       {
         text: "หมดอายุ",
-        value: "หมดอายุ"
+        value: 2
       },
       {
         text: "ยกเลิก",
-        value: "ยกเลิก"
+        value: 3
       }
     ],
     discount: [
@@ -564,21 +615,15 @@ export default {
         align: "start",
         value: "codename"
       },
-
       {
-        text: "ออกให้พนักงาน",
+        text: "วันที่เริ่มใช้งาน",
         align: "start",
-        value: "ref_emp_id"
-      },
-      {
-        text: " คนออกคูปอง",
-        align: "start",
-        value: "ref_emp_id_by"
+        value: "start"
       },
       {
         text: "วันหมดอายุ",
         align: "start",
-        value: "exp"
+        value: "end"
       },
       {
         text: "ส่วนลด (%) ",
@@ -586,20 +631,20 @@ export default {
         value: "discount"
       },
       {
-        text: "จำนวลคูปองที่สมารถใช้ได้ต่อครั้ง",
+        text: "จำนวลคูปอง",
         align: "start",
         value: "num_use"
       },
       {
         text: "สถานะการใช้งาน",
         align: "start",
-        value: "status_edit"
+        value: "status"
       },
-      {
-        text: "คนที่ใช้คูปอง",
-        align: "start",
-        value: "view"
-      },
+      // {
+      //   text: "คนที่ใช้คูปอง",
+      //   align: "start",
+      //   value: "view"
+      // },
       {
         text: "หมายเหตุ",
         value: "actions",
@@ -611,24 +656,25 @@ export default {
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ],
     editedIndex: -1,
-    coupone: {
-      _id: " ",
-      codename: " ",
-      ref_emp_id_by: " ",
-      ref_emp_id: " ",
-      exp: " ",
-      discount: " ",
-      num_use: " "
+    couponitem: {
+      _id: "",
+      status: "",
+      codename: "",
+      ref_emp_id_by: "",
+      ref_emp_id: "",
+      start: "",
+      end: "",
+      discount: "",
+      num_use: ""
     },
     type: null,
-    deleteId: null
+    deleteId: null,
+    codeName: []
   }),
-
-  computed: {},
   filters: {
     moment: function(date) {
       var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("วันที่ DD MMM YY ");
+      return moment(strdate).format("DD MMMM YYYY ");
     }
   },
   watch: {
@@ -642,7 +688,6 @@ export default {
       val || this.closeDelete();
     }
   },
-  created() {},
   mounted() {
     this.toast = this.$swal.mixin({
       toast: true,
@@ -652,25 +697,54 @@ export default {
     });
   },
   methods: {
+    async check() {
+      const cus = await this.$axios.$get("/coupon/" + this.couponitem.codename);
+      if (cus.length > 0) {
+        this.nameErr = true;
+        this.nametrue = false;
+      } else {
+        this.nameErr = false;
+        this.nametrue = true;
+      }
+    },
     Detail(item) {
+
       this.itemBy = item;
       this.detailArr = [
         {
-          name: "ชื่อ-นามสกุล",
-          value: item.ref_emp_id
+          name: "ออกโดย",
+          value: item.ref_emp_id_by.fname + " " + item.ref_emp_id_by.lname
+        },
+        {
+          name: "ออกให้",
+          value: item.ref_emp_id.fname + " " + item.ref_emp_id.lname
         }
       ];
 
       this.dialogView = true;
       //console.log(item);
     },
-
+    getTxt(status) {
+      if (status === 0) return "รอใช้งาน";
+      else if (status === 1) return "ใช้งานแล้ว";
+      else if (status === 2) return "หมดอายุ";
+      else if (status === 3) return "ยกเลิก";
+      else return "อื่นๆ";
+    },
+    getColor(status) {
+      if (status === 0) return "#2196F3";
+      else if (status === 1) return "#4CAF50";
+      else if (status === 2) return "#F44336";
+      else if (status === 3) return "primary";
+      return "primary";
+    },
     getColorstatus(discount) {
-      if (discount) return "green";
+      if (discount) return "#E91E63";
       else return "red";
     },
+
     getColorstatususe(num_use) {
-      if (num_use) return "teal";
+      if (num_use) return "#455A64";
       else return "red";
     },
     showAlert() {
@@ -686,20 +760,21 @@ export default {
 
     addItem() {
       this.type = "add";
-      this.coupone = {
-        _id: " ",
-        codename: " ",
-        ref_emp_id_by: " ",
-        ref_emp_id: " ",
-        exp: "",
-        discount: " ",
-        num_use: " "
+      this.couponitem = {
+        status: 0,
+        codename: "",
+        ref_emp_id_by: "",
+        ref_emp_id: "",
+        start: "",
+        end: "",
+        discount: "",
+        num_use: ""
       };
       this.dialog = true;
     },
     editItem(item) {
       this.type = "edit";
-      this.coupone = item;
+      this.couponitem = item;
 
       this.dialogedit = true;
     },
@@ -737,15 +812,14 @@ export default {
       this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
-
         this.$emit("addCoupon", {
-          ...this.coupone
+          ...this.couponitem
         });
         this.close();
       } else {
         this.loading = true;
         this.$axios
-          .$put("/coupon/" + this.coupone._id, this.coupone)
+          .$put("/coupon/" + this.couponitem._id, this.couponitem)
           .then(() => {
             this.closeedit();
           })
@@ -779,6 +853,10 @@ export default {
   created() {
     this.improveEmp();
     this.improveUsers();
+    this.coupon.map(c => {
+      this.codeName.push(c.codename);
+    });
+    console.log(this.codeName);
   }
 };
 </script>

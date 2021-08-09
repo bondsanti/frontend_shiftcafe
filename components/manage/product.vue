@@ -17,27 +17,16 @@
           </template>
         </v-dialog>
         <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="ค้นหา"
-          single-line
-          hide-details
-          solo-inverted
-          flat
-        ></v-text-field>
         <v-spacer></v-spacer>
-        <v-select
-          v-model="sortBy"
-          flat
-          solo-inverted
+        <v-text-field
+         v-model="search"
+          append-icon="mdi-magnify"
+          label="ค้นหาข้อมูล"
+          single-line
+          solo
           hide-details
-          item-text="name"
-          item-value="_id"
-          :items="categoryname.flat()"
-          prepend-inner-icon="mdi-magnify"
-          label="ประเภท"
-        ></v-select>
+        ></v-text-field>
+        
       </v-card-title>
 
       <v-data-table
@@ -147,12 +136,55 @@
                         :aspect-ratio="16 / 9"
                         class="mb-3 ml-12"
                       ></v-img>
-                      <input
-                       type="file"  accept="image/*" required
-                        @change="onFileSelected"
-                      />
-                    
-                    
+                      <v-row>
+                        <v-col>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            required
+                            @change="onFileSelected"
+                          />
+                        </v-col>
+                        <v-col>
+                          <v-btn color="primary" @click="dialogCrop = true"
+                            >ตัดรูปภาพ</v-btn
+                          >
+                          <v-dialog
+                            transition="dialog-bottom-transition"
+                            max-width="600"
+                            v-model="dialogCrop"
+                          >
+                            <v-card>
+                              <v-toolbar color="primary" dark
+                                >Opening from the bottom</v-toolbar
+                              >
+
+                              <cropper
+                                ref="cropper"
+                                class="cropper"
+                                :src="imageURL"
+                                :stencil-props="{
+                                  aspectRatio: 10 / 12
+                                }"
+                                @change="change"
+                              />
+                              <preview
+                                :width="120"
+                                :height="120"
+                                :image="result.image"
+                                :coordinates="result.coordinates"
+                              />
+
+                              <v-card-actions class="justify-end">
+                                <v-btn @click="croppedFinish">ตกลง</v-btn>
+                                <v-btn text @click="dialogCrop = false"
+                                  >ปิด</v-btn
+                                >
+                              </v-card-actions>
+                            </v-card>
+                          </v-dialog>
+                        </v-col>
+                      </v-row>
                     </v-col>
                   </v-row>
                 </div>
@@ -234,8 +266,19 @@
 </template>
 
 <script>
+import { Cropper, Preview } from "vue-advanced-cropper";
+import "vue-advanced-cropper/dist/style.css";
 export default {
+  components: {
+    Cropper,
+    Preview
+  },
   data: () => ({
+    result: {
+      coordinates: null,
+      image: null,
+      img: null
+    },
     dialog: false,
     dialogDelete: false,
     search: "",
@@ -275,7 +318,8 @@ export default {
       msg: ""
     },
     imageURL: null,
-    preImg: null
+    preImg: null,
+    dialogCrop: false
   }),
   computed: {
     formTitle() {
@@ -291,12 +335,30 @@ export default {
     }
   },
   methods: {
+    change({ coordinates, image, canvas }) {
+      canvas.toBlob(blob => {
+        //console.log(blob);
+        this.preImg = blob;
+      });
+
+      this.result = {
+        coordinates,
+        image,
+        img: canvas.toDataURL()
+      };
+    },
+    croppedFinish() {
+      this.imageURL = this.result.img;
+      this.dialogCrop = false;
+    },
+
     onFileSelected(event) {
       const reader = new FileReader();
       reader.onload = event => {
         this.imageURL = event.target.result;
       };
       reader.readAsDataURL(event.target.files[0]);
+      console.log(event.target.files[0]);
       this.preImg = event.target.files[0];
       //console.log(this.preImg);
     },
@@ -348,9 +410,9 @@ export default {
     close() {
       this.dialog = false;
       this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);    
+        this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
-         this.$emit("refresh");
+        this.$emit("refresh");
       });
     },
     closeDelete() {
@@ -413,7 +475,7 @@ export default {
         if (this.preImg !== null) {
           formdata.append("img", this.preImg);
         }
-        console.log(this.productsItem);
+        console.log(this.preImg);
         this.$axios
           .$put("/product/" + this.productsItem._id, formdata)
           .then(() => {
@@ -462,3 +524,10 @@ export default {
   }
 };
 </script>
+<style scoped>
+.cropper {
+  height: 600px;
+  background: #ddd;
+  margin: 0;
+}
+</style>

@@ -60,7 +60,7 @@
         :items-per-page="15"
         :footer-props="{
           'items-per-page-options': [15, 20, 30, 40, 50, -1],
-           prevIcon: 'mdi-chevron-left',
+          prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
         }"
@@ -163,22 +163,40 @@
                       </v-col>
 
                       <v-col cols="12" sm="6">
-                        <date-picker
-                          class="my-datepicker"
-                          placeholder="วันเกิด"
-                          :rules="requiredRules"
-                          :max="
-                            new Date(
-                              Date.now() -
-                                new Date().getTimezoneOffset() * 60000
-                            )
-                              .toISOString()
-                              .substr(0, 10)
-                          "
-                          min="1950-01-01"
-                          v-model="employeeitmeadd.birthday"
-                          valueType="format"
-                        ></date-picker>
+                        <v-menu
+                          ref="menu"
+                          v-model="menu"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-x
+                          min-width="auto"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="employeeitmeadd.birthday"
+                              label="วันเกิด"
+                              append-icon="mdi-calendar"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                              outlined
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="employeeitmeadd.birthday"
+                            :active-picker.sync="activePicker"
+                            :max="
+                              new Date(
+                                Date.now() -
+                                  new Date().getTimezoneOffset() * 60000
+                              )
+                                .toISOString()
+                                .substr(0, 10)
+                            "
+                            min="1950-01-01"
+                            @change="testDate"
+                          ></v-date-picker>
+                        </v-menu>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
@@ -261,10 +279,7 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="
-                    save();
-                    showAlert();
-                  "
+                  @click="save()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -294,7 +309,7 @@
                       <v-col cols="12">
                         <v-select
                           label="คำนำหน้า"
-                         append-icon="mdi-account"
+                          append-icon="mdi-account"
                           outlined
                           color="#1D1D1D"
                           :items="pnamesec"
@@ -340,8 +355,41 @@
                       </v-col>
 
                       <v-col cols="12" sm="6">
-                     <date-picker
-                         
+                        <v-menu
+                          ref="menu"
+                          v-model="menu2"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-x
+                          min-width="auto"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="employeeitme.birthday"
+                              label="วันเกิด"
+                              append-icon="mdi-calendar"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                              outlined
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="employeeitme.birthday"
+                            :active-picker.sync="activePicker"
+                            :max="
+                              new Date(
+                                Date.now() -
+                                  new Date().getTimezoneOffset() * 60000
+                              )
+                                .toISOString()
+                                .substr(0, 10)
+                            "
+                            min="1950-01-01"
+                            @change="testDate"
+                          ></v-date-picker>
+                        </v-menu>
+                        <!-- <date-picker
                           placeholder="วันเกิด"
                           :rules="requiredRules"
                           :max="
@@ -355,7 +403,7 @@
                           min="1950-01-01"
                           v-model="employeeitme.birthday"
                           valueType="format"
-                        ></date-picker>
+                        ></date-picker> -->
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
@@ -438,10 +486,7 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="
-                    save();
-                    showAlert();
-                  "
+                  @click="save()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -459,7 +504,7 @@
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left> mdi-card-account-details-outline </v-icon>
-                  เปลียนรหัสผ่าน</span
+                  เปลี่ยนรหัสผ่าน</span
                 >
               </v-card-title>
 
@@ -471,14 +516,14 @@
 
                       <v-col cols="12" sm="12">
                         <v-text-field
-                          v-model="employeeitmeadd.password"
+                          v-model="employeeitme.password"
                           :rules="requiredRules"
                           label="PASSWORD"
                           type="password"
                           outlined
                           required
                           color="#1D1D1D"
-                           append-icon="mdi-lock"
+                          append-icon="mdi-lock"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -502,10 +547,7 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="
-                    save();
-                    showAlert();
-                  "
+                  @click="save()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -516,6 +558,77 @@
             </v-card>
           </v-dialog>
           <!-- ---------------------------------------------------password -->
+
+          <v-dialog v-model="dialogManager" max-width="500px">
+            <v-stepper v-model="e1">
+              <v-stepper-header>
+                <v-stepper-step :complete="e1 > 1" step="1">
+                  เลือกผู้จัดการ
+                </v-stepper-step>
+
+                <v-divider></v-divider>
+
+                <v-stepper-step :complete="e1 > 2" step="2">
+                  โปรดกรอกรหัส OTP
+                </v-stepper-step>
+              </v-stepper-header>
+
+              <v-stepper-items>
+                <v-stepper-content step="1">
+                  <v-autocomplete
+                    v-model="telManager"
+                    :items="manager"
+                    outlined
+                    dense
+                    chips
+                    small-chips
+                    label="โปรดเลือกผู้จัดการ"
+                    multiple
+                  ></v-autocomplete>
+
+                  <v-btn color="primary" @click="e1 = 2">
+                    ถัดไป
+                  </v-btn>
+
+                  <v-btn text @click="dialogManager = false">
+                    ยกเลิก
+                  </v-btn>
+                </v-stepper-content>
+
+                <v-stepper-content step="2">
+                  <v-card
+                    class="mb-12"
+                    color="secondary"
+                    height="200px"
+                  ></v-card>
+
+                  <v-btn color="primary" @click="e1 = 1">
+                    ยืนยัน
+                  </v-btn>
+
+                  <v-btn text @click="dialogManager = false">
+                    ยกเลิก
+                  </v-btn>
+                </v-stepper-content>
+
+                <v-stepper-content step="3">
+                  <v-card
+                    class="mb-12"
+                    color="grey lighten-1"
+                    height="200px"
+                  ></v-card>
+
+                  <v-btn color="primary" @click="e1 = 1">
+                    Continue
+                  </v-btn>
+
+                  <v-btn text>
+                    Cancel
+                  </v-btn>
+                </v-stepper-content>
+              </v-stepper-items>
+            </v-stepper>
+          </v-dialog>
 
           <!-- ********************************************************************************************************************************************************************** -->
 
@@ -594,6 +707,21 @@
           </v-btn>
         </template>
         <!-- ----------------- ---------------------------------btn view -->
+        <template v-slot:[`item.private`]="{ item }">
+          <v-btn
+            class="mr1"
+            small
+            color="purple darken-2"
+            @click="selectManager(item)"
+          >
+            <div class="d-block  white--text">
+              <v-icon aria-hidden="false">
+                mdi-shield-account
+              </v-icon>
+              สวมสิทธิ์
+            </div>
+          </v-btn>
+        </template>
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
@@ -610,7 +738,7 @@
         </template>
         <template v-slot:[`item.username`]="{ item }">
           <v-icon class="ma-2 ml-2" color="primary">
-           mdi-identifier
+            mdi-identifier
           </v-icon>
           {{ item.username }}
         </template>
@@ -638,13 +766,14 @@ import "moment/locale/th";
 
 import DatePicker from "vue2-datepicker";
 import "@/assets/css/datepicker.css";
-import 'vue2-datepicker/locale/th'
+import "vue2-datepicker/locale/th";
 
 export default {
   data: () => ({
     //
     dialog: false,
     dialogpass: false,
+    dialogManager: false,
     dialogDelete: false,
     dialogadd: false,
     dialogView: false,
@@ -671,12 +800,14 @@ export default {
       //  { text: "ที่อยู่", align: "start", value: "address" },
       { text: "ข้อมูลส่วนตัว", value: "view", sortable: false },
       { text: "เปลียนรหัสผ่าน", value: "pasword", sortable: false },
+      { text: "สวมสิทธิ์พนักงาน", value: "private" },
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
     employeeitme: {
       _id: "",
       username: "null",
+      password: null,
       pname: "",
       ref_id_role: "",
       idcard: " ",
@@ -690,6 +821,7 @@ export default {
     employeeitmeadd: {
       _id: "",
       username: "null",
+      password: "",
       pname: "",
       ref_id_role: "",
       idcard: " ",
@@ -725,7 +857,13 @@ export default {
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ],
     usernametrue: false,
-    usernameErr: false
+    usernameErr: false,
+    e1: 1,
+    telManager: null,
+    manager: [],
+    activePicker: null,
+    menu: false,
+    menu2: false
   }),
   components: { DatePicker },
   computed: {},
@@ -752,6 +890,11 @@ export default {
   created() {
     this.improverole();
   },
+  watch: {
+    menu(val) {
+      val && setTimeout(() => (this.activePicker = "YEAR"));
+    }
+  },
 
   mounted() {
     this.toast = this.$swal.mixin({
@@ -762,11 +905,27 @@ export default {
     });
   },
   methods: {
+    testDate() {
+      // console.log(this.employeeitmeadd.birthday);
+      // console.log(this.employeeitme.birthday);
+    },
+    selectManager() {
+      const managerFilter = this.employee.filter(e => {
+        return e.ref_id_role.position === "manager";
+      });
+      managerFilter.map(m => {
+        this.manager.push({
+          text: `${m.pname} ${m.fname} ${m.lname}`,
+          value: m.tel
+        });
+      });
+      this.dialogManager = true;
+      console.log(this.manager);
+    },
     moment2(date) {
-      // moment.locale('th');
-      var strdate = moment("th").format("LLLL");
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("DD MMMM YYYY ");
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY ");
     },
     async check() {
       const cus = await this.$axios.$get(
@@ -794,12 +953,29 @@ export default {
     editItemPass(item) {
       this.type = "edit";
       this.employeeitme = item;
+      //this.employeeitme
       this.dialogpass = true;
       this.improverole;
+      // console.log(this.employeeitme);
     },
     editItem(item) {
       this.type = "edit";
-      this.employeeitme = item;
+      //console.log(item);
+      //this.employeeitme = item;
+      this.employeeitme = {
+        _id: item._id,
+        username: item.username,
+        //password:null,
+        pname: item.pname,
+        ref_id_role: item.ref_id_role,
+        idcard: item.idcard,
+        fname: item.fname,
+        lname: item.lname,
+        birthday: new Date(item.birthday).toISOString().substr(0, 10),
+        tel: item.tel,
+        email: item.email,
+        address: item.address
+      };
       this.dialog = true;
       this.improverole;
     },
@@ -935,19 +1111,19 @@ export default {
         this.loading = true;
 
         this.$emit("addEmployee", { ...this.employeeitmeadd });
+        this.showAlert();
         this.closeadd();
       } else {
+        //console.log(this.employeeitme);
         this.loading = true;
         this.$axios
-          .$put(
-            "/employee/" + this.employeeitme._id,
-            this.employeeitme,
-            this.improverole
-          )
+          .$put("/employee/" + this.employeeitme._id, this.employeeitme)
           .then(() => {
             this.$emit("refresh");
+            this.showAlert();
             this.closePass();
             this.close();
+            this.improverole;
           })
           .catch(e => {
             console.log(e);

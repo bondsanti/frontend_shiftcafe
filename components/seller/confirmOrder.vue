@@ -63,7 +63,7 @@
                       ></v-autocomplete>
                     </v-col>
                   </v-row>
-                  <v-row class="ma-4" v-if="cus_type === 'member'">
+                  <v-row class="ma-4">
                     <v-col>
                       <v-row align="center">
                         <h2 class="mr-5">ส่วนลด</h2>
@@ -72,20 +72,36 @@
                           row
                           @change="checkDiscountType"
                         >
-                          <v-radio label="บัตรสมาชิก" value="member"></v-radio>
-                          <v-radio label="ส่วนลด (%)" value="coupong"></v-radio>
+                          <v-radio
+                            v-if="cus_type === 'member'"
+                            label="บัตรสมาชิก"
+                            value="member"
+                          ></v-radio>
+                          <v-radio label="คูปอง" value="coupong"></v-radio>
+                          <v-radio label="ไม่ใช้ส่วนลด" value="no"></v-radio>
                         </v-radio-group>
                       </v-row>
                       <v-autocomplete
-                        v-model="coupon"
+                        @change="checkCoupon"
+                        v-model="coupon_id"
                         chips
                         clearable
-                        label="% ส่วนลด"
-                        :items="items2"
-                        item-text="name"
-                        item-value="value"
+                        label="รหัสคูปอง"
+                        :items="couponParent"
+                        item-text="codename"
+                        item-value="_id"
                         v-if="discount_type === 'coupong'"
                       ></v-autocomplete>
+                      <v-alert
+                        :value="alert"
+                        color="primary"
+                        dark
+                        border="top"
+                        icon="mdi-fire"
+                        transition="scale-transition"
+                      >
+                        {{ alertText }}
+                      </v-alert>
                     </v-col>
                   </v-row>
                   <v-divider></v-divider>
@@ -240,11 +256,11 @@
           <v-tabs-items v-model="tab">
             <v-tab-item value="tab-2">
               <v-container>
-                <v-row class="justify-center ma-3">
-                  <h1>ข้อมูลลูกค้า</h1>
-                </v-row>
                 <v-form v-model="valid" ref="form">
                   <v-row class="mx-16">
+                    <v-col cols="12">
+                      <h1>ข้อมูลลูกค้า</h1>
+                    </v-col>
                     <v-col cols="12">
                       <v-select
                         v-model="cus.pname"
@@ -318,13 +334,14 @@
                         :rules="rules"
                       ></v-textarea>
                     </v-col>
+                    <v-col cols="12">
+                      <v-btn color="primary" @click="addCus" :disabled="!valid"
+                        >บันทึก</v-btn
+                      >
+                    </v-col>
                   </v-row>
                 </v-form>
-                <v-row class="justify-center">
-                  <v-btn color="primary" @click="addCus" :disabled="!valid"
-                    >บันทึก</v-btn
-                  >
-                </v-row>
+
                 <v-row justify="center">
                   <v-dialog v-model="dialog2" persistent max-width="350">
                     <v-card>
@@ -372,7 +389,8 @@ export default {
     "customers",
     "idOrder",
     "bank2",
-    "statusCook"
+    "statusCook",
+    "couponParent"
   ],
   data: () => ({
     items: ["นาย", "นาง", "น.ส.", "ด.ช.", "ด.ญ"],
@@ -386,7 +404,7 @@ export default {
       { value: 18, name: "18 %" }
     ],
     cus_type: "guest",
-    discount_type: "coupong",
+    discount_type: "no",
     type_order: "1",
     bank: "cash",
     cusId: "60fa3812dc42a9589e33ba1b",
@@ -414,9 +432,12 @@ export default {
     error2: false,
     vat: "1",
     coupon: 0,
+    coupon_id: null,
     checkout: false,
     bank_id: null,
-    tax: 0
+    tax: 0,
+    alert: false,
+    alertText: ""
     //bank3: []
   }),
   methods: {
@@ -458,7 +479,7 @@ export default {
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     thinkPrice() {
-      if (this.cus_type === "member") {
+      if (this.cus_type === "member" || this.discount_type === "coupong") {
         if (this.vat === "1") {
           this.tax = 0;
           return Math.round(
@@ -490,7 +511,8 @@ export default {
           ...prePayment,
           ref_order_id: this.idOrder,
           receive_money: money.receive,
-          withdraw_money: money.withdraw
+          withdraw_money: money.withdraw,
+          coupon_id: this.coupon_id
         };
         this.$axios.post("/payment", newPayment).then(pay => {
           //console.log(pay);
@@ -509,8 +531,19 @@ export default {
             this.bank = "cash";
             this.cusId = "60fa3812dc42a9589e33ba1b";
             this.vat = "1";
+            this.alert = false;
+            this.coupon_id = null;
+            this.coupon = 0;
+            this.discount_type === "no";
+            this.$swal.fire({
+              position: "center",
+              type: "success",
+              title: pay.data.message,
+              showConfirmButton: false,
+              timer: 2500
+            });
           } else {
-            this.$swal({
+            this.$swal.fire({
               position: "center",
               type: "warning",
               title: pay.data.message,
@@ -529,13 +562,15 @@ export default {
           total_price: this.subtotal,
           bill_name: "cash now"
         };
-        const order = await this.$axios.$post("/order", newOrder);
+        //const order = await this.$axios.$post("/order", newOrder);
         //console.log(order.data);
         const newPayment = {
           ...prePayment,
-          ref_order_id: order.data._id,
+          ref_order_id: "no",
           receive_money: money.receive,
-          withdraw_money: money.withdraw
+          withdraw_money: money.withdraw,
+          new_order: newOrder,
+          coupon_id: this.coupon_id
         };
         this.$axios.post("/payment", newPayment).then(pay => {
           //console.log(pay);
@@ -554,9 +589,20 @@ export default {
             this.bank = "cash";
             this.cusId = "60fa3812dc42a9589e33ba1b";
             this.vat = "1";
+            this.alert = false;
+            this.coupon_id = null;
+            this.coupon = 0;
+            this.discount_type === "no";
+            this.$swal.fire({
+              position: "center",
+              type: "success",
+              title: pay.data.message,
+              showConfirmButton: false,
+              timer: 2500
+            });
           } else {
-            this.idOrder = order.data._id;
-            this.$swal({
+            //this.idOrder = order.data._id;
+            this.$swal.fire({
               position: "center",
               type: "warning",
               title: pay.data.message,
@@ -573,15 +619,66 @@ export default {
         const res = await this.$axios.$get("/customer/" + this.cusId);
         //console.log(res);
         this.coupon = res.ref_level_id.discount;
+        this.alert = false;
         //this.cusId = "";
         //console.log(this.cusId);
+        this.coupon_id = null;
       } else {
         if (this.cus_type === "guest") {
           this.cusId = "60fa3812dc42a9589e33ba1b";
         }
         this.coupon = 0;
+        this.coupon_id = null;
+        this.alert = false;
         //console.log(this.cusId);
       }
+    },
+    checkCoupon() {
+      const selectCoupon = this.couponParent.filter(c => {
+        return c._id === this.coupon_id;
+      });
+      if (selectCoupon.length >= 1) {
+        if (selectCoupon[0].status === 0) {
+          this.alertText = "คูปองนี้ยังไม่สามารถใช้งานได้";
+          this.alert = true;
+          this.coupon = 0;
+        } else if (selectCoupon[0].status === 1) {
+          const date = new Date();
+          if (
+            date.getTime() >= new Date(selectCoupon[0].start).getTime() &&
+            date.getTime() <= new Date(selectCoupon[0].end).getTime()
+          ) {
+            if (selectCoupon[0].num_use === 0) {
+              this.alertText = "คูปองนี้ใช้ครบจำนวนครั้งที่กำหนดแล้ว";
+              this.alert = true;
+              this.coupon = 0;
+            } else {
+              this.alertText = "";
+              this.alert = false;
+              this.coupon = selectCoupon[0].discount;
+            }
+          } else {
+            this.alertText = `วันที่ใช้คูปองไม่อยู่ในระยะเวลาที่กำหนดคือวันที่ ${this.formatDate2(
+              selectCoupon[0].start
+            )} - ${this.formatDate2(selectCoupon[0].end)}`;
+            this.alert = true;
+            this.coupon = 0;
+          }
+        } else if (selectCoupon[0].status === 2) {
+          this.alertText = "คูปองนี้หมดอายุการใช้งาน";
+          this.alert = true;
+          this.coupon = 0;
+        } else if (selectCoupon[0].status === 3) {
+          this.alertText = "คูปองนี้ได้ยกเลิกไปแล้ว";
+          this.alert = true;
+          this.coupon = 0;
+        }
+      } else {
+        this.alert = false;
+        this.coupon = 0;
+      }
+      //this.coupon = selectCoupon[0].discount;
+      //console.log(selectCoupon);
     },
     checkTypePayment() {
       if (this.bank === "cash") {
@@ -759,6 +856,11 @@ export default {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
       return this.$moment(strdate).format("D MMMM YYYY H:mm");
+    },
+    formatDate2(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY ");
     }
   },
   created() {

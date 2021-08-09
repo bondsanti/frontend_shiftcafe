@@ -19,14 +19,13 @@
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-text-field
-         v-model="search"
+          v-model="search"
           append-icon="mdi-magnify"
           label="ค้นหาข้อมูล"
           single-line
           solo
           hide-details
         ></v-text-field>
-        
       </v-card-title>
 
       <v-data-table
@@ -142,7 +141,7 @@
                             type="file"
                             accept="image/*"
                             required
-                            @change="onFileSelected"
+                            @change="onFileSelected(e)"
                           />
                         </v-col>
                         <v-col>
@@ -358,8 +357,9 @@ export default {
         this.imageURL = event.target.result;
       };
       reader.readAsDataURL(event.target.files[0]);
-      console.log(event.target.files[0]);
+      //console.log(event.target.files[0]);
       this.preImg = event.target.files[0];
+      //this.imageURL = event.target.files[0];
       //console.log(this.preImg);
     },
     editItem(item) {
@@ -385,14 +385,14 @@ export default {
     },
     addItem() {
       this.type = "add";
-      this.products = {
+      this.productsItem = {
+        _id: "",
         product_name: "",
         ref_uid: "",
         ref_cate_id: " ",
         price_cost: " ",
         price: "",
-        stock: "",
-        img: " "
+        img: ""
       };
       this.dialog = true;
     },

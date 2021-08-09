@@ -407,7 +407,8 @@ export default {
     discount_type: "no",
     type_order: "1",
     bank: "cash",
-    cusId: "60fa3812dc42a9589e33ba1b",
+    cusId: "",
+    cusIdGuest: null,
     customers2: [],
     tab: "tab-1",
     cus: {
@@ -417,8 +418,7 @@ export default {
       birthday: "",
       tel: "",
       email: "",
-      address: "",
-      ref_level_id: "60e439b7c7d6ae35548c7b62"
+      address: ""
     },
     valid: true,
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
@@ -441,6 +441,11 @@ export default {
     //bank3: []
   }),
   methods: {
+    color(i) {
+      if (this.bank2[i]) {
+        //return this.bank_id === this.bank2[i]._id ? "primary" : "secondary";
+      }
+    },
     closeDialog() {
       this.$emit("closeDialog");
     },
@@ -455,6 +460,14 @@ export default {
         };
         this.customers2.push(cus);
       }
+
+      if (this.customers) {
+        const res = this.customers.filter(c => {
+          return c.fname === "guest" && c.lname === "guest";
+        });
+        this.cusIdGuest = res[0]._id;
+      }
+      //console.log(this.cusIdGuest);
     },
 
     async addCus() {
@@ -529,7 +542,7 @@ export default {
             this.discount_type = "coupong";
             this.type_order = "1";
             this.bank = "cash";
-            this.cusId = "60fa3812dc42a9589e33ba1b";
+            this.cusId = this.cusIdGuest;
             this.vat = "1";
             this.alert = false;
             this.coupon_id = null;
@@ -587,7 +600,7 @@ export default {
             this.discount_type = "coupong";
             this.type_order = "1";
             this.bank = "cash";
-            this.cusId = "60fa3812dc42a9589e33ba1b";
+            this.cusId = this.cusIdGuest;
             this.vat = "1";
             this.alert = false;
             this.coupon_id = null;
@@ -618,14 +631,14 @@ export default {
       if (this.discount_type === "member" && this.cus_type === "member") {
         const res = await this.$axios.$get("/customer/" + this.cusId);
         //console.log(res);
-        this.coupon = res.ref_level_id.discount;
+        this.coupon = res.ref_level_id ? res.ref_level_id.discount : 0;
         this.alert = false;
         //this.cusId = "";
         //console.log(this.cusId);
         this.coupon_id = null;
       } else {
         if (this.cus_type === "guest") {
-          this.cusId = "60fa3812dc42a9589e33ba1b";
+          this.cusId = this.cusIdGuest;
         }
         this.coupon = 0;
         this.coupon_id = null;
@@ -701,7 +714,7 @@ export default {
         };
         return newPayment1;
       } else {
-        this.bank_id = this.bank2[0]._id;
+        this.bank_id = this.bank2[0] ? this.bank2[0]._id : null;
         const newPayment2 = {
           ref_cus_id: this.cusId,
           ref_bank_id: this.bank_id,
@@ -865,6 +878,7 @@ export default {
   },
   created() {
     this.improveCus();
+    this.cusId = this.cusIdGuest;
     //this.improveBank();
   }
 };

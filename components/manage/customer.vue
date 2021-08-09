@@ -82,10 +82,8 @@
               <v-card-title>
                 <v-icon left> mdi-account-plus </v-icon> ลงทะเบียนลูกค้า
               </v-card-title>
-                <v-divider class="mb-3"></v-divider>
-              <v-card-text>
-               
-              </v-card-text>
+              <v-divider class="mb-3"></v-divider>
+              <v-card-text> </v-card-text>
               <v-card-text>
                 <v-form v-model="valid" ref="form">
                   <div>
@@ -257,10 +255,8 @@
                   แก้ไขข้อมูลลูกค้า
                 </span>
               </v-card-title>
-                <v-divider class="mb-3"></v-divider>
-              <v-card-text>
-              
-              </v-card-text>
+              <v-divider class="mb-3"></v-divider>
+              <v-card-text> </v-card-text>
               <v-card-text>
                 <v-form v-model="valid" ref="form">
                   <div>
@@ -423,9 +419,7 @@
           <v-dialog v-model="dialogDelete" max-width="410">
             <v-card>
               <v-card-title class="primary--text text-center">
-              
-                 คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
-              
+                คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
               </v-card-title>
               <v-divider class="mx-auto"></v-divider>
               <v-card-actions>
@@ -462,7 +456,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-            <!-- dialogDelete -->
+          <!-- dialogDelete -->
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn class="mr1" small color="warning" @click="editItem(item)">
@@ -508,7 +502,7 @@
           {{ item.tel }}
         </template>
         <template v-slot:no-data>
-          <v-btn color="primary" @click="initialize">
+          <v-btn color="primary" @click="$nuxt.refresh()">
             Reset(ข้อมูลไม่โหลด)
           </v-btn>
         </template>
@@ -530,7 +524,7 @@ import moment from "moment";
 import "moment/locale/th";
 import DatePicker from "vue2-datepicker";
 import "@/assets/css/datepicker.css";
-import 'vue2-datepicker/locale/th';
+import "vue2-datepicker/locale/th";
 export default {
   layout: "layoutCashier",
   data: () => ({
@@ -853,6 +847,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

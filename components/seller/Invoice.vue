@@ -504,9 +504,11 @@ export default {
 
       WinPrint.document.close();
       WinPrint.focus();
-      await setTimeout(WinPrint.print(), 50000);
+      setTimeout(() => {
+        WinPrint.print();
+        WinPrint.close();
+      }, 500);
       //WinPrint.print();
-      //WinPrint.close();
     }
   },
 

@@ -424,7 +424,7 @@ export default {
         if (pro.ref_cate_id) return pro.ref_cate_id._id === this.cateId;
       });
 
-      console.log(this.product2);
+      //console.log(this.product2);
 
       this.cateName = cate.cate_name;
     },

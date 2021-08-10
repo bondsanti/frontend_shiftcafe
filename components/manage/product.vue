@@ -53,7 +53,7 @@
         </template>
 
         <template v-slot:top>
-          <v-dialog v-model="dialog" max-width="700px">
+          <v-dialog v-model="dialog" max-width="700px" persistent>
             <v-card>
               <v-card-title>
                 <span class="text-h5"
@@ -126,62 +126,51 @@
                     </v-col>
 
                     <v-col cols="12" class="mt-n7">
-                      <h3 class="text-center ml-12  mt-3">รูปภาพประกอบ</h3>
+                      <h3 v-if="image.src" class="text-center ml-12  mt-3">
+                        รูปภาพประกอบ
+                      </h3>
 
-                      <v-img
-                        v-if="imageURL"
-                        :src="imageURL"
-                        contain
-                        :aspect-ratio="16 / 9"
-                        class="mb-3 ml-12"
-                      ></v-img>
-                      <v-row>
-                        <v-col>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            required
-                            @change="onFileSelected(e)"
-                          />
-                        </v-col>
-                        <v-col>
-                          <v-btn color="primary" @click="dialogCrop = true"
+                      <example-wrapper
+                        class="getting-result-second-example"
+                        noBoder
+                        v-if="image.src"
+                      >
+                        <cropper
+                          class="cropper"
+                          ref="cropper"
+                          :src="image.src"
+                        />
+                        <results
+                          :coordinates="result.coordinates"
+                          :image="result.img"
+                        />
+                        <!-- <div class="crop-button" @click="crop">Crop Image</div> -->
+                        <div class="crop-button">
+                          <v-btn class="mx-1" @click="crop" color="green"
+                            >ดูรูปตัวอย่าง</v-btn
+                          ><v-btn
+                            class="mx-1"
+                            color="orange"
+                            @click="croppedFinish"
                             >ตัดรูปภาพ</v-btn
                           >
-                          <v-dialog
-                            transition="dialog-bottom-transition"
-                            max-width="600"
-                            v-model="dialogCrop"
+                        </div>
+                      </example-wrapper>
+                      <v-row>
+                        <v-col>
+                          <v-btn
+                            @click="$refs.file.click()"
+                            class="upload-example__button"
                           >
-                            <v-card>
-                              <v-toolbar color="primary" dark
-                                >Opening from the bottom</v-toolbar
-                              >
-
-                              <cropper
-                                ref="cropper"
-                                class="cropper"
-                                :src="imageURL"
-                                :stencil-props="{
-                                  aspectRatio: 10 / 12
-                                }"
-                                @change="change"
-                              />
-                              <preview
-                                :width="120"
-                                :height="120"
-                                :image="result.image"
-                                :coordinates="result.coordinates"
-                              />
-
-                              <v-card-actions class="justify-end">
-                                <v-btn @click="croppedFinish">ตกลง</v-btn>
-                                <v-btn text @click="dialogCrop = false"
-                                  >ปิด</v-btn
-                                >
-                              </v-card-actions>
-                            </v-card>
-                          </v-dialog>
+                            <input
+                              type="file"
+                              ref="file"
+                              accept="image/*"
+                              required
+                              @change="loadImage($event)"
+                            />
+                            เลือกรูปภาพ
+                          </v-btn>
                         </v-col>
                       </v-row>
                     </v-col>
@@ -267,15 +256,19 @@
 <script>
 import { Cropper, Preview } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
+import ExampleWrapper from "@/components/ExampleWrapper";
+import Results from "@/components/Results";
 export default {
   components: {
     Cropper,
-    Preview
+    Preview,
+    ExampleWrapper,
+    Results
   },
   data: () => ({
     result: {
       coordinates: null,
-      image: null,
+
       img: null
     },
     dialog: false,
@@ -316,9 +309,12 @@ export default {
       state: false,
       msg: ""
     },
-    imageURL: null,
+
     preImg: null,
-    dialogCrop: false
+
+    image: {
+      src: null
+    }
   }),
   computed: {
     formTitle() {
@@ -334,42 +330,57 @@ export default {
     }
   },
   methods: {
-    change({ coordinates, image, canvas }) {
+    crop() {
+      const { coordinates, canvas } = this.$refs.cropper.getResult();
       canvas.toBlob(blob => {
-        //console.log(blob);
         this.preImg = blob;
       });
+      this.result.coordinates = coordinates;
 
-      this.result = {
-        coordinates,
-        image,
-        img: canvas.toDataURL()
-      };
+      this.result.img = canvas.toDataURL();
     },
+
     croppedFinish() {
-      this.imageURL = this.result.img;
-      this.dialogCrop = false;
+      const { canvas } = this.$refs.cropper.getResult();
+      canvas.toBlob(blob => {
+        this.preImg = blob;
+      });
+      this.image.src = canvas.toDataURL();
+      this.result.img = null;
     },
 
-    onFileSelected(event) {
-      const reader = new FileReader();
-      reader.onload = event => {
-        this.imageURL = event.target.result;
-      };
-      reader.readAsDataURL(event.target.files[0]);
-      //console.log(event.target.files[0]);
-      this.preImg = event.target.files[0];
-      //this.imageURL = event.target.files[0];
-      //console.log(this.preImg);
+    loadImage(event) {
+      const { files } = event.target;
+
+      if (files && files[0]) {
+        if (this.image.src) {
+          URL.revokeObjectURL(this.image.src);
+        }
+
+        const blob = URL.createObjectURL(files[0]);
+
+        const reader = new FileReader();
+
+        reader.onload = e => {
+          this.image = {
+            src: blob
+
+            // type: getMimeType(e.target.result, files[0].type)
+          };
+        };
+
+        reader.readAsArrayBuffer(files[0]);
+      }
     },
     editItem(item) {
-      this.imageURL = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
+      this.result.img = null;
+      this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       this.type = "edit";
       this.productsItem = {
         _id: item._id,
         product_name: item.product_name,
         ref_uid: item.ref_uid._id,
-        ref_cate_id: item.ref_cate_id._id,
+        ref_cate_id: item.ref_cate_id ? item.ref_cate_id._id : "",
         price_cost: item.price_cost,
         price: item.price,
         img: item.img
@@ -384,6 +395,8 @@ export default {
       }
     },
     addItem() {
+      this.image.src = null;
+      this.result.img = null;
       this.type = "add";
       this.productsItem = {
         _id: "",
@@ -408,6 +421,8 @@ export default {
       this.closeDelete();
     },
     close() {
+      this.result.img = null;
+      this.image.src;
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
@@ -449,7 +464,8 @@ export default {
               stock: "",
               img: " "
             };
-            this.imageURL = null;
+            this.image.src = null;
+            this.result.img = null;
             this.close();
             this.preImg = null;
             this.$swal({
@@ -475,7 +491,7 @@ export default {
         if (this.preImg !== null) {
           formdata.append("img", this.preImg);
         }
-        console.log(this.preImg);
+        //console.log(this.preImg);
         this.$axios
           .$put("/product/" + this.productsItem._id, formdata)
           .then(() => {
@@ -490,7 +506,8 @@ export default {
               stock: "",
               img: " "
             };
-            this.imageURL = null;
+            this.image.src = null;
+            this.result.img = null;
             this.preImg = null;
           })
           .catch(e => {
@@ -524,10 +541,90 @@ export default {
   }
 };
 </script>
-<style scoped>
+<style scoped lang="scss">
 .cropper {
   height: 600px;
   background: #ddd;
   margin: 0;
+}
+
+.upload-example {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  user-select: none;
+  &__cropper {
+    border: solid 1px #eee;
+    min-height: 300px;
+    max-height: 500px;
+    width: 100%;
+  }
+  &__cropper-wrapper {
+    position: relative;
+  }
+  &__reset-button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    width: 42px;
+    background: rgba(#3fb37f, 0.7);
+    transition: background 0.5s;
+    &:hover {
+      background: #3fb37f;
+    }
+  }
+  &__buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 17px;
+  }
+  &__button {
+    display: flex;
+    border: none;
+    outline: solid transparent;
+    color: gray;
+    font-size: 16px;
+    padding: 10px 20px;
+    background: #3fb37f;
+    cursor: pointer;
+    transition: background 0.5s;
+    margin: 0 16px;
+    &:hover,
+    &:focus {
+      background: #38d890;
+    }
+    input {
+      display: none;
+    }
+  }
+  &__file-type {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #0d0d0d;
+    border-radius: 5px;
+    padding: 0px 10px;
+    padding-bottom: 2px;
+    font-size: 12px;
+    color: white;
+  }
+}
+.getting-result-second-example {
+  position: relative;
+  .crop-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%);
+
+    padding: 5px 20px;
+  }
 }
 </style>

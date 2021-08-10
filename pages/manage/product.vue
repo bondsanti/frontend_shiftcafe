@@ -46,11 +46,7 @@ export default {
     product
   },
   methods: {
-    // async addProduct(dataProduct) {
-    //   await this.$axios.$post("/product", dataProduct);
 
-    //   this.product = await this.$axios.$get("/product");
-    // },
     async refresh() {
       this.product = await this.$axios.$get("/product");
     }

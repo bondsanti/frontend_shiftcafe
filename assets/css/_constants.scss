@@ -1,0 +1,28 @@
+// Extra small screen / phone
+$screen-xs: 480px !default;
+$screen-xs-min: $screen-xs !default;
+
+// Small screen / tablet
+$screen-sm: 721px !default;
+$screen-sm-min: $screen-sm !default;
+
+// Medium screen / desktop
+$screen-md: 944px !default;
+$screen-md-min: $screen-md !default;
+
+// Large screen / wide desktop
+$screen-lg: 1200px !default;
+$screen-lg-min: $screen-lg !default;
+
+$vue-color: #3fb37f;
+$gray-color: #585858;
+$transition-time: 0.5s;
+
+$header-height: 75px;
+$footer-height: 150px;
+$footer-margin: 50px;
+
+$boundaries-color: #5B74BC;
+$cropper-color: #3fb37f;
+$area-color: #bcbcbc;
+$stretcher-color: #4966c4;

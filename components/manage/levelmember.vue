@@ -343,6 +343,7 @@ export default {
       reader.onload = event => {
         this.imageURL = event.target.result;
       };
+      
       reader.readAsDataURL(event.target.files[0]);
       this.preImg = event.target.files[0];
       //console.log(this.preImg);

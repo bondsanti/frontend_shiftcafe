@@ -195,6 +195,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
           <v-dialog v-model="dialogDelete" max-width="270px">
             <v-card>
               <v-card-title class="text-h5 white--text  primary">
@@ -368,8 +369,15 @@ export default {
             // type: getMimeType(e.target.result, files[0].type)
           };
         };
-
+        this.preImg = files[0]
         reader.readAsArrayBuffer(files[0]);
+      }
+    },
+      getProductImage(item) {
+      if (this.productsItem.img.length > 0) {
+        return this.productsItem.img;
+      } else {
+        return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       }
     },
     editItem(item) {
@@ -387,13 +395,7 @@ export default {
       };
       this.dialog = true;
     },
-    getProductImage(item) {
-      if (this.productsItem.img.length > 0) {
-        return this.productsItem.img;
-      } else {
-        return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
-      }
-    },
+  
     addItem() {
       this.image.src = null;
       this.result.img = null;

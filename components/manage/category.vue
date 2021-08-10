@@ -26,162 +26,316 @@
           solo
           hide-details
         ></v-text-field>
+        <v-spacer></v-spacer>
       </v-card-title>
+      <!-- add edit -->
+      <v-dialog v-model="dialog" max-width="700px" persistent>
+        <v-card>
+          <v-card-title>
+            <span class="text-h5"
+              ><v-icon left> mdi-ticket-percent-outline </v-icon>
+              {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
+            >
+          </v-card-title>
 
-      <v-data-table
-        :headers="headers"
-        :items="category"
-        :search="search"
-        :items-per-page="20"
-        :footer-props="{
-          'items-per-page-options': [20, 30, 40, 50, -1],
-          prevIcon: 'mdi-chevron-left',
-          nextIcon: 'mdi-chevron-right',
-          'items-per-page-text': 'ข้อมูลหน้าต่อไป'
-        }"
-      >
-        <template v-slot:[`item.img`]="{ item }">
-          <v-img
-            :src="`${$nuxt.context.env.config.IMG_URL}${item.img}`"
-            class="mt-2 mb-2 rounded-xl"
-            aspect-ratio="1"
-            width="100px"
-            height="100px"
-            contain
-          />
-        </template>
-        <template v-slot:top>
-          <v-dialog v-model="dialog" max-width="500px">
-            <v-card>
-              <v-card-title>
-                <span class="text-h5"
-                  ><v-icon left> mdi-food-fork-drink </v-icon>
-                  {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
-                >
-              </v-card-title>
-              <v-form v-model="valid" ref="form">
-                <v-card-text>
-                  <div>
-                    <v-row>
-                      <v-col cols="12"> </v-col>
-                      <v-col cols="12" class="mt-n7">
-                        <v-text-field
-                          outlined
-                          :rules="rules"
-                          v-model="cate.cate_name"
-                          label="ชื่อ"
-                        ></v-text-field>
-                      </v-col>
-                      <v-col cols="12" class="mt-n7">
-                        <!-- <v-img
-                          v-if="imageURL"
-                          :src="imageURL"
-                          contain
-                          :aspect-ratio="16 / 9"
-                          class="mb-3 ml-6"
-                        ></v-img> -->
-                       <example-wrapper class="rotate-image-example" >
-                        <Cropper
-                          class="cropper"
-                           v-if="imageURL"
-                          :src="imageURL"
+          <v-card-text>
+            <div>
+              <v-row>
+                <v-col cols="12"> </v-col>
+
+                <v-col cols="12" class="mt-n7">
+                  <v-text-field
+                    outlined
+                    label="ชื่อสิ้นค้า"
+                    v-model="cate.cate_name"
+                    required
+                    color="#1D1D1D"
+                  ></v-text-field>
+                </v-col>
+
+                <v-col cols="12" class="mt-n7">
+                  <h3 v-if="image.src" class="text-center ml-12  mt-3 mb-3">
+                    รูปภาพประกอบ
+                  </h3>
+
+                  <example-wrapper
+                    class="getting-result-second-example"
+                    noBoder
+                    v-if="image.src"
+                  >
+                    <cropper
+                      class="cropper"
+                      ref="cropper"
+                      :transitions="true"
+                      image-restriction="fit-area"
+                      :default-size="defaultSize"
+                      :src="image.src"
+                    />
+                    <vertical-buttons>
+                      <square-button
+                        title="Flip Horizontal"
+                        @click="flip(true, false)"
+                      >
+                        <img
+                          :src="
+                            require('../../assets/icons/flip-horizontal.svg')
+                          "
                         />
-                        </example-wrapper>
-                         <input
-                          accept="image/*"
+                      </square-button>
+                      <square-button
+                        title="Flip Vertical"
+                        @click="flip(false, true)"
+                      >
+                        <img
+                          :src="require('../../assets/icons/flip-vertical.svg')"
+                        />
+                      </square-button>
+                      <square-button
+                        title="Rotate Clockwise"
+                        @click="rotate(90)"
+                      >
+                        <img
+                          :src="
+                            require('../../assets/icons/rotate-clockwise.svg')
+                          "
+                        />
+                      </square-button>
+                      <square-button
+                        title="Rotate Counter-Clockwise"
+                        @click="rotate(-90)"
+                      >
+                        <img
+                          :src="
+                            require('../../assets/icons/rotate-clockwise.svg')
+                          "
+                        />
+                      </square-button>
+                    </vertical-buttons>
+                    <results
+                      :coordinates="result.coordinates"
+                      :image="result.img"
+                    />
+
+                    <!-- <div class="crop-button" @click="crop">Crop Image</div> -->
+                    <div class="crop-button">
+                      <v-btn
+                        class="mx-1 white--text"
+                        @click="crop"
+                        color="green"
+                        >ดูรูปตัวอย่าง</v-btn
+                      >
+                      <v-btn class="mx-1 white--text" @click="crop" color="blue"
+                        >บันทึกรูปที่หมุน</v-btn
+                      >
+                      <v-btn
+                        class="mx-1 white--text"
+                        color="orange"
+                        @click="croppedFinish"
+                        >ตัดรูปภาพ</v-btn
+                      >
+                    </div>
+                  </example-wrapper>
+                  <v-row>
+                    <v-col> </v-col>
+                    <v-col>
+                      <v-btn
+                        @click="$refs.file.click()"
+                        class="upload-example__button mt-3"
+                      >
+                        <input
                           type="file"
-                          :rules="rules"
-                          @change="onFileSelected"
+                          ref="file"
+                          accept="image/*"
+                          required
+                          @change="loadImage($event)"
                         />
-                      </v-col>
-                    </v-row>
+                        เลือกรูปภาพ
+                      </v-btn>
+                    </v-col>
+                    <v-col> </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </div>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-btn class="ma-1" color="primary" dark @click="close">
+              <v-icon aria-hidden="false" class="mx-2">
+                mdi-ticket-percent-outline
+              </v-icon>
+              ยกเลิก
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn class="ma-1" color="info" @click="save()">
+              <v-icon aria-hidden="false" class="mx-2">
+                mdi-ticket-percent-outline
+              </v-icon>
+              {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- add edit -->
+
+      <!-- delete -->
+      <v-dialog v-model="dialogDelete" max-width="410">
+        <v-card>
+          <v-card-title class="primary--text text-center">
+            คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
+          </v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="info" plain class="ma-2" @click="closeDelete">
+              <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon
+              >ยกเลิก
+            </v-btn>
+            <v-btn
+              color="error"
+              class="ma-2"
+              plain
+              @click="deleteItemConfirm()"
+            >
+              <v-icon aria-hidden="false"> mdi-delete-forever </v-icon>ลบ
+            </v-btn>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!-- delete -->
+
+      <!-- data -->
+      <v-data-iterator
+        :items="category"
+        :items-per-page.sync="itemsPerPage"
+        :page.sync="page"
+        :search="search"
+        hide-default-footer
+      >
+        <template v-slot:default="props">
+          <v-row>
+            <v-col
+              v-for="item in props.items"
+              :key="item.name"
+              cols="12"
+              sm="6"
+              md="4"
+              lg="3"
+            >
+              <v-card dark class="mx-2">
+                <div class="d-flex justify-start mb-6">
+                  <!-- แสดงข้อมูล -->
+                  <v-avatar class="ma-3" size="125" tile>
+                    <v-img
+                      :aspect-ratio="16 / 9"
+                      max-width="100%"
+                      max-height="100%"
+                      :src="`${$nuxt.context.env.config.IMG_URL}${item.img}`"
+                    ></v-img>
+                  </v-avatar>
+                  <div>
+                    <v-card-title
+                      class=""
+                      v-text="item.cate_name"
+                    ></v-card-title>
+                    <!-- แสดงข้อมูล -->
+                    <v-card-subtitle></v-card-subtitle>
+                    <v-card-actions>
+                      <!-- แก้ไข -->
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            class="ml-2 mt-3"
+                            fab
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                            height="40px"
+                            right
+                            width="40px"
+                            color="warning"
+                            @click="editItem(item)"
+                          >
+                            <v-icon>mdi-pencil</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>แก้ไขข้อมูลหมวดหมู่</span>
+                      </v-tooltip>
+                      <!-- แก้ไข -->
+                      <!-- ลบ -->
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            class="ml-2 mt-3"
+                            fab
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                            height="40px"
+                            right
+                            width="40px"
+                            color="error"
+                            @click="deleteItem(item)"
+                          >
+                            <v-icon>mdi-delete-forever</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>ลบข้อมูลหมวดหมู่สิ้นค้า</span>
+                      </v-tooltip>
+                      <!-- ลบ -->
+                    </v-card-actions>
                   </div>
-                </v-card-text>
-              </v-form>
-              <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
-                  <v-icon aria-hidden="false" class="mx-2">
-                    mdi-close-box
-                  </v-icon>
-                  ยกเลิก
-                </v-btn>
-                <v-spacer></v-spacer>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </template>
+        <!-- footer -->
+        <template v-slot:footer>
+          <v-row class="mt-2 mx-3" align="center" justify="center">
+            <span class="grey--text">จำนวนรายการต่อหน้า</span>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
                 <v-btn
-                  class="ma-1"
-                  color="info"
-                  :disabled="!valid"
-                  @click="
-                    save();
-                    showAlert();
-                  "
+                  dark
+                  text
+                  color="primary"
+                  class="ml-2"
+                  v-bind="attrs"
+                  v-on="on"
                 >
-                  <v-icon aria-hidden="false" class="mx-2">
-                    mdi-content-save
-                  </v-icon>
-                  {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
+                  {{ itemsPerPage }}
+                  <v-icon>mdi-chevron-down</v-icon>
                 </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-           <v-dialog v-model="dialogDelete" max-width="410">
-            <v-card>
-            <v-card-title class="primary--text text-center">
-              
-                 คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
-              
-              </v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="info"   plain class="ma-2" @click="closeDelete">
-                  <v-icon aria-hidden="false" class="mx-2">
-                    mdi-close-box </v-icon
-                  >ยกเลิก</v-btn
+              </template>
+              <v-list>
+                <v-list-item
+                  v-for="(number, index) in itemsPerPageArray"
+                  :key="index"
+                  @click="updateItemsPerPage(number)"
                 >
-                <v-btn
-                  color="error"
-                  class="ma-2"
-                   plain
-                  @click="
-                    deleteItemConfirm();
-                    showAlert();
-                  "
-                >
-                  <v-icon aria-hidden="false"> mdi-delete-forever </v-icon
-                  >ลบ</v-btn
-                >
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
+                  <v-list-item-title>{{ number }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+
+            <v-spacer></v-spacer>
+
+            <span class="mr-4 grey--text">
+              หน้า {{ page }} จาก {{ numberOfPages }}
+            </span>
+            <v-btn text dark color="primary" class="mr-1" @click="formerPage">
+              <v-icon>mdi-chevron-left</v-icon>
+            </v-btn>
+            <v-btn text dark color="primary" class="ml-1" @click="nextPage">
+              <v-icon>mdi-chevron-right</v-icon>
+            </v-btn>
+          </v-row>
         </template>
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr-2 pa-2" color="warning" @click="editItem(item)">
-            <v-icon aria-hidden="false">
-              mdi-pencil
-            </v-icon>
-            แก้ไขหมวดหมู่
-          </v-btn>
-          <v-btn
-            rounded-lx
-            class="mr-2  pa-2"
-            color="error"
-            @click="deleteItem(item)"
-          >
-            <v-icon dark class="mx-2">
-              mdi-delete-forever
-            </v-icon>
-            ลบหมวดหมู
-          </v-btn>
-        </template>
-        <template v-slot:[`item.No`]="{ index }">
-          {{ index + 1 }}
-        </template>
-        <template v-slot:no-data>
-          <v-btn color="primary" @click="category">
-            Reset
-          </v-btn>
-        </template>
-      </v-data-table>
+        <!-- footer -->
+      </v-data-iterator>
+      <!-- footer text -->
       <v-card-text>
         <v-alert
           outlined
@@ -201,40 +355,71 @@
 </template>
 
 <script>
-import { Cropper } from 'vue-advanced-cropper';
-import 'vue-advanced-cropper/dist/style.css'
+import { Cropper } from "vue-advanced-cropper";
+import ExampleWrapper from "./Components/ExampleWrapper.vue";
+import VerticalButtons from "./Components/VerticalButtons .vue";
+import SquareButton from "./Components/SquareButton.vue";
+import Results from "@/components/Results";
+import "vue-advanced-cropper/dist/style.css";
 export default {
   components: {
-    Cropper
+    Cropper,
+    ExampleWrapper,
+    VerticalButtons,
+    SquareButton,
+    Results
   },
+
   data: () => ({
-    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
-    valid: true,
+    // fielinput ปุ่มรีค่าในform
+    fileInputKey: 0,
+    //แคป
+    result: {
+      coordinates: null,
+      img: null
+    },
+
+    // รีเซ็ต
+    // dialog all
     dialog: false,
     dialogDelete: false,
+    //ปรับหน้าการแสดง
+    itemsPerPageArray: [20, 30, 40, 50],
     search: "",
-    headers: [
-      { text: "ลำดับ", sortable: false, value: "No" },
-      { text: "ภาพ", sortable: false, value: "img" },
-      { text: "ชื่อหม่วดหมู่", align: "start", value: "cate_name" },
-      { text: "หมายเหตุ", value: "actions", sortable: false }
-    ],
+    filter: {},
+    page: 1,
+    itemsPerPage: 20,
     editedIndex: -1,
-    cate: { _id: "", cate_name: "", img: "" },
+    // v-model
+    cate: {
+      _id: "",
+      cate_name: "",
+      img: ""
+    },
+    // ประเภท
     type: null,
+    // ลบ
     deleteId: null,
+    //-รูป
     uploadState: false,
     img: [],
-    error: { state: false, msg: "" },
-    imageURL: null,
+    error: {
+      state: false,
+      msg: ""
+    },
+    image: {
+      src: null
+    },
     preImg: null
   }),
 
   computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "จัดหมวดหมู่ " : "จัดหมวดหมู่ ";
+    // ข้อมูลตาราง
+    numberOfPages() {
+      return Math.ceil(this.category.length / this.itemsPerPage);
     }
   },
+  // watch-dialog ทั้งหมด
   watch: {
     dialog(val) {
       val || this.close();
@@ -243,40 +428,94 @@ export default {
       val || this.closeDelete();
     }
   },
-  mounted() {
-    this.toast = this.$swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000
-    });
-  },
   methods: {
-    	flip(x,y) {
-			this.$refs.cropper.flip(x,y);
-		},
-		rotate(angle) {
-			this.$refs.cropper.rotate(angle);
-		},
-    onFileSelected(event) {
-      const canvas  = new FileReader();
-      canvas .onload = event => {
-        this.imageURL = event.target.result;
+    // data-iterators
+    nextPage() {
+      if (this.page + 1 <= this.numberOfPages) this.page += 1;
+    },
+    formerPage() {
+      if (this.page - 1 >= 1) this.page -= 1;
+    },
+    updateItemsPerPage(number) {
+      this.itemsPerPage = number;
+    },
+    // fielinput ปุ่มรีค่าในform
+    clearfile() {
+      this.fileInputKey++;
+    },
+    //ปรับรูปซ้ายขาว
+    flip(x, y) {
+      if (this.$refs.cropper.customImageTransforms.rotate % 180 !== 0) {
+        this.$refs.cropper.flip(!x, !y);
+      } else {
+        this.$refs.cropper.flip(x, y);
+      }
+    },
+    // หนุมรูป
+    rotate(angle) {
+      this.$refs.cropper.rotate(angle);
+    },
+    change(args) {
+      console.log(args);
+    },
+    // ปุ่มรีค่าในform
+    reset() {
+      this.$refs.form.reset();
+    },
+    // ขนาดรูปแคปเริ่มต้น
+    defaultSize({ imageSize, visibleArea }) {
+      return {
+        width: (visibleArea || imageSize).width,
+        height: (visibleArea || imageSize).height
       };
-      canvas .readAsDataURL(event.target.files[0]);
-      this.preImg = event.target.files[0];
-      //console.log(this.preImg);
     },
-    showAlert() {
-      this.toast({
-        type: "success",
-        title: "ดำเนิการสำเร็จ"
+    // แคป
+    crop() {
+      const { coordinates, canvas } = this.$refs.cropper.getResult();
+      canvas.toBlob(blob => {
+        this.preImg = blob;
       });
-      this.text_val_for_test = Date.now();
+      this.result.coordinates = coordinates;
+
+      this.result.img = canvas.toDataURL();
     },
-    someFn(ev) {
-      console.log(ev);
+
+    croppedFinish() {
+      const { canvas } = this.$refs.cropper.getResult();
+      canvas.toBlob(blob => {
+        this.preImg = blob;
+      });
+      this.image.src = canvas.toDataURL();
+      this.result.img = null;
     },
+
+    //  แปลงไฟล์
+
+    loadImage(event) {
+      const { files } = event.target;
+
+      if (files && files[0]) {
+        if (this.image.src) {
+          URL.revokeObjectURL(this.image.src);
+        }
+
+        const blob = URL.createObjectURL(files[0]);
+
+        const reader = new FileReader();
+
+        reader.onload = e => {
+          this.image = {
+            src: blob
+
+            // type: getMimeType(e.target.result, files[0].type)
+          };
+        };
+        this.preImg = files[0];
+        reader.readAsArrayBuffer(files[0]);
+      }
+    },
+
+    // ส่งค่ารูปภาพ
     getProductImage(item) {
       if (this.cate.img.length > 0) {
         return this.cate.img;
@@ -284,9 +523,11 @@ export default {
         return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       }
     },
+    // แก้ไข
     editItem(item) {
+      this.result.img = null;
+      this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       this.type = "edit";
-      this.imageURL = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       this.cate = {
         _id: item._id,
         cate_name: item.cate_name,
@@ -294,7 +535,10 @@ export default {
       };
       this.dialog = true;
     },
+    // เพิ่ม
     addItem() {
+      this.image.src = null;
+      this.result.img = null;
       this.type = "add";
       this.cate = {
         _id: "",
@@ -303,50 +547,74 @@ export default {
       };
       this.dialog = true;
     },
+    // ลบ
     deleteItem(item) {
       this.deleteId = item._id;
       this.editedIndex = this.category.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
+    // ยืนยันการลบ
     deleteItemConfirm() {
       this.category.splice(this.editedIndex, 1);
       this.$axios.$delete("/category/" + this.deleteId).then(() => {});
       this.closeDelete();
+      this.$emit("refresh");
     },
+    // ยกเลิก
     close() {
+      this.result.img = null;
+      this.image.src;
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+        this.$emit("refresh");
       });
     },
+    // ยกเลิกลบ
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
         this.editedIndex = -1;
+        this.$emit("refresh");
       });
     },
-
+    // บันทึก
     save() {
-      this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
-        
+        // formdata ส่งข้อมูลฟรอม
         let formdata = new FormData();
         formdata.append("cate_name", this.cate.cate_name);
         formdata.append("img", this.preImg);
         //console.log(this.productsItem);
-        
-        this.$emit("addCategory", formdata);
-        this.cate = {
-          cate_name: "",
-          img: " "
-        };
-        this.imageURL = null;
-        this.close();
-        this.preImg = null;
+        // ส่งข้อมูลpost
+        this.$axios
+          .$post("/category", formdata)
+          .then(res => {
+            this.$emit("refresh");
+            this.cate = {
+              cate_name: "",
+              img: " "
+            };
+            this.image.src = null;
+            this.result.img = null;
+            this.close();
+            this.preImg = null;
+            this.$swal({
+              type: "success",
+
+              title: res.message + " ดำเนินการสำเร็จ"
+            });
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
       } else {
         this.loading = true;
         let formdata = new FormData();
@@ -356,30 +624,121 @@ export default {
         }
         // console.log(this.productsItem);
 
+        // ส่งข้อมูล put
         this.$axios
           .$put("/category/" + this.cate._id, formdata)
-          .then(() => {
+          .then(res => {
             this.$emit("refresh");
-            this.close();
             this.cate = {
               cate_name: "",
               img: " "
             };
-            this.imageURL = null;
+            this.image.src = null;
+            this.result.img = null;
+            this.close();
             this.preImg = null;
+            this.$swal({
+              type: "success",
+              title: res.message
+            });
           })
           .catch(e => {
-            console.log(e);
+            this.$swal({
+              type: "error",
+              title: e
+            });
           });
       }
     }
   },
+  // ค่าที่ส่งข้อมูลมาหน้าcategory
   props: ["category"]
 };
 </script>
-<style>
+<style scoped lang="scss">
 .cropper {
-	height: 350px;
-	background: #DDD;
+  max-height: 500px;
+  background: #ddd;
+  margin: 0;
+}
+
+.upload-example {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  user-select: none;
+  &__cropper {
+    border: solid 1px #eee;
+    min-height: 300px;
+    max-height: 500px;
+    width: 100%;
+  }
+  &__cropper-wrapper {
+    position: relative;
+  }
+  &__reset-button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    width: 42px;
+    background: rgba(#3fb37f, 0.7);
+    transition: background 0.5s;
+    &:hover {
+      background: #3fb37f;
+    }
+  }
+  &__buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 17px;
+  }
+  &__button {
+    display: flex;
+    border: none;
+    outline: solid transparent;
+    color: gray;
+    font-size: 16px;
+    padding: 10px 20px;
+    background: #3fb37f;
+    cursor: pointer;
+    transition: background 0.5s;
+    margin: 0 16px;
+    &:hover,
+    &:focus {
+      background: #38d890;
+    }
+    input {
+      display: none;
+    }
+  }
+  &__file-type {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #0d0d0d;
+    border-radius: 5px;
+    padding: 0px 10px;
+    padding-bottom: 2px;
+    font-size: 12px;
+    color: white;
+  }
+}
+.getting-result-second-example {
+  position: relative;
+  .crop-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%);
+
+    padding: 5px 20px;
+  }
 }
 </style>

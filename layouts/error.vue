@@ -11,7 +11,9 @@
         <v-icon large left>
           mdi-exclamation-thick
         </v-icon>
-        <span class="text-h6 font-weight-light">แจ้งเตือน</span>
+        <span class="text-h6 font-weight-light"
+          >แจ้งเตือน {{ error.code }}</span
+        >
       </v-card-title>
 
       <v-card-text class="text-h5 font-weight-bold">
@@ -20,6 +22,7 @@
         </h5>
         <h5 v-else-if="error.statusCode === 404">ไม่พบหน้าดังกล่าว</h5>
         <h5 v-else>An error occurred</h5>
+        <h6>{{ error.message }}</h6>
       </v-card-text>
 
       <v-card-actions>
@@ -49,6 +52,9 @@
 
 <script>
 export default {
-  props: ["error"]
+  props: ["error"],
+  created() {
+    //console.log(this.error);
+  }
 };
 </script>

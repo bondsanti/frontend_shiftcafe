@@ -101,7 +101,7 @@ module.exports = {
           primary: "#1d1d1d",
           secondary: "#ededed",
           info: "#39b54a",
-          info2:"#00b894"
+          info2: "#00b894"
         }
       }
     }

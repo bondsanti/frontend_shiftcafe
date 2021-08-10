@@ -567,7 +567,10 @@ export default {
       WinPrint.document.write("</table>");
       WinPrint.document.close();
       WinPrint.focus();
-      setTimeout(WinPrint.print(), 3000);
+      setTimeout(() => {
+        WinPrint.print();
+        WinPrint.close();
+      }, 500);
     },
     for_chef(i) {
       //const today = new Date(this.orderOnDatabase[i].datetime);

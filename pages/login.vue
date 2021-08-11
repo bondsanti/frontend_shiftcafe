@@ -118,7 +118,8 @@ export default {
       const payload = {
         data: {
           username: this.username,
-          password: this.password
+          password: this.password,
+          type: 0
         }
       };
 

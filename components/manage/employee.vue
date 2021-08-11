@@ -194,7 +194,6 @@
                                 .substr(0, 10)
                             "
                             min="1950-01-01"
-                            @change="testDate"
                           ></v-date-picker>
                         </v-menu>
                       </v-col>
@@ -386,7 +385,6 @@
                                 .substr(0, 10)
                             "
                             min="1950-01-01"
-                            @change="testDate"
                           ></v-date-picker>
                         </v-menu>
                         <!-- <date-picker
@@ -559,7 +557,7 @@
           </v-dialog>
           <!-- ---------------------------------------------------password -->
 
-          <v-dialog v-model="dialogManager" max-width="500px">
+          <v-dialog v-model="dialogManager" max-width="500px" persistent>
             <v-stepper v-model="e1">
               <v-stepper-header>
                 <v-stepper-step :complete="e1 > 1" step="1">
@@ -583,51 +581,72 @@
                     chips
                     small-chips
                     label="โปรดเลือกผู้จัดการ"
-                    multiple
+                    class="ma-2"
                   ></v-autocomplete>
 
-                  <v-btn color="primary" @click="e1 = 2">
+                  <v-btn color="primary" @click="requestOTP">
                     ถัดไป
                   </v-btn>
 
-                  <v-btn text @click="dialogManager = false">
+                  <v-btn text @click="canelOTP">
                     ยกเลิก
                   </v-btn>
                 </v-stepper-content>
 
                 <v-stepper-content step="2">
-                  <v-card
-                    class="mb-12"
-                    color="secondary"
-                    height="200px"
-                  ></v-card>
+                  <v-card class="mb-12 pa-5" color="secondary" height="200px">
+                    <v-row class="justify-center"
+                      >กรุณากรอกรหัส OTP
+                      ที่ส่งไปยังผู้จัดการที่คุณเลือกไว้</v-row
+                    >
+                    <v-row class="justify-center" v-if="!otpAgain">{{
+                      timerForOTP
+                    }}</v-row>
+                    <v-row class="justify-center" v-if="otpAgain"
+                      ><v-btn fab icon @click="requestOTP">
+                        <v-icon>mdi-refresh-circle</v-icon>
+                      </v-btn></v-row
+                    >
+                    <v-row class="mt-7"
+                      ><v-text-field
+                        v-model="otpCode"
+                        filled
+                        solo
+                        label="OTP CODE"
+                        prepend-inner-icon="mdi-comment-question"
+                      ></v-text-field
+                    ></v-row>
+                  </v-card>
 
-                  <v-btn color="primary" @click="e1 = 1">
+                  <v-btn
+                    color="primary"
+                    :disabled="otpCode.length !== 6"
+                    @click="confirmOTP"
+                  >
                     ยืนยัน
                   </v-btn>
 
-                  <v-btn text @click="dialogManager = false">
+                  <v-btn text @click="canelOTP">
                     ยกเลิก
-                  </v-btn>
-                </v-stepper-content>
-
-                <v-stepper-content step="3">
-                  <v-card
-                    class="mb-12"
-                    color="grey lighten-1"
-                    height="200px"
-                  ></v-card>
-
-                  <v-btn color="primary" @click="e1 = 1">
-                    Continue
-                  </v-btn>
-
-                  <v-btn text>
-                    Cancel
                   </v-btn>
                 </v-stepper-content>
               </v-stepper-items>
             </v-stepper>
+          </v-dialog>
+          <v-dialog v-model="dialogOTP" max-width="290" persistent>
+            <v-card>
+              <v-card-title class="text-h5">
+                <v-icon left>{{ otpResult.icon }}</v-icon> {{ otpResult.text }}
+              </v-card-title>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+
+                <v-btn color="green darken-1" text @click="checkOtpResult">
+                  ตกลง
+                </v-btn>
+              </v-card-actions>
+            </v-card>
           </v-dialog>
 
           <!-- ********************************************************************************************************************************************************************** -->
@@ -761,6 +780,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import moment from "moment";
 import "moment/locale/th";
 
@@ -863,7 +883,18 @@ export default {
     manager: [],
     activePicker: null,
     menu: false,
-    menu2: false
+    menu2: false,
+    timerForOTP: null,
+    otpAgain: false,
+    dialogOTP: false,
+    otpCode: "",
+    otpResult: {
+      icon: "mdi-lock-open-check",
+      text: "รหัส OTP ถูกต้อง",
+      status: false
+    },
+    otpToken: null,
+    itemForRight: null
   }),
   components: { DatePicker },
   computed: {},
@@ -905,11 +936,140 @@ export default {
     });
   },
   methods: {
-    testDate() {
-      // console.log(this.employeeitmeadd.birthday);
-      // console.log(this.employeeitme.birthday);
+    canelOTP() {
+      this.e1 = 1;
+      this.telManager = null;
+      this.dialogManager = false;
+      this.otpCode = "";
+      this.otpToken = null;
+      this.otpResult = {
+        icon: "mdi-lock-open-check",
+        text: "รหัส OTP ถูกต้อง",
+        status: false
+      };
+      this.itemForRight = null;
     },
-    selectManager() {
+    checkOtpResult() {
+      if (this.otpResult.status === true) {
+        this.dialogOTP = false;
+        this.login();
+      } else {
+        this.dialogOTP = false;
+      }
+    },
+    confirmOTP() {
+      this.$axios
+        .post("/authen/verify-otp", {
+          verify: this.otpToken,
+          code: this.otpCode
+        })
+        .then(res => {
+          console.log(res);
+          if (res.status === 200) {
+            this.otpResult = {
+              icon: "mdi-lock-open-check",
+              text: res.data.data.message,
+              status: true
+            };
+            this.dialogOTP = true;
+          } else {
+            this.otpResult = {
+              icon: "mdi-alert",
+              text: res.data.message,
+              status: false
+            };
+            this.dialogOTP = true;
+          }
+        });
+    },
+    requestOTP() {
+      //console.log(this.telManager);
+      if (this.telManager !== null) {
+        this.$axios
+          .post("/authen/request-otp", { tel: this.telManager })
+          .then(res => {
+            console.log(res);
+            if (res.status === 200) {
+              this.otpToken = res.data.token;
+              this.e1 = 2;
+              this.startTimer(300);
+            } else {
+              this.otpResult = {
+                icon: "mdi-alert",
+                text: "ส่งรหัส OTP ไม่สำเร็จ",
+                status: false
+              };
+              this.dialogOTP = true;
+            }
+          });
+      }
+    },
+    startTimer(duration) {
+      //console.log(duration);
+      let timer = duration;
+      let minutes;
+      let seconds;
+
+      const countdown = () => {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        this.timerForOTP = minutes + ":" + seconds;
+
+        timer -= 1;
+      };
+      let res = setInterval(() => {
+        countdown();
+        if (timer < 0) {
+          //console.log("time out");
+          clearInterval(res);
+          this.otpAgain = true;
+        }
+      }, 1000);
+    },
+    async login() {
+      //this.$refs.form.validate();
+      //console.log(item);
+      const payload = {
+        data: {
+          username: this.itemForRight.username,
+          password: this.itemForRight.password,
+          type: 1
+        }
+      };
+
+      this.$auth.loginWith("local", payload).then(async res => {
+        //console.log(res);
+        if (res.status === 200) {
+          await this.$store.dispatch(
+            "setPosition",
+            this.user.ref_id_role.position
+          );
+          const position = this.$store.getters["position"];
+          //console.log(this.user.ref_id_role.position);
+          if (
+            position == "admin" ||
+            position == "manager" ||
+            position == "checker"
+          ) {
+            this.$router.push("/manage");
+          } else if (position === "staff" || position === "cashier") {
+            this.$router.push("/seller");
+          } else {
+            this.$router.push("/member");
+          }
+        } else {
+          // this.snackbar = true;
+          // this.error = res.data.message;
+          alert(res.data.message);
+        }
+      });
+    },
+    selectManager(item) {
+      this.itemForRight = item;
       const managerFilter = this.employee.filter(e => {
         return e.ref_id_role.position === "manager";
       });
@@ -920,7 +1080,7 @@ export default {
         });
       });
       this.dialogManager = true;
-      console.log(this.manager);
+      //console.log(this.manager);
     },
     moment2(date) {
       this.$moment().format("LLLL");
@@ -1131,6 +1291,9 @@ export default {
       }
     }
   },
-  props: ["employee", "role"]
+  props: ["employee", "role"],
+  computed: {
+    ...mapState("auth", ["user"])
+  }
 };
 </script>

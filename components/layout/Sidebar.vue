@@ -95,7 +95,7 @@ export default {
         },
         {
           icon: "mdi-food-fork-drink  ",
-          title: "ประเภทอาหาร",
+          title: "หมวดหมู่สินค้า",
           to: "/manage/category"
         },
         {

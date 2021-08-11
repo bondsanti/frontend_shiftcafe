@@ -51,7 +51,7 @@
           />
         </template>
         <template v-slot:top>
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" max-width="800px">
             <v-card>
               <v-card-title>
                 <span class="text-h5">
@@ -97,20 +97,118 @@
                           label="รายละเอียดบัตร"
                         ></v-textarea>
                       </v-col>
+
+                      <!--photo  -->
+
                       <v-col cols="12" class="mt-n7">
-                        <v-img
-                          v-if="imageURL"
-                          :src="imageURL"
-                          contain
-                          max-height="300px"
-                          max-width="300px"
-                          class="mb-3 ml-12 my-3"
-                        ></v-img>
-                        <input
-                          accept="image/*"
-                          type="file"
-                          @change="onFileSelected"
-                        />
+                        <h3
+                          v-if="image.src"
+                          class="text-center ml-12  mt-3 mb-3"
+                        >
+                          รูปภาพประกอบ
+                        </h3>
+
+                        <example-wrapper
+                          class="getting-result-second-example"
+                          noBoder
+                          v-if="image.src"
+                        >
+                          <cropper
+                            class="cropper"
+                            ref="cropper"
+                            :transitions="true"
+                            image-restriction="fit-area"
+                            :default-size="defaultSize"
+                            :src="image.src"
+                          />
+                          <vertical-buttons>
+                            <square-button
+                              title="Flip Horizontal"
+                              @click="flip(true, false)"
+                            >
+                              <img
+                                :src="
+                                  require('../../assets/icons/flip-horizontal.svg')
+                                "
+                              />
+                            </square-button>
+                            <square-button
+                              title="Flip Vertical"
+                              @click="flip(false, true)"
+                            >
+                              <img
+                                :src="
+                                  require('../../assets/icons/flip-vertical.svg')
+                                "
+                              />
+                            </square-button>
+                            <square-button
+                              title="Rotate Clockwise"
+                              @click="rotate(90)"
+                            >
+                              <img
+                                :src="
+                                  require('../../assets/icons/rotate-clockwise.svg')
+                                "
+                              />
+                            </square-button>
+                            <square-button
+                              title="Rotate Counter-Clockwise"
+                              @click="rotate(-90)"
+                            >
+                              <img
+                                :src="
+                                  require('../../assets/icons/rotate-clockwise.svg')
+                                "
+                              />
+                            </square-button>
+                          </vertical-buttons>
+                          <results
+                            :coordinates="result.coordinates"
+                            :image="result.img"
+                          />
+
+                          <!-- <div class="crop-button" @click="crop">Crop Image</div> -->
+                          <div class="crop-button">
+                            <v-btn
+                              class="mx-1 white--text"
+                              @click="crop"
+                              color="green"
+                              >ดูรูปตัวอย่าง</v-btn
+                            >
+                            <v-btn
+                              class="mx-1 white--text"
+                              @click="crop"
+                              color="blue"
+                              >บันทึกรูปที่หมุน</v-btn
+                            >
+                            <v-btn
+                              class="mx-1 white--text"
+                              color="orange"
+                              @click="croppedFinish"
+                              >ตัดรูปภาพ</v-btn
+                            >
+                          </div>
+                        </example-wrapper>
+                        <v-row>
+                          <v-col> </v-col>
+                          <v-col>
+                            <v-btn
+                              @click="$refs.file.click()"
+                              class="upload-example__button mt-3"
+                            >
+                              <input
+                                type="file"
+                                ref="file"
+                                accept="image/*"
+                                required
+                                @change="loadImage($event)"
+                              />
+                              เลือกรูปภาพ
+                            </v-btn>
+                          </v-col>
+                          <v-col> </v-col>
+                        </v-row>
                       </v-col>
                     </v-row>
                   </div>
@@ -128,10 +226,7 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="
-                    save();
-                    showAlert();
-                  "
+                  @click="save()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -157,10 +252,7 @@
                   color="error"
                   plain
                   class="ma-2"
-                  @click="
-                    deleteItemConfirm();
-                    showAlert();
-                  "
+                  @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="mx-4">
                     mdi-delete-forever </v-icon
@@ -245,14 +337,36 @@
 
 <script>
 import moment from "moment";
+import { Cropper } from "vue-advanced-cropper";
+import ExampleWrapper from "./Components/ExampleWrapper.vue";
+import VerticalButtons from "./Components/VerticalButtons .vue";
+import SquareButton from "./Components/SquareButton.vue";
+import Results from "@/components/Results";
+import "vue-advanced-cropper/dist/style.css";
 export default {
+  components: {
+    Cropper,
+    ExampleWrapper,
+    VerticalButtons,
+    SquareButton,
+    Results
+  },
   data: () => ({
+    //แคป
+    result: {
+      coordinates: null,
+      img: null
+    },
+    // dialog all
     dialog: false,
     dialogDelete: false,
     dialogDetail: false,
+    //ปบังคบใส่ฟรอม
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valiid: true,
+    // ค้นหา
     search: "",
+    // หัวข้อความที่ดึงออกมาแสดง
     headers: [
       {
         text: "ลำดับ",
@@ -287,6 +401,7 @@ export default {
       }
     ],
     editedIndex: -1,
+    // v-model
     levelmemberitme: {
       _id: "",
       level_name: "",
@@ -295,25 +410,24 @@ export default {
       target_price: "",
       detail: ""
     },
+    //type and deleteId
     type: null,
     deleteId: null,
     uploadState: false,
+    // img function all
     img: [],
     error: {
       state: false,
       msg: ""
     },
-    imageURL: null,
+    image: {
+      src: null
+    },
     preImg: null,
     valid: true,
     itemDetail: []
   }),
-
-  // computed: {
-  //   formTitle() {
-  //     return this.editedIndex === -1 ? "จัดการข้อมูล " : "จัดการข้อมูล ";
-  //   }
-  // },
+  // ตัวแอกชั้นทั้งหมด
   watch: {
     dialog(val) {
       val || this.close();
@@ -322,46 +436,87 @@ export default {
       val || this.closeDelete();
     }
   },
+  // ปรับรูแบบวันแบบไทย
   filters: {
     moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
       var strdate = moment(date).add(543, "years");
       return moment(strdate).format("D/MM/YY H:mm");
     }
   },
-  mounted() {
-    this.toast = this.$swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000
-    });
-  },
   methods: {
-    onFileSelected(event) {
-      const reader = new FileReader();
-      reader.onload = event => {
-        this.imageURL = event.target.result;
-      };
-      
-      reader.readAsDataURL(event.target.files[0]);
-      this.preImg = event.target.files[0];
-      //console.log(this.preImg);
+    //ปรับรูปซ้ายขาว
+    flip(x, y) {
+      if (this.$refs.cropper.customImageTransforms.rotate % 180 !== 0) {
+        this.$refs.cropper.flip(!x, !y);
+      } else {
+        this.$refs.cropper.flip(x, y);
+      }
     },
+    // หนุมรูป
+    rotate(angle) {
+      this.$refs.cropper.rotate(angle);
+    },
+    change(args) {
+      console.log(args);
+    },
+        // ขนาดรูปแคปเริ่มต้น
+    defaultSize({ imageSize, visibleArea }) {
+      return {
+        width: (visibleArea || imageSize).width,
+        height: (visibleArea || imageSize).height
+      };
+    },
+    // แคป
+    crop() {
+      const { coordinates, canvas } = this.$refs.cropper.getResult();
+      canvas.toBlob(blob => {
+        this.preImg = blob;
+      });
+      this.result.coordinates = coordinates;
+
+      this.result.img = canvas.toDataURL();
+    },
+    // ครอบเสร็จ
+    croppedFinish() {
+      const { canvas } = this.$refs.cropper.getResult();
+      canvas.toBlob(blob => {
+        this.preImg = blob;
+      });
+      this.image.src = canvas.toDataURL();
+      this.result.img = null;
+    },
+    //  แปลงไฟล์
+
+    loadImage(event) {
+      const { files } = event.target;
+
+      if (files && files[0]) {
+        if (this.image.src) {
+          URL.revokeObjectURL(this.image.src);
+        }
+
+        const blob = URL.createObjectURL(files[0]);
+
+        const reader = new FileReader();
+
+        reader.onload = e => {
+          this.image = {
+            src: blob
+
+            // type: getMimeType(e.target.result, files[0].type)
+          };
+        };
+        this.preImg = files[0];
+        reader.readAsArrayBuffer(files[0]);
+      }
+    },
+
+    // ส่งค่าสีในตาราง
     getColorstatus(discount) {
       if (discount) return "green";
       else return "red";
     },
-    showAlert() {
-      this.toast({
-        type: "success",
-        title: "ดำเนิการสำเร็จ"
-      });
-      this.text_val_for_test = Date.now();
-    },
-    someFn(ev) {
-      console.log(ev);
-    },
+    // ส่งค่ารูปภาพ
     getProductImage(item) {
       if (this.cate.img.length > 0) {
         return this.cate.img;
@@ -369,9 +524,11 @@ export default {
         return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       }
     },
+    // แก้ไข
     editItem(item) {
+      this.result.img = null;
       this.type = "edit";
-      this.imageURL = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
+      this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       this.levelmemberitme = {
         _id: item._id,
         level_name: item.level_name,
@@ -384,12 +541,12 @@ export default {
     },
     Detail(item) {
       this.itemDetail = item;
-      // return itemDetail
-      // console.log("aa" + JSON.stringify(this.itemDetail));
-
       this.dialogDetail = true;
     },
+    // ADD DATA TO DB
     addItem() {
+      this.image.src = null;
+      this.result.img = null;
       this.type = "add";
       this.levelmemberitme = {
         _id: "",
@@ -400,33 +557,41 @@ export default {
       };
       this.dialog = true;
     },
+    // ลบ
     deleteItem(item) {
       this.deleteId = item._id;
       this.editedIndex = this.levelmember.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialogDelete = true;
     },
+    // ยืนยันการลบ
     deleteItemConfirm() {
       this.levelmember.splice(this.editedIndex, 1);
       this.$axios.$delete("/level-member/" + this.deleteId).then(() => {});
       this.closeDelete();
     },
+    // ยกเลิก
     close() {
+      this.result.img = null;
+      this.image.src;
       (this.dialogDetail = false), (this.dialog = false);
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
-        this.$emit("refresh");
         this.editedIndex = -1;
+        this.$emit("refresh");
       });
     },
+    // ยกเลิกลบ
     closeDelete() {
       this.dialogDelete = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
-        this.$emit("refresh");
+
         this.editedIndex = -1;
+        this.$emit("refresh");
       });
     },
+    // บันทึก
     save() {
       this.$refs.form.validate();
       if (this.type === "add") {
@@ -451,7 +616,8 @@ export default {
               img: ""
             };
 
-            this.imageURL = null;
+            this.image.src = null;
+            this.result.img = null;
             this.close();
             this.preImg = null;
             this.$swal({
@@ -480,9 +646,9 @@ export default {
 
         this.$axios
           .$put("/level-member/" + this.levelmemberitme._id, formdata)
-          .then(() => {
+          .then( res=> {
             this.$emit("refresh");
-            this.close();
+            
             this.levelmemberitme = {
               level_name: "",
               discount: " ",
@@ -490,11 +656,20 @@ export default {
               detail: "",
               img: ""
             };
-            this.imageURL = null;
+            this.image.src = null;
+            this.result.img = null;
             this.preImg = null;
+            this.close();
+             this.$swal({
+              type: "success",
+              title: res.message
+            });
           })
           .catch(e => {
-            console.log(e);
+            this.$swal({
+              type: "error",
+              title: e
+            });
           });
       }
     }
@@ -502,3 +677,90 @@ export default {
   props: ["levelmember"]
 };
 </script>
+<style scoped lang="scss">
+.cropper {
+  max-height: 500px;
+  background: #ddd;
+  margin: 0;
+}
+
+.upload-example {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  user-select: none;
+  &__cropper {
+    border: solid 1px #eee;
+    min-height: 300px;
+    max-height: 500px;
+    width: 100%;
+  }
+  &__cropper-wrapper {
+    position: relative;
+  }
+  &__reset-button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    width: 42px;
+    background: rgba(#3fb37f, 0.7);
+    transition: background 0.5s;
+    &:hover {
+      background: #3fb37f;
+    }
+  }
+  &__buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 17px;
+  }
+  &__button {
+    display: flex;
+    border: none;
+    outline: solid transparent;
+    color: gray;
+    font-size: 16px;
+    padding: 10px 20px;
+    background: #3fb37f;
+    cursor: pointer;
+    transition: background 0.5s;
+    margin: 0 16px;
+    &:hover,
+    &:focus {
+      background: #38d890;
+    }
+    input {
+      display: none;
+    }
+  }
+  &__file-type {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #0d0d0d;
+    border-radius: 5px;
+    padding: 0px 10px;
+    padding-bottom: 2px;
+    font-size: 12px;
+    color: white;
+  }
+}
+.getting-result-second-example {
+  position: relative;
+  .crop-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%);
+
+    padding: 5px 20px;
+  }
+}
+</style>

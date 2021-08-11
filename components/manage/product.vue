@@ -219,6 +219,16 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
+          <v-btn
+            class="mr2"
+            color="cyan accent-3"
+            @click="dialogTopping = true"
+          >
+            <v-icon aria-hidden="false" class="mx-2">
+              mdi-food-apple
+            </v-icon>
+            TOPPING
+          </v-btn>
           <v-btn class="mr2" color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="mx-2">
               mdi-pencil
@@ -251,6 +261,75 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-row justify="space-around">
+      <v-dialog
+        transition="dialog-top-transition"
+        max-width="800"
+        v-model="dialogTopping"
+        height="auto"
+      >
+        <v-card>
+          <v-toolbar color="primary" dark
+            >เพิ่ม TOPPING <v-spacer></v-spacer
+            ><v-btn text @click="dialogTopping = false">ปิด</v-btn></v-toolbar
+          >
+          <v-sheet class="pa-5">
+            <v-row>
+              <v-col cols="6"><h3>ชื่อ TOPPING</h3></v-col>
+              <v-col cols="3"><h3>ราคา</h3></v-col>
+              <v-col cols="3"><h3>หมายเหตุ</h3></v-col>
+            </v-row>
+            <v-row v-for="(top, i) in toppingArray" :key="i">
+              <v-col cols="6"
+                ><h4>{{ i + 1 }}. {{ top.name }}</h4></v-col
+              >
+              <v-col cols="3"
+                ><h4>{{ top.price }} บาท</h4></v-col
+              >
+              <v-col cols="3"
+                ><v-btn small fab @click="editTopping(top, i)"
+                  ><v-icon>mdi-grease-pencil</v-icon></v-btn
+                >
+                <v-btn small fab @click="deleteTopping(i)"
+                  ><v-icon>mdi-trash-can</v-icon></v-btn
+                >
+              </v-col>
+            </v-row>
+          </v-sheet>
+          <v-divider></v-divider>
+          <v-card-actions class="pa-3">
+            <v-row>
+              <v-col cols="8">
+                <v-text-field
+                  v-model="toppingName"
+                  filled
+                  label="ชื่อ TOPPING"
+                  outlined
+                  dense
+                  hide-details
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="toppingPrice"
+                  filled
+                  label="ราคา"
+                  outlined
+                  dense
+                  hide-details
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-spacer></v-spacer>
+
+            <v-btn outlined @click="addTopping"
+              >{{ toppingType === "edit" ? "แก้ไข" : "เพิ่ม" }} TOPPING</v-btn
+            >
+            <v-btn color="primary">บันทึก</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </div>
 </template>
 
@@ -315,7 +394,13 @@ export default {
 
     image: {
       src: null
-    }
+    },
+    dialogTopping: false,
+    toppingArray: [],
+    toppingEditId: null,
+    toppingName: "",
+    toppingPrice: "",
+    toppingType: "add"
   }),
   computed: {
     formTitle() {
@@ -331,6 +416,35 @@ export default {
     }
   },
   methods: {
+    addTopping() {
+      if (this.toppingType === "edit") {
+        this.toppingArray[this.toppingEditId].name = this.toppingName;
+        this.toppingArray[this.toppingEditId].price = this.toppingPrice;
+        this.toppingType = "add";
+        this.toppingName = "";
+        this.toppingPrice = "";
+      } else {
+        const toppingObj = {
+          id: this.toppingArray.length + 0,
+          name: this.toppingName,
+          price: this.toppingPrice
+        };
+        this.toppingArray.push(toppingObj);
+        this.toppingType = "add";
+        this.toppingName = "";
+        this.toppingPrice = "";
+      }
+    },
+    editTopping(top, i) {
+      this.toppingEditId = i;
+      this.toppingType = "edit";
+      this.toppingName = top.name;
+      this.toppingPrice = top.price;
+    },
+    deleteTopping(i) {
+      this.toppingArray.splice(i, 1);
+      this.toppingType = "add";
+    },
     crop() {
       const { coordinates, canvas } = this.$refs.cropper.getResult();
       canvas.toBlob(blob => {
@@ -369,11 +483,11 @@ export default {
             // type: getMimeType(e.target.result, files[0].type)
           };
         };
-        this.preImg = files[0]
+        this.preImg = files[0];
         reader.readAsArrayBuffer(files[0]);
       }
     },
-      getProductImage(item) {
+    getProductImage(item) {
       if (this.productsItem.img.length > 0) {
         return this.productsItem.img;
       } else {
@@ -395,7 +509,7 @@ export default {
       };
       this.dialog = true;
     },
-  
+
     addItem() {
       this.image.src = null;
       this.result.img = null;

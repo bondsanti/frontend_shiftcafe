@@ -378,8 +378,8 @@ export default {
       coordinates: null,
       img: null
     },
-
     // รีเซ็ต
+
     // dialog all
     dialog: false,
     dialogDelete: false,
@@ -439,10 +439,7 @@ export default {
     updateItemsPerPage(number) {
       this.itemsPerPage = number;
     },
-    // fielinput ปุ่มรีค่าในform
-    clearfile() {
-      this.fileInputKey++;
-    },
+
     //ปรับรูปซ้ายขาว
     flip(x, y) {
       if (this.$refs.cropper.customImageTransforms.rotate % 180 !== 0) {
@@ -462,6 +459,11 @@ export default {
     reset() {
       this.$refs.form.reset();
     },
+    // fielinput ปุ่มรีค่าในform
+    clearfile() {
+      this.fileInputKey++;
+    },
+
     // ขนาดรูปแคปเริ่มต้น
     defaultSize({ imageSize, visibleArea }) {
       return {
@@ -479,7 +481,7 @@ export default {
 
       this.result.img = canvas.toDataURL();
     },
-
+    // ครอบเสร็จ
     croppedFinish() {
       const { canvas } = this.$refs.cropper.getResult();
       canvas.toBlob(blob => {

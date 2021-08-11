@@ -51,13 +51,14 @@
                 <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center ">
                   <h2 class="text-left">QRCODE</h2>
                 </v-col>
+                
                 <v-col
                   cols="6"
                   class="flex-grow-0 flex-shrink-0 text-center mt-6"
                 >
                   <v-img
                     :src="
-                      `${$nuxt.context.env.config.IMG_URL}${itemBy.img_cover}`
+                      `${$nuxt.context.env.config.IMG_URL}${itemBy.img}`
                     "
                     class="mt-1 mb-1 rounded-xl"
                     aspect-ratio="1"
@@ -90,7 +91,7 @@
     </v-overlay>
     <!-- view -->
     <!-- add and edit -->
-    <v-dialog v-model="dialog" max-width="700px" persistent>
+    <v-dialog v-model="dialog" max-width="1000px" persistent>
       <v-card
         style="backdrop-filter:blur(5px); background-color:rgba(255,255,255,0.9); border-radius: 0.25rem; "
       >
@@ -126,43 +127,120 @@
 
               <v-row>
                 <v-col cols="12" sm="6" md="6">
-                  <h3 class="text-center  ml-12 mb-6">
+                  <h3 class="text-center  ml-12 mb-6" v-if="image.src">
                     <v-icon class="ma-2">mdi-credit-card-scan-outline</v-icon
                     >รูปคิวอาร์โค้ด
                   </h3>
-                  <v-img
-                    v-if="imageURL"
-                    :src="imageURL"
-                    contain
-                    max-height="300px"
-                    max-width="250px"
-                    class="mb-3"
+                  <example-wrapper
+                    class="getting-result-second-example"
+                    noBoder
+                    v-if="image.src"
                   >
-                  </v-img>
-                  <input
-                    accept="image/*"
-                    type="file"
-                    @change="onFileSelected"
-                  />
+                   <cropper
+                            class="cropper"
+                            ref="cropper"
+                            :transitions="true"
+                            image-restriction="fit-area"
+                            :default-size="defaultSize"
+                            :src="image.src"
+                          />               
+                     <results
+                            :coordinates="result.coordinates"
+                            :image="result.img"
+                          />
+                       <div class="crop-button">
+                            <v-btn
+                              class="mx-1 white--text"
+                              @click="crop"
+                              color="green"
+                              >ดูรูปตัวอย่าง</v-btn
+                            >                   
+                            <v-btn
+                              class="mx-1 white--text"
+                              color="orange"
+                              @click="croppedFinish"
+                              >ตัดรูปภาพ</v-btn
+                            >
+                          </div>    
+                  </example-wrapper>
+                     <v-row>
+                          <v-col> </v-col>
+                          <v-col>
+                            <v-btn
+                              @click="reset"
+                              class="upload-example__button mt-3"
+                            >
+                              <input
+                                type="file"
+                                ref="file"
+                                accept="image/*"
+                                required
+                                @change="loadImage($event)"
+                              />
+                              เลือกรูปภาพ
+                            </v-btn>
+                          </v-col>
+                          <v-col> </v-col>
+                        </v-row>
                 </v-col>
-                <v-col cols="12" sm="6">
-                  <h3 class="text-center ml-12 mb-6 ">
-                    <v-icon class="ma-2">mdi-qrcode</v-icon>รูปปก
+<!-- รูปปก -->
+                      <v-col cols="12" sm="6" md="6">
+                  <h3 class="text-center  ml-12 mb-6" v-if="image2.src">
+               <v-icon class="ma-2">mdi-qrcode</v-icon>รูปปก
                   </h3>
-                  <v-img
-                    v-if="imageURL2"
-                    :src="imageURL2"
-                    contain
-                    max-height="300px"
-                    max-width="250px"
-                    class="mb-3"
-                  ></v-img>
-                  <input
-                    accept="image/*"
-                    type="file"
-                    @change="onFileSelected2"
-                  />
+                  <example-wrapper
+                    class="getting-result-second-example"
+                    noBoder
+                    v-if="image2.src"
+                  >
+                   <cropper
+                            class="cropper"
+                            ref="cropper2"
+                            :transitions="true"
+                            image-restriction="fit-area"
+                            :default-size="defaultSize"
+                            :src="image2.src"
+                          />               
+                     <results
+                            :coordinates="result2.coordinates"
+                            :image="result2.img_cover"
+                          />
+                       <div class="crop-button">
+                            <v-btn
+                              class="mx-1 white--text"
+                              @click="crop2"
+                              color="green"
+                              >ดูรูปตัวอย่าง</v-btn
+                            >                   
+                            <v-btn
+                              class="mx-1 white--text"
+                              color="orange"
+                              @click="croppedFinish2"
+                              >ตัดรูปภาพ</v-btn
+                            >
+                          </div>    
+                  </example-wrapper>
+                     <v-row>
+                          <v-col> </v-col>
+                          <v-col>
+                            <v-btn
+                              @click="reset2"
+                              class="upload-example__button mt-3"
+                            >
+                              <input
+                                type="file"
+                                ref="file2"
+                                accept="image/*"
+                                required
+                                @change="loadImage2($event)"
+                              />
+                              เลือกรูปภาพ
+                            </v-btn>
+                          </v-col>
+                          <v-col> </v-col>
+                        </v-row>
                 </v-col>
+
               </v-row>
             </v-row>
           </div>
@@ -306,7 +384,7 @@
                   cols="12"
                   sm="6"
                   md="4"
-                  lg="2"
+                  lg="3"
                 >
                   <v-card elevation="15" class="rounded-xl " width="400">
                     <v-img
@@ -384,9 +462,27 @@
 </template>
 
 <script>
+import { Cropper } from "vue-advanced-cropper";
+import ExampleWrapper from "../Components/ExampleWrapper.vue";
+import Results from "@/components/Results";
+import "vue-advanced-cropper/dist/style.css";
 export default {
+  components: {
+    Cropper,
+    ExampleWrapper,
+    Results
+  },
   data() {
     return {
+      //แคป
+      result: {
+        coordinates: null,
+        img: null
+      },
+      result2: {
+        coordinates: null,
+        img_cover: null
+      },
       items: [
         {
           text: "ตั้งค่า",
@@ -396,7 +492,7 @@ export default {
         {
           text: "เพิ่มธนาคาร",
           disabled: true,
-          href: "Bank"
+          to: "Bank"
         }
       ],
       absolute: true,
@@ -413,7 +509,7 @@ export default {
         _id: " ",
         bank_name: "",
         bank_numbe: "",
-        img: "",
+        img:"",
         img_cover: ""
       },
       itemBy: {},
@@ -435,16 +531,18 @@ export default {
       ],
       detailArr: [],
       ploadState: false,
-
-      img: [],
       error: {
         state: false,
         msg: ""
       },
-      imageURL: null,
+      image: {
+        src: null
+      },
       preImg: null,
       //
-      imageURL2: null,
+      image2: {
+        src: null
+      },
       preImg2: null
     };
   },
@@ -461,39 +559,103 @@ export default {
   },
 
   methods: {
-    onFileSelected(event) {
-      const reader = new FileReader();
-      reader.onload = event => {
-        this.imageURL = event.target.result;
+    // ขนาดรูปแคปเริ่มต้น
+    defaultSize({ imageSize, visibleArea }) {
+      return {
+        width: (visibleArea || imageSize).width,
+        height: (visibleArea || imageSize).height
       };
-      reader.readAsDataURL(event.target.files[0]);
-      this.preImg = event.target.files[0];
-      //console.log(this.preImg);
     },
-    onFileSelected2(event) {
-      const reader = new FileReader();
-      reader.onload = event => {
-        this.imageURL2 = event.target.result;
-      };
-      reader.readAsDataURL(event.target.files[0]);
-      this.preImg2 = event.target.files[0];
-      //console.log(this.preImg);
+   // ปุ่มรีค่าในform
+    reset2() {     
+      this.$refs.file2.click()
     },
-    getProductImage(item) {
-      if (this.bankitem.img.length > 0) {
-        return this.bankitem.img;
-      } else {
-        return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
+      reset() {     
+      this.$refs.file.click()
+    },
+    // แคป
+    crop() {
+      const { coordinates, canvas } = this.$refs.cropper.getResult();
+      canvas.toBlob(blob => {
+        this.preImg = blob;
+      });
+      this.result.coordinates = coordinates;
+
+      this.result.img = canvas.toDataURL();
+    },
+    // ครอบเสร็จ
+    croppedFinish() {
+      const { canvas } = this.$refs.cropper.getResult();
+      canvas.toBlob(blob => {
+        this.preImg = blob;
+      });
+      this.image.src = canvas.toDataURL();
+      this.result.img = null;
+    },
+
+    //  แปลงไฟล์
+    loadImage(event) {
+      const { files } = event.target;
+      if (files && files[0]) {
+        if (this.image.src) {
+          URL.revokeObjectURL(this.image.src);
+      }
+        const blob = URL.createObjectURL(files[0]);
+        const reader = new FileReader();
+        reader.onload = e => {
+          this.image = {
+            src: blob
+          };
+        };
+        this.preImg = files[0];
+        reader.readAsArrayBuffer(files[0]);
       }
     },
-    getProductImage2(item) {
-      if (this.bankitem.img_cover.length > 0) {
-        return this.bankitem.img_cover;
-      } else {
-        return `${$nuxt.context.env.config.IMG_URL}${item.img_cover}`;
+    // 
+
+     // แคป2
+    crop2() {
+      const { coordinates, canvas } = this.$refs.cropper2.getResult();
+      canvas.toBlob(blob => {
+        this.preImg2 = blob;
+      });
+      this.result2.coordinates = coordinates;
+      this.result2.img_cover = canvas.toDataURL();
+    },
+    // ครอบเสร็จ
+    croppedFinish2() {
+      const { canvas } = this.$refs.cropper2.getResult();
+      canvas.toBlob(blob => {
+        this.preImg2 = blob;
+      });
+      this.image2.src = canvas.toDataURL();
+      this.result2.img_cover = null;
+    },
+
+    //  แปลงไฟล์
+    loadImage2(event) {
+      const { files } = event.target;
+      if (files && files[0]) {
+        if (this.image2.src) {
+          URL.revokeObjectURL(this.image2.src);
+      }
+        const blob = URL.createObjectURL(files[0]);
+        const reader2 = new FileReader();
+        reader2.onload = e => {
+          this.image2 = {
+            src: blob
+          };
+        };
+        this.preImg2 = files[0];
+        reader2.readAsArrayBuffer(files[0]);
       }
     },
+
     addItem() {
+      this.image.src = null;
+      this.result.img = null;
+      this.image2.src = null;
+      this.result2.img_cover = null;
       this.type = "add";
       this.bankitem = {
         bank_name: "",
@@ -505,8 +667,10 @@ export default {
     },
     editItem(item) {
       this.type = "edit";
-      this.imageURL = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
-      this.imageURL2 = `${$nuxt.context.env.config.IMG_URL}${item.img_cover}`;
+      this.result.img = null;
+      this.result2.img_cover = null;
+      this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
+      this.image2.src = `${$nuxt.context.env.config.IMG_URL}${item.img_cover}`;
       this.bankitem = {
         _id: item._id,
         bank_name: item.bank_name,
@@ -571,7 +735,7 @@ export default {
         },
         {
           name: "QRCODE",
-          value: item.img
+          value: item.image
         }
       ];
 
@@ -586,6 +750,10 @@ export default {
     },
 
     close() {
+      this.result.img = null;
+      this.result2.img_cover = null;
+      this.image.src;
+      this.image2.src;
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
@@ -618,8 +786,10 @@ export default {
               img: " ",
               img_cover: ""
             };
-            this.imageURL = null;
-            this.imageURL2 = null;
+            this.image.src = null;
+            this.result.img = null;
+            this.image2.src = null;
+            this.result2.img_cover = null
             this.close();
             this.preImg = null;
             this.preImg2 = null;
@@ -659,8 +829,10 @@ export default {
               img: " ",
               img_cover: ""
             };
-            this.imageURL = null;
-            this.imageURL2 = null;
+            this.image.src = null;
+            this.result.img = null;
+             this.image2.src = null;
+            this.result2.img_cover = null;
             this.preImg = null;
             this.preImg2 = null;
           })
@@ -675,46 +847,91 @@ export default {
 };
 </script>
 
-<style scoped>
-/* .theme--light.v-list {
-  color: rgba(0, 0, 0, 0.87);
-}
-.theme--light.v-input input,
-.theme--light.v-input textarea {
-  color: rgb(255 255 255 / 100%);
-}
-.theme--light.v-select .v-select__selections {
-  color: rgb(255 255 255 / 100%);
-  min-height: 10px;
-}
-.v-input__icon--append .v-icon {
-  color: rgb(255 255 255 / 100%);
-}
-.v-list__group__header__prepend-icon .v-icon {
-  color: rgb(255, 255, 255);
-}
-.theme--light.v-label {
-    color: rgb(255 255 255 / 100%);
+</script>
+<style scoped lang="scss">
+.cropper {
+  height: 300px;
+  background: #ddd;
+  margin: 0;
 }
 
-.theme--light.v-input input, .theme--light.v-input textarea {
-    color: rgba(255, 255, 255, 0.87);
+.upload-example {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  user-select: none;
+  &__cropper {
+    border: solid 1px #eee;
+    min-height: 300px;
+    max-height: 500px;
+    width: 100%;
+  }
+  &__cropper-wrapper {
+    position: relative;
+  }
+  &__reset-button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    width: 42px;
+    background: rgba(#3fb37f, 0.7);
+    transition: background 0.5s;
+    &:hover {
+      background: #3fb37f;
+    }
+  }
+  &__buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 17px;
+  }
+  &__button {
+    display: flex;
+    border: none;
+    outline: solid transparent;
+    color: gray;
+    font-size: 16px;
+    padding: 10px 20px;
+    background: #3fb37f;
+    cursor: pointer;
+    transition: background 0.5s;
+    margin: 0 16px;
+    &:hover,
+    &:focus {
+      background: #38d890;
+    }
+    input {
+      display: none;
+    }
+  }
+  &__file-type {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #0d0d0d;
+    border-radius: 5px;
+    padding: 0px 10px;
+    padding-bottom: 2px;
+    font-size: 12px;
+    color: white;
+  }
 }
-.theme--light.v-card > .v-card__text, .theme--light.v-card > .v-card__subtitle {
-    color: rgb(0 0 0);
-}
-.theme--light.v-text-field > .v-input__control > .v-input__slot:before {
-    border-color: rgb(255 255 255 / 100%);
-}
-.theme--light.v-text-field--outlined:not(.v-input--is-focused):not(.v-input--has-state) > .v-input__control > .v-input__slot fieldset {
-    color: rgb(255 255 255 / 80%);
-}
-.theme--light.v-btn.v-btn--disabled .v-icon, .theme--light.v-btn.v-btn--disabled .v-btn__loading {
-    color: rgb(255 255 255 / 80%) !important;
-}
+.getting-result-second-example {
+  position: relative;
+  .crop-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%);
 
-.theme--light.v-btn.v-btn--disabled .v-icon, .theme--light.v-btn.v-btn--disabled .v-btn__loading {
-    color: rgb(255 255 255 / 100%) !important;
-
-} */
+    padding: 5px 20px;
+  }
+}
 </style>

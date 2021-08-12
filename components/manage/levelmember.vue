@@ -1,5 +1,24 @@
 <template>
   <div class="ma-3">
+       <!-- photo -->
+    <v-dialog v-model="dialogPhoto" max-width="500" max-height="300">
+      <v-card>
+        <v-toolbar dense color="elevation-0">
+          <v-spacer></v-spacer>
+          <v-btn icon color="black" @click.native="dialogPhoto = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-row no-gutters align="center" justify="center">
+              <v-img :src="image.src" contain></v-img>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+    <!-- // -->
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
@@ -48,6 +67,7 @@
             width="180px"
             height="80px"
             contain
+            @click="photo(item)"
           />
         </template>
         <template v-slot:top>
@@ -70,6 +90,7 @@
                           outlined
                           v-model="levelmemberitme.level_name"
                           :rules="rules"
+                         
                           label="ชื่อระดับสมาชิก"
                         ></v-text-field>
                       </v-col>
@@ -78,6 +99,7 @@
                           outlined
                           v-model="levelmemberitme.discount"
                           :rules="rules"
+                           type="number"
                           label="ส่วนลด(%)"
                         ></v-text-field>
                       </v-col>
@@ -86,6 +108,7 @@
                           outlined
                           v-model="levelmemberitme.target_price"
                           :rules="rules"
+                           type="number"
                           label="กำหนดราคาที่ต้องการเปลี่ยนระดับ"
                         ></v-text-field>
                       </v-col>
@@ -361,7 +384,8 @@ export default {
     dialog: false,
     dialogDelete: false,
     dialogDetail: false,
-    //ปบังคบใส่ฟรอม
+    dialogPhoto: false,
+    //
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valiid: true,
     // ค้นหา
@@ -444,6 +468,7 @@ export default {
     }
   },
   methods: {
+    
     //ปรับรูปซ้ายขาว
     flip(x, y) {
       if (this.$refs.cropper.customImageTransforms.rotate % 180 !== 0) {
@@ -459,7 +484,7 @@ export default {
     change(args) {
       console.log(args);
     },
-        // ขนาดรูปแคปเริ่มต้น
+    // ขนาดรูปแคปเริ่มต้น
     defaultSize({ imageSize, visibleArea }) {
       return {
         width: (visibleArea || imageSize).width,
@@ -524,10 +549,17 @@ export default {
         return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       }
     },
+      // รูป
+    photo(item) {
+      this.result.img = null;
+      this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
+      this.levelmemberitme = { img: item.img };
+      this.dialogPhoto = true;
+    },
     // แก้ไข
     editItem(item) {
-      this.result.img = null;
       this.type = "edit";
+      this.result.img = null;
       this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       this.levelmemberitme = {
         _id: item._id,
@@ -568,6 +600,10 @@ export default {
     deleteItemConfirm() {
       this.levelmember.splice(this.editedIndex, 1);
       this.$axios.$delete("/level-member/" + this.deleteId).then(() => {});
+        this.$swal({
+              type: "success",
+              title: 'ลบระดับสมาชิกเสร็จสมบูรณ์'
+            });
       this.closeDelete();
     },
     // ยกเลิก
@@ -586,7 +622,6 @@ export default {
       this.dialogDelete = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
-
         this.editedIndex = -1;
         this.$emit("refresh");
       });
@@ -622,7 +657,8 @@ export default {
             this.preImg = null;
             this.$swal({
               type: "success",
-              title: res.message
+              // title: res.message
+              title: "เพิ่มระดับสมาชิกเสร็จสมบูรณ์"
             });
           })
           .catch(e => {
@@ -646,9 +682,9 @@ export default {
 
         this.$axios
           .$put("/level-member/" + this.levelmemberitme._id, formdata)
-          .then( res=> {
+          .then(res => {
             this.$emit("refresh");
-            
+
             this.levelmemberitme = {
               level_name: "",
               discount: " ",
@@ -660,9 +696,10 @@ export default {
             this.result.img = null;
             this.preImg = null;
             this.close();
-             this.$swal({
+            this.$swal({
               type: "success",
-              title: res.message
+              // title: res.message
+              title:"อัปเดตระดับสมาชิกเสร็จสมบูรณ์"
             });
           })
           .catch(e => {
@@ -677,7 +714,8 @@ export default {
   props: ["levelmember"]
 };
 </script>
-<style scoped lang="scss">
+
+<style lang="scss" scoped>
 .cropper {
   max-height: 500px;
   background: #ddd;
@@ -688,15 +726,18 @@ export default {
   margin-top: 20px;
   margin-bottom: 20px;
   user-select: none;
+
   &__cropper {
     border: solid 1px #eee;
     min-height: 300px;
     max-height: 500px;
     width: 100%;
   }
+
   &__cropper-wrapper {
     position: relative;
   }
+
   &__reset-button {
     position: absolute;
     right: 20px;
@@ -709,15 +750,18 @@ export default {
     width: 42px;
     background: rgba(#3fb37f, 0.7);
     transition: background 0.5s;
+
     &:hover {
       background: #3fb37f;
     }
   }
+
   &__buttons-wrapper {
     display: flex;
     justify-content: center;
     margin-top: 17px;
   }
+
   &__button {
     display: flex;
     border: none;
@@ -729,14 +773,17 @@ export default {
     cursor: pointer;
     transition: background 0.5s;
     margin: 0 16px;
+
     &:hover,
     &:focus {
       background: #38d890;
     }
+
     input {
       display: none;
     }
   }
+
   &__file-type {
     position: absolute;
     top: 20px;
@@ -749,8 +796,10 @@ export default {
     color: white;
   }
 }
+
 .getting-result-second-example {
   position: relative;
+
   .crop-button {
     display: flex;
     justify-content: center;

@@ -1,5 +1,6 @@
 <template>
   <v-col cols="12" sm="6" md="4" lg="3">
+    
     <v-card
       class="rounded-xl d-flex flex-column align-center cursor ma-1"
       elevation="0"

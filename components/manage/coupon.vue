@@ -191,10 +191,7 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="
-                    save();
-                    showAlert();
-                  "
+                  @click="save()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -321,14 +318,7 @@
                 </v-btn>
 
                 <v-spacer></v-spacer>
-                <v-btn
-                  class="ma-1"
-                  color="info"
-                  @click="
-                    save();
-                    showAlert();
-                  "
-                >
+                <v-btn class="ma-1" color="info" @click="save()">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
                   </v-icon>
@@ -342,8 +332,8 @@
           <v-dialog v-model="dialogDelete" max-width="310px">
             <v-card>
               <v-card-title class=" white--text  primary">
-                 <p class="text-center">
-                 คุณแน่ใจแล้วใช้มั้ยที่จะลบข้อมูล
+                <p class="text-center">
+                  คุณแน่ใจแล้วใช้มั้ยที่จะลบข้อมูล
                 </p>
               </v-card-title>
               <v-card-actions>
@@ -357,10 +347,7 @@
                   small
                   color="primary"
                   class="ma-2"
-                  @click="
-                    deleteItemConfirm();
-                    showAlert();
-                  "
+                  @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="mx-4">
                     mdi-delete-forever </v-icon
@@ -372,12 +359,7 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn
-            small
-            class=" white--text"
-            color="teal"
-            @click="Detail(item)"
-          >
+          <v-btn small class=" white--text" color="teal" @click="Detail(item)">
             <v-icon aria-hidden="false" class="">
               mdi-eye-settings-outline
             </v-icon>
@@ -403,7 +385,6 @@
             </v-icon>
             ลบ
           </v-btn>
-
         </template>
         <!-- <template v-slot:[`item.view`]="{ item }">
           <v-btn
@@ -688,14 +669,6 @@ export default {
       val || this.closeDelete();
     }
   },
-  mounted() {
-    this.toast = this.$swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000
-    });
-  },
   methods: {
     async check() {
       const cus = await this.$axios.$get("/coupon/" + this.couponitem.codename);
@@ -708,7 +681,6 @@ export default {
       }
     },
     Detail(item) {
-
       this.itemBy = item;
       this.detailArr = [
         {
@@ -747,17 +719,6 @@ export default {
       if (num_use) return "#455A64";
       else return "red";
     },
-    showAlert() {
-      this.toast({
-        type: "success",
-        title: "ดำเนิการสำเร็จ"
-      });
-      this.text_val_for_test = Date.now();
-    },
-    someFn(ev) {
-      console.log(ev);
-    },
-
     addItem() {
       this.type = "add";
       this.couponitem = {
@@ -786,8 +747,22 @@ export default {
     },
     deleteItemConfirm() {
       this.coupon.splice(this.editedIndex, 1);
-      this.$axios.$delete("/coupon/" + this.deleteId).then(() => {});
-      this.closeDelete();
+      this.$axios
+        .$delete("/coupon/" + this.deleteId)
+        .then(res => {
+          this.$emit("refresh");
+          this.closeDelete();
+          this.$swal({
+            type: "success",
+            title: res.message
+          });
+        })
+        .catch(e => {
+          this.$swal({
+            type: "error",
+            title: e
+          });
+        });
     },
     close() {
       this.dialog = false;
@@ -809,22 +784,34 @@ export default {
     },
 
     save() {
-      this.$refs.form.validate();
       if (this.type === "add") {
+        this.$refs.form.validate();
         this.loading = true;
         this.$emit("addCoupon", {
           ...this.couponitem
+        });
+        this.$swal({
+          type: "success",
+          title: "ดำเนินการสำเร็จ"
         });
         this.close();
       } else {
         this.loading = true;
         this.$axios
           .$put("/coupon/" + this.couponitem._id, this.couponitem)
-          .then(() => {
+          .then(res => {
+            this.$emit("refresh");
             this.closeedit();
+            this.$swal({
+              type: "success",
+              title: res.message
+            });
           })
           .catch(e => {
-            console.log(e);
+            this.$swal({
+              type: "error",
+              title: e
+            });
           });
       }
     },
@@ -856,7 +843,7 @@ export default {
     this.coupon.map(c => {
       this.codeName.push(c.codename);
     });
-    console.log(this.codeName);
+    //console.log(this.codeName);
   }
 };
 </script>

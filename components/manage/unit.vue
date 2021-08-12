@@ -88,10 +88,7 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="
-                    save();
-                  
-                  "
+                  @click="save()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -103,25 +100,21 @@
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="410px">
             <v-card>
-               <v-card-title class="primary--text text-center">
-              
-                 คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
-              
+              <v-card-title class="primary--text text-center">
+                คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
               </v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="info"  plain class="ma-2" @click="closeDelete">
+                <v-btn color="info" plain class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box </v-icon
                   >ยกเลิก</v-btn
                 >
                 <v-btn
                   color="error"
-                   plain
+                  plain
                   class="ma-2"
-                  @click="
-                    deleteItemConfirm();                  
-                  "
+                  @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="mx-4">
                     mdi-delete-forever </v-icon
@@ -198,7 +191,6 @@ export default {
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"]
   }),
 
-
   watch: {
     dialog(val) {
       val || this.close();
@@ -208,9 +200,6 @@ export default {
     }
   },
   methods: {
-    someFn(ev) {
-      console.log(ev);
-    },
     editItem(item) {
       this.type = "edit";
       this.units = item;
@@ -232,12 +221,22 @@ export default {
     },
     deleteItemConfirm() {
       this.unit.splice(this.editedIndex, 1);
-      this.$axios.$delete("/unit/" + this.deleteId).then(() => {});
-      this.closeDelete();
-        this.$swal({
-              type: "success",
-              title: 'ดำเนินการสำเร็จ'
-            });
+      this.$axios
+        .$delete("/unit/" + this.deleteId)
+        .then(res => {
+          this.$emit("refresh");
+          this.closeDelete();
+          this.$swal({
+            type: "success",
+            title: res.message
+          });
+        })
+        .catch(e => {
+          this.$swal({
+            type: "error",
+            title: e
+          });
+        });
     },
     close() {
       this.dialog = false;
@@ -258,27 +257,40 @@ export default {
       this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
-        this.$emit("addUnit", { ...this.units });
-      
-        this.close();
-        this.$swal({
+        this.$axios
+          .$post("/unit/", this.units)
+          .then(res => {
+         //  console.log(res.message);
+            this.$emit("refresh");
+            this.close();
+            this.$swal.fire({
               type: "success",
-              title: 'เพิ่มข้อมูลสำเร็จ'
+              title: res.message
             });
-      
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
       } else {
         this.loading = true;
         this.$axios
           .$put("/unit/" + this.units._id, this.units)
-          .then(() => {
+          .then(res => {
+            this.$emit("refresh");
             this.close();
-              this.$swal({
+            this.$swal({
               type: "success",
-              title: 'ดำเนินการสำเร็จ'
+              title: res.message
             });
           })
           .catch(e => {
-            console.log(e);
+            this.$swal({
+              type: "error",
+              title: e
+            });
           });
       }
     }

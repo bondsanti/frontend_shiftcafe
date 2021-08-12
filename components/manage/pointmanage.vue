@@ -129,7 +129,9 @@
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
-
+        <template v-slot:[`item.ref_cus_id`]="{ item }">
+         <v-icon>mdi-account</v-icon>{{ item.ref_cus_id }}
+        </template>
         <template v-slot:[`item.point`]="{ item }">
           <v-icon class="ma-2 ml-2" color="primary">
             mdi-file-powerpoint-box
@@ -245,11 +247,18 @@ export default {
         .$post("/point-manage", newPoint)
         .then(res => {
           this.$emit("refreshPoint");
-          console.log(res);
+          //console.log(res);
+          this.$swal({
+              type: "success",
+              title: res.message
+            });
           this.dialog = false;
         })
         .catch(e => {
-          console.log(e);
+          this.$swal({
+              type: "error",
+              title: e
+            });
         });
     },
     improveCus() {

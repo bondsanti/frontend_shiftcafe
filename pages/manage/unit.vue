@@ -1,5 +1,5 @@
 <template>
-  <unit :unit="unit" @addUnit="addUnit" />
+  <unit :unit="unit" @refresh="refresh" />
 </template>
 
 <script>
@@ -36,8 +36,7 @@ export default {
     unit
   },
   methods: {
-    async addUnit(dataUnit) {
-      await this.$axios.$post("/unit", dataUnit);
+    async refresh() {
       this.unit = await this.$axios.$get("/unit");
     }
   },

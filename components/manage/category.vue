@@ -1,5 +1,25 @@
 <template>
   <div class="ma-3">
+    <!-- photo -->
+    <v-dialog v-model="dialogPhoto" max-width="500">
+      <v-card>
+        <v-toolbar dense color="elevation-0">
+          <v-spacer></v-spacer>
+          <v-btn icon color="black" @click.native="dialogPhoto = falsel">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-row no-gutters align="center" justify="center">
+              <v-img :src="image.src" contain></v-img>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+    <!-- // -->
+
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
@@ -232,6 +252,7 @@
                       max-width="100%"
                       max-height="100%"
                       :src="`${$nuxt.context.env.config.IMG_URL}${item.img}`"
+                      @click="photo(item)"
                     ></v-img>
                   </v-avatar>
                   <div>
@@ -383,6 +404,7 @@ export default {
     // dialog all
     dialog: false,
     dialogDelete: false,
+    dialogPhoto: false,
     //ปรับหน้าการแสดง
     itemsPerPageArray: [20, 30, 40, 50],
     search: "",
@@ -525,6 +547,13 @@ export default {
         return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       }
     },
+    // รูป
+    photo(item) {
+      this.result.img = null;
+      this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
+      this.cate = { img: item.img };
+      this.dialogPhoto = true;
+    },
     // แก้ไข
     editItem(item) {
       this.result.img = null;
@@ -561,6 +590,10 @@ export default {
       this.category.splice(this.editedIndex, 1);
       this.$axios.$delete("/category/" + this.deleteId).then(() => {});
       this.closeDelete();
+       this.$swal({
+              type: "success",
+              title: 'ดำเนินการสำเร็จ'
+            });
       this.$emit("refresh");
     },
     // ยกเลิก
@@ -607,8 +640,8 @@ export default {
             this.preImg = null;
             this.$swal({
               type: "success",
-
-              title: res.message + " ดำเนินการสำเร็จ"
+              title: "ดำเนินการสำเร็จ"
+              // title: res.message + " ดำเนินการสำเร็จ"
             });
           })
           .catch(e => {
@@ -641,7 +674,8 @@ export default {
             this.preImg = null;
             this.$swal({
               type: "success",
-              title: res.message
+              title:"ดำเนินการสำเร็จ"
+              // title: res.message
             });
           })
           .catch(e => {

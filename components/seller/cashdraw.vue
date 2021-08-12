@@ -151,10 +151,10 @@
         :headers="headers"
         :items="cashTableData"
         :search="search"
-         :items-per-page="15"
+        :items-per-page="15"
         :footer-props="{
           'items-per-page-options': [15, 20, 30, 40, 50, -1],
-           prevIcon: 'mdi-chevron-left',
+          prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
         }"
@@ -175,10 +175,7 @@
                 <v-btn
                   color="primary"
                   :disabled="$store.getters['position'] === 'cashier'"
-                  @click="
-                    deleteItemConfirm();
-                    showAlert();
-                  "
+                  @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="mx-4">
                     mdi-delete-forever </v-icon
@@ -243,7 +240,6 @@ export default {
       search: "",
       editedIndex: -1,
       type: null,
-      deleteId: null,
       cashdraw: {
         _id: " ",
         type: "",
@@ -273,6 +269,7 @@ export default {
     cashTableData() {
       return this.loadData.map(item => {
         return {
+          _id: item._id,
           datetime: this.formatDate(item.datetime),
           ref_emp_id: `${item.ref_emp_id.fname} ${item.ref_emp_id.lname}`,
           type: item.type,
@@ -333,8 +330,22 @@ export default {
     },
     deleteItemConfirm() {
       this.loadData.splice(this.editedIndex, 1);
-      this.$axios.$delete("/withdraw/" + this.deleteId).then(() => {});
-      this.closeDelete();
+      this.$axios
+        .$delete("/withdraw/" + this.deleteId)
+        .then(res => {
+          this.$emit("refresh");
+          this.closeDelete();
+          this.$swal({
+            type: "success",
+            title: res.message
+          });
+        })
+        .catch(e => {
+          this.$swal({
+            type: "error",
+            title: e
+          });
+        });
     },
     close() {
       this.dialog = false;
@@ -365,8 +376,12 @@ export default {
         this.$axios
           .$put("/withdraw/" + this.cashdrawedi._id, this.cashdrawedi)
           .then(res => {
+            // console.log(res);
             this.$emit("refresh");
-            this.showAlert(res.message);
+            this.$swal.fire({
+              type: "success",
+              title: res.message
+            });
             this.closeedit();
             this.type = null;
           })
@@ -374,8 +389,25 @@ export default {
             console.log(e);
           });
       } else {
-        this.$emit("addCashdraw", this.cashdraw);
-        this.close();
+        // add
+        this.loading = true;
+        this.$axios
+          .$post("/withdraw/", this.cashdraw)
+          .then(res => {
+            // console.log(res);
+            this.$emit("refresh");
+            this.close();
+            this.$swal.fire({
+              type: "success",
+              title: res.message
+            });
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
         this.dialog = false;
         this.reset();
         this.type = null;

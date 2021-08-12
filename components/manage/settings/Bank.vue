@@ -1,5 +1,25 @@
 <template>
   <div class="ma-3" style="height: 100%">
+        <!-- photo -->
+    <v-dialog v-model="dialogPhoto" max-width="500">
+      <v-card>
+        <v-toolbar dense color="elevation-0">
+          <v-spacer></v-spacer>
+          <v-btn icon color="black" @click.native="dialogPhoto = falsel">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-row no-gutters align="center" justify="center">
+              <v-img :src="image2.src" contain ></v-img>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+    <!-- // -->
+
     <!--breadcrumbs-->
     <v-row style="min-height: 100px;">
       <v-col class="shrink"></v-col>
@@ -57,13 +77,14 @@
                   class="flex-grow-0 flex-shrink-0 text-center mt-6"
                 >
                   <v-img
+                  
                     :src="
                       `${$nuxt.context.env.config.IMG_URL}${itemBy.img}`
                     "
                     class="mt-1 mb-1 rounded-xl"
                     aspect-ratio="1"
-                    width="200px"
-                    height="200px"
+                    width="250px"
+                    height="250px"
                     contain
                   />
                 </v-col>
@@ -143,6 +164,7 @@
                             image-restriction="fit-area"
                             :default-size="defaultSize"
                             :src="image.src"
+                            
                           />               
                      <results
                             :coordinates="result.coordinates"
@@ -394,6 +416,7 @@
                       :src="
                         `${$nuxt.context.env.config.IMG_URL}${item.img_cover}`
                       "
+                      @click="photo(item)"
                     >
                       <v-app-bar flat color="rgba(0, 0, 0, 0)">
                         <v-toolbar-title
@@ -499,9 +522,11 @@ export default {
       opacity: 0.95,
       overlay: false,
       search: "",
+       // dialog all
       dialog: false,
       dialogDelete: false,
       dialogView: false,
+      dialogPhoto: false,
       img: [],
       deleteId: null,
       type: null,
@@ -650,7 +675,13 @@ export default {
         reader2.readAsArrayBuffer(files[0]);
       }
     },
-
+// รูป
+    photo(item) {
+      this.result2.img = null;
+      this.image2.src = `${$nuxt.context.env.config.IMG_URL}${item.img_cover}`;
+      this.bankitem = { img: item.img_cover };
+      this.dialogPhoto = true;
+    },
     addItem() {
       this.image.src = null;
       this.result.img = null;
@@ -706,13 +737,7 @@ export default {
         })
         .catch(e => {
           this.$swal({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 1000,
-            type: "error",
-            text: e,
-            text: "ไม่สำเร็จ"
+            text: e,   
           });
         });
 

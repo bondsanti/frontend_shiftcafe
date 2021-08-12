@@ -231,10 +231,7 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="
-                    save();
-                    showAlert();
-                  "
+                  @click="save()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -401,10 +398,7 @@
                   class="ma-1"
                   color="info"
                   :disabled="!valid"
-                  @click="
-                    save();
-                    showAlert();
-                  "
+                  @click="save()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -426,7 +420,6 @@
                 <v-spacer></v-spacer>
 
                 <v-btn
-                  :disabled="loading"
                   @click="closeDelete"
                   class="ma-1"
                   color="info"
@@ -444,7 +437,6 @@
                   plain
                   @click="
                     deleteItemConfirm();
-                    showAlert();
                   "
                 >
                   <v-icon aria-hidden="false" class="mx-2">
@@ -654,14 +646,6 @@ export default {
       return moment(strdate).format("Do MMMM YYYY");
     }
   },
-  mounted() {
-    this.toast = this.$swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000
-    });
-  },
 
   methods: {
     moment2(date) {
@@ -669,16 +653,6 @@ export default {
       var strdate = moment("th").format("LLLL");
       var strdate = moment(date).add(543, "years");
       return moment(strdate).format("DD MMMM YYYY ");
-    },
-    showAlert() {
-      this.toast({
-        type: "success",
-        title: "ดำเนินการสำเร็จ"
-      });
-      this.text_val_for_test = Date.now();
-    },
-    someFn(ev) {
-      console.log(ev);
     },
     async check() {
       this.$refs.form.validate();
@@ -724,8 +698,22 @@ export default {
     },
     deleteItemConfirm() {
       this.customer.splice(this.editedIndex, 1);
-      this.$axios.$delete("/customer/" + this.deleteId).then(() => {});
-      this.closeDelete();
+      this.$axios
+        .$delete("/customer/" + this.deleteId)
+        .then(res => {
+          this.$emit("refresh");
+          this.closeDelete();
+          this.$swal({
+            type: "success",
+            title: res.message
+          });
+        })
+        .catch(e => {
+          this.$swal({
+            type: "error",
+            title: e
+          });
+        });
     },
     closeadd() {
       this.dialog = false;
@@ -823,17 +811,28 @@ export default {
         this.$emit("addCustomer", {
           ...this.customerItme
         });
+        this.$swal({
+          type: "success",
+          title: "ดำเนินการสำเร็จ"
+        });
         this.closeadd();
       } else {
         this.loading = true;
         this.$axios
           .$put("/customer/" + this.customerItme._id, this.customerItme)
-          .then(() => {
+          .then(res => {
             this.$emit("refresh");
-            this.close("refresh");
+            this.close();
+            this.$swal({
+              type: "success",
+              title: res.message
+            });
           })
           .catch(e => {
-            console.log(e);
+            this.$swal({
+              type: "error",
+              title: e
+            });
           });
       }
     },

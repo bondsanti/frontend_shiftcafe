@@ -184,6 +184,7 @@
                           </template>
                           <v-date-picker
                             v-model="employeeitmeadd.birthday"
+                            locale="th"
                             :active-picker.sync="activePicker"
                             :max="
                               new Date(
@@ -375,6 +376,7 @@
                           </template>
                           <v-date-picker
                             v-model="employeeitme.birthday"
+                            locale="th"
                             :active-picker.sync="activePicker"
                             :max="
                               new Date(
@@ -669,7 +671,6 @@
                   class="ma-2"
                   @click="
                     deleteItemConfirm();
-                    showAlert();
                   "
                 >
                   <v-icon aria-hidden="false" class="mx-4">
@@ -927,14 +928,6 @@ export default {
     }
   },
 
-  mounted() {
-    this.toast = this.$swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000
-    });
-  },
   methods: {
     canelOTP() {
       this.e1 = 1;
@@ -1100,16 +1093,7 @@ export default {
       }
       //return { category };
     },
-    showAlert() {
-      this.toast({
-        type: "success",
-        title: "ดำเนิการสำเร็จ"
-      });
-      this.text_val_for_test = Date.now();
-    },
-    someFn(ev) {
-      console.log(ev);
-    },
+ 
     editItemPass(item) {
       this.type = "edit";
       this.employeeitme = item;
@@ -1166,6 +1150,10 @@ export default {
     deleteItemConfirm() {
       this.employee.splice(this.editedIndex, 1);
       this.$axios.$delete("/employee/" + this.deleteId).then(() => {});
+        this.$swal({
+              type: "success",
+              title: 'ดำเนินการสำเร็จ'
+            });
       this.closeDelete();
     },
     close() {
@@ -1271,7 +1259,10 @@ export default {
         this.loading = true;
 
         this.$emit("addEmployee", { ...this.employeeitmeadd });
-        this.showAlert();
+         this.$swal({
+              type: "success",
+              title: 'ดำเนินการสำเร็จ'
+            });
         this.closeadd();
       } else {
         //console.log(this.employeeitme);
@@ -1280,7 +1271,10 @@ export default {
           .$put("/employee/" + this.employeeitme._id, this.employeeitme)
           .then(() => {
             this.$emit("refresh");
-            this.showAlert();
+              this.$swal({
+              type: "success",
+              title: 'ดำเนินการสำเร็จ'
+            });
             this.closePass();
             this.close();
             this.improverole;

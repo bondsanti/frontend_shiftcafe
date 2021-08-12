@@ -219,11 +219,7 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn
-            class="mr2"
-            color="cyan accent-3"
-            @click="dialogTopping = true"
-          >
+          <v-btn class="mr2" color="cyan accent-3" @click="topping(item)">
             <v-icon aria-hidden="false" class="mx-2">
               mdi-food-apple
             </v-icon>
@@ -267,25 +263,44 @@
         max-width="800"
         v-model="dialogTopping"
         height="auto"
+        persistent
       >
         <v-card>
           <v-toolbar color="primary" dark
             >เพิ่ม TOPPING <v-spacer></v-spacer
-            ><v-btn text @click="dialogTopping = false">ปิด</v-btn></v-toolbar
+            ><v-btn
+              color="red"
+              @click="
+                dialogTopping = false;
+                toppingArray = [];
+                $nuxt.refresh();
+              "
+              >ปิด</v-btn
+            ></v-toolbar
           >
           <v-sheet class="pa-5">
             <v-row>
-              <v-col cols="6"><h3>ชื่อ TOPPING</h3></v-col>
-              <v-col cols="3"><h3>ราคา</h3></v-col>
+              <v-col cols="5"><h3>ชื่อ TOPPING</h3></v-col>
+              <v-col cols="2"><h3>คิดเพิ่ม</h3></v-col>
+              <v-col cols="2"><h3>สถานะ</h3></v-col>
               <v-col cols="3"><h3>หมายเหตุ</h3></v-col>
             </v-row>
             <v-row v-for="(top, i) in toppingArray" :key="i">
-              <v-col cols="6"
+              <v-col cols="5"
                 ><h4>{{ i + 1 }}. {{ top.name }}</h4></v-col
               >
-              <v-col cols="3"
+              <v-col cols="2"
                 ><h4>{{ top.price }} บาท</h4></v-col
               >
+              <v-col cols="2">
+                <v-switch
+                  class="ma-0"
+                  hide-details
+                  v-model="top.status"
+                  inset
+                  :label="top.status ? 'เปิดใช้' : 'ปิดใช้'"
+                ></v-switch>
+              </v-col>
               <v-col cols="3"
                 ><v-btn small fab @click="editTopping(top, i)"
                   ><v-icon>mdi-grease-pencil</v-icon></v-btn
@@ -299,33 +314,33 @@
           <v-divider></v-divider>
           <v-card-actions class="pa-3">
             <v-row>
-              <v-col cols="8">
+              <v-col cols="12" sm="6">
                 <v-text-field
                   v-model="toppingName"
                   filled
                   label="ชื่อ TOPPING"
                   outlined
-                  dense
                   hide-details
                 ></v-text-field>
               </v-col>
-              <v-col cols="4">
+              <v-col cols="12" sm="3">
                 <v-text-field
                   v-model="toppingPrice"
                   filled
                   label="ราคา"
                   outlined
-                  dense
                   hide-details
                 ></v-text-field>
               </v-col>
-            </v-row>
-            <v-spacer></v-spacer>
 
-            <v-btn outlined @click="addTopping"
-              >{{ toppingType === "edit" ? "แก้ไข" : "เพิ่ม" }} TOPPING</v-btn
-            >
-            <v-btn color="primary">บันทึก</v-btn>
+              <v-col cols="12" sm="3" align-self="center">
+                <v-btn outlined @click="addTopping"
+                  >{{ toppingType === "edit" ? "แก้ไข" : "เพิ่ม" }}
+                </v-btn>
+                <v-btn color="primary" @click="saveTopping">บันทึก</v-btn>
+              </v-col>
+            </v-row>
+            <!-- <v-spacer></v-spacer> -->
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -416,23 +431,50 @@ export default {
     }
   },
   methods: {
+    topping(item) {
+      this.productsItem._id = item._id;
+      this.dialogTopping = true;
+      this.toppingArray = item.topping;
+    },
+    saveTopping() {
+      this.$axios
+        .post("/product-topping/" + this.productsItem._id, {
+          topping: this.toppingArray
+        })
+        .then(res => {
+          if (res.status === 200) {
+            this.$swal.fire({
+              type: "success",
+              title: res.data.message
+            });
+            this.clearTopping();
+            this.dialogTopping = false;
+            this.toppingArray = [];
+          } else {
+            this.$swal.fire({
+              type: "error",
+              title: res.data.message
+            });
+          }
+        });
+    },
     addTopping() {
       if (this.toppingType === "edit") {
         this.toppingArray[this.toppingEditId].name = this.toppingName;
         this.toppingArray[this.toppingEditId].price = this.toppingPrice;
-        this.toppingType = "add";
-        this.toppingName = "";
-        this.toppingPrice = "";
+
+        this.clearTopping();
       } else {
-        const toppingObj = {
-          id: this.toppingArray.length + 0,
-          name: this.toppingName,
-          price: this.toppingPrice
-        };
-        this.toppingArray.push(toppingObj);
-        this.toppingType = "add";
-        this.toppingName = "";
-        this.toppingPrice = "";
+        if (this.toppingName.length !== 0 || this.toppingPrice.length !== 0) {
+          const toppingObj = {
+            id: this.toppingArray.length + 0,
+            name: this.toppingName,
+            price: this.toppingPrice,
+            status: true
+          };
+          this.toppingArray.push(toppingObj);
+          this.clearTopping();
+        }
       }
     },
     editTopping(top, i) {
@@ -443,7 +485,12 @@ export default {
     },
     deleteTopping(i) {
       this.toppingArray.splice(i, 1);
+      this.clearTopping();
+    },
+    clearTopping() {
       this.toppingType = "add";
+      this.toppingName = "";
+      this.toppingPrice = "";
     },
     crop() {
       const { coordinates, canvas } = this.$refs.cropper.getResult();
@@ -584,13 +631,13 @@ export default {
             this.result.img = null;
             this.close();
             this.preImg = null;
-            this.$swal({
+            this.$swal.fire({
               type: "success",
               title: res.message
             });
           })
           .catch(e => {
-            this.$swal({
+            this.$swal.fire({
               type: "error",
               title: e
             });

@@ -25,7 +25,13 @@
               บันทึกคำสั่งซื้อ
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn @click="$emit('closeOrderDl')">ปิด</v-btn>
+            <v-btn
+              @click="
+                $emit('closeOrderDl');
+                bill_name = null;
+              "
+              >ปิด</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>

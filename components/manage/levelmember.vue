@@ -1,6 +1,6 @@
 <template>
   <div class="ma-3">
-       <!-- photo -->
+    <!-- photo -->
     <v-dialog v-model="dialogPhoto" max-width="500" max-height="300">
       <v-card>
         <v-toolbar dense color="elevation-0">
@@ -78,6 +78,9 @@
                   <v-icon left> mdi-ticket-account </v-icon>
                   {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
                 </span>
+                <v-btn text color="error" class="mr-4" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
               <v-divider></v-divider>
               <v-form v-model="valid" ref="form">
@@ -90,8 +93,8 @@
                           outlined
                           v-model="levelmemberitme.level_name"
                           :rules="rules"
-                         
                           label="ชื่อระดับสมาชิก"
+                          clearable
                         ></v-text-field>
                       </v-col>
                       <v-col cols="6" class="mt-n7">
@@ -99,7 +102,8 @@
                           outlined
                           v-model="levelmemberitme.discount"
                           :rules="rules"
-                           type="number"
+                          clearable
+                          type="number"
                           label="ส่วนลด(%)"
                         ></v-text-field>
                       </v-col>
@@ -108,7 +112,8 @@
                           outlined
                           v-model="levelmemberitme.target_price"
                           :rules="rules"
-                           type="number"
+                          type="number"
+                          clearable
                           label="กำหนดราคาที่ต้องการเปลี่ยนระดับ"
                         ></v-text-field>
                       </v-col>
@@ -117,6 +122,7 @@
                           outlined
                           v-model="levelmemberitme.detail"
                           :rules="rules"
+                          clearable
                           label="รายละเอียดบัตร"
                         ></v-textarea>
                       </v-col>
@@ -468,7 +474,9 @@ export default {
     }
   },
   methods: {
-    
+    reset() {
+      this.$refs.form.reset();
+    },
     //ปรับรูปซ้ายขาว
     flip(x, y) {
       if (this.$refs.cropper.customImageTransforms.rotate % 180 !== 0) {
@@ -549,7 +557,7 @@ export default {
         return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       }
     },
-      // รูป
+    // รูป
     photo(item) {
       this.result.img = null;
       this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
@@ -599,12 +607,22 @@ export default {
     // ยืนยันการลบ
     deleteItemConfirm() {
       this.levelmember.splice(this.editedIndex, 1);
-      this.$axios.$delete("/level-member/" + this.deleteId).then(() => {});
-        this.$swal({
-              type: "success",
-              title: 'ลบระดับสมาชิกเสร็จสมบูรณ์'
-            });
-      this.closeDelete();
+      this.$axios
+        .$delete("/level-member/" + this.deleteId)
+        .then(res => {
+          this.$emit("refresh");
+          this.closeDelete();
+          this.$swal({
+            type: "success",
+            title: res.message
+          });
+        })
+        .catch(e => {
+          this.$swal({
+            type: "error",
+            title: e
+          });
+        });
     },
     // ยกเลิก
     close() {
@@ -658,7 +676,7 @@ export default {
             this.$swal({
               type: "success",
               // title: res.message
-              title: "เพิ่มระดับสมาชิกเสร็จสมบูรณ์"
+              title: res.message
             });
           })
           .catch(e => {
@@ -699,7 +717,7 @@ export default {
             this.$swal({
               type: "success",
               // title: res.message
-              title:"อัปเดตระดับสมาชิกเสร็จสมบูรณ์"
+              title: res.message
             });
           })
           .catch(e => {

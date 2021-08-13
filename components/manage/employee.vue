@@ -132,6 +132,7 @@
                           v-model="employeeitmeadd.password"
                           :rules="requiredRules"
                           label="password"
+                          hide-details="auto"
                           type="password"
                           outlined
                           required
@@ -300,6 +301,9 @@
                   ><v-icon left>mdi-card-account-details-outline </v-icon>
                   แก้ไขข้อมูลพนักงาน</span
                 >
+                <v-btn text color="error" class="mr-4" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
 
               <v-card-text>
@@ -324,6 +328,7 @@
                           disabled
                           label="username"
                           type="username"
+                          clearable
                           append-icon="mdi-account"
                           outlined
                           required
@@ -339,6 +344,7 @@
                           label="ชื่อ"
                           outlined
                           required
+                          clearable
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
@@ -349,6 +355,7 @@
                           label="นามสกุล"
                           append-icon="mdi-rename-box"
                           outlined
+                          clearable
                           required
                           color="#1D1D1D"
                         ></v-text-field>
@@ -367,6 +374,7 @@
                             <v-text-field
                               v-model="employeeitme.birthday"
                               label="วันเกิด"
+                              clearable
                               append-icon="mdi-calendar"
                               readonly
                               v-bind="attrs"
@@ -415,6 +423,7 @@
                           type="number"
                           label="เลขบัตรประจำตัวประชาชน"
                           outlined
+                          clearable
                           required
                           color="#1D1D1D"
                         ></v-text-field>
@@ -423,6 +432,7 @@
                         <v-text-field
                           v-model="employeeitme.tel"
                           maxlength="10"
+                          clearable
                           minlength="10"
                           :rules="numberRules"
                           append-icon="mdi-phone"
@@ -441,6 +451,7 @@
                           :rules="emailRules"
                           outlined
                           required
+                          clearable
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
@@ -450,6 +461,7 @@
                           :rules="rules"
                           append-icon="mdi-map-marker"
                           label="ที่อยู่"
+                          clearable
                           outlined
                           required
                           rows="1"
@@ -499,7 +511,7 @@
           <!-- -----------------------------------------edi-->
 
           <!-- password--------------------------------------------- -->
-          <v-dialog v-model="dialogpass" max-width="400px">
+          <v-dialog v-model="dialogpass" max-width="600px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
@@ -513,14 +525,15 @@
                   <div>
                     <v-row>
                       <v-col cols="12"> </v-col>
-
                       <v-col cols="12" sm="12">
                         <v-text-field
                           v-model="employeeitme.password"
                           :rules="requiredRules"
+                          hide-details="auto"
                           label="PASSWORD"
-                          type="password"
                           outlined
+                          clearable
+                          type="password"
                           required
                           color="#1D1D1D"
                           append-icon="mdi-lock"
@@ -669,9 +682,7 @@
                 <v-btn
                   color="primary"
                   class="ma-2"
-                  @click="
-                    deleteItemConfirm();
-                  "
+                  @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="mx-4">
                     mdi-delete-forever</v-icon
@@ -825,6 +836,7 @@ export default {
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
+    employeeitmeshow: { password: "" },
     employeeitme: {
       _id: "",
       username: "null",
@@ -853,6 +865,7 @@ export default {
       email: "",
       address: ""
     },
+    length: null,
     type: null,
     deleteId: null,
     requiredRules: [
@@ -868,13 +881,12 @@ export default {
     ],
     numberRules: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
-      v => (/\d{9,10}/.test(v) && v.length <= 10) || "เบอร์โทรศัพท์ไม่ถูกต้อง",
+      v => (/\d{10}/.test(v) && v.length <= 10) || "เบอร์โทรศัพท์ไม่ถูกต้อง",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ],
     numberRulesidcard: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
-      v => v.length <= 13 || "ใส่ตัวเลขเกิน13ตัว",
-      v => v.length >= 13 || "ใส่ตัวเลขไม่ถึง13ตัว",
+      v => (/\d{13}/.test(v) && v.length <= 13) || "เลขบัตรไม่ถูกต้อง",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ],
     usernametrue: false,
@@ -929,6 +941,9 @@ export default {
   },
 
   methods: {
+    reset() {
+      this.$refs.form.reset();
+    },
     canelOTP() {
       this.e1 = 1;
       this.telManager = null;
@@ -1093,7 +1108,7 @@ export default {
       }
       //return { category };
     },
- 
+
     editItemPass(item) {
       this.type = "edit";
       this.employeeitme = item;
@@ -1149,12 +1164,22 @@ export default {
     },
     deleteItemConfirm() {
       this.employee.splice(this.editedIndex, 1);
-      this.$axios.$delete("/employee/" + this.deleteId).then(() => {});
-        this.$swal({
-              type: "success",
-              title: 'ดำเนินการสำเร็จ'
-            });
-      this.closeDelete();
+      this.$axios
+        .$delete("/employee/" + this.deleteId)
+        .then(res => {
+          this.$emit("refresh");
+          this.closeDelete();
+          this.$swal({
+            type: "success",
+            title: res.message
+          });
+        })
+        .catch(e => {
+          this.$swal({
+            type: "error",
+            title: e
+          });
+        });
     },
     close() {
       this.dialog = false;
@@ -1254,26 +1279,35 @@ export default {
     },
 
     save() {
-      this.$refs.form.validate();
       if (this.type === "add") {
+        this.$refs.form.validate();
         this.loading = true;
-
-        this.$emit("addEmployee", { ...this.employeeitmeadd });
-         this.$swal({
+        this.$axios
+          .$post("/employee/", this.employeeitmeadd)
+          .then(res => {
+            //  console.log(res.message);
+            this.$emit("refresh");
+            this.closeadd();
+            this.$swal.fire({
               type: "success",
-              title: 'ดำเนินการสำเร็จ'
+              title: res.message
             });
-        this.closeadd();
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
       } else {
-        //console.log(this.employeeitme);
         this.loading = true;
         this.$axios
           .$put("/employee/" + this.employeeitme._id, this.employeeitme)
-          .then(() => {
+          .then(res => {
             this.$emit("refresh");
-              this.$swal({
+            this.$swal({
               type: "success",
-              title: 'ดำเนินการสำเร็จ'
+              title: res.message
             });
             this.closePass();
             this.close();

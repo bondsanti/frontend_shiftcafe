@@ -52,133 +52,142 @@
       <v-dialog v-model="dialog" max-width="700px" persistent>
         <v-card>
           <v-card-title>
-            <span class="text-h5"
-              ><v-icon left> mdi-ticket-percent-outline </v-icon>
-              {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
-            >
+            <span class="text-h5">
+              <v-icon left> mdi-ticket-percent-outline </v-icon>
+              {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
+            </span>
           </v-card-title>
+          <v-form v-model="valid" ref="form">
+            <v-card-text>
+              <div>
+                <v-row>
+                  <v-col cols="12"> </v-col>
+                  <v-col cols="12" class="mt-n7">
+                    <v-text-field
+                      outlined
+                      label="ชื่อสิ้นค้า"
+                      v-model="cate.cate_name"
+                      :rules="rules"
+                      clearable
+                      required
+                      color="#1D1D1D"
+                    ></v-text-field>
+                  </v-col>
 
-          <v-card-text>
-            <div>
-              <v-row>
-                <v-col cols="12"> </v-col>
+                  <v-col cols="12" class="mt-n7">
+                    <h3 v-if="image.src" class="text-center ml-12  mt-3 mb-3">
+                      รูปภาพประกอบ
+                    </h3>
 
-                <v-col cols="12" class="mt-n7">
-                  <v-text-field
-                    outlined
-                    label="ชื่อสิ้นค้า"
-                    v-model="cate.cate_name"
-                    required
-                    color="#1D1D1D"
-                  ></v-text-field>
-                </v-col>
+                    <example-wrapper
+                      class="getting-result-second-example"
+                      noBoder
+                      v-if="image.src"
+                    >
+                      <cropper
+                        class="cropper"
+                        ref="cropper"
+                        :transitions="true"
+                        image-restriction="fit-area"
+                        :default-size="defaultSize"
+                        :src="image.src"
+                      />
+                      <vertical-buttons>
+                        <square-button
+                          title="Flip Horizontal"
+                          @click="flip(true, false)"
+                        >
+                          <img
+                            :src="
+                              require('../../assets/icons/flip-horizontal.svg')
+                            "
+                          />
+                        </square-button>
+                        <square-button
+                          title="Flip Vertical"
+                          @click="flip(false, true)"
+                        >
+                          <img
+                            :src="
+                              require('../../assets/icons/flip-vertical.svg')
+                            "
+                          />
+                        </square-button>
+                        <square-button
+                          title="Rotate Clockwise"
+                          @click="rotate(90)"
+                        >
+                          <img
+                            :src="
+                              require('../../assets/icons/rotate-clockwise.svg')
+                            "
+                          />
+                        </square-button>
+                        <square-button
+                          title="Rotate Counter-Clockwise"
+                          @click="rotate(-90)"
+                        >
+                          <img
+                            :src="
+                              require('../../assets/icons/rotate-clockwise.svg')
+                            "
+                          />
+                        </square-button>
+                      </vertical-buttons>
+                      <results
+                        :coordinates="result.coordinates"
+                        :image="result.img"
+                      />
 
-                <v-col cols="12" class="mt-n7">
-                  <h3 v-if="image.src" class="text-center ml-12  mt-3 mb-3">
-                    รูปภาพประกอบ
-                  </h3>
-
-                  <example-wrapper
-                    class="getting-result-second-example"
-                    noBoder
-                    v-if="image.src"
-                  >
-                    <cropper
-                      class="cropper"
-                      ref="cropper"
-                      :transitions="true"
-                      image-restriction="fit-area"
-                      :default-size="defaultSize"
-                      :src="image.src"
-                    />
-                    <vertical-buttons>
-                      <square-button
-                        title="Flip Horizontal"
-                        @click="flip(true, false)"
-                      >
-                        <img
-                          :src="
-                            require('../../assets/icons/flip-horizontal.svg')
-                          "
-                        />
-                      </square-button>
-                      <square-button
-                        title="Flip Vertical"
-                        @click="flip(false, true)"
-                      >
-                        <img
-                          :src="require('../../assets/icons/flip-vertical.svg')"
-                        />
-                      </square-button>
-                      <square-button
-                        title="Rotate Clockwise"
-                        @click="rotate(90)"
-                      >
-                        <img
-                          :src="
-                            require('../../assets/icons/rotate-clockwise.svg')
-                          "
-                        />
-                      </square-button>
-                      <square-button
-                        title="Rotate Counter-Clockwise"
-                        @click="rotate(-90)"
-                      >
-                        <img
-                          :src="
-                            require('../../assets/icons/rotate-clockwise.svg')
-                          "
-                        />
-                      </square-button>
-                    </vertical-buttons>
-                    <results
-                      :coordinates="result.coordinates"
-                      :image="result.img"
-                    />
-
-                    <!-- <div class="crop-button" @click="crop">Crop Image</div> -->
-                    <div class="crop-button">
-                      <v-btn
-                        class="mx-1 white--text"
-                        @click="crop"
-                        color="green"
-                        >ดูรูปตัวอย่าง</v-btn
-                      >
-                      <v-btn class="mx-1 white--text" @click="crop" color="blue"
-                        >บันทึกรูปที่หมุน</v-btn
-                      >
-                      <v-btn
-                        class="mx-1 white--text"
-                        color="orange"
-                        @click="croppedFinish"
-                        >ตัดรูปภาพ</v-btn
-                      >
-                    </div>
-                  </example-wrapper>
-                  <v-row>
-                    <v-col> </v-col>
-                    <v-col>
-                      <v-btn
-                        @click="$refs.file.click()"
-                        class="upload-example__button mt-3"
-                      >
-                        <input
-                          type="file"
-                          ref="file"
-                          accept="image/*"
-                          required
-                          @change="loadImage($event)"
-                        />
-                        เลือกรูปภาพ
-                      </v-btn>
-                    </v-col>
-                    <v-col> </v-col>
-                  </v-row>
-                </v-col>
-              </v-row>
-            </div>
-          </v-card-text>
-
+                      <!-- <div class="crop-button" @click="crop">Crop Image</div> -->
+                      <div class="crop-button">
+                        <v-btn
+                          class="mx-1 white--text"
+                          @click="crop"
+                          color="green"
+                          >ดูรูปตัวอย่าง</v-btn
+                        >
+                        <v-btn
+                          class="mx-1 white--text"
+                          @click="crop"
+                          color="blue"
+                          >บันทึกรูปที่หมุน</v-btn
+                        >
+                        <v-btn
+                          class="mx-1 white--text"
+                          color="orange"
+                          @click="croppedFinish"
+                          >ตัดรูปภาพ</v-btn
+                        >
+                      </div>
+                    </example-wrapper>
+                    <v-row>
+                      <v-col> </v-col>
+                      <v-col>
+                        <v-btn
+                          :rules="rules"
+                          @click="$refs.file.click()"
+                          class="upload-example__button mt-3 primary--text "
+                          style="color: #fff;border-radius: 0.25rem; padding: 0.5rem 1rem; border: none; outline: none;"
+                        >
+                          <input
+                            :rules="rules"
+                            type="file"
+                            ref="file"
+                            accept="image/*"
+                            required
+                            @change="loadImage($event)"
+                          />
+                          เลือกรูปภาพ
+                        </v-btn>
+                      </v-col>
+                      <v-col> </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </div>
+            </v-card-text>
+          </v-form>
           <v-card-actions>
             <v-btn class="ma-1" color="primary" dark @click="close">
               <v-icon aria-hidden="false" class="mx-2">
@@ -187,7 +196,7 @@
               ยกเลิก
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn class="ma-1" color="info" @click="save()">
+            <v-btn class="ma-1" color="info" :disabled="!valid" @click="save()">
               <v-icon aria-hidden="false" class="mx-2">
                 mdi-ticket-percent-outline
               </v-icon>
@@ -399,7 +408,9 @@ export default {
       coordinates: null,
       img: null
     },
-    // รีเซ็ต
+    //ค่า
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    valid: true,
 
     // dialog all
     dialog: false,
@@ -551,7 +562,9 @@ export default {
     photo(item) {
       this.result.img = null;
       this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
-      this.cate = { img: item.img };
+      this.cate = {
+        img: item.img
+      };
       this.dialogPhoto = true;
     },
     // แก้ไข
@@ -588,13 +601,22 @@ export default {
     // ยืนยันการลบ
     deleteItemConfirm() {
       this.category.splice(this.editedIndex, 1);
-      this.$axios.$delete("/category/" + this.deleteId).then(() => {});
-      this.closeDelete();
-       this.$swal({
-              type: "success",
-              title: 'ดำเนินการสำเร็จ'
-            });
-      this.$emit("refresh");
+      this.$axios
+        .$delete("/category/" + this.deleteId)
+        .then(res => {
+          this.$emit("refresh");
+          this.closeDelete();
+          this.$swal({
+            type: "success",
+            title: res.message
+          });
+        })
+        .catch(e => {
+          this.$swal({
+            type: "error",
+            title: e
+          });
+        });
     },
     // ยกเลิก
     close() {
@@ -619,6 +641,7 @@ export default {
     // บันทึก
     save() {
       if (this.type === "add") {
+        this.$refs.form.validate();
         this.loading = true;
         // formdata ส่งข้อมูลฟรอม
         let formdata = new FormData();
@@ -640,8 +663,7 @@ export default {
             this.preImg = null;
             this.$swal({
               type: "success",
-              title: "ดำเนินการสำเร็จ"
-              // title: res.message + " ดำเนินการสำเร็จ"
+              title: res.message
             });
           })
           .catch(e => {
@@ -674,7 +696,7 @@ export default {
             this.preImg = null;
             this.$swal({
               type: "success",
-              title:"ดำเนินการสำเร็จ"
+              title: res.message
               // title: res.message
             });
           })
@@ -691,7 +713,8 @@ export default {
   props: ["category"]
 };
 </script>
-<style scoped lang="scss">
+
+<style lang="scss" scoped>
 .cropper {
   max-height: 500px;
   background: #ddd;
@@ -702,15 +725,18 @@ export default {
   margin-top: 20px;
   margin-bottom: 20px;
   user-select: none;
+
   &__cropper {
     border: solid 1px #eee;
     min-height: 300px;
     max-height: 500px;
     width: 100%;
   }
+
   &__cropper-wrapper {
     position: relative;
   }
+
   &__reset-button {
     position: absolute;
     right: 20px;
@@ -723,15 +749,18 @@ export default {
     width: 42px;
     background: rgba(#3fb37f, 0.7);
     transition: background 0.5s;
+
     &:hover {
       background: #3fb37f;
     }
   }
+
   &__buttons-wrapper {
     display: flex;
     justify-content: center;
     margin-top: 17px;
   }
+
   &__button {
     display: flex;
     border: none;
@@ -743,14 +772,17 @@ export default {
     cursor: pointer;
     transition: background 0.5s;
     margin: 0 16px;
+
     &:hover,
     &:focus {
       background: #38d890;
     }
+
     input {
       display: none;
     }
   }
+
   &__file-type {
     position: absolute;
     top: 20px;
@@ -763,8 +795,10 @@ export default {
     color: white;
   }
 }
+
 .getting-result-second-example {
   position: relative;
+
   .crop-button {
     display: flex;
     justify-content: center;

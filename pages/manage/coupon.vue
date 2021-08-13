@@ -3,7 +3,6 @@
     :coupon="coupon"
     :employee="employee"
     :user="user"
-    @addCoupon="addCoupon"
     @refresh="refresh"
   />
 </template>
@@ -48,12 +47,8 @@ export default {
     coupon
   },
   methods: {
-    async addCoupon(dataCoupon) {
-      await this.$axios.$post("/coupon", dataCoupon);
+    async refresh() {
       this.coupon = await this.$axios.$get("/coupon");
-    },
-     async refresh() {
-      this.customer = await this.$axios.$get("/coupon");
     }
   },
   data: () => ({

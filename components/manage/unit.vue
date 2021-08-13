@@ -70,6 +70,8 @@
                           v-model="units.u_name"
                           :rules="rules"
                           label="ชื่อ"
+                          clearable
+                          
                         ></v-text-field>
                       </v-col>
                     </v-row>

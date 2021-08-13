@@ -77,10 +77,13 @@
         </template>
         <template v-slot:top>
           <!-- add -->
-          <v-dialog v-model="dialogadd" max-width="700px">
+          <v-dialog v-model="dialogadd" max-width="800px">
             <v-card>
               <v-card-title>
-                <v-icon left> mdi-account-plus </v-icon> ลงทะเบียนลูกค้า
+                <span
+                  ><v-icon left> mdi-account-plus </v-icon>
+                  ลงทะเบียนลูกค้า</span
+                >
               </v-card-title>
               <v-divider class="mb-3"></v-divider>
               <v-card-text> </v-card-text>
@@ -251,6 +254,7 @@
                   <v-icon left> mdi-account-plus </v-icon>
                   แก้ไขข้อมูลลูกค้า
                 </span>
+                
               </v-card-title>
               <v-divider class="mb-3"></v-divider>
               <v-card-text> </v-card-text>
@@ -419,12 +423,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
 
-                <v-btn
-                  @click="closeDelete"
-                  class="ma-1"
-                  color="info"
-                  plain
-                >
+                <v-btn @click="closeDelete" class="ma-1" color="info" plain>
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -435,9 +434,7 @@
                   class="ma-1"
                   color="error"
                   plain
-                  @click="
-                    deleteItemConfirm();
-                  "
+                  @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-delete-forever
@@ -548,21 +545,25 @@ export default {
       {
         text: "คำนำหน้า",
         align: "start",
+        sortable: false,
         value: "pname"
       },
       {
         text: "ชื่อ",
         align: "start",
+        sortable: false,
         value: "fname"
       },
       {
         text: "นามสกุล",
         align: "start",
+        sortable: false,
         value: "lname"
       },
       {
         text: "ระดับ",
         align: "start",
+        sortable: false,
         value: "ref_level_id.level_name"
       },
       // {
@@ -619,7 +620,7 @@ export default {
         "โปรใส่อีเมลให้ถูกต้อง"
     ],
     numberRules: [
-      v => (/\d{9,10}/.test(v) && v.length <= 10) || "เบอร์โทรศัพท์ไม่ถูกต้อง",
+      v => (/\d{10}/.test(v) && v.length <= 10) || "เบอร์โทรศัพท์ไม่ถูกต้อง",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ]
   }),
@@ -654,6 +655,9 @@ export default {
       var strdate = moment(date).add(543, "years");
       return moment(strdate).format("DD MMMM YYYY ");
     },
+    reset() {
+      this.$refs.form.reset();
+    },
     async check() {
       this.$refs.form.validate();
       const cus = await this.$axios.$get(
@@ -662,9 +666,17 @@ export default {
       if (cus.length > 0) {
         this.telErr = true;
         this.teltrue = false;
+        this.$swal({
+          type: "error",
+          title: "ไม่สามารถใช้งานได้"
+        });
       } else {
         this.telErr = false;
         this.teltrue = true;
+        this.$swal({
+          type: "success",
+          title: "ใช้งานได้"
+        });
       }
       //return { category };
     },
@@ -813,7 +825,7 @@ export default {
         });
         this.$swal({
           type: "success",
-          title: "ดำเนินการสำเร็จ"
+          title: res.message
         });
         this.closeadd();
       } else {

@@ -37,7 +37,8 @@ export default {
   },
   methods: {
     async refresh() {
-      this.unit = await this.$axios.$get("/unit");
+      this.unit = await this.$axios
+      .$get("/unit");
     }
   },
   data: () => ({

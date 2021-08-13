@@ -6,7 +6,8 @@
         <v-form>
           <v-card-title>
             <span class="text-h">
-              <v-icon left> mdi-account-search</v-icon>
+              <v-icon left> mdi-ticket</v-icon>ชื่อคูปอง
+              {{itemBy.codename}}
             </span>
           </v-card-title>
           <v-divider class="mb-3"></v-divider>
@@ -20,6 +21,13 @@
               </v-col>
             </v-row>
           </v-card-text>
+          <v-divider class="mb-3"></v-divider>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="dialogView = false">
+              ปิด
+            </v-btn>
+          </v-card-actions>
         </v-form>
       </v-card>
     </v-dialog>
@@ -113,7 +121,7 @@
                           item-value="_id"
                           v-model="couponitem.ref_emp_id_by"
                           :items="useronline.flat()"
-                          :rules="[v => !!v || 'Item is required']"
+                          :rules="[v => !!v || 'โปรดกรอกข้อมูล']"
                         ></v-select>
                       </v-col>
                       <v-col cols="12" md="6" sm="6">
@@ -125,7 +133,7 @@
                           item-value="_id"
                           :items="Empname.flat()"
                           v-model="couponitem.ref_emp_id"
-                          :rules="[v => !!v || 'Item is required']"
+                          :rules="[v => !!v || 'โปรดกรอกข้อมูล']"
                         ></v-select>
                       </v-col>
 
@@ -159,7 +167,7 @@
                           v-model="couponitem.discount"
                           oninput="validity.valid||(value='');"
                           type="number"
-                          :rules="[v => !!v || 'Item is required']"
+                          :rules="[v => !!v || 'โปรดกรอกข้อมูล']"
                         ></v-select>
                       </v-col>
 
@@ -212,6 +220,9 @@
                   <v-icon left> mdi-ticket-percent-outline </v-icon>
                   แก้ไขคูปอง
                 </span>
+                <v-btn text color="error" class="mr-4" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
 
               <v-card-text>
@@ -632,6 +643,7 @@ export default {
         sortable: false
       }
     ],
+    itemBy: {},
     numberRules: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
@@ -670,6 +682,9 @@ export default {
     }
   },
   methods: {
+    reset() {
+      this.$refs.form.reset();
+    },
     async check() {
       const cus = await this.$axios.$get("/coupon/" + this.couponitem.codename);
       if (cus.length > 0) {
@@ -681,6 +696,7 @@ export default {
       }
     },
     Detail(item) {
+       this.codename = item.codename;
       this.itemBy = item;
       this.detailArr = [
         {
@@ -736,7 +752,6 @@ export default {
     editItem(item) {
       this.type = "edit";
       this.couponitem = item;
-
       this.dialogedit = true;
     },
     deleteItem(item) {
@@ -787,14 +802,22 @@ export default {
       if (this.type === "add") {
         this.$refs.form.validate();
         this.loading = true;
-        this.$emit("addCoupon", {
-          ...this.couponitem
-        });
-        this.$swal({
-          type: "success",
-          title: "ดำเนินการสำเร็จ"
-        });
-        this.close();
+        this.$axios
+          .$post("/coupon/", this.couponitem)
+          .then(res => {
+            this.$emit("refresh");
+            this.close();
+            this.$swal.fire({
+              type: "success",
+              title: res.message
+            });
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
       } else {
         this.loading = true;
         this.$axios

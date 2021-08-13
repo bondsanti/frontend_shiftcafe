@@ -54,6 +54,9 @@
                     <v-icon left>mdi-card-account-details-outline </v-icon>
                     จัดการพอยท์ เพิ่ม/ลด
                   </span>
+                  <v-btn text color="error" class="mr-4" @click="reset">
+                    รีเซ็ตแบบฟอร์ม
+                  </v-btn>
                 </v-card-title>
 
                 <v-card-text>
@@ -70,6 +73,7 @@
                           :items="customers2.flat()"
                           item-value="_id"
                           item-text="name"
+                          
                         ></v-autocomplete>
                       </v-col>
 
@@ -80,6 +84,7 @@
                           min="1"
                           outlined
                           required
+                          clearable
                           color="#1D1D1D"
                           type="number"
                           :rules="[v => v > 0 || '0 ไม่ได้น้า ต้อง 1 ขึ้นเน้อ']"
@@ -89,6 +94,7 @@
                         <v-select
                           v-model="status"
                           outlined
+                          clearable
                           :items="items"
                           label="Standard"
                         ></v-select>
@@ -130,7 +136,7 @@
           {{ index + 1 }}
         </template>
         <template v-slot:[`item.ref_cus_id`]="{ item }">
-         <v-icon>mdi-account</v-icon>{{ item.ref_cus_id }}
+          <v-icon>mdi-account</v-icon>{{ item.ref_cus_id }}
         </template>
         <template v-slot:[`item.point`]="{ item }">
           <v-icon class="ma-2 ml-2" color="primary">
@@ -223,6 +229,9 @@ export default {
   },
 
   methods: {
+    reset() {
+      this.$refs.form.reset();
+    },
     getColorstatus(status) {
       if (status === "เพิ่ม") return "green";
       else return "red";
@@ -249,16 +258,16 @@ export default {
           this.$emit("refreshPoint");
           //console.log(res);
           this.$swal({
-              type: "success",
-              title: res.message
-            });
+            type: "success",
+            title: res.message
+          });
           this.dialog = false;
         })
         .catch(e => {
           this.$swal({
-              type: "error",
-              title: e
-            });
+            type: "error",
+            title: e
+          });
         });
     },
     improveCus() {

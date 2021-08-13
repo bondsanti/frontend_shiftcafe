@@ -112,7 +112,7 @@
     </v-overlay>
     <!-- view -->
     <!-- add and edit -->
-    <v-dialog v-model="dialog" max-width="1000px" persistent>
+    <v-dialog v-model="dialog" max-width="auto"  persistent>
       <v-card
         style="backdrop-filter:blur(5px); background-color:rgba(255,255,255,0.9); border-radius: 0.25rem; "
       >
@@ -122,14 +122,16 @@
             {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
           </h2>
         </v-card-title>
-
+     
         <v-card-text>
+             <v-form v-model="valid" ref="form">
           <div>
             <v-row>
               <v-col cols="12" sm="6">
                 <v-text-field
                   outlined
                   label="ชื่อบัญชี"
+                  :rules="rules"
                   v-model="bankitem.bank_name"
                   required
                   append-icon="mdi-credit-card"
@@ -140,8 +142,10 @@
                 <v-text-field
                   outlined
                   label="เลขบัญชี"
+                  :rules="banknumber"
                   v-model="bankitem.bank_number"
                   required
+                  type="number"
                   append-icon="mdi-credit-card-plus-outline"
                 ></v-text-field>
               </v-col>
@@ -266,8 +270,9 @@
               </v-row>
             </v-row>
           </div>
+          </v-form>
         </v-card-text>
-
+ 
         <v-card-actions>
           <v-btn
             class="ma-1"
@@ -290,6 +295,7 @@
           <v-btn
             class="ma-1"
             color="info2"
+            :disabled="!valid"
             @click="
               save();
               overlay = false;
@@ -297,7 +303,7 @@
             style="color: #fff;border-radius: 0.25rem; padding: 0.5rem 1rem; border: none; outline: none;"
           >
             <v-icon aria-hidden="false" class="mx-2">
-              mdi-ticket-percent-outline
+              mdi-ticket
             </v-icon>
             {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
           </v-btn>
@@ -497,6 +503,13 @@ export default {
   },
   data() {
     return {
+       rules: [value => !!value || "โปรดกรอกธนาคาร"],
+      valid: true,
+            banknumber: [
+      v => !!v || "เขาเลขบัญชี 10 หลัก แต่มีบ้างธนาคารมี12,14,15หลัก",
+      v => (/\d{10}/.test(v) && v.length >= 10) || "ใส่ตัวเลขเกิน10ตัว",
+      v => (/\d{10}/.test(v) && v.length <= 15) || "ใส่ตัวเลขไม่ถึง15ตัว",
+    ],
       //แคป
       result: {
         coordinates: null,
@@ -537,6 +550,7 @@ export default {
         img:"",
         img_cover: ""
       },
+ 
       itemBy: {},
       headers: [
         {
@@ -724,14 +738,10 @@ export default {
       this.bank.splice(this.editedIndex, 1);
       this.$axios
         .$delete("/bank/" + this.deleteId)
-        .then(() => {
+        .then((res) => {
           this.$swal({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 1000,
             type: "success",
-            text: "ดำเนินการสำเร็จ"
+            text: res.message
           });
           this.closeDelete();
         })
@@ -792,6 +802,7 @@ export default {
     },
     save() {
       if (this.type === "add") {
+         this.$refs.form.validate();
         this.loading = true;
         let formdata = new FormData();
         formdata.append("bank_name", this.bankitem.bank_name);
@@ -844,7 +855,7 @@ export default {
         console.log(formdata);
         this.$axios
           .$put("/bank/" + this.bankitem._id, formdata)
-          .then(() => {
+          .then((res) => {
             this.$emit("refresh");
             //this.$nuxt.refresh()
             this.close();
@@ -860,9 +871,16 @@ export default {
             this.result2.img_cover = null;
             this.preImg = null;
             this.preImg2 = null;
+             this.$swal({
+            type: "success",
+            title: res.message
+          });
           })
           .catch(e => {
-            console.log(e);
+              this.$swal({
+            type: "error",
+            title: e
+          });
           });
       }
     }

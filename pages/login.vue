@@ -103,12 +103,13 @@ export default {
   data() {
     return {
       showPass: false,
-      rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+      
       username: "",
       password: "",
       snackbar: false,
       timeout: 2000,
       error: null,
+      rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
       valid: true
     };
   },

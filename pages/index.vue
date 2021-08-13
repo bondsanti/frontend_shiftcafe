@@ -8,7 +8,7 @@
         {{ $store.getters["setting"][0].head_title }}
       </span>
       <h2 class="subtitle"></h2>
-      <NuxtLink to="/">กลับไปหน้าหลัก</NuxtLink>
+      <v-btn outlined to="/">กลับไปหน้าหลัก</v-btn>
     </div>
   </section>
 </template>

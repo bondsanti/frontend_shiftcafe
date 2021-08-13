@@ -57,7 +57,9 @@
               >
             </v-list-item-title>
             <v-list-item-subtitle>
-              {{ order.topping.map(t => t.name) }}
+              <p class="text-truncate cursor" @click="editTopping(i)">
+                {{ convertArrayToString(order.topping) }}
+              </p>
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -102,6 +104,35 @@
         >
       </v-col>
     </div>
+    <v-dialog v-model="dialogTopping" width="500">
+      <v-card>
+        <v-card-title class="text-h5 grey lighten-2">
+          เลือก TOPPING {{ productTopping.name }}
+        </v-card-title>
+
+        <v-sheet class="pl-7">
+          <p>{{ selected }}</p>
+          <v-checkbox
+            @click="thinkPriceTopping"
+            v-model="selected"
+            v-for="top in productTopping.topping"
+            :key="top._id"
+            :label="top.name"
+            :value="top"
+          ></v-checkbox>
+        </v-sheet>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <h1>ราคา {{ priceMergeTopping }} บาท</h1>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="afterEditTopping">
+            ตกลง
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-col>
 </template>
 <script>
@@ -115,9 +146,87 @@ export default {
     checkStaff: false,
     type_order: 1,
     idForEditOrder: null,
-    radioGroup: []
+    productTopping: {
+      name: "",
+      topping: [],
+      price: 0,
+      idInOrder: null
+    },
+    dialogTopping: false,
+    selected: [],
+    priceMergeTopping: 0
   }),
   methods: {
+    editTopping(i) {
+      const product = this.products.filter(
+        pro => pro.product_name === this.orders[i].name
+      );
+      //console.log(product);
+      this.selected = this.orders[i].topping;
+      this.productTopping.name = product[0].product_name;
+      this.productTopping.topping = product[0].topping;
+      this.productTopping.price = product[0].price;
+      this.productTopping.idInOrder = i;
+      this.thinkPriceTopping();
+      this.dialogTopping = true;
+    },
+    thinkPriceTopping() {
+      this.priceMergeTopping = this.productTopping.price;
+      let toppingPrice = 0;
+      this.selected.map(s => {
+        toppingPrice += s.price;
+      });
+      this.priceMergeTopping =
+        parseInt(this.priceMergeTopping) + parseInt(toppingPrice);
+    },
+    afterEditTopping() {
+      const k = this.productTopping.idInOrder;
+      const newOrderTopping = this.selected;
+
+      for (let i in this.orders) {
+        let newTopping = newOrderTopping.map(t => t._id);
+        console.log(newTopping + "1");
+        let oldTopping = this.orders[i].topping.map(t => t._id);
+        console.log(oldTopping + "2");
+        const res = newTopping.map(t =>
+          //console.log(t);
+          oldTopping.includes(t)
+        );
+        console.log(res + "3");
+        let check = value => value === true;
+
+        if (this.orders[i].name === this.orders[k].name) {
+          if (this.orders[i].topping.length === newOrderTopping.length) {
+            if (res.every(check)) {
+              this.orders[k].qty =
+                parseInt(this.orders[k].qty) + parseInt(this.orders[i].qty);
+              // this.orders[k].price =
+              //   parseInt(this.orders[k].price) + parseInt(this.orders[i].price);
+              this.orders[k].price =
+                this.orders[k].qty * this.priceMergeTopping;
+              this.orders[k].topping = this.selected;
+              this.orders.splice(i, 1);
+              setTimeout(this.totalPrice, 300);
+              //this.dialogTopping = false;
+              //console.log("same same");
+              //return;
+            }
+          }
+        }
+      }
+      // this.orders[k].topping = this.selected;
+      // console.log(this.orders[k] + "4");
+      // this.orders[k].price = this.orders[k].qty * this.priceMergeTopping;
+      setTimeout(this.totalPrice, 300);
+      this.dialogTopping = false;
+    },
+    convertArrayToString(topping) {
+      let string = "";
+      topping.map(t => {
+        string = `${string === "" ? "" : string + ","}  ${t.name}`;
+      });
+      return string;
+    },
     openDialog() {
       const confirmObj = {
         orders: this.orders,
@@ -185,22 +294,39 @@ export default {
         }
       }
     },
-    addOrder(i) {
+    addOrder(i, topping) {
+      let toppingPrice = 0;
+      topping.map(t => (toppingPrice += t.price));
       const orderObj = {
         ref_pro_id: this.product2[i]._id,
         name: this.product2[i].product_name,
         qty: 1,
-        price: this.product2[i].price,
-        topping: this.product2[i].topping
+        price: parseInt(this.product2[i].price) + parseInt(toppingPrice),
+        topping: topping
       };
 
       for (let i in this.orders) {
+        let newTopping = orderObj.topping.map(t => t._id);
+        let oldTopping = this.orders[i].topping.map(t => t._id);
+        const res = newTopping.map(t =>
+          //console.log(t);
+          oldTopping.includes(t)
+        );
+        let check = value => value === true;
+        // console.log(oldTopping);
+        // console.log(newTopping);
+        // console.log(res);
+        // console.log(res.every(check));
         if (this.orders[i].name === orderObj.name) {
-          this.orders[i].qty++;
-          this.orders[i].price =
-            parseInt(this.orders[i].price) + parseInt(orderObj.price);
-          setTimeout(this.totalPrice, 300);
-          return;
+          if (this.orders[i].topping.length === orderObj.topping.length) {
+            if (res.every(check)) {
+              this.orders[i].qty++;
+              this.orders[i].price =
+                parseInt(this.orders[i].price) + parseInt(orderObj.price);
+              setTimeout(this.totalPrice, 300);
+              return;
+            }
+          }
         }
       }
       this.orders.push(orderObj);
@@ -214,9 +340,14 @@ export default {
       const product = this.products.filter(
         pro => pro.product_name === this.orders[i].name
       );
+      let toppingPrice = 0;
+      this.orders[i].topping.map(t => (toppingPrice += t.price));
       this.orders[i].qty++;
+      //this.orders[i].price =
       this.orders[i].price =
-        parseInt(this.orders[i].price) + parseInt(product[0].price);
+        parseInt(this.orders[i].price) +
+        parseInt(product[0].price) +
+        parseInt(toppingPrice);
       setTimeout(this.totalPrice, 300);
     },
     deleteQty(i) {
@@ -224,9 +355,13 @@ export default {
         pro => pro.product_name === this.orders[i].name
       );
       if (this.orders[i].qty !== 1) {
+        let toppingPrice = 0;
+        this.orders[i].topping.map(t => (toppingPrice += t.price));
         this.orders[i].qty--;
         this.orders[i].price =
-          parseInt(this.orders[i].price) - parseInt(product[0].price);
+          parseInt(this.orders[i].price) -
+          parseInt(product[0].price) -
+          parseInt(toppingPrice);
       }
       setTimeout(this.totalPrice, 300);
     },

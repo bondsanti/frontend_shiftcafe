@@ -238,12 +238,13 @@ export default {
     //   this.bill_name = null;
     //   this.orderDl = false;
     // },
-    addOrder(i, topping) {
-      //this.$refs.listChild.addOrder(i);
-      console.log(`index : ${i} `);
+    addOrder(i) {
+      this.$refs.listChild.addOrder(i, this.topping);
+      //console.log(`index : ${i} `);
     },
     addTopping(topping) {
-      console.log(` topping : ${topping}`);
+      this.topping = topping;
+      //console.log(` topping : ${topping}`);
     },
     searchProduct() {
       this.product2 = [];

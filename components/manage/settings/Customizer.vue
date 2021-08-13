@@ -523,7 +523,7 @@ export default {
       console.log(formdata);
       this.$axios
         .$put("/setting/" + this.settingitem._id, formdata)
-        .then(() => {
+        .then(res => {
           this.$emit("refresh");
           //this.$nuxt.refresh()
           this.close();
@@ -542,9 +542,16 @@ export default {
           this.image.src = null;
           this.result.img = null;
           this.preImg = null;
+          this.$swal.fire({
+            type: "success",
+            title: res.message
+          });
         })
         .catch(e => {
-          console.log(e);
+          this.$swal({
+            type: "error",
+            title: e
+          });
         });
     }
   }

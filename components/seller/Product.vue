@@ -46,8 +46,8 @@
         <v-card-actions>
           <h1>ราคา {{ priceMergeTopping }} บาท</h1>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="addOrder">
-            I accept
+          <v-btn color="primary" @click="addOrder">
+            ตกลง
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -71,6 +71,8 @@ export default {
     addOrder() {
       this.$emit("addTopping", this.selected);
       this.$emit("addOrder");
+      this.dialogTopping = false;
+      this.selected = [];
     },
     thinkPriceTopping() {
       this.priceMergeTopping = this.product.price;

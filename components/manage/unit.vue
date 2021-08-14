@@ -7,7 +7,8 @@
             <v-btn
               color="primary"
               dark
-              class="mr-5"
+              class="mr-5 ma-1 rounded-xl"
+              elevation="24"
               v-bind="attrs"
               v-on="on"
               @click="addItem"
@@ -71,7 +72,6 @@
                           :rules="rules"
                           label="ชื่อ"
                           clearable
-                          
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -79,7 +79,13 @@
                 </v-card-text>
               </v-form>
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
+                <v-btn
+                  class="mr-1 rounded-xl"
+                  elevation="24"
+                  color="primary"
+                  dark
+                  @click="close"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -87,7 +93,8 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="ma-1"
+                  class="mr-1 rounded-xl"
+                  elevation="24"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -128,15 +135,21 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr2" small color="warning" @click="editItem(item)">
+          <v-btn
+            class="mr-1 rounded-xl"
+            elevation="24"
+            small
+            color="warning"
+            @click="editItem(item)"
+          >
             <v-icon aria-hidden="false" class="mx-2">
               mdi-pencil-plus
             </v-icon>
             แก้ไข
           </v-btn>
           <v-btn
-            rounded-lx
-            class="mr-2"
+            class="mr-1 rounded-xl"
+            elevation="24"
             color="error"
             small
             @click="deleteItem(item)"
@@ -262,7 +275,7 @@ export default {
         this.$axios
           .$post("/unit/", this.units)
           .then(res => {
-         //  console.log(res.message);
+            //  console.log(res.message);
             this.$emit("refresh");
             this.close();
             this.$swal.fire({

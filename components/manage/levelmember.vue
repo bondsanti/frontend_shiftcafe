@@ -1,5 +1,5 @@
 <template>
-  <div class="ma-3">
+  <div class="ma-3 ">
     <!-- photo -->
     <v-dialog v-model="dialogPhoto" max-width="500" max-height="300">
       <v-card>
@@ -19,14 +19,19 @@
       </v-card>
     </v-dialog>
     <!-- // -->
-    <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
+    <v-card
+      class="mx-auto mt-6  py-3 rounded-xl"
+      elevaation="5"
+      justify-centaer
+    >
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               color="primary"
               dark
-              class="mr-5"
+              class="mr-5 rounded-xl"
+              elevation="15"
               v-bind="attrs"
               v-on="on"
               @click="addItem"
@@ -72,7 +77,7 @@
         </template>
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="800px">
-            <v-card>
+            <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5">
                   <v-icon left> mdi-ticket-account </v-icon>
@@ -200,19 +205,22 @@
                           <!-- <div class="crop-button" @click="crop">Crop Image</div> -->
                           <div class="crop-button">
                             <v-btn
-                              class="mx-1 white--text"
+                              class="mx-1 white--text  rounded-xl"
+                              elevation="15"
                               @click="crop"
                               color="green"
                               >ดูรูปตัวอย่าง</v-btn
                             >
                             <v-btn
-                              class="mx-1 white--text"
+                              class="mx-1 white--text  rounded-xl"
+                              elevation="15"
                               @click="crop"
                               color="blue"
                               >บันทึกรูปที่หมุน</v-btn
                             >
                             <v-btn
-                              class="mx-1 white--text"
+                              class="mx-1 white--text  rounded-xl"
+                              elevation="15"
                               color="orange"
                               @click="croppedFinish"
                               >ตัดรูปภาพ</v-btn
@@ -224,7 +232,7 @@
                           <v-col>
                             <v-btn
                               @click="$refs.file.click()"
-                              class="upload-example__button mt-3"
+                              class="upload-example__button mt-3 rounded-xl"
                             >
                               <input
                                 type="file"
@@ -244,7 +252,13 @@
                 </v-card-text>
               </v-form>
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
+                <v-btn
+                  class="ma-1  rounded-xl"
+                  color="primary"
+                  dark
+                  elevation="15"
+                  @click="close"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -252,12 +266,13 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="ma-1"
+                  class="ma-1  rounded-xl"
                   color="info"
+                  elevation="15"
                   :disabled="!valid"
                   @click="save()"
                 >
-                  <v-icon aria-hidden="false" class="mx-2">
+                  <v-icon aria-hidden="false" class="mx-2 rounded-xl">
                     mdi-content-save
                   </v-icon>
                   {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
@@ -305,7 +320,12 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
 
-                  <v-btn color="error" @click="close">
+                  <v-btn
+                    class="mr-1 rounded-xl"
+                    elevation="15"
+                    color="error"
+                    @click="close"
+                  >
                     <v-icon left> mdi-close </v-icon>ปิด
                   </v-btn>
                 </v-card-actions>
@@ -314,25 +334,34 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.detail`]="{ item }">
-          <v-btn class="mr1" small color="teal" @click="Detail(item.detail)">
+          <v-btn
+            class="mr1 rounded-xl"
+            color="teal"
+            elevation="15"
+            @click="Detail(item.detail)"
+          >
             <div class="d-block  white--text">
               <v-icon small left> mdi-eye </v-icon>ดูรายละเอียด
             </div>
           </v-btn>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr2" color="warning" @click="editItem(item)" small>
+          <v-btn
+            elevation="15"
+            class="mr2 rounded-xl"
+            color="warning"
+            @click="editItem(item)"
+          >
             <v-icon left dark>
               mdi-close-box
             </v-icon>
             แก้ไข
           </v-btn>
           <v-btn
-            rounded-lx
-            class="mr-2"
+            elevation="15"
+            class="mr-2 rounded-xl"
             color="error"
             @click="deleteItem(item)"
-            small
           >
             <v-icon left dark>
               mdi-delete-forever

@@ -2,7 +2,7 @@
   <div class="ma-3">
     <!-- view -->
     <v-dialog v-model="dialogView" max-width="400px">
-      <v-card>
+      <v-card class="rounded-xl">
         <v-form>
           <v-card-title>
             <span class="text-h">
@@ -25,7 +25,11 @@
     </v-dialog>
     <!-- view -->
 
-    <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
+    <v-card
+      class="mx-auto mt-6  py-3 rounded-xl"
+      elevaation="24"
+      justify-centaer
+    >
       <v-card-title>
         <!-- ********************************************************************************************************************************************************************** -->
         <v-dialog v-model="dialogadd" max-width="500px">
@@ -33,7 +37,8 @@
             <v-btn
               color="primary"
               dark
-              class="mr-5"
+              class="mr-5 rounded-xl"
+              elevation="15"
               v-bind="attrs"
               v-on="on"
               @click="addItem"
@@ -77,7 +82,7 @@
           <!-- ********************************************************************************************************************************************************************** -->
           <!-- add------------------dialogadd--------------------------------- -->
           <v-dialog v-model="dialogadd" max-width="650px" persistent>
-            <v-card>
+            <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left>mdi-card-account-details-outline </v-icon>
@@ -118,7 +123,13 @@
                         sm="2"
                         class="justify-center align-center"
                       >
-                        <v-btn color="warning" @click="check">ตรวจสอบ</v-btn>
+                        <v-btn
+                          class="mr-1 rounded-xl"
+                          elevation="15"
+                          color="warning"
+                          @click="check"
+                          >ตรวจสอบ</v-btn
+                        >
                         <div class="mt-2 ml-4" v-if="usernametrue">
                           <span class="green--text ">ใช้ได้</span>
                         </div>
@@ -269,16 +280,23 @@
               </v-card-text>
 
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="closeadd">
-                  <v-icon aria-hidden="false" class="mx-2">
+                <v-btn
+                  class="ma-1  rounded-xl"
+                  elevation="15"
+                  color="primary"
+                  dark
+                  @click="closeadd"
+                >
+                  <v-icon aria-hidden="false" class="mx-2 ">
                     mdi-close-box
                   </v-icon>
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="ma-1"
+                  class="ma-1  rounded-xl"
                   color="info"
+                  elevation="15"
                   :disabled="!valid"
                   @click="save()"
                 >
@@ -487,7 +505,13 @@
               </v-card-text>
 
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
+                <v-btn
+                  class="ma-1 rounded-xl"
+                  elevation="15"
+                  color="primary"
+                  dark
+                  @click="close"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -495,7 +519,8 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="ma-1"
+                  class="mr-1 rounded-xl"
+                  elevation="15"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -512,7 +537,7 @@
 
           <!-- password--------------------------------------------- -->
           <v-dialog v-model="dialogpass" max-width="600px">
-            <v-card>
+            <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left> mdi-card-account-details-outline </v-icon>
@@ -549,7 +574,13 @@
                 </v-alert>
               </v-card-text>
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="closePass">
+                <v-btn
+                  class="ma-1 rounded-xl"
+                  elevation="15"
+                  color="primary"
+                  dark
+                  @click="closePass"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -557,7 +588,8 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="ma-1"
+                  class="ma-1 rounded-xl"
+                  elevation="15"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -573,7 +605,7 @@
           <!-- ---------------------------------------------------password -->
 
           <v-dialog v-model="dialogManager" max-width="500px" persistent>
-            <v-stepper v-model="e1">
+            <v-stepper v-model="e1" class=" rounded-xl">
               <v-stepper-header>
                 <v-stepper-step :complete="e1 > 1" step="1">
                   เลือกผู้จัดการ
@@ -599,7 +631,11 @@
                     class="ma-2"
                   ></v-autocomplete>
 
-                  <v-btn color="primary" @click="requestOTP">
+                  <v-btn
+                    color="primary"
+                    class="ma-2 rounded-xl"
+                    @click="requestOTP"
+                  >
                     ถัดไป
                   </v-btn>
 
@@ -695,7 +731,13 @@
           <!-- ----------------------------------------------------------delete -->
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr1" small color="warning" @click="editItem(item)">
+          <v-btn
+            class="mr-1 rounded-xl"
+            elevation="15"
+            small
+            color="warning"
+            @click="editItem(item)"
+          >
             <v-icon aria-hidden="false" class="mx-1">
               mdi-pencil
             </v-icon>
@@ -703,7 +745,8 @@
           </v-btn>
           <v-btn
             rounded-pill
-            class="mr-1"
+            class="mr-1 rounded-xl"
+            elevation="15"
             color="error"
             small
             @click="deleteItem(item)"
@@ -716,8 +759,14 @@
         </template>
         <!-- btn-edi-pass--------------------------------------------------- -->
         <template v-slot:[`item.pasword`]="{ item }">
-          <v-btn small color="#03A9F4" @click="editItemPass(item)">
-            <div class="d-block  white--text">
+          <v-btn
+            small
+            class="mr-1 rounded-xl"
+            color="#03A9F4"
+            elevation="15"
+            @click="editItemPass(item)"
+          >
+            <div class="d-block   white--text">
               <v-icon aria-hidden="false">
                 mdi-lock
               </v-icon>
@@ -728,7 +777,13 @@
         <!-- --------------------------------------------------btn edi pass -->
         <!-- btn-view--------------------------------------------------- -->
         <template v-slot:[`item.view`]="{ item }">
-          <v-btn class="mr1" small color="teal" @click="Detail(item)">
+          <v-btn
+            class="mr1 rounded-xl"
+            small
+            elevation="15"
+            color="teal"
+            @click="Detail(item)"
+          >
             <div class="d-block  white--text">
               <v-icon aria-hidden="false">
                 mdi-eye
@@ -740,9 +795,10 @@
         <!-- ----------------- ---------------------------------btn view -->
         <template v-slot:[`item.private`]="{ item }">
           <v-btn
-            class="mr1"
+            class="mr1 rounded-xl"
             small
             color="purple darken-2"
+            elevation="15"
             @click="selectManager(item)"
           >
             <div class="d-block  white--text">
@@ -979,6 +1035,14 @@ export default {
               text: res.data.data.message,
               status: true
             };
+            this.$swal({
+              type: "success",
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              title: res.data.data.message
+            });
             this.dialogOTP = true;
           } else {
             this.otpResult = {
@@ -986,6 +1050,14 @@ export default {
               text: res.data.message,
               status: false
             };
+            this.$swal({
+              type: "error",
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              title: res.data.message
+            });
             this.dialogOTP = true;
           }
         });
@@ -1102,11 +1174,22 @@ export default {
       if (cus.length > 0) {
         this.usernameErr = true;
         this.usernametrue = false;
+        this.$swal({
+          type: "error",
+          title: "ไม่สามารถใช้งานได้"
+        });
       } else {
         this.usernameErr = false;
         this.usernametrue = true;
+        this.$swal({
+          type: "success",
+          title: "ใช้งานได้"
+        });
       }
       //return { category };
+    },
+    reset() {
+      this.$refs.form.reset();
     },
 
     editItemPass(item) {

@@ -7,7 +7,7 @@
           <v-card-title>
             <span class="text-h">
               <v-icon left> mdi-ticket</v-icon>ชื่อคูปอง
-              {{itemBy.codename}}
+              {{ itemBy.codename }}
             </span>
           </v-card-title>
           <v-divider class="mb-3"></v-divider>
@@ -39,7 +39,8 @@
             <v-btn
               color="primary"
               dark
-              class="mr-5"
+              class="mr-5 rounded-xl"
+              elevation="15"
               v-bind="attrs"
               v-on="on"
               @click="addItem"
@@ -103,7 +104,14 @@
                         sm="2"
                         class="justify-center align-center"
                       >
-                        <v-btn @click="check" color="warning"> ตรวจสอบ</v-btn>
+                        <v-btn
+                          @click="check"
+                          class="mr-1 rounded-xl"
+                          elevation="15"
+                          color="warning"
+                        >
+                          ตรวจสอบ</v-btn
+                        >
                         <div class="mt-2 ml-4" v-if="nametrue">
                           <span class="green--text ">ใช้ได้</span>
                         </div>
@@ -141,7 +149,6 @@
                         <date-picker
                           class="my-datepicker"
                           placeholder="วันหมดอายุ"
-                          oninput="validity.valid||(value='');"
                           v-model="couponitem.start"
                           :rules="rules"
                           valueType="format"
@@ -151,7 +158,6 @@
                         <date-picker
                           class="my-datepicker"
                           placeholder="วันหมดอายุ"
-                          oninput="validity.valid||(value='');"
                           v-model="couponitem.end"
                           :rules="rules"
                           valueType="format"
@@ -165,7 +171,6 @@
                           color="#1D1D1D"
                           :items="discount"
                           v-model="couponitem.discount"
-                          oninput="validity.valid||(value='');"
                           type="number"
                           :rules="[v => !!v || 'โปรดกรอกข้อมูล']"
                         ></v-select>
@@ -177,7 +182,6 @@
                           label="จำนวลคูปองที่สมารถใช้ได้ต่อครั้ง"
                           v-model="couponitem.num_use"
                           :rules="rules"
-                          oninput="validity.valid||(value='');"
                           type="number"
                           color="#1D1D1D"
                         ></v-text-field>
@@ -187,7 +191,13 @@
                 </v-form>
               </v-card-text>
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
+                <v-btn
+                  class="ma-1 rounded-xl"
+                  elevation="15"
+                  color="primary"
+                  dark
+                  @click="close"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -196,7 +206,8 @@
 
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="ma-1"
+                  class="ma-1 rounded-xl"
+                  elevation="15"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -397,19 +408,6 @@
             ลบ
           </v-btn>
         </template>
-        <!-- <template v-slot:[`item.view`]="{ item }">
-          <v-btn
-            small
-            class="mr2 white--text"
-            color="teal"
-            @click="Detail(item)"
-          >
-            <v-icon aria-hidden="false" class="mx-2">
-              mdi-eye-settings-outline
-            </v-icon>
-            ดูข้อมูล
-          </v-btn>
-        </template> -->
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
@@ -690,13 +688,21 @@ export default {
       if (cus.length > 0) {
         this.nameErr = true;
         this.nametrue = false;
+        this.$swal({
+          type: "error",
+          title: "ไม่สามารถใช้งานได้"
+        });
       } else {
         this.nameErr = false;
         this.nametrue = true;
+        this.$swal({
+          type: "success",
+          title: "ใช้งานได้"
+        });
       }
     },
     Detail(item) {
-       this.codename = item.codename;
+      this.codename = item.codename;
       this.itemBy = item;
       this.detailArr = [
         {

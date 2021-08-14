@@ -23,20 +23,39 @@
             </v-row>
           </v-card-text>
         </v-form>
+        <v-divider class="mb-3"></v-divider>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            class="ma-1"
+            color="error"
+            dark
+            @click="dialogView = false"
+            elevation="24"
+            plain
+          >
+            <v-icon aria-hidden="false" class="mx-2">
+              mdi-close-box
+            </v-icon>
+            ปิด
+          </v-btn>
+        </v-card-actions>
       </v-card>
     </v-dialog>
     <!-- 2 -->
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialogadd" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{ on, attrs }" :default="{ hover }">
             <v-btn
+              :class="`elevation-${hover ? 24 : 6}`"
               color="primary"
               dark
-              class="mr-5"
+              class="mr-5 rounded-xl"
               v-bind="attrs"
               v-on="on"
               @click="addItem"
+              elevation="24"
             >
               <v-icon left> mdi-account-plus </v-icon> ลงทะเบียนสมาชิก
             </v-btn>
@@ -214,6 +233,7 @@
                   </div>
                 </v-form>
               </v-card-text>
+
               <v-card-text>
                 <v-alert outlined type="warning" prominent border="left">
                   โปรดกรอกข้อความให้ในช่อง และ
@@ -222,6 +242,7 @@
                   </q>
                 </v-alert>
               </v-card-text>
+              <v-divider class="mb-3"></v-divider>
               <v-card-actions>
                 <v-btn class="ma-1" color="primary" dark @click="closeadd">
                   <v-icon aria-hidden="false" class="mx-2">
@@ -254,7 +275,6 @@
                   <v-icon left> mdi-account-plus </v-icon>
                   แก้ไขข้อมูลลูกค้า
                 </span>
-                
               </v-card-title>
               <v-divider class="mb-3"></v-divider>
               <v-card-text> </v-card-text>
@@ -447,16 +467,25 @@
           </v-dialog>
           <!-- dialogDelete -->
         </template>
-        <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr1" small color="warning" @click="editItem(item)">
+        <template v-slot:[`item.actions`]="{ item }" :default="{ hover }">
+          <v-btn
+            :class="`elevation-${hover ? 24 : 6}`"
+            class="mr-1 rounded-xl"
+            small
+            elevation="24"
+            color="warning"
+            @click="editItem(item)"
+          >
             <v-icon aria-hidden="false" class="me-1">
               mdi-pencil-plus
             </v-icon>
             แก้ไข
           </v-btn>
           <v-btn
+            :class="`elevation-${hover ? 24 : 6}`"
             rounded-lx
-            class="mr-1"
+            class="mr-1 rounded-xl"
+            elevation="24"
             color="error"
             :disabled="$store.getters['position'] === 'cashier'"
             small
@@ -495,8 +524,15 @@
             Reset(ข้อมูลไม่โหลด)
           </v-btn>
         </template>
-        <template v-slot:[`item.view`]="{ item }">
-          <v-btn class="mr1" small color="teal" @click="Detail(item)">
+        <template v-slot:[`item.view`]="{ item }" :default="{ hover }">
+          <v-btn
+            class="rounded-xl"
+            elevation="24"
+            :class="`elevation-${hover ? 24 : 6}`"
+            small
+            color="teal"
+            @click="Detail(item)"
+          >
             <div class="d-block  white--text">
               <v-icon aria-hidden="false" class="mx-1"> mdi-eye </v-icon
               >ดูรายละเอียด

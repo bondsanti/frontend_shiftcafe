@@ -1,10 +1,17 @@
 <template>
   <div class="ma-3">
-    <v-card class="mx-auto mt-6 py-3" elevaation="5" justify-centaer>
+    <v-card  class="mx-auto mt-6 py-3 " elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mr-5" v-bind="attrs" v-on="on">
+            <v-btn
+              color="primary"
+              dark
+              class="mr-5 rounded-xl"
+              elevation="15"
+              v-bind="attrs"
+              v-on="on"
+            >
               <v-icon left> mdi-cash-register</v-icon> ลงข้อมูลเงินทอน
             </v-btn>
           </template>
@@ -94,10 +101,21 @@
               <v-divider class="mt-n3"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="error" @click="close">
+                <v-btn
+                  color="error"
+                  class="mr-1 rounded-xl"
+                  elevation="15"
+                  @click="close"
+                >
                   <v-icon left> mdi-close </v-icon>ปิด
                 </v-btn>
-                <v-btn color="primary" :disabled="!valid" @click="saveData()">
+                <v-btn
+                  color="primary"
+                  class="mr-1 rounded-xl"
+                  elevation="15"
+                  :disabled="!valid"
+                  @click="saveData()"
+                >
                   <v-icon left> mdi-content-save </v-icon>บันทึก
                 </v-btn>
               </v-card-actions>
@@ -135,10 +153,21 @@
               <v-divider class="mt-n3"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="error" @click="closeedit">
+                <v-btn
+                  color="error"
+                  class="mr-1 rounded-xl"
+                  elevation="15"
+                  @click="closeedit"
+                >
                   <v-icon left> mdi-close </v-icon>ปิด
                 </v-btn>
-                <v-btn color="primary" :disabled="!valid" @click="saveData()">
+                <v-btn
+                  color="primary"
+                  class="mr-1 rounded-xl"
+                  elevation="15"
+                  :disabled="!valid"
+                  @click="saveData()"
+                >
                   <v-icon left> mdi-content-save </v-icon>บันทึก
                 </v-btn>
               </v-card-actions>
@@ -199,15 +228,20 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr2" color="warning" @click="editItem(item)">
+          <v-btn
+            class="mr-1 rounded-xl"
+            elevation="24"
+            color="warning"
+            @click="editItem(item)"
+          >
             <v-icon aria-hidden="false" class="mx-2">
               mdi-pencil-plus
             </v-icon>
             แก้ไข
           </v-btn>
           <v-btn
-            rounded-lx
-            class="mr-2"
+            class="mr-1 rounded-xl"
+            elevation="24"
             color="error"
             :disabled="$store.getters['position'] === 'cashier'"
             @click="deleteItem(item)"
@@ -245,10 +279,10 @@ export default {
       dialogDelete: false,
       dialogeditItem: false,
       //
-      
+
       rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
       valid: true,
-      // 
+      //
       menu2: false,
       deleteId: null,
       search: "",

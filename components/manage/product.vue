@@ -1,5 +1,24 @@
 <template>
   <div class="ma-3">
+    <!-- photo -->
+    <v-dialog v-model="dialogPhoto" max-width="500" max-height="300">
+      <v-card>
+        <v-toolbar dense color="elevation-0">
+          <v-spacer></v-spacer>
+          <v-btn icon color="black" @click.native="dialogPhoto = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-row no-gutters align="center" justify="center">
+              <v-img :src="image.src" contain></v-img>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+    <!-- // -->
     <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
@@ -7,7 +26,8 @@
             <v-btn
               color="primary"
               dark
-              class="mr-5"
+              class="mr-5 rounded-xl"
+              elevation="15"
               v-bind="attrs"
               v-on="on"
               @click="addItem"
@@ -49,6 +69,7 @@
             width="70px"
             height="70px"
             contain
+            @click="photo(item)"
           />
         </template>
 
@@ -146,10 +167,15 @@
                         />
                         <!-- <div class="crop-button" @click="crop">Crop Image</div> -->
                         <div class="crop-button">
-                          <v-btn class="mx-1" @click="crop" color="green"
+                          <v-btn
+                            class="mx-5 rounded-xl"
+                            elevation="15"
+                            @click="crop"
+                            color="green"
                             >ดูรูปตัวอย่าง</v-btn
                           ><v-btn
-                            class="mx-1"
+                            class="mx-5 rounded-xl"
+                            elevation="15"
                             color="orange"
                             @click="croppedFinish"
                             >ตัดรูปภาพ</v-btn
@@ -160,7 +186,8 @@
                         <v-col>
                           <v-btn
                             @click="$refs.file.click()"
-                            class="upload-example__button"
+                            class="upload-example__button rounded-xl"
+                            elevation="15"
                           >
                             <input
                               type="file"
@@ -179,14 +206,25 @@
               </v-card-text>
 
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
+                <v-btn
+                  class="ma-1 rounded-xl"
+                  elevation="15"
+                  color="primary"
+                  dark
+                  @click="close"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-ticket-percent-outline
                   </v-icon>
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" @click="save">
+                <v-btn
+                  class="ma-1 rounded-xl"
+                  elevation="15"
+                  color="info"
+                  @click="save"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-ticket-percent-outline
                   </v-icon>
@@ -219,21 +257,31 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr2" color="cyan accent-3" @click="topping(item)">
+          <v-btn
+            class="mr2 white--text rounded-xl "
+            elevation="15"
+            color="cyan accent-3"
+            @click="topping(item)"
+          >
             <v-icon aria-hidden="false" class="mx-2">
               mdi-food-apple
             </v-icon>
             TOPPING
           </v-btn>
-          <v-btn class="mr2" color="warning" @click="editItem(item)">
+          <v-btn
+            class="mr2 white--text rounded-xl"
+            elevation="15"
+            color="warning"
+            @click="editItem(item)"
+          >
             <v-icon aria-hidden="false" class="mx-2">
               mdi-pencil
             </v-icon>
             แก้ไข
           </v-btn>
           <v-btn
-            rounded-lx
-            class="mr-2"
+            class="mr-2 rounded-xl"
+            elevation="15"
             color="error"
             @click="deleteItem(item)"
           >
@@ -260,7 +308,7 @@
     <v-row justify="space-around">
       <v-dialog
         transition="dialog-top-transition"
-        max-width="800"
+        max-width="850"
         v-model="dialogTopping"
         height="auto"
         persistent
@@ -269,6 +317,8 @@
           <v-toolbar color="primary" dark
             >เพิ่ม TOPPING <v-spacer></v-spacer
             ><v-btn
+              class="ma-1 mr-1 rounded-xl"
+              elevation="24"
               color="red"
               @click="
                 dialogTopping = false;
@@ -294,6 +344,7 @@
               >
               <v-col cols="2">
                 <v-switch
+                  :color="getColor(top.status)"
                   class="ma-0"
                   hide-details
                   v-model="top.status"
@@ -301,13 +352,42 @@
                   :label="top.status ? 'เปิดใช้' : 'ปิดใช้'"
                 ></v-switch>
               </v-col>
-              <v-col cols="3"
-                ><v-btn small fab @click="editTopping(top, i)"
-                  ><v-icon>mdi-grease-pencil</v-icon></v-btn
-                >
-                <v-btn small fab @click="deleteTopping(i)"
-                  ><v-icon>mdi-trash-can</v-icon></v-btn
-                >
+              <v-col cols="3">
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      small
+                      elevation="24"
+                      fab
+                      v-bind="attrs"
+                      v-on="on"
+                      plain
+                      class="warning"
+                      raised
+                      @click="editTopping(top, i)"
+                      ><v-icon>mdi-grease-pencil</v-icon></v-btn
+                    >
+                  </template>
+                  <span>แก้ไขท๊อป</span>
+                </v-tooltip>
+
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      small
+                      elevation="24"
+                      fab
+                      plain
+                      color="error"
+                      v-bind="attrs"
+                      v-on="on"
+                      raisedb
+                      @click="deleteTopping(i)"
+                      ><v-icon>mdi-trash-can</v-icon></v-btn
+                    >
+                  </template>
+                  <span>ลบท๊อป</span>
+                </v-tooltip>
               </v-col>
             </v-row>
           </v-sheet>
@@ -334,10 +414,23 @@
               </v-col>
 
               <v-col cols="12" sm="3" align-self="center">
-                <v-btn outlined @click="addTopping"
+                <v-btn
+                  elevation="24"
+                  raised
+                  class="white--text  rounded-xl "
+                  color="green"
+                  @click="addTopping"
                   >{{ toppingType === "edit" ? "แก้ไข" : "เพิ่ม" }}
                 </v-btn>
-                <v-btn color="primary" @click="saveTopping">บันทึก</v-btn>
+                <v-btn
+                  color="primary"
+                  elevation="24"
+                  class=" rounded-xl
+                  "
+                  raised
+                  @click="saveTopping"
+                  >บันทึก</v-btn
+                >
               </v-col>
             </v-row>
             <!-- <v-spacer></v-spacer> -->
@@ -368,19 +461,20 @@ export default {
     },
     dialog: false,
     dialogDelete: false,
+    dialogPhoto: false,
     search: "",
     unitname: [],
     categoryname: [],
     sortBy: "ชื่อ",
     sortDesc: false,
     headers: [
-      { text: "ลำดับ", sortable: false, value: "No" },
-      { text: "ภาพ", sortable: false, value: "img" },
-      { text: "ชื่อสิ้นค้า", sortable: false, value: "product_name" },
-      { text: "ประเภท", sortable: false, value: "ref_uid.u_name" },
-      { text: "หมวดหมู่", sortable: false, value: "ref_cate_id.cate_name" },
-      { text: "ราคาต้นทุน", sortable: false, value: "price_cost" },
-      { text: "ราคา", sortable: false, value: "price" },
+      { text: "ลำดับ", sortable: true, value: "No" },
+      { text: "ภาพ", sortable: true, value: "img" },
+      { text: "ชื่อสิ้นค้า", sortable: true, value: "product_name" },
+      { text: "ประเภท", sortable: true, value: "ref_uid.u_name" },
+      { text: "หมวดหมู่", sortable: true, value: "ref_cate_id.cate_name" },
+      { text: "ราคาต้นทุน", sortable: true, value: "price_cost" },
+      { text: "ราคา", sortable: true, value: "price" },
       // { text: "สต็อก", sortable: false, value: "stock" },
       // { text: "id", sortable: false, value: "_id" },
       //{ text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
@@ -431,6 +525,13 @@ export default {
     }
   },
   methods: {
+    // รูป
+    photo(item) {
+      this.result.img = null;
+      this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
+      this.levelmemberitme = { img: item.img };
+      this.dialogPhoto = true;
+    },
     topping(item) {
       this.productsItem._id = item._id;
       this.dialogTopping = true;
@@ -677,6 +778,11 @@ export default {
             console.log(e);
           });
       }
+    },
+    getColor(status) {
+      if (status === true) return " green";
+      else if (status === false) return "red";
+      else return "primary ";
     },
     improveUn() {
       for (let i in this.unit) {

@@ -111,7 +111,6 @@
         </v-card-title>
 
         <v-sheet class="pl-7">
-          <p>{{ selected }}</p>
           <v-checkbox
             @click="thinkPriceTopping"
             v-model="selected"
@@ -182,41 +181,58 @@ export default {
     afterEditTopping() {
       const k = this.productTopping.idInOrder;
       const newOrderTopping = this.selected;
+      let count = 0;
+      let position = [];
+      this.orders[k].topping = this.selected;
+      this.orders[k].price = this.orders[k].qty * this.priceMergeTopping;
 
+      let newTopping = newOrderTopping.map(t => t.name);
+      //ตรวจสอบว่าในออเดอร์มีรายการไหนตรงกับที่เราแก้ไขอยู่ไหม
       for (let i in this.orders) {
-        let newTopping = newOrderTopping.map(t => t._id);
-        console.log(newTopping + "1");
-        let oldTopping = this.orders[i].topping.map(t => t._id);
-        console.log(oldTopping + "2");
-        const res = newTopping.map(t =>
-          //console.log(t);
-          oldTopping.includes(t)
-        );
-        console.log(res + "3");
+        let oldTopping = this.orders[i].topping.map(t => t.name);
+        const res = newTopping.map(t => oldTopping.includes(t));
         let check = value => value === true;
 
         if (this.orders[i].name === this.orders[k].name) {
           if (this.orders[i].topping.length === newOrderTopping.length) {
             if (res.every(check)) {
-              this.orders[k].qty =
-                parseInt(this.orders[k].qty) + parseInt(this.orders[i].qty);
-              // this.orders[k].price =
-              //   parseInt(this.orders[k].price) + parseInt(this.orders[i].price);
-              this.orders[k].price =
-                this.orders[k].qty * this.priceMergeTopping;
-              this.orders[k].topping = this.selected;
-              this.orders.splice(i, 1);
-              setTimeout(this.totalPrice, 300);
-              //this.dialogTopping = false;
-              //console.log("same same");
-              //return;
+              count++;
+              //เก็บตำแหน่งรายการที่ซ้ำในออเดอร์
+              position.push(i);
+
+              //count มากกว่า 1 แสดงว่าในออเดอร์มีรายการเดียวกับที่เราแก้ไขอยู่
+              if (count > 1) {
+                console.log(position);
+                if (k == i) {
+                  this.orders[position[1]].qty =
+                    parseInt(this.orders[position[1]].qty) +
+                    parseInt(this.orders[position[0]].qty);
+
+                  this.orders[position[1]].price =
+                    this.orders[position[1]].qty * this.priceMergeTopping;
+                  this.orders[position[1]].topping = this.selected;
+                  console.log(count + "k>i");
+                  this.orders.splice(position[0], 1);
+                  setTimeout(this.totalPrice, 300);
+                } else {
+                  this.orders[position[0]].qty =
+                    parseInt(this.orders[position[1]].qty) +
+                    parseInt(this.orders[position[0]].qty);
+
+                  this.orders[position[0]].price =
+                    this.orders[position[0]].qty * this.priceMergeTopping;
+                  this.orders[position[0]].topping = this.selected;
+                  console.log(count + "k<i");
+                  console.log("i :" + i + " k :" + k);
+                  this.orders.splice(position[1], 1);
+                  setTimeout(this.totalPrice, 300);
+                }
+              }
             }
           }
         }
       }
-      // this.orders[k].topping = this.selected;
-      // console.log(this.orders[k] + "4");
-      // this.orders[k].price = this.orders[k].qty * this.priceMergeTopping;
+
       setTimeout(this.totalPrice, 300);
       this.dialogTopping = false;
     },
@@ -234,13 +250,14 @@ export default {
         idOrder: this.idForEditOrder
       };
       this.$emit("openDialog", confirmObj);
+      this.idForEditOrder = null;
     },
     totalPrice() {
       let subTotal = 0;
       for (let j in this.orders) {
         subTotal = subTotal + parseInt(this.orders[j].price);
       }
-      //console.log(subTotal);
+
       this.subTotal = subTotal;
     },
     formatPrice(value2) {
@@ -250,6 +267,7 @@ export default {
     },
     clearOrder() {
       if (this.idForEditOrder !== null) {
+        //console.log("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee2");
         this.$axios.$delete("/order/" + this.idForEditOrder).then(() => {
           this.orders = [];
           this.subTotal = 0;
@@ -265,10 +283,15 @@ export default {
         this.$emit("refreshUser");
       }
     },
+    clearOrder2() {
+      this.orders = [];
+      this.subTotal = 0;
+      this.bill_name = null;
+      this.idForEditOrder = null;
+      this.$emit("refreshUser");
+    },
     async confirmOrder() {
       if (this.bill_name === null && this.orders.length >= 1) {
-        //this.$refs.form.validate();
-        //this.orderDl = true;
         this.$emit("openOrderDl");
       } else if (this.bill_name !== null || this.orders.length === 0) {
         if (this.idForEditOrder) {
@@ -289,7 +312,6 @@ export default {
               this.$nuxt.refresh();
             });
         } else {
-          //this.holdDl = true;
           this.$emit("openHoldDl");
         }
       }
@@ -302,21 +324,16 @@ export default {
         name: this.product2[i].product_name,
         qty: 1,
         price: parseInt(this.product2[i].price) + parseInt(toppingPrice),
-        topping: topping
+        topping: topping,
+        normal_price: this.product2[i].price
       };
 
       for (let i in this.orders) {
         let newTopping = orderObj.topping.map(t => t._id);
         let oldTopping = this.orders[i].topping.map(t => t._id);
-        const res = newTopping.map(t =>
-          //console.log(t);
-          oldTopping.includes(t)
-        );
+        const res = newTopping.map(t => oldTopping.includes(t));
         let check = value => value === true;
-        // console.log(oldTopping);
-        // console.log(newTopping);
-        // console.log(res);
-        // console.log(res.every(check));
+
         if (this.orders[i].name === orderObj.name) {
           if (this.orders[i].topping.length === orderObj.topping.length) {
             if (res.every(check)) {
@@ -343,7 +360,7 @@ export default {
       let toppingPrice = 0;
       this.orders[i].topping.map(t => (toppingPrice += t.price));
       this.orders[i].qty++;
-      //this.orders[i].price =
+
       this.orders[i].price =
         parseInt(this.orders[i].price) +
         parseInt(product[0].price) +
@@ -366,14 +383,12 @@ export default {
       setTimeout(this.totalPrice, 300);
     },
     viewOrder(item) {
-      // console.log(this.orderOnDatabase[i]);
       this.orders = item.list_product;
       this.bill_name = item.bill_name;
       this.type_order = item.type_order;
       this.idForEditOrder = item._id;
       setTimeout(this.totalPrice, 200);
       this.$emit("closeHoldDl");
-      //console.log(this.orderOnDatabase[i]);
     },
     async addOrderToDatabase(bill_name) {
       const preOrder = {
@@ -382,7 +397,7 @@ export default {
         total_price: this.subTotal,
         bill_name: bill_name
       };
-      //console.log(preOrder);
+
       const res = await this.$axios.post("/order", preOrder);
       if (res.status === 200) {
         this.$nuxt.refresh();

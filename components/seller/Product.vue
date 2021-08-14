@@ -30,11 +30,10 @@
         </v-card-title>
 
         <v-sheet class="pl-7">
-          <p>{{ selected }}</p>
           <v-checkbox
             @click="thinkPriceTopping"
             v-model="selected"
-            v-for="top in product.topping"
+            v-for="top in filterTopping"
             :key="top._id"
             :label="top.name"
             :value="top"
@@ -61,7 +60,8 @@ export default {
   data: () => ({
     dialogTopping: false,
     selected: [],
-    priceMergeTopping: 0
+    priceMergeTopping: 0,
+    filterTopping: []
   }),
   methods: {
     addTopping() {
@@ -82,9 +82,15 @@ export default {
       });
       this.priceMergeTopping =
         parseInt(this.priceMergeTopping) + parseInt(toppingPrice);
+    },
+    filterToppingTrue() {
+      this.filterTopping = this.product.topping.filter(t => t.status === true);
+      //console.log(this.filterTopping);
     }
   },
-  created() {}
+  created() {
+    this.filterToppingTrue();
+  }
 };
 </script>
 

@@ -64,6 +64,7 @@
               }"
               :sort-by="['datetime']"
               :sort-desc="[true, false]"
+              :custom-sort="customSort"
               class="mb-n5"
             >
               <template v-slot:[`item.type_payment`]="{ item }">
@@ -216,6 +217,30 @@ export default {
     }
   },
   methods: {
+    customSort: function(items, index, isDesc) {
+      items.sort((a, b) => {
+        if (index[0] == "date") {
+          if (!isDesc[0]) {
+            return new Date(b[index]) - new Date(a[index]);
+          } else {
+            return new Date(a[index]) - new Date(b[index]);
+          }
+        } else {
+          if (typeof a[index] !== "undefined") {
+            if (!isDesc[0]) {
+              return a[index]
+                .toLowerCase()
+                .localeCompare(b[index].toLowerCase());
+            } else {
+              return b[index]
+                .toLowerCase()
+                .localeCompare(a[index].toLowerCase());
+            }
+          }
+        }
+      });
+      return items;
+    },
     formatPrice(total_price) {
       const value = parseInt(total_price);
       let val = (value / 1).toFixed(2).replace(",", ".");
@@ -447,13 +472,20 @@ export default {
         WinPrint.document.write(
           `<td style='padding-left:20px;'>${parseInt(i) + 1}</td><td >${
             order.list_product[i].name
-          }</td><td style='padding-left:20px;'>${
+          } ${
+            order.list_product[i].normal_price
+          } บาท</td><td style='padding-left:20px;'>${
             order.list_product[i].qty
           }</td><td style='padding-left:20px;'>${this.formatPrice(
             order.list_product[i].price
           )} </td><td style='padding-right:20px;'>฿</td>`
         );
         WinPrint.document.write("</tr>");
+        for (let j in order.list_product[i].topping) {
+          WinPrint.document.write(
+            `<tr><td></td><td > - ${order.list_product[i].topping[j].name} เพิ่ม ${order.list_product[i].topping[j].price} บาท</td></td></tr>`
+          );
+        }
       }
       WinPrint.document.write(
         "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"

@@ -212,10 +212,10 @@
                       <h1>ราคา</h1>
                     </v-col>
                   </v-row>
-                  <div
+                  <!-- <div
                     class="d-flex flex-row ma-1 mx-16"
-                    v-for="order in orders"
-                    :key="order.name"
+                    v-for="(order, i) in orders"
+                    :key="i"
                   >
                     <v-col cols="6">
                       <h3>{{ order.name }}</h3>
@@ -226,7 +226,26 @@
                     <v-col cols="3" class="pl-10">
                       <h3>{{ order.price }} ฿.</h3>
                     </v-col>
-                  </div>
+                  </div> -->
+                  <v-list-item two-line v-for="(order, i) in orders" :key="i">
+                    <v-list-item-content>
+                      <v-list-item-title class="d-flex flex-row ma-1 mx-16">
+                        <v-col cols="6">
+                          <h3>{{ order.name }}</h3>
+                        </v-col>
+                        <v-col cols="3" class="pl-16">
+                          <h3>{{ order.qty }}</h3>
+                        </v-col>
+                        <v-col cols="3" class="pl-10">
+                          <h3>{{ order.price }} ฿.</h3>
+                        </v-col>
+                      </v-list-item-title>
+                      <v-list-item-subtitle class="ml-16">{{
+                        convertArrayToString(order.topping)
+                      }}</v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+
                   <v-row
                     v-if="coupon !== 0"
                     class="justify-space-between ma-1 mx-16 mt-14"
@@ -441,6 +460,13 @@ export default {
     //bank3: []
   }),
   methods: {
+    convertArrayToString(topping) {
+      let string = "";
+      topping.map(t => {
+        string = `${string === "" ? "" : string + ","}  ${t.name}`;
+      });
+      return string;
+    },
     color(i) {
       if (this.bank2[i]) {
         //return this.bank_id === this.bank2[i]._id ? "primary" : "secondary";
@@ -536,7 +562,7 @@ export default {
 
             this.$emit("closeDialog_cook");
             this.$emit("closeDialog");
-            this.$emit("clearOrder");
+            this.$emit("clearOrder2");
             this.checkout = false;
             this.cus_type = "guest";
             this.discount_type = "coupong";
@@ -594,7 +620,7 @@ export default {
             }
             this.$emit("closeDialog_cook");
             this.$emit("closeDialog");
-            this.$emit("clearOrder");
+            this.$emit("clearOrder2");
             this.checkout = false;
             this.cus_type = "guest";
             this.discount_type = "coupong";
@@ -737,17 +763,18 @@ export default {
     },
     cancelOrder() {
       if (this.idOrder !== null) {
+        //console.log("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         this.$axios
           .$delete("/order/" + this.idOrder)
           .then(() => {
-            this.$emit("clearOrder");
+            this.$emit("clearOrder2");
             this.$emit("closeDialog");
           })
           .catch(e => {
             this.$swal(e);
           });
       } else {
-        this.$emit("clearOrder");
+        this.$emit("clearOrder2");
         this.$emit("closeDialog");
       }
     },
@@ -805,13 +832,20 @@ export default {
         WinPrint.document.write(
           `<td style='padding-left:20px;'>${parseInt(i) + 1}</td><td >${
             this.orders[i].name
-          }</td><td style='padding-left:20px;'>${
+          } ${
+            this.orders[i].normal_price
+          } บาท</td><td style='padding-left:20px;'>${
             this.orders[i].qty
           }</td><td style='padding-left:20px;'>${this.formatPrice(
             this.orders[i].price
           )} </td><td style='padding-right:20px;'>฿</td>`
         );
         WinPrint.document.write("</tr>");
+        for (let j in this.orders[i].topping) {
+          WinPrint.document.write(
+            `<tr><td></td><td > - ${this.orders[i].topping[j].name} เพิ่ม ${this.orders[i].topping[j].price} บาท</td></td></tr>`
+          );
+        }
       }
       WinPrint.document.write(
         "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"

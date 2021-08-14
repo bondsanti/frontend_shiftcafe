@@ -27,7 +27,8 @@
             <v-btn
               color="primary"
               dark
-              class="mr-5"
+              class="mr-5 rounded-xl"
+              elevation="24"
               v-bind="attrs"
               v-on="on"
               @click="addItem"
@@ -53,7 +54,7 @@
         <v-card>
           <v-card-title>
             <span class="text-h5">
-              <v-icon left> mdi-ticket-percent-outline </v-icon>
+              <v-icon left> mdi-food-fork-drink</v-icon>
               {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
             </span>
           </v-card-title>
@@ -142,20 +143,26 @@
                       <!-- <div class="crop-button" @click="crop">Crop Image</div> -->
                       <div class="crop-button">
                         <v-btn
-                          class="mx-1 white--text"
+                          class="mx-1 white--text rounded-xl"
                           @click="crop"
                           color="green"
+                          elevation="24"
+                          small
                           >ดูรูปตัวอย่าง</v-btn
                         >
                         <v-btn
-                          class="mx-1 white--text"
+                          class="mx-1 white--text rounded-xl"
                           @click="crop"
+                          small
                           color="blue"
+                          elevation="24"
                           >บันทึกรูปที่หมุน</v-btn
                         >
                         <v-btn
-                          class="mx-1 white--text"
+                          class="mx-1 white--text rounded-xl"
+                          small
                           color="orange"
+                          elevation="24"
                           @click="croppedFinish"
                           >ตัดรูปภาพ</v-btn
                         >
@@ -165,9 +172,11 @@
                       <v-col> </v-col>
                       <v-col>
                         <v-btn
+                          outlined
+                          elevation="24"
                           :rules="rules"
                           @click="$refs.file.click()"
-                          class="upload-example__button mt-3 primary--text "
+                          class=" rounded-xl upload-example__button mt-3 primary--text "
                           style="color: #fff;border-radius: 0.25rem; padding: 0.5rem 1rem; border: none; outline: none;"
                         >
                           <input
@@ -189,16 +198,28 @@
             </v-card-text>
           </v-form>
           <v-card-actions>
-            <v-btn class="ma-1" color="primary" dark @click="close">
-              <v-icon aria-hidden="false" class="mx-2">
-                mdi-ticket-percent-outline
+            <v-btn
+              class="ma-1 mr-1 rounded-xl"
+              color="primary"
+              elevation="24"
+              dark
+              @click="close"
+            >
+              <v-icon aria-hidden="false" class="mx-2 mr-1 rounded-xl">
+                mdi-close-box
               </v-icon>
               ยกเลิก
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn class="ma-1" color="info" :disabled="!valid" @click="save()">
-              <v-icon aria-hidden="false" class="mx-2">
-                mdi-ticket-percent-outline
+            <v-btn
+              class="ma-1 mr-1 rounded-xl"
+              color="info"
+              elevation="24"
+              :disabled="!valid"
+              @click="save()"
+            >
+              <v-icon aria-hidden="false" class="mx-2 ">
+                mdi-content-save
               </v-icon>
               {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
             </v-btn>
@@ -252,10 +273,10 @@
               md="4"
               lg="3"
             >
-              <v-card dark class="mx-2">
+              <v-card dark class="mx-2 rounded-xl" elevation="15">
                 <div class="d-flex justify-start mb-6">
                   <!-- แสดงข้อมูล -->
-                  <v-avatar class="ma-3" size="125" tile>
+                  <v-avatar class="ma-3 rounded-xl" size="125" tile >
                     <v-img
                       :aspect-ratio="16 / 9"
                       max-width="100%"

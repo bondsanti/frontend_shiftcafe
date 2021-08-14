@@ -105,6 +105,7 @@
       @addCus="refreshUser"
       :idOrder="dataFromList.idOrder"
       @clearOrder="clearOrder"
+      @clearOrder2="clearOrder2"
       :bank2="bank"
       :couponParent="coupon"
     />
@@ -268,13 +269,17 @@ export default {
     },
 
     deleteOrderOnDatabase(i) {
+      //console.log("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee3");
       this.$axios.$delete("/order/" + this.orderOnDatabase[i]._id).then(() => {
         this.orderOnDatabase.splice(i, 1);
-        this.bill_name = null;
+        // this.bill_name = null;
       });
     },
     clearOrder() {
       this.$refs.listChild.clearOrder();
+    },
+    clearOrder2() {
+      this.$refs.listChild.clearOrder2();
     }
   },
 

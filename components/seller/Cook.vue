@@ -345,22 +345,25 @@
                 ><h4>ราคา</h4></v-col
               >
             </v-row>
-            <v-row
-              no-gutters
-              style="flex-wrap: nowrap"
-              v-for="item in itemBy ? itemBy.list_product : []"
-              :key="item.name"
+            <div
+              v-for="(item, i) in itemBy ? itemBy.list_product : []"
+              :key="i"
             >
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-left">
-                {{ item.name }}
-              </v-col>
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center">
-                {{ item.qty }}
-              </v-col>
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-right">
-                {{ formatPrice(item.price) }}
-              </v-col>
-            </v-row>
+              <v-row no-gutters style="flex-wrap: nowrap">
+                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-left">
+                  {{ item.name }}
+                </v-col>
+                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center">
+                  {{ item.qty }}
+                </v-col>
+                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-right">
+                  {{ formatPrice(item.price) }}
+                </v-col>
+              </v-row>
+              <v-row no-gutters>
+                - {{ convertArrayToString(item.topping) }}</v-row
+              >
+            </div>
             <v-row>
               <v-col cols="12" class="flex-grow-0 flex-shrink-0 text-center"
                 ><h3>
@@ -422,6 +425,13 @@ export default {
     }
   }),
   methods: {
+    convertArrayToString(topping) {
+      let string = "";
+      topping.map(t => {
+        string = `${string === "" ? "" : string + ","}  ${t.name}`;
+      });
+      return string;
+    },
     async addOrderToDatabase() {
       this.$emit("addOrderToDatabase", this.bill_name);
       this.bill_name = null;
@@ -550,13 +560,18 @@ export default {
         WinPrint.document.write(
           `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
             list[j].name
-          }</td><td style='padding-left:20px;'>${
+          } ${list[j].normal_price} บาท</td><td style='padding-left:20px;'>${
             list[j].qty
           }</td><td style='padding-left:20px;'>${this.formatPrice(
             list[j].price
           )} </td><td style='padding-right:20px;'>฿</td>`
         );
         WinPrint.document.write("</tr>");
+        for (let k in list[j].topping) {
+          WinPrint.document.write(
+            `<tr><td></td><td > - ${list[j].topping[k].name} เพิ่ม ${list[j].topping[k].price} บาท</td></td></tr>`
+          );
+        }
       }
       WinPrint.document.write(
         "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
@@ -607,7 +622,7 @@ export default {
         "<table   style='width: 100%;font-size: 0.5em;'>"
       );
       WinPrint.document.write(
-        "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th><th style='border-bottom: thin dotted;border-top: thin dotted' colspan='2' width='100px'>ราคา</th></tr>"
+        "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th></tr>"
       );
       let subTotal = 0;
       let list = this.orderOnDatabase[i].list_product;
@@ -617,13 +632,14 @@ export default {
         WinPrint.document.write(
           `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
             list[j].name
-          }</td><td style='padding-left:20px;'>${
-            list[j].qty
-          }</td><td style='padding-left:20px;'>${this.formatPrice(
-            list[j].price
-          )} </td><td style='padding-right:20px;'>฿</td>`
+          }</td><td style='padding-left:20px;'>${list[j].qty}</td>`
         );
         WinPrint.document.write("</tr>");
+        for (let k in list[j].topping) {
+          WinPrint.document.write(
+            `<tr><td></td><td > - ${list[j].topping[k].name} </td></td></tr>`
+          );
+        }
       }
       WinPrint.document.write(
         "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"

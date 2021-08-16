@@ -99,23 +99,16 @@ export default {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
       return this.$moment(strdate).format("DD MMMM YYYY ");
+    },
+    filterPayment() {
+      const res = this.year.filter(y => y.status !== 1);
+      this.year = res;
+      //console.log(res);
     }
   },
 
-  mounted() {
-    // this.$axios
-    //   .get(
-    //     "https://campaign-admin.gewista.at/chart/12/2021-07-01T10:03:23/2021-07-10T10:03:2"
-    //   )
-    //   .then(response => {
-    //     this.chartData = response.data;
-    //     //  console.log(response.data);
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //     this.errored = true;
-    //   })
-    //   .finally(() => (this.loading = false));
+  created() {
+    this.filterPayment();
   }
 };
 </script>

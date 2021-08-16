@@ -35,7 +35,7 @@
           </v-app-bar>
           <!-- </v-row> -->
           <v-card
-            width="99.0%"
+            width="100.0%"
             max-height="580px"
             color="#ededed"
             flat

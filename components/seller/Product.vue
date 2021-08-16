@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="6" sm="6" md="4" lg="3">
+  <v-col cols="6" sm="6" md="4" lg="3"  style="padding: 6px;"> 
     <v-card
       class=" rounded-xl cursor"
       color="grey lighten-4"
@@ -14,7 +14,10 @@
       >
       </v-img>
       <v-card-text class="pt-6 pa-0" style="position: relative;">
-        <div class="font-weight primary--text text-h6  text-center">
+        <div
+          :class="[$vuetify.breakpoint.smAndDown ? 'text-h6' : 'text-h5']"
+          class="font-weight-Dark primary--text  text-center"
+        >
           {{ product.product_name }}
         </div>
 

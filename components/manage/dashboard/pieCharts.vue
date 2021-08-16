@@ -62,7 +62,32 @@ export default {
       chartOptions: {
         chart: {
           width: "100%",
-          type: "pie"
+          type: "pie",
+          toolbar: {
+            show: true,
+            offsetX: 0,
+            offsetY: 0,
+            tools: {
+              download: true
+            },
+            export: {
+              csv: {
+                filename: "test2",
+                columnDelimiter: ",",
+                headerCategory: "ประเภทอาหาร",
+                headerValue: "จำนวน",
+                dateFormatter(timestamp) {
+                  return new Date(timestamp).toDateString();
+                }
+              },
+              svg: {
+                filename: undefined
+              },
+              png: {
+                filename: undefined
+              }
+            }
+          }
         },
 
         labels: [],
@@ -108,6 +133,13 @@ export default {
       return moment(strdate).format("D/MM/YY ");
     },
     sendDate() {
+      // console.log(this.dateNow);
+      // this.chartOptions.chart.toolbar.export.csv.filename =
+      //   this.phylum === "category"
+      //     ? "รายงานหมวดหมู่ " + this.dateNow
+      //     : "รายงานหมวดประเภท " + this.dateNow;
+      // console.log(this.chartOptions.chart.toolbar.export.csv.filename);
+      // this.chartOptions.chart.toolbar.export.svg.filename = "esveegee";
       this.series = [];
       this.mergeProduct();
       this.menu2 = false;
@@ -155,6 +187,10 @@ export default {
     });
 
     this.mergeProduct();
+    // this.chartOptions.chart.toolbar.export.csv.filename =
+    //   this.phylum === "category"
+    //     ? "รายงานหมวดหมู่ " + this.dateNow
+    //     : "รายงานหมวดประเภท " + this.dateNow;
   }
 };
 </script>

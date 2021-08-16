@@ -60,7 +60,7 @@
       </v-dialog>
       <v-row>
         <v-col xs="12" sm="12" md="12" class="">
-          <v-card class="px-6 py-5 mb-5">
+          <v-card class="px-6 py-5 mb-5 rounded-xl">
             <v-card-title>
               <h2 class="text-center">ข้อมูลการสั่งซื้อ</h2>
               <v-spacer></v-spacer>
@@ -70,6 +70,7 @@
                 solo
                 append-icon="mdi-magnify"
                 label="ค้นหา"
+                class="rounded-xl"
                 single-line
                 hide-details
               ></v-text-field>

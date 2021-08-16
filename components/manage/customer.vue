@@ -51,7 +51,7 @@
               :class="`elevation-${hover ? 24 : 6}`"
               color="primary"
               dark
-              class="mr-5 rounded-xl"
+              class="ma-5 rounded-xl"
               v-bind="attrs"
               v-on="on"
               @click="addItem"

@@ -50,16 +50,16 @@
             ><v-btn outlined @click="$emit('closeHold')">ปิด</v-btn></v-toolbar
           >
           <div class="d-flex flex-row mb-3 ">
-            <v-col cols="3" md="3"><h3>ชื่อบิล</h3></v-col>
+            <v-col cols="3" md="3"><h4>ชื่อบิล</h4></v-col>
             <v-col cols="4" md="3" class="hidden-sm-and-down"
               ><h3>เวลา</h3></v-col
             >
             <v-col cols="4" md="1" class="hidden-sm-and-down"
-              ><h3>รายการ</h3></v-col
+              ><h4>รายการ</h4></v-col
             >
-            <v-col cols="3" md="1"><h3>รวมเงิน</h3></v-col>
-            <v-col cols="3" md="2"><h3>สถานะ</h3></v-col>
-            <v-col cols="3" md="2"><h3>จัดการ</h3></v-col>
+            <v-col cols="3" md="1"><h4>รวมเงิน</h4></v-col>
+            <v-col cols="3" md="2"><h4>สถานะ</h4></v-col>
+            <v-col cols="3" md="2"><h4>จัดการ</h4></v-col>
           </div>
           <div
             class="d-flex flex-row m-2"
@@ -350,10 +350,10 @@
               :key="i"
             >
               <v-row no-gutters style="flex-wrap: nowrap">
-                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-left">
+                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-left ">
                   {{ item.name }}
                 </v-col>
-                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center">
+                <v-col cols="4" class=" flex-grow-0 flex-shrink-0 text-center">
                   {{ item.qty }}
                 </v-col>
                 <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-right">

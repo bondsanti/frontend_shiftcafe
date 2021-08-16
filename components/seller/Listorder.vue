@@ -6,7 +6,9 @@
       elevation="2"
       height="65px"
     >
-      <h1>รายการสั่งซื้อ</h1>
+      <span :class="[$vuetify.breakpoint.smAndDown ? 'text-h5' : 'text-h4']">
+        รายการสั่งซื้อ
+      </span>
     </v-card>
     <v-card
       class="rounded-xl d-flex flex-column mt-3"
@@ -14,68 +16,82 @@
       elevation="5"
     >
       <div class="d-flex flex-row justify-space-between ml-15 mt-2 mb-5">
-        <h3 class="d-flex flex-column mr-0">ชื่อ</h3>
+        <h3 class="d-flex flex-column mr-0 mt-1">ชื่อ</h3>
         |
-        <h3 class="d-flex flex-column">
+        <h3 class="d-flex flex-column mt-1">
           จำนวน
         </h3>
         |
-        <h3 class="d-flex flex-column mr-15">ราคา</h3>
+        <h3 class="d-flex flex-column mr-15 mt-1">ราคา</h3>
       </div>
-      <!-- <v-divider></v-divider> -->
-      <div v-for="(order, i) in orders" :key="i">
-        <!-- <div class="d-flex flex-row  mt-1"> -->
+      <v-list-item-group
+        v-model="selectedItem"
+        active-class="info--text"
+        color="primary"
+      >
+        <!-- <v-divider></v-divider> -->
+        <div v-for="(order, i) in orders" :key="i">
+          <!-- <div class="d-flex flex-row  mt-1"> -->
+          <v-divider></v-divider>
+          <v-list-item two-line>
+            <v-list-item-content>
+              <v-list-item-title class="d-flex flex-row ma-0 pa-0">
+                <v-col cols="1" class="ma-0">
+                  <v-sheet class="mx-auto rounded-xl" height="30" width="30" elevation="6">
+                    <v-icon
+                      color="red"
+                      class="mr-3"
+                      @click="deleteOrder(i)"
+                      size="30px"
+                      >mdi-trash-can-outline</v-icon
+                    >
+                  </v-sheet>
+                </v-col>
 
-        <v-list-item two-line>
-          <v-list-item-content>
-            <v-list-item-title class="d-flex flex-row ma-0 pa-0">
-              <v-col cols="1" class="ma-0">
-                <v-icon
-                  color="red"
-                  class="mr-4"
-                  @click="deleteOrder(i)"
-                  size="30px"
-                  >mdi-trash-can-outline</v-icon
-                >
-              </v-col>
-              <v-col cols="4">
-                <h3>{{ order.name }}</h3>
-              </v-col>
-              <v-col cols="3">
-                <div class="d-flex flex-row justify-space-around">
-                  <v-icon class="cursor" size="30px" @click="deleteQty(i)"
-                    >mdi-minus-circle-outline</v-icon
-                  >
-                  <h3 class="">{{ order.qty }}</h3>
-                  <v-icon size="30px" class=" cursor" @click="addQty(i)"
-                    >mdi-plus-circle-outline</v-icon
-                  >
-                </div>
-              </v-col>
-              <v-col cols="4" align="center"
-                ><h3 class="d-flex flex-column">{{ order.price }}</h3></v-col
-              >
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              <p class="text-truncate cursor" @click="editTopping(i)">
-                {{ convertArrayToString(order.topping) }}
-              </p>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </div>
+                <v-col cols="4" class="mx-2">
+                  <!-- <h3>{{ order.name }}</h3> -->
+                  <h3 v-text="order.name"></h3>
+                </v-col>
+                <v-col cols="3">
+                  <div class="d-flex flex-row justify-space-around">
+                    <v-icon class="cursor" size="30px" @click="deleteQty(i)"
+                      >mdi-minus-circle-outline</v-icon
+                    >
+                    <h3 class="">{{ order.qty }}</h3>
+                    <v-icon size="30px" class=" cursor" @click="addQty(i)"
+                      >mdi-plus-circle-outline</v-icon
+                    >
+                  </div>
+                </v-col>
+                <v-col cols="4" align="center">
+                  <h3 class="d-flex flex-column">{{ order.price }}</h3>
+                </v-col>
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                <p class="text-truncate cursor" @click="editTopping(i)">
+                  {{ convertArrayToString(order.topping) }}
+                </p>
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider></v-divider>
+        </div>
+      </v-list-item-group>
+
       <v-spacer></v-spacer>
-      <div class="d-flex flex-row justify-space-between mb-0 mr-4 ml-4 mt-16">
-        <h2 class="d-flex flex-column">ราคา</h2>
-        <h2 class="d-flex flex-column info--text">
+      <div
+        class="d-flex flex-row justify-space-between mb-0 mr-4 ml-4 mt-6 ma-6"
+      >
+        <h2 class="d-flex flex-column ma-2">ราคา</h2>
+        <h2 class="d-flex flex-column info--text ma-2">
           {{ formatPrice(subTotal) }}
         </h2>
       </div>
       <div
         v-if="bill_name"
-        class="d-flex flex-row justify-space-between  mx-4 mt-2 mb-2"
+        class="d-flex flex-row justify-space-between  mx-4 mt-2 mb-2 "
       >
-        <h3>ชื่อบิล {{ bill_name }}</h3>
+        <h3 class="text-center">ชื่อบิล {{ bill_name }}</h3>
       </div>
     </v-card>
     <v-btn
@@ -89,7 +105,7 @@
       :disabled="orders.length === 0"
       >ชำระเงิน ({{ formatPrice(subTotal) }} ฿)</v-btn
     >
-    <div class="d-flex flex-row">
+    <div class="mb-2 d-flex flex-row">
       <v-col cols="6">
         <v-btn rounded large block outlined color="red" @click="clearOrder"
           >ยกเลิกออเดอร์</v-btn
@@ -139,6 +155,10 @@ export default {
   props: ["orderDatabase", "product2", "products"],
 
   data: () => ({
+    // can be lowered with dense property.
+    selectedItem: 1,
+    //
+
     orders: [],
     subTotal: 0,
     bill_name: null,

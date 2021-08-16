@@ -2,7 +2,7 @@
   <div class="ma-3">
     <!-- photo -->
     <v-dialog v-model="dialogPhoto" max-width="500" max-height="300">
-      <v-card>
+      <v-card class="rounded-xl">
         <v-toolbar dense color="elevation-0">
           <v-spacer></v-spacer>
           <v-btn icon color="black" @click.native="dialogPhoto = false">
@@ -26,7 +26,7 @@
             <v-btn
               color="primary"
               dark
-              class="mr-5 rounded-xl"
+              class="ma-5 rounded-xl"
               elevation="15"
               v-bind="attrs"
               v-on="on"
@@ -258,7 +258,7 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
-            class="mr2 white--text rounded-xl "
+            class="ma-2 white--text rounded-xl "
             elevation="15"
             color="cyan accent-3"
             @click="topping(item)"
@@ -266,10 +266,10 @@
             <v-icon aria-hidden="false" class="mx-2">
               mdi-food-apple
             </v-icon>
-            TOPPING
+            ท็อปปิ้ง
           </v-btn>
           <v-btn
-            class="mr2 white--text rounded-xl"
+            class="ma-2 white--text rounded-xl"
             elevation="15"
             color="warning"
             @click="editItem(item)"
@@ -280,7 +280,7 @@
             แก้ไข
           </v-btn>
           <v-btn
-            class="mr-2 rounded-xl"
+            class="ma-2 rounded-xl"
             elevation="15"
             color="error"
             @click="deleteItem(item)"
@@ -308,14 +308,14 @@
     <v-row justify="space-around">
       <v-dialog
         transition="dialog-top-transition"
-        max-width="850"
+        max-width="900"
         v-model="dialogTopping"
         height="auto"
         persistent
       >
-        <v-card>
+        <v-card class="rounded-xl">
           <v-toolbar color="primary" dark
-            >เพิ่ม TOPPING <v-spacer></v-spacer
+            >เพิ่ม ท็อปปิ้ง <v-spacer></v-spacer
             ><v-btn
               class="ma-1 mr-1 rounded-xl"
               elevation="24"
@@ -330,19 +330,19 @@
           >
           <v-sheet class="pa-5">
             <v-row>
-              <v-col cols="5"><h3>ชื่อ TOPPING</h3></v-col>
-              <v-col cols="2"><h3>คิดเพิ่ม</h3></v-col>
-              <v-col cols="2"><h3>สถานะ</h3></v-col>
-              <v-col cols="3"><h3>หมายเหตุ</h3></v-col>
+              <v-col cols="3"><h5>ชื่อ</h5></v-col>
+              <v-col cols="3"><h5>คิดเพิ่ม</h5></v-col>
+              <v-col cols="3"><h5>สถานะ</h5></v-col>
+              <v-col cols="3"><h5>หมายเหตุ</h5></v-col>
             </v-row>
             <v-row v-for="(top, i) in toppingArray" :key="i">
-              <v-col cols="5"
-                ><h4>{{ i + 1 }}. {{ top.name }}</h4></v-col
+              <v-col cols="3"
+                ><h5>{{ i + 1 }}. {{ top.name }}</h5></v-col
               >
-              <v-col cols="2"
-                ><h4>{{ top.price }} บาท</h4></v-col
+              <v-col cols="3"
+                ><h5>{{ top.price }} บาท</h5></v-col
               >
-              <v-col cols="2">
+              <v-col cols="3" class="hidden-xs-only">
                 <v-switch
                   :color="getColor(top.status)"
                   class="ma-0"
@@ -352,42 +352,106 @@
                   :label="top.status ? 'เปิดใช้' : 'ปิดใช้'"
                 ></v-switch>
               </v-col>
-              <v-col cols="3">
-                <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      elevation="24"
-                      fab
-                      v-bind="attrs"
-                      v-on="on"
-                      plain
-                      class="warning"
-                      raised
-                      @click="editTopping(top, i)"
-                      ><v-icon>mdi-grease-pencil</v-icon></v-btn
-                    >
-                  </template>
-                  <span>แก้ไขท๊อป</span>
-                </v-tooltip>
 
-                <v-tooltip top>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      elevation="24"
-                      fab
-                      plain
-                      color="error"
-                      v-bind="attrs"
-                      v-on="on"
-                      raisedb
-                      @click="deleteTopping(i)"
-                      ><v-icon>mdi-trash-can</v-icon></v-btn
+              <v-col cols="3" md="2" class="hidden-xs-only">
+                <div class="d-flex flex-row  flex-wrap justify-center">
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        small
+                        elevation="24"
+                        fab
+                        v-bind="attrs"
+                        v-on="on"
+                        plain
+                        class="warning"
+                        raised
+                        @click="editTopping(top, i)"
+                        ><v-icon>mdi-grease-pencil</v-icon></v-btn
+                      >
+                    </template>
+                    <span>แก้ไขท๊อป</span>
+                  </v-tooltip>
+
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        small
+                        elevation="24"
+                        fab
+                        plain
+                        color="error"
+                        v-bind="attrs"
+                        v-on="on"
+                        raisedb
+                        @click="deleteTopping(i)"
+                        ><v-icon>mdi-trash-can</v-icon></v-btn
+                      >
+                    </template>
+                    <span>ลบท๊อป</span>
+                  </v-tooltip>
+                </div>
+              </v-col>
+
+              <v-col cols="6" md="1" class="hidden-sm-and-up">
+                <v-expansion-panels focusable small class="rounded-xl">
+                  <v-expansion-panel class="rounded-xl">
+                    <v-expansion-panel-header
+                      ><v-icon class="hidden-xs-only"
+                        >mdi-menu</v-icon
+                      ></v-expansion-panel-header
                     >
-                  </template>
-                  <span>ลบท๊อป</span>
-                </v-tooltip>
+                    <v-expansion-panel-content>
+                      <v-row class="justify-center my-1">
+                        <v-switch
+                          :color="getColor(top.status)"
+                          class="ma-0"
+                          hide-details
+                          v-model="top.status"
+                          inset
+                          :label="top.status ? 'เปิดใช้' : 'ปิดใช้'"
+                        ></v-switch>
+                      </v-row>
+
+                      <v-row class="justify-center my-1">
+                        <v-tooltip top>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                              small
+                              elevation="24"
+                              fab
+                              v-bind="attrs"
+                              v-on="on"
+                              plain
+                              class="warning"
+                              raised
+                              @click="editTopping(top, i)"
+                              ><v-icon>mdi-grease-pencil</v-icon></v-btn
+                            >
+                          </template>
+                          <span>แก้ไขท๊อป</span>
+                        </v-tooltip>
+                        <v-tooltip top>
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-btn
+                              small
+                              elevation="24"
+                              fab
+                              plain
+                              color="error"
+                              v-bind="attrs"
+                              v-on="on"
+                              raisedb
+                              @click="deleteTopping(i)"
+                              ><v-icon>mdi-trash-can</v-icon></v-btn
+                            >
+                          </template>
+                          <span>ลบท๊อป</span>
+                        </v-tooltip>
+                      </v-row>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
               </v-col>
             </v-row>
           </v-sheet>
@@ -400,6 +464,7 @@
                   filled
                   label="ชื่อ TOPPING"
                   outlined
+                  class="rounded-xl"
                   hide-details
                 ></v-text-field>
               </v-col>
@@ -407,6 +472,7 @@
                 <v-text-field
                   v-model="toppingPrice"
                   filled
+                  class="rounded-xl"
                   label="ราคา"
                   outlined
                   hide-details

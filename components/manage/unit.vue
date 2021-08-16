@@ -7,7 +7,7 @@
             <v-btn
               color="primary"
               dark
-              class="mr-5 ma-1 rounded-xl"
+              class="ma-5 ma-1 rounded-xl"
               elevation="24"
               v-bind="attrs"
               v-on="on"

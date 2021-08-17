@@ -187,10 +187,20 @@ export default {
     });
 
     this.mergeProduct();
-    // this.chartOptions.chart.toolbar.export.csv.filename =
-    //   this.phylum === "category"
-    //     ? "รายงานหมวดหมู่ " + this.dateNow
-    //     : "รายงานหมวดประเภท " + this.dateNow;
+    this.chartOptions.chart.toolbar.export.csv.filename =
+      this.phylum === "category"
+        ? "รายงานหมวดหมู่อาหาร "
+        : "รายงานประเภทอาหาร ";
+    this.chartOptions.chart.toolbar.export.csv.headerCategory =
+      this.phylum === "category" ? "หมวดหมู่อาหาร " : "ประเภทอาหาร ";
+    this.chartOptions.chart.toolbar.export.svg.filename =
+      this.phylum === "category"
+        ? "รายงานหมวดหมู่อาหาร "
+        : "รายงานประเภทอาหาร ";
+    this.chartOptions.chart.toolbar.export.png.filename =
+      this.phylum === "category"
+        ? "รายงานหมวดหมู่อาหาร "
+        : "รายงานประเภทอาหาร ";
   }
 };
 </script>

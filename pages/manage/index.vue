@@ -28,7 +28,7 @@
             phylum="unit"
           />
         </v-col>
-        <!-- <v-col cols="12" sm="6"><datasell /></v-col> -->
+        <v-col cols="12"><CircleChart /></v-col>
       </v-row>
     </div>
 
@@ -39,6 +39,7 @@
 import sell from "@/components/manage/dashboard/sell.vue";
 import apexcharts from "@/components/manage/dashboard/apexcharts.vue";
 import pieCharts from "@/components/manage/dashboard/pieCharts.vue";
+import CircleChart from "@/components/manage/dashboard/CircleChart.vue";
 export default {
   head() {
     return {
@@ -65,7 +66,8 @@ export default {
   components: {
     sell,
     apexcharts,
-    pieCharts
+    pieCharts,
+    CircleChart
   },
   data() {
     return {

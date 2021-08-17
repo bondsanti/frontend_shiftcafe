@@ -2,7 +2,7 @@
   <div class="" style="height: 100%">
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
       <v-dialog v-model="dialog" max-width="500px">
-        <v-card>
+        <v-card class="rounded-xl">
           <v-form>
             <v-card-title>
               <span class="text-h"
@@ -23,12 +23,12 @@
             </v-card-text>
             <v-divider class="mt-3"></v-divider>
             <v-card-actions>
-              <v-btn color="teal" @click="printInvoice" dark>
+              <v-btn color="teal" @click="printInvoice" dark class="rounded-xl">
                 <v-icon left> mdi-printer </v-icon>พิมพ์ใบเสร็จรับเงิน
               </v-btn>
               <v-spacer></v-spacer>
 
-              <v-btn color="error" @click="close">
+              <v-btn color="error" @click="close" class="rounded-xl">
                 <v-icon left> mdi-close </v-icon>ปิด
               </v-btn>
             </v-card-actions>
@@ -37,7 +37,7 @@
       </v-dialog>
       <v-row>
         <v-col xs="12" sm="12" md="12" class="">
-          <v-card class="px-6 py-5 mb-5">
+          <v-card class="px-6 py-5 mb-5 rounded-xl">
             <v-card-title>
               <h2 class="text-center">ข้อมูลใบสั่งซื้อ</h2>
               <v-spacer></v-spacer>
@@ -47,6 +47,7 @@
                 append-icon="mdi-magnify"
                 label="ค้นหา"
                 solo
+                class="rounded-xl"
                 single-line
                 hide-details
               ></v-text-field>
@@ -92,7 +93,7 @@
               </template>
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn
-                  class="mr2"
+                  class="mr2 rounded-xl"
                   color="light-green accent-3"
                   @click="Detail(item.actions)"
                   small
@@ -103,7 +104,7 @@
                   ดูรายละเอียด
                 </v-btn>
                 <v-btn
-                  class="ml-2"
+                  class="ml-2 rounded-xl"
                   color="red accent-3"
                   @click="disableBill(item.actions)"
                   small
@@ -136,22 +137,23 @@
         </v-col>
       </v-row>
     </v-card>
-    <v-dialog v-model="dialogDelete" max-width="450px" width="auto">
+    <v-dialog v-model="dialogDelete" max-width="360px" width="auto">
       <v-card>
-        <v-card-title class="text-h5 white--text  primary text-center">
+        <v-card-title class="text-h5 primary--text   text-center">
           {{
             typePayment === "disable"
               ? "แน่ใจแล้วใช่มั้ยที่จะยกเลิกบิล"
               : "แน่ใจแล้วใช่มั้ยที่จะเปิดการใช้งานบิล"
           }}
         </v-card-title>
+        <v-divider class="mt-3"></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" class="ma-2" @click="dialogDelete = false">
+          <v-btn color="primary" class="ma-2  rounded-xl" @click="dialogDelete = false">
             <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon
             >ไม่ละ เปลี่ยนใจแล้ว</v-btn
           >
-          <v-btn color="red" class="ma-2" @click="manageBill" dark>
+          <v-btn color="red" class="ma-2  rounded-xl" @click="manageBill" dark>
             <v-icon aria-hidden="false"
               >{{
                 typePayment === "disable"

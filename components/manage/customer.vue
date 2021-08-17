@@ -2,7 +2,7 @@
   <div class="ma-3">
     <!-- 1 -->
     <v-dialog v-model="dialogView" max-width="400px">
-      <v-card>
+      <v-card class="rounded-xl">
         <v-form>
           <v-card-title>
             <span class="text-h">
@@ -31,10 +31,11 @@
             color="error"
             dark
             @click="dialogView = false"
-            elevation="24"
-            plain
+          
+            
+            text
           >
-            <v-icon aria-hidden="false" class="mx-2">
+            <v-icon aria-hidden="false" class="mx-2" plain>
               mdi-close-box
             </v-icon>
             ปิด
@@ -43,12 +44,15 @@
       </v-card>
     </v-dialog>
     <!-- 2 -->
-    <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
+    <v-card
+      class="mx-auto mt-6  py-3 rounded-xl"
+      elevaation="5"
+      justify-centaer
+    >
       <v-card-title>
         <v-dialog v-model="dialogadd" max-width="500px">
-          <template v-slot:activator="{ on, attrs }" :default="{ hover }">
+          <template v-slot:activator="{ on, attrs }">
             <v-btn
-              :class="`elevation-${hover ? 24 : 6}`"
               color="primary"
               dark
               class="ma-5 rounded-xl"
@@ -69,6 +73,8 @@
           label="ค้นหา"
           single-line
           hide-details
+          elevation="24"
+          class="rounded-xl"
           solo
         ></v-text-field>
       </v-card-title>
@@ -97,7 +103,7 @@
         <template v-slot:top>
           <!-- add -->
           <v-dialog v-model="dialogadd" max-width="800px">
-            <v-card>
+            <v-card class="rounded-xl">
               <v-card-title>
                 <span
                   ><v-icon left> mdi-account-plus </v-icon>
@@ -244,7 +250,7 @@
               </v-card-text>
               <v-divider class="mb-3"></v-divider>
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="closeadd">
+                <v-btn class="ma-1 rounded-xl" color="primary" dark @click="closeadd">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -252,7 +258,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="ma-1"
+                  class="ma-1 rounded-xl"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -269,7 +275,7 @@
 
           <!--******************************* edi ****************************************************************************************************************-->
           <v-dialog v-model="dialog" max-width="750px">
-            <v-card>
+            <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5">
                   <v-icon left> mdi-account-plus </v-icon>
@@ -346,7 +352,13 @@
                         sm="2"
                         class="justify-center align-center"
                       >
-                        <v-btn @click="check" color="warning"> ตรวจสอบ</v-btn>
+                        <v-btn
+                          class="rounded-xl"
+                          @click="check"
+                          color="warning"
+                        >
+                          ตรวจสอบ</v-btn
+                        >
                         <div class="mt-2 ml-4" v-if="teltrue">
                           <span class="green--text ">ใช้ได้</span>
                         </div>
@@ -411,7 +423,7 @@
                 </v-alert>
               </v-card-text>
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
+                <v-btn class="ma-1 rounded-xl" color="primary" dark @click="close">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -419,7 +431,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="ma-1"
+                  class="ma-1 rounded-xl"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -435,7 +447,7 @@
           <!--****************************** edi ********************************************************************************************************* -->
           <!-- dialogDelete -->
           <v-dialog v-model="dialogDelete" max-width="410">
-            <v-card>
+            <v-card  class="rounded-xl">
               <v-card-title class="primary--text text-center">
                 คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
               </v-card-title>
@@ -443,7 +455,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
 
-                <v-btn @click="closeDelete" class="ma-1" color="info" plain>
+                <v-btn @click="closeDelete" class="ma-1 rounded-xl" color="info" plain>
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -467,9 +479,8 @@
           </v-dialog>
           <!-- dialogDelete -->
         </template>
-        <template v-slot:[`item.actions`]="{ item }" :default="{ hover }">
+        <template v-slot:[`item.actions`]="{ item }">
           <v-btn
-            :class="`elevation-${hover ? 24 : 6}`"
             class="mr-1 rounded-xl"
             small
             elevation="24"
@@ -482,7 +493,6 @@
             แก้ไข
           </v-btn>
           <v-btn
-            :class="`elevation-${hover ? 24 : 6}`"
             rounded-lx
             class="mr-1 rounded-xl"
             elevation="24"
@@ -524,11 +534,10 @@
             Reset(ข้อมูลไม่โหลด)
           </v-btn>
         </template>
-        <template v-slot:[`item.view`]="{ item }" :default="{ hover }">
+        <template v-slot:[`item.view`]="{ item }">
           <v-btn
             class="rounded-xl"
             elevation="24"
-            :class="`elevation-${hover ? 24 : 6}`"
             small
             color="teal"
             @click="Detail(item)"

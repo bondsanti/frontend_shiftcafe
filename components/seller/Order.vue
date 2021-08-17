@@ -2,7 +2,7 @@
   <div class="" style="height: 100%">
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
       <v-dialog v-model="dialog" max-width="500px">
-        <v-card>
+        <v-card class="rounded-xl">
           <v-form>
             <v-card-title>
               <span class="text-h"
@@ -51,7 +51,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
 
-              <v-btn color="error" @click="close">
+              <v-btn color="error" @click="close" plain>
                 <v-icon left> mdi-close </v-icon>ปิด
               </v-btn>
             </v-card-actions>
@@ -100,8 +100,9 @@
               </template>
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn
-                  class="mr2"
+                  class="mr2 rounded-xl"
                   color="warning"
+                  elevation="15"
                   @click="Detail(item.actions)"
                   small
                 >

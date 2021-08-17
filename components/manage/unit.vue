@@ -1,6 +1,6 @@
 <template>
   <div class="ma-3 rounded-lg">
-    <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
+    <v-card class="mx-auto mt-6  py-3 rounded-xl" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -24,6 +24,7 @@
           v-model="search"
           append-icon="mdi-magnify"
           label="ค้นหา"
+          class="rounded-xl"
           single-line
           solo
           hide-details
@@ -53,7 +54,7 @@
         </template>
         <template v-slot:top>
           <v-dialog v-model="dialog" max-width="500px">
-            <v-card>
+            <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left> mdi-barley </v-icon>

@@ -5,7 +5,7 @@
         <v-card class="rounded-xl">
           <v-form>
             <v-card-title>
-              <span class="text-h"
+              <span class="text-h6"
                 ><v-icon left id="printable"> mdi-note-text-outline </v-icon>
                 หมายเลขใบเสร็จรับเงิน : {{ itemBy.invoice }}</span
               >
@@ -93,18 +93,19 @@
               </template>
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn
-                  class="mr2 rounded-xl"
-                  color="light-green accent-3"
-                  @click="Detail(item.actions)"
+                  class="my-2 rounded-xl white--text"
+                  color="#3f51b5"
                   small
+                  @click="Detail(item.actions)"
+                  
                 >
-                  <v-icon aria-hidden="false" class="mx-2">
+                  <v-icon  color="white" aria-hidden="false" >
                     mdi-eye-settings
                   </v-icon>
-                  ดูรายละเอียด
+                  รายละเอียด
                 </v-btn>
                 <v-btn
-                  class="ml-2 rounded-xl"
+                  class=" rounded-xl my-2"
                   color="red accent-3"
                   @click="disableBill(item.actions)"
                   small
@@ -112,7 +113,7 @@
                   dark
                   :disabled="$store.getters['position'] === 'cashier'"
                 >
-                  <v-icon aria-hidden="false" class="mx-2">
+                  <v-icon aria-hidden="false" >
                     mdi-stop-circle-outline
                   </v-icon>
                   ยกเลิกบิล
@@ -151,7 +152,7 @@
           <v-spacer></v-spacer>
           <v-btn color="primary" class="ma-2  rounded-xl" @click="dialogDelete = false">
             <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon
-            >ไม่ละ เปลี่ยนใจแล้ว</v-btn
+            >ปิด</v-btn
           >
           <v-btn color="red" class="ma-2  rounded-xl" @click="manageBill" dark>
             <v-icon aria-hidden="false"

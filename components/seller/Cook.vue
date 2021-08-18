@@ -590,7 +590,7 @@ export default {
       WinPrint.focus();
       setTimeout(() => {
         WinPrint.print();
-        WinPrint.close();
+        //WinPrint.close();
       }, 500);
     },
     for_chef(i) {
@@ -648,7 +648,7 @@ export default {
 
       WinPrint.document.close();
       WinPrint.focus();
-      setTimeout(WinPrint.print(), 3000);
+      //setTimeout(WinPrint.print(), 3000);
     }
   }
 };

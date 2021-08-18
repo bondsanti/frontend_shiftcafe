@@ -1,7 +1,9 @@
 <template>
   <v-card class="rounded-lg" color="">
-    <!-- <v-app-bar flat color="rgba(0,0,0,0)">
-      <h3>{{ title }}</h3>
+    <v-app-bar flat color="rgba(0,0,0,0)">
+      <h3>
+        จำนวนอาหารและเครื่องดื่มที่ขายได้ ประจำวันที่ {{ formatDate(dateNow) }}
+      </h3>
       <v-spacer></v-spacer>
 
       <div class="text-center">
@@ -20,19 +22,19 @@
           </template>
           <v-date-picker
             v-model="dateNow"
-            @input="sendDate"
+            @input="sendDate2"
             locale="th-TH"
-            @change="sendDate"
+            @change="sendDate2"
           ></v-date-picker>
         </v-menu>
       </div>
-    </v-app-bar> -->
+    </v-app-bar>
     <client-only>
       <div class="ml-3">
         <component
           :is="apexchart"
           max-width="100"
-          height="350"
+          height="500"
           type="bar"
           :options="chartOptions"
           :series="series"
@@ -54,34 +56,41 @@ export default {
     year: Array,
     category: Array,
     title: String,
-    phylum: String
+    phylum: String,
+    product: Array
   },
   data() {
     return {
-      series: [
-        {
-          data: [
-            400,
-            430,
-            448,
-            470,
-            540,
-            580,
-            690,
-            1100,
-            1200,
-            1380,
-            1380,
-            1380,
-            1380,
-            1380
-          ]
-        }
-      ],
+      series: [],
       chartOptions: {
         chart: {
           type: "bar",
-          height: 380
+          height: 380,
+          toolbar: {
+            show: true,
+            offsetX: 0,
+            offsetY: 0,
+            tools: {
+              download: true
+            },
+            export: {
+              csv: {
+                filename: "รายงานสินค้าประจำวันที่",
+                columnDelimiter: ",",
+                headerCategory: "ชื่อสินค้า",
+                headerValue: "จำนวนที่ขายได้",
+                dateFormatter(timestamp) {
+                  return new Date(timestamp).toDateString();
+                }
+              },
+              svg: {
+                filename: "รายงานสินค้าประจำวันที่"
+              },
+              png: {
+                filename: "รายงานสินค้าประจำวันที่"
+              }
+            }
+          }
         },
         plotOptions: {
           bar: {
@@ -113,34 +122,12 @@ export default {
           colors: ["#fff"]
         },
         xaxis: {
-          categories: [
-            "South Korea",
-            "Canada",
-            "United Kingdom",
-            "Netherlands",
-            "Italy",
-            "France",
-            "Japan",
-            "United States",
-            "China",
-            "India",
-            "India",
-            "India",
-            "India",
-            "India",
-            "India",
-            "India"
-          ]
+          categories: []
         },
         yaxis: {
           labels: {
             show: false
           }
-        },
-        title: {
-          text: "จำนวนอาหารและเครื่องดื่มที่ขายได้ ประจำวันที่",
-          align: "center",
-          floating: true
         },
 
         tooltip: {
@@ -156,7 +143,11 @@ export default {
             }
           }
         }
-      }
+      },
+      menu2: false,
+      dateNow: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10)
     };
   },
   computed: {
@@ -169,63 +160,146 @@ export default {
     }
   },
   methods: {
-    // formatDate(date) {
-    //   var strdate = moment(date).add(543, "years");
-    //   return moment(strdate).format("D/MM/YY ");
-    // },
-    // sendDate() {
-    //   // console.log(this.dateNow);
-    //   // this.chartOptions.chart.toolbar.export.csv.filename =
-    //   //   this.phylum === "category"
-    //   //     ? "รายงานหมวดหมู่ " + this.dateNow
-    //   //     : "รายงานหมวดประเภท " + this.dateNow;
-    //   // console.log(this.chartOptions.chart.toolbar.export.csv.filename);
-    //   // this.chartOptions.chart.toolbar.export.svg.filename = "esveegee";
-    //   this.series = [];
-    //   this.mergeProduct();
-    //   this.menu2 = false;
-    // },
-    // getItemByDay() {
-    //   let date = new Date(this.dateNow);
-    //   const day = this.year.filter(d => {
-    //     return (
-    //       new Date(d.datetime).getDate() === date.getDate() &&
-    //       new Date(d.datetime).getMonth() === date.getMonth() &&
-    //       new Date(d.datetime).getFullYear() === date.getFullYear()
-    //     );
-    //   });
-    //   //console.log(day);
-    //   return day;
-    // },
-    // getProductByCategory(arr, id) {
-    //   let newCat = [];
-    //   if (this.phylum === "category") {
-    //     newCat = arr.filter(a => {
-    //       return a.ref_pro_id.ref_cate_id === id;
-    //     });
-    //     //console.log(newCat);
-    //   } else {
-    //     newCat = arr.filter(a => {
-    //       return a.ref_pro_id.ref_uid === id;
-    //     });
-    //   }
-    //   return newCat;
-    // },
-    // mergeProduct() {
-    //   let pro = [];
-    //   this.getItemByDay().map(item => {
-    //     item.ref_order_id ? pro.push(...item.ref_order_id.list_product) : "";
-    //   });
-    //   this.category.map(c => {
-    //     this.series.push(this.getProductByCategory(pro, c._id).length);
-    //   });
-    // }
+    formatDate(date) {
+      var strdate = moment(date).add(543, "years");
+      return moment(strdate).format("D/MM/YY ");
+    },
+    sendDate2() {
+      this.checkFileName();
+      this.series = [];
+      this.mergeProduct();
+      this.menu2 = false;
+      // console.log(this.dateNow);
+      //this.mergeProduct();
+    },
+    checkFileName() {
+      const label = this.product.map(p => p.product_name);
+      const chartOptions2 = {
+        chart: {
+          type: "bar",
+          height: 380,
+          toolbar: {
+            show: true,
+            offsetX: 0,
+            offsetY: 0,
+            tools: {
+              download: true
+            },
+            export: {
+              csv: {
+                filename: "รายงานสินค้า " + this.dateNow,
+                columnDelimiter: ",",
+                headerCategory: "ชื่อสินค้า",
+                headerValue: "จำนวนที่ขายได้",
+                dateFormatter(timestamp) {
+                  return new Date(timestamp).toDateString();
+                }
+              },
+              svg: {
+                filename: "รายงานสินค้า " + this.dateNow
+              },
+              png: {
+                filename: "รายงานสินค้า " + this.dateNow
+              }
+            }
+          }
+        },
+        plotOptions: {
+          bar: {
+            barHeight: "100%",
+            distributed: true,
+            horizontal: true,
+            dataLabels: {
+              position: "bottom"
+            }
+          }
+        },
+
+        dataLabels: {
+          enabled: true,
+          textAnchor: "start",
+          style: {
+            colors: ["#fff"]
+          },
+          formatter: function(val, opt) {
+            return opt.w.globals.labels[opt.dataPointIndex] + ":  " + val;
+          },
+          offsetX: 0,
+          dropShadow: {
+            enabled: true
+          }
+        },
+        stroke: {
+          width: 1,
+          colors: ["#fff"]
+        },
+        xaxis: {
+          categories: label
+        },
+        yaxis: {
+          labels: {
+            show: false
+          }
+        },
+
+        tooltip: {
+          theme: "dark",
+          x: {
+            show: false
+          },
+          y: {
+            title: {
+              formatter: function() {
+                return "";
+              }
+            }
+          }
+        }
+      };
+      this.chartOptions = chartOptions2;
+    },
+    getItemByDay() {
+      let date = new Date(this.dateNow);
+      const day = this.year.filter(d => {
+        return (
+          new Date(d.datetime).getDate() === date.getDate() &&
+          new Date(d.datetime).getMonth() === date.getMonth() &&
+          new Date(d.datetime).getFullYear() === date.getFullYear()
+        );
+      });
+      //console.log(day);
+      return day;
+    },
+    getProductById(arr, id) {
+      let newPro = [];
+
+      newPro = arr.filter(a => {
+        return a.ref_pro_id._id === id;
+      });
+      //console.log(newPro);
+
+      return newPro;
+    },
+    mergeProduct() {
+      let pro = [];
+      let res = [];
+      this.getItemByDay().map(item => {
+        item.ref_order_id ? pro.push(...item.ref_order_id.list_product) : "";
+      });
+      this.product.map(p => {
+        //this.series[0].data.push(this.getProductById(pro, p._id).length);
+        res.push(this.getProductById(pro, p._id).length);
+      });
+      const resObj = {
+        data: res
+      };
+      this.series.push(resObj);
+      //console.log(this.series[0].data);
+    }
   },
   created() {
-    // this.chartOptions.labels = this.category.map(c => {
-    //   return this.phylum === "category" ? c.cate_name : c.u_name;
-    // });
-    // this.mergeProduct();
+    this.checkFileName();
+    this.mergeProduct();
   }
 };
 </script>

@@ -28,7 +28,7 @@
             phylum="unit"
           />
         </v-col>
-        <v-col cols="12"><CircleChart /></v-col>
+        <v-col cols="12"><CircleChart :year="year" :product="product"/></v-col>
       </v-row>
     </div>
 
@@ -81,13 +81,14 @@ export default {
     };
   },
   async asyncData(context) {
-    const [year, category, unit] = await Promise.all([
+    const [year, category, unit, product] = await Promise.all([
       // context.$axios.$get("/payment-today"),
       context.$axios.$get("/payment-year"),
       context.$axios.$get("/category"),
-      context.$axios.$get("/unit")
+      context.$axios.$get("/unit"),
+      context.$axios.$get("/product")
     ]);
-    return { year, category, unit };
+    return { year, category, unit, product };
   },
 
   methods: {

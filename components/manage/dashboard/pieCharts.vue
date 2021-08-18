@@ -133,16 +133,57 @@ export default {
       return moment(strdate).format("D/MM/YY ");
     },
     sendDate() {
-      // console.log(this.dateNow);
-      // this.chartOptions.chart.toolbar.export.csv.filename =
-      //   this.phylum === "category"
-      //     ? "รายงานหมวดหมู่ " + this.dateNow
-      //     : "รายงานหมวดประเภท " + this.dateNow;
-      // console.log(this.chartOptions.chart.toolbar.export.csv.filename);
-      // this.chartOptions.chart.toolbar.export.svg.filename = "esveegee";
+      this.checkFilename();
       this.series = [];
       this.mergeProduct();
       this.menu2 = false;
+    },
+    checkFilename() {
+      const chartOptions2 = {
+        chart: {
+          width: "100%",
+          type: "pie",
+          toolbar: {
+            show: true,
+            offsetX: 0,
+            offsetY: 0,
+            tools: {
+              download: true
+            },
+            export: {
+              csv: {
+                filename:
+                  this.phylum === "category"
+                    ? "รายงานหมวดหมู่อาหาร " + this.dateNow
+                    : "รายงานประเภทอาหาร " + this.dateNow,
+                columnDelimiter: ",",
+                headerCategory:
+                  this.phylum === "category"
+                    ? "หมวดหมู่อาหาร "
+                    : "ประเภทอาหาร ",
+                headerValue: "จำนวน",
+                dateFormatter(timestamp) {
+                  return new Date(timestamp).toDateString();
+                }
+              },
+              svg: {
+                filename:
+                  this.phylum === "category"
+                    ? "รายงานหมวดหมู่อาหาร " + this.dateNow
+                    : "รายงานประเภทอาหาร " + this.dateNow
+              },
+              png: {
+                filename:
+                  this.phylum === "category"
+                    ? "รายงานหมวดหมู่อาหาร " + this.dateNow
+                    : "รายงานประเภทอาหาร " + this.dateNow
+              }
+            }
+          }
+        }
+      };
+
+      this.chartOptions = chartOptions2;
     },
     getItemByDay() {
       let date = new Date(this.dateNow);
@@ -182,25 +223,12 @@ export default {
     }
   },
   created() {
+    this.checkFilename();
     this.chartOptions.labels = this.category.map(c => {
       return this.phylum === "category" ? c.cate_name : c.u_name;
     });
 
     this.mergeProduct();
-    this.chartOptions.chart.toolbar.export.csv.filename =
-      this.phylum === "category"
-        ? "รายงานหมวดหมู่อาหาร "
-        : "รายงานประเภทอาหาร ";
-    this.chartOptions.chart.toolbar.export.csv.headerCategory =
-      this.phylum === "category" ? "หมวดหมู่อาหาร " : "ประเภทอาหาร ";
-    this.chartOptions.chart.toolbar.export.svg.filename =
-      this.phylum === "category"
-        ? "รายงานหมวดหมู่อาหาร "
-        : "รายงานประเภทอาหาร ";
-    this.chartOptions.chart.toolbar.export.png.filename =
-      this.phylum === "category"
-        ? "รายงานหมวดหมู่อาหาร "
-        : "รายงานประเภทอาหาร ";
   }
 };
 </script>

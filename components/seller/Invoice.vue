@@ -1,12 +1,12 @@
 <template>
   <div class="" style="height: 100%">
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
-      <v-dialog v-model="dialog" max-width="500px">
+      <v-dialog v-model="dialog" max-width="500px" id="printable">
         <v-card class="rounded-xl">
           <v-form>
             <v-card-title>
-              <span class="text-h6"
-                ><v-icon left id="printable"> mdi-note-text-outline </v-icon>
+              <span class="text-h-6"
+                ><v-icon left> mdi-note-text-outline </v-icon>
                 หมายเลขใบเสร็จรับเงิน : {{ itemBy.invoice }}</span
               >
             </v-card-title>
@@ -25,6 +25,9 @@
             <v-card-actions>
               <v-btn color="teal" @click="printInvoice" dark class="rounded-xl">
                 <v-icon left> mdi-printer </v-icon>พิมพ์ใบเสร็จรับเงิน
+              </v-btn>
+              <v-btn color="teal" @click="print" dark class="rounded-xl">
+                <v-icon left> mdi-printer </v-icon>พิมพ์เทส
               </v-btn>
               <v-spacer></v-spacer>
 
@@ -150,7 +153,11 @@
         <v-divider class="mt-3"></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" class="ma-2  rounded-xl" @click="dialogDelete = false">
+          <v-btn
+            color="primary"
+            class="ma-2  rounded-xl"
+            @click="dialogDelete = false"
+          >
             <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon
             >ปิด</v-btn
           >
@@ -418,6 +425,15 @@ export default {
       let strdate = this.$moment(date).add(543, "years");
       return this.$moment(strdate).format("D MMMM YYYY H:mm");
     },
+    print() {
+      // window.document.body.innerHTML = document.getElementById(
+      //   "printable"
+      // ).innerHTML; //(1
+
+      window.print(); //(2
+
+      //this.$router.go({ path: this.$router.currentRoute.path, force: true }); //(3
+    },
     async printInvoice() {
       //console.log(window.location.href);
       const order = await this.$axios.$get("/order/" + this.order_id);
@@ -541,7 +557,7 @@ export default {
       WinPrint.focus();
       setTimeout(() => {
         WinPrint.print();
-        WinPrint.close();
+        //WinPrint.close();
       }, 500);
       //WinPrint.print();
     }

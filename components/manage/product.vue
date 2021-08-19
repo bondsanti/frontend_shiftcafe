@@ -530,7 +530,7 @@ export default {
     sortBy: "ชื่อ",
     sortDesc: false,
     headers: [
-      { text: "ลำดับ",  value: "No" },
+      { text: "ลำดับ", sortable: true, value: "No" },
       { text: "ภาพ", sortable: true, value: "img" },
       { text: "ชื่อสิ้นค้า", sortable: true, value: "product_name" },
       { text: "ประเภท", sortable: true, value: "ref_uid.u_name" },

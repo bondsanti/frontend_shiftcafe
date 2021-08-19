@@ -1,11 +1,15 @@
 <template>
   <div class="pa-3 ma-3">
-    <!-- photo -->
+        <!-- photo -->
     <v-dialog v-model="dialogPhoto" max-width="500">
-      <v-card
-        style="backdrop-filter:blur(10px); background-color:rgba(255,255,255,0.4);"
-      >
-        <v-img aspect-ratio="1.4" max-height="500" :src="image.src"></v-img>
+      <v-card>
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-row no-gutters align="center" justify="center">
+              <v-img :src="image.src" contain ></v-img>
+            </v-row>
+          </v-col>
+        </v-row>
       </v-card>
     </v-dialog>
     <!-- // -->

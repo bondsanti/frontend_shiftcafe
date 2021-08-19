@@ -32,7 +32,7 @@
       </v-card>
     </v-dialog>
     <!-- 1 -->
-    <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
+    <v-card class="mx-auto mt-6  py-3 rounded-xl" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -56,6 +56,7 @@
           append-icon="mdi-magnify"
           label="ค้นหา"
           single-line
+          class="rounded-xl"
           solo
           hide-details
         ></v-text-field>

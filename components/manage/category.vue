@@ -3,12 +3,6 @@
     <!-- photo -->
     <v-dialog v-model="dialogPhoto" max-width="500">
       <v-card>
-        <v-toolbar dense color="elevation-0">
-          <v-spacer></v-spacer>
-          <v-btn icon color="black" @click.native="dialogPhoto = falsel">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-toolbar>
         <v-row no-gutters>
           <v-col cols="12">
             <v-row no-gutters align="center" justify="center">
@@ -20,7 +14,11 @@
     </v-dialog>
     <!-- // -->
 
-    <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
+    <v-card
+      class="mx-auto mt-6  py-3 rounded-xl"
+      elevaation="5"
+      justify-centaer
+    >
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -44,10 +42,10 @@
           append-icon="mdi-magnify"
           label="ค้นหา"
           single-line
+          class="rounded-xl"
           solo
           hide-details
         ></v-text-field>
-        <v-spacer></v-spacer>
       </v-card-title>
       <!-- add edit -->
       <v-dialog v-model="dialog" max-width="700px" persistent>
@@ -276,7 +274,7 @@
               <v-card dark class="mx-2 rounded-xl" elevation="15">
                 <div class="d-flex justify-start mb-6">
                   <!-- แสดงข้อมูล -->
-                  <v-avatar class="ma-3 rounded-xl" size="125" tile >
+                  <v-avatar class="ma-3 rounded-xl" size="125" tile>
                     <v-img
                       :aspect-ratio="16 / 9"
                       max-width="100%"

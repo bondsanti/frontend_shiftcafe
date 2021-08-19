@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card
-      class="mx-auto"
+      class="mx-auto rounded-xl"
       max-width="500"
       color="primary"
       v-for="(settings, i) in settings"
@@ -24,7 +24,7 @@
       <v-card-actions>
         <v-btn
           block
-          class="primary--text"
+          class="primary--text rounded-xl"
           color="white"
           @click="editItem(settings)"
         >
@@ -33,23 +33,24 @@
       </v-card-actions>
     </v-card>
 
-    <v-dialog v-model="dialog" max-width="650">
-      <v-card class="pa-6">
+    <v-dialog v-model="dialog" max-width="700">
+      <v-card class="pa-6 rounded-xl">
         <p class="text-md-body-1 text-center">
           ตั้งค่าอัตราการจ่ายแต้ม
         </p>
         <div>
           <v-row>
-            <v-col cols="3">
+            <v-col cols="12">
               <v-subheader
                 >จำนวลเงิน
                 <v-icon large>mdi-point-of-sale </v-icon></v-subheader
               >
             </v-col>
-            <v-col cols="8">
+            <v-col cols="12">
               <v-text-field
                 label="บาท"
                 outlined
+                class="rounded-xl"
                 v-model="settingitem.price_buy"
                 prefix="฿"
                 type="number"
@@ -59,16 +60,17 @@
           </v-row>
 
           <v-row>
-            <v-col cols="3">
+            <v-col cols="12">
               <v-subheader
                 >จำนวลแต้ม
                 <v-icon large>mdi-file-powerpoint-box</v-icon></v-subheader
               >
             </v-col>
-            <v-col cols="8">
+            <v-col cols="12">
               <v-text-field
                 label="แต้ม"
                 outlined
+                class="rounded-xl"
                 v-model="settingitem.point"
                 prefix="P"
                 type="number"

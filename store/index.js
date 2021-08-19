@@ -1,6 +1,6 @@
 export const state = () => ({
   position: "",
-  drawer: false,
+  navDrawer: null,
   img: "/logo.jpg",
   setting: [
     {
@@ -21,8 +21,11 @@ export const mutations = {
   setPosition(state, text) {
     state.position = text;
   },
-  set_drawer(state, newVal) {
-    state.drawer = newVal;
+  SET_NAV_DRAWER: (state, payload) => {
+    state.navDrawer = payload
+  },
+  TOGGLE_NAV_DRAWER: state => {
+    state.navDrawer = !state.navDrawer
   },
   setSetting(state, value) {
     state.setting = value;

@@ -1,6 +1,6 @@
 <template>
   <!-- <v-col cols="12" sm="12" md="4" class="hidden-sm-and-down"> -->
-  <v-col cols="12" sm="12" md="4">
+  <div>
     <v-card
       class="rounded-xl d-flex flex-row justify-center align-center"
       elevation="2"
@@ -37,7 +37,12 @@
             <v-list-item-content>
               <v-list-item-title class="d-flex flex-row ma-0 pa-0">
                 <v-col cols="1" class="ma-0">
-                  <v-sheet class="mx-auto rounded-xl" height="30" width="30" elevation="6">
+                  <v-sheet
+                    class="mx-auto rounded-xl"
+                    height="30"
+                    width="30"
+                    elevation="6"
+                  >
                     <v-icon
                       color="red"
                       class="mr-3"
@@ -148,7 +153,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-col>
+  </div>
 </template>
 <script>
 export default {

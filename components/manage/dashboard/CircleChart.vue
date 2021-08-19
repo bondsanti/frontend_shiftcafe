@@ -276,9 +276,13 @@ export default {
       newPro = arr.filter(a => {
         return a.ref_pro_id._id === id;
       });
-      //console.log(newPro);
+      let countQty = 0;
+      newPro.map(n => {
+        countQty += n.qty;
+      });
+      //console.log(countQty);
 
-      return newPro;
+      return countQty;
     },
     mergeProduct() {
       let pro = [];
@@ -288,7 +292,7 @@ export default {
       });
       this.product.map(p => {
         //this.series[0].data.push(this.getProductById(pro, p._id).length);
-        res.push(this.getProductById(pro, p._id).length);
+        res.push(this.getProductById(pro, p._id));
       });
       const resObj = {
         data: res

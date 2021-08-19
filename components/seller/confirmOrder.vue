@@ -488,10 +488,11 @@ export default {
       }
 
       if (this.customers) {
-        const res = this.customers.filter(c => {
+        const res = this.customers.find(c => {
           return c.fname === "guest" && c.lname === "guest";
         });
-        this.cusIdGuest = res[0]._id;
+        this.cusId = res._id;
+        this.cusIdGuest = res._id;
       }
       //console.log(this.cusIdGuest);
     },
@@ -577,7 +578,8 @@ export default {
             this.$swal.fire({
               position: "center",
               type: "success",
-              title: pay.data.message,
+              title: "เงินทอน " + pay.data.data.withdraw_money + " บาท",
+              text: pay.data.message,
               showConfirmButton: false,
               timer: 2500
             });
@@ -632,10 +634,12 @@ export default {
             this.coupon_id = null;
             this.coupon = 0;
             this.discount_type === "no";
+            this.for_chef(pay.data.data.ref_order_id);
             this.$swal.fire({
               position: "center",
               type: "success",
-              title: pay.data.message,
+              title: "เงินทอน " + pay.data.data.withdraw_money + " บาท",
+              text: pay.data.message,
               showConfirmButton: false,
               timer: 2500
             });
@@ -898,9 +902,69 @@ export default {
       WinPrint.focus();
       setTimeout(() => {
         WinPrint.print();
-        WinPrint.close();
+        //WinPrint.close();
       }, 500);
+      //setTimeout(this.for_chef(pay.ref_order_id), 700);
       //WinPrint.close();
+    },
+    async for_chef(order_id) {
+      const order = await this.$axios.$get("/order/" + order_id);
+      var WinPrint = window.open(
+        "",
+        "",
+        "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
+      );
+
+      WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
+
+      WinPrint.document.write(
+        `<tr><th align='left'>พนักงานที่รับออเดอร์ : ${order.ref_emp_id.fname} ${order.ref_emp_id.lname}</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th align='left'>ชื่อบิล : ${order.bill_name}</th></tr>`
+      );
+      WinPrint.document.write(
+        `<tr><th align='center'>วันที่ ${this.formatDate(
+          order.datetime
+        )} </th></tr>`
+      );
+      WinPrint.document.write(
+        "<tr><th align='center'>***สำหรับจัดทำอาหารและเครื่องดื่ม***</th></tr>"
+      );
+      WinPrint.document.write("</table>");
+      WinPrint.document.write(
+        "<table   style='width: 100%;font-size: 0.5em;'>"
+      );
+      WinPrint.document.write(
+        "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th></tr>"
+      );
+      let subTotal = 0;
+      let list = order.list_product;
+      for (let j in list) {
+        subTotal = subTotal + parseInt(list[j].price);
+        WinPrint.document.write("<tr style='border-bottom: thin solid'>");
+        WinPrint.document.write(
+          `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
+            list[j].name
+          }</td><td style='padding-left:20px;'>${list[j].qty}</td>`
+        );
+        WinPrint.document.write("</tr>");
+        for (let k in list[j].topping) {
+          WinPrint.document.write(
+            `<tr><td></td><td > - ${list[j].topping[k].name} </td></td></tr>`
+          );
+        }
+      }
+      WinPrint.document.write(
+        "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
+      );
+      WinPrint.document.write("</table>");
+
+      WinPrint.document.close();
+      WinPrint.focus();
+      setTimeout(() => {
+        WinPrint.print();
+      }, 1000);
     },
     formatDate(date) {
       this.$moment().format("LLLL");

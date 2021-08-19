@@ -1,6 +1,20 @@
 <template>
   <div class="ma-3">
     <v-row>
+      <v-col cols="12" sm="12" md="4" class="hidden-md-and-up">
+        <Listorder
+          :orderDatabase="orderOnDatabase"
+          :product2="product2"
+          :products="products"
+          ref="listChild"
+          @openHoldDl="holdDl = true"
+          @closeHoldDl="holdDl = false"
+          @openOrderDl="orderDl = true"
+          @closeOrderDl="orderDl = false"
+          @refreshUser="refreshUser"
+          @openDialog="openDialog"
+        />
+      </v-col>
       <v-col cols="12" sm="12" md="8">
         <v-card class=" rounded-xl pb-1 " color="#ededed" elevation="5">
           <!-- <v-row> -->
@@ -82,18 +96,20 @@
 
         <div class="d-flex flex-row mt-4"></div>
       </v-col>
-      <Listorder
-        :orderDatabase="orderOnDatabase"
-        :product2="product2"
-        :products="products"
-        ref="listChild"
-        @openHoldDl="holdDl = true"
-        @closeHoldDl="holdDl = false"
-        @openOrderDl="orderDl = true"
-        @closeOrderDl="orderDl = false"
-        @refreshUser="refreshUser"
-        @openDialog="openDialog"
-      />
+      <v-col cols="12" sm="12" md="4" class="hidden-sm-and-down">
+        <Listorder
+          :orderDatabase="orderOnDatabase"
+          :product2="product2"
+          :products="products"
+          ref="listChild"
+          @openHoldDl="holdDl = true"
+          @closeHoldDl="holdDl = false"
+          @openOrderDl="orderDl = true"
+          @closeOrderDl="orderDl = false"
+          @refreshUser="refreshUser"
+          @openDialog="openDialog"
+        />
+      </v-col>
     </v-row>
 
     <ConfirmOrder

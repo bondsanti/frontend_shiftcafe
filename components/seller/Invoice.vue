@@ -100,9 +100,8 @@
                   color="#3f51b5"
                   small
                   @click="Detail(item.actions)"
-                  
                 >
-                  <v-icon  color="white" aria-hidden="false" >
+                  <v-icon color="white" aria-hidden="false">
                     mdi-eye-settings
                   </v-icon>
                   รายละเอียด
@@ -116,7 +115,7 @@
                   dark
                   :disabled="$store.getters['position'] === 'cashier'"
                 >
-                  <v-icon aria-hidden="false" >
+                  <v-icon aria-hidden="false">
                     mdi-stop-circle-outline
                   </v-icon>
                   ยกเลิกบิล
@@ -555,8 +554,17 @@ export default {
 
       WinPrint.document.close();
       WinPrint.focus();
+      var ua = navigator.userAgent.toLowerCase();
+      var isAndroid = ua.indexOf("android") > -1;
       setTimeout(() => {
-        WinPrint.print();
+        if (isAndroid) {
+          // https://developers.google.com/cloud-print/docs/gadget
+          var gadget = new cloudprint.Gadget();
+          //gadget.setPrintDocument("url", $('title').html(), window.location.href, "utf-8");
+          gadget.openPrintDialog();
+        } else {
+          WinPrint.print();
+        }
         //WinPrint.close();
       }, 500);
       //WinPrint.print();

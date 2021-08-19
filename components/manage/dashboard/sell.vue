@@ -153,13 +153,19 @@ export default {
 
       this.monthPrice = monthTotal;
     },
-    thinkYear() {
+    thinkYear(datePara) {
       let yearTotal = 0;
-      for (let i in this.year) {
-        yearTotal += this.year[i].net_price;
-      }
+      let date = new Date(datePara);
+
+      const year2 = this.year.filter(y => {
+        return new Date(y.datetime).getFullYear() === date.getFullYear();
+      });
+      year2.map(y => {
+        yearTotal += y.net_price;
+      });
 
       this.yearPrice = yearTotal;
+      //console.log(yearTotal);
     },
     rangeMonth() {
       const today = new Date(this.dateNow);
@@ -194,7 +200,7 @@ export default {
   },
   created() {
     this.thinkMonth(new Date());
-    this.thinkYear();
+    this.thinkYear(new Date());
   }
 };
 </script>

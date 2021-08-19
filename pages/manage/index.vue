@@ -95,8 +95,7 @@ export default {
     sendDateIndex(date) {
       this.dateNow = date;
       this.$refs.sellChild.thinkMonth(date);
-
-      //this.$refs.sellChild.thinkYear();
+      this.$refs.sellChild.thinkYear(date);
     },
     formatDate(date) {
       this.$moment().format("LLLL");
@@ -106,7 +105,6 @@ export default {
     filterPayment() {
       const res = this.year.filter(y => y.status !== 1);
       this.year = res;
-      //console.log(res);
     }
   },
 

@@ -648,7 +648,7 @@ export default {
 
       WinPrint.document.close();
       WinPrint.focus();
-      //setTimeout(WinPrint.print(), 3000);
+      WinPrint.print();
     }
   }
 };

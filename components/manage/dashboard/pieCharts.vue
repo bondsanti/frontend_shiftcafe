@@ -199,17 +199,24 @@ export default {
     },
     getProductByCategory(arr, id) {
       let newCat = [];
+      let countCat = 0;
       if (this.phylum === "category") {
         newCat = arr.filter(a => {
           return a.ref_pro_id.ref_cate_id === id;
+        });
+        newCat.map(n => {
+          countCat += n.qty;
         });
         //console.log(newCat);
       } else {
         newCat = arr.filter(a => {
           return a.ref_pro_id.ref_uid === id;
         });
+        newCat.map(n => {
+          countCat += n.qty;
+        });
       }
-      return newCat;
+      return countCat;
     },
     mergeProduct() {
       let pro = [];
@@ -218,7 +225,7 @@ export default {
         item.ref_order_id ? pro.push(...item.ref_order_id.list_product) : "";
       });
       this.category.map(c => {
-        this.series.push(this.getProductByCategory(pro, c._id).length);
+        this.series.push(this.getProductByCategory(pro, c._id));
       });
     }
   },

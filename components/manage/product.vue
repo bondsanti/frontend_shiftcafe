@@ -3,12 +3,7 @@
     <!-- photo -->
     <v-dialog v-model="dialogPhoto" max-width="500" max-height="300">
       <v-card class="rounded-xl">
-        <v-toolbar dense color="elevation-0">
-          <v-spacer></v-spacer>
-          <v-btn icon color="black" @click.native="dialogPhoto = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-toolbar>
+      
         <v-row no-gutters>
           <v-col cols="12">
             <v-row no-gutters align="center" justify="center">
@@ -19,7 +14,7 @@
       </v-card>
     </v-dialog>
     <!-- // -->
-    <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
+    <v-card class="mx-auto mt-6  py-3 rounded-xl" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -41,6 +36,7 @@
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
+          class="rounded-xl"
           label="ค้นหาข้อมูล"
           single-line
           solo
@@ -534,7 +530,7 @@ export default {
     sortBy: "ชื่อ",
     sortDesc: false,
     headers: [
-      { text: "ลำดับ", sortable: true, value: "No" },
+      { text: "ลำดับ",  value: "No" },
       { text: "ภาพ", sortable: true, value: "img" },
       { text: "ชื่อสิ้นค้า", sortable: true, value: "product_name" },
       { text: "ประเภท", sortable: true, value: "ref_uid.u_name" },

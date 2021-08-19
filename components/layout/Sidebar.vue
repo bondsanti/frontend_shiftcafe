@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-navigation-drawer v-model="drawer" fixed app color="#1d1d1d" dark>
+    <v-navigation-drawer v-model="navDrawer" fixed app color="#1d1d1d" dark>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -140,10 +140,6 @@ export default {
     };
   },
   methods: {
-    // async logout() {
-    //   await this.$auth.logout();
-    //   this.$router.push("/login");
-    // },
     checkManager() {
       if (this.$store.getters["position"] === "manager") {
         this.items = [
@@ -228,16 +224,21 @@ export default {
       }
     }
   },
-  computed: {
-    drawer: {
+    computed: {
+    navDrawer: {
       get() {
-        return this.$store.state.drawer;
+        return this.$store.state.navDrawer
       },
-      set(newVal) {
-        this.$store.commit("set_drawer", newVal);
+      set(val) {
+        this.$store.commit('SET_NAV_DRAWER', val)
       }
+    },
+
+    routesMain() {
+      return this.$router.options.routes.filter((route) => route.meta.main)
     }
   },
+
   created() {
     this.checkManager();
   }

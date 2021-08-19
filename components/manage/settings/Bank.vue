@@ -3,12 +3,6 @@
         <!-- photo -->
     <v-dialog v-model="dialogPhoto" max-width="500">
       <v-card>
-        <v-toolbar dense color="elevation-0">
-          <v-spacer></v-spacer>
-          <v-btn icon color="black" @click.native="dialogPhoto = falsel">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-toolbar>
         <v-row no-gutters>
           <v-col cols="12">
             <v-row no-gutters align="center" justify="center">
@@ -380,15 +374,16 @@
             </v-btn>
 
             <v-spacer></v-spacer>
-            <v-text-field
-              class="mb-3 mt-3 "
-              v-model="search"
-              append-icon="mdi-magnify"
-              label="ค้นหาข้อมูล"
-              single-line
-              dense
-              hide-details
-            ></v-text-field>
+              <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="ค้นหา"
+          solo
+          class="rounded-xl"
+          single-line
+          hide-details
+        ></v-text-field>
           </v-card-title>
           <!-- card main -->
           <v-data-iterator

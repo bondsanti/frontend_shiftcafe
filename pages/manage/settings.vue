@@ -2,7 +2,7 @@
   <div class="my-6 ma-6">
     <v-row justify="center">
       <v-col cols="12" sm="6" md="4" lg="">
-        <v-card class="mx-auto" max-width="500" color="primary">
+        <v-card class="mx-auto rounded-xl" max-width="500" color="primary">
           <v-card-title>
             <h5 class="text-h5 white--text">
               ตั้งค่าการชำระเงิน
@@ -19,7 +19,7 @@
           <v-card-actions>
             <v-btn
               block
-              class="primary--text"
+              class="primary--text rounded-xl"
               color="white"
               @click="goTopayment()"
             >
@@ -31,7 +31,7 @@
 
       <!--  -->
       <v-col cols="12" sm="6" md="4" lg="4">
-        <v-card class="mx-auto" max-width="500" color="primary">
+        <v-card class="mx-auto rounded-xl" max-width="500" color="primary">
           <v-card-title>
             <h5 class="text-h5 white--text ">
               ตั้งค่าและปรับแต่งเว็บ
@@ -42,14 +42,14 @@
             <v-spacer></v-spacer>
           </v-card-title>
 
-          <v-card-text  class="white--text text-center">
+          <v-card-text class="white--text text-center">
             ตั้งค่าและปรับแต่งเว็บ
           </v-card-text>
           <v-divider color="white" class="mx-auto"></v-divider>
           <v-card-actions>
             <v-btn
               block
-              class="primary--text"
+              class="primary--text rounded-xl"
               color="white"
               @click="Customizer()"
             >

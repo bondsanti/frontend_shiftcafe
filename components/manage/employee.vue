@@ -49,11 +49,15 @@
           </template>
         </v-dialog>
         <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
           label="ค้นหา"
           single-line
+          class="rounded-xl"
+          solo
           hide-details
         ></v-text-field>
       </v-card-title>

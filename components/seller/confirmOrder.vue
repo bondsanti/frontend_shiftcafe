@@ -187,6 +187,15 @@
                         @click="cancelOrder"
                         >ยกเลิกออเดอร์</v-btn
                       >
+                      <v-btn
+                        rounded
+                        large
+                        block
+                        color="red"
+                        dark
+                        @click="for_chef('61176050b67417169c7ba9b0')"
+                        >test</v-btn
+                      >
                     </v-col>
                     <v-col>
                       <v-btn
@@ -560,7 +569,7 @@ export default {
             if (!money.noBill) {
               this.print(money, pay.data.data);
             }
-
+            this.for_chef(pay.data.data.ref_order_id);
             this.$emit("closeDialog_cook");
             this.$emit("closeDialog");
             this.$emit("clearOrder2");
@@ -614,12 +623,13 @@ export default {
           coupon_id: this.coupon_id
         };
         this.$axios.post("/payment", newPayment).then(pay => {
-          //console.log(pay);
+          console.log(pay.data.order_id);
           if (pay.status === 200) {
             this.invoice = pay.data.invoice;
             if (!money.noBill) {
               this.print(money, pay.data.data);
             }
+            this.for_chef(pay.data.order_id);
             this.$emit("closeDialog_cook");
             this.$emit("closeDialog");
             this.$emit("clearOrder2");
@@ -634,7 +644,6 @@ export default {
             this.coupon_id = null;
             this.coupon = 0;
             this.discount_type === "no";
-            this.for_chef(pay.data.data.ref_order_id);
             this.$swal.fire({
               position: "center",
               type: "success",
@@ -909,6 +918,7 @@ export default {
     },
     async for_chef(order_id) {
       const order = await this.$axios.$get("/order/" + order_id);
+      //console.log(order);
       var WinPrint = window.open(
         "",
         "",
@@ -962,9 +972,10 @@ export default {
 
       WinPrint.document.close();
       WinPrint.focus();
-      setTimeout(() => {
-        WinPrint.print();
-      }, 1000);
+      WinPrint.print();
+      // setTimeout(() => {
+      //   WinPrint.print();
+      // }, 1000);
     },
     formatDate(date) {
       this.$moment().format("LLLL");

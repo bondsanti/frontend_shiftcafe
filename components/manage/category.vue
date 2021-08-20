@@ -619,23 +619,33 @@ export default {
     },
     // ยืนยันการลบ
     deleteItemConfirm() {
-      this.category.splice(this.editedIndex, 1);
-      this.$axios
-        .$delete("/category/" + this.deleteId)
-        .then(res => {
-          this.$emit("refresh");
-          this.closeDelete();
-          this.$swal({
-            type: "success",
-            title: res.message
-          });
-        })
-        .catch(e => {
-          this.$swal({
-            type: "error",
-            title: e
-          });
+      const result = this.category.find(c => c._id === this.deleteId);
+      if (result.products.length !== 0) {
+        this.$swal.fire({
+          type: "error",
+          title:
+            "ลบบ่ได้เด้อ มีการใช้งานที่สินค้าตามรายชื่อด้านล่าง ไปไล่เปลี่ยนอันอื่นก่อนเด้หล่า",
+          text: result.products.map(p => p.product_name)
         });
+      } else {
+        this.category.splice(this.editedIndex, 1);
+        this.$axios
+          .$delete("/category/" + this.deleteId)
+          .then(res => {
+            this.$emit("refresh");
+            this.closeDelete();
+            this.$swal({
+              type: "success",
+              title: res.message
+            });
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
+      }
     },
     // ยกเลิก
     close() {

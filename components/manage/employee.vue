@@ -1072,7 +1072,7 @@ export default {
         this.$axios
           .post("/authen/request-otp", { tel: this.telManager })
           .then(res => {
-            console.log(res);
+            //console.log(res);
             if (res.status === 200) {
               this.otpToken = res.data.token;
               this.e1 = 2;
@@ -1080,7 +1080,7 @@ export default {
             } else {
               this.otpResult = {
                 icon: "mdi-alert",
-                text: "ส่งรหัส OTP ไม่สำเร็จ",
+                text: res.data.message,
                 status: false
               };
               this.dialogOTP = true;

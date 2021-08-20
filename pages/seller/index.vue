@@ -1,7 +1,7 @@
 <template>
   <div class="ma-3">
     <v-row>
-      <v-col cols="12" sm="12" md="4" class="hidden-md-and-up">
+      <!-- <v-col cols="12" sm="12" md="4">
         <Listorder
           :orderDatabase="orderOnDatabase"
           :product2="product2"
@@ -14,7 +14,7 @@
           @refreshUser="refreshUser"
           @openDialog="openDialog"
         />
-      </v-col>
+      </v-col> -->
       <v-col cols="12" sm="12" md="8">
         <v-card class=" rounded-xl pb-1 " color="#ededed" elevation="5">
           <!-- <v-row> -->
@@ -96,7 +96,7 @@
 
         <div class="d-flex flex-row mt-4"></div>
       </v-col>
-      <v-col cols="12" sm="12" md="4" class="hidden-sm-and-down">
+      <v-col cols="12" sm="12" md="4">
         <Listorder
           :orderDatabase="orderOnDatabase"
           :product2="product2"

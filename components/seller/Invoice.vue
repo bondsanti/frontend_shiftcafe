@@ -1,8 +1,8 @@
 <template>
   <div class="" style="height: 100%">
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
-      <v-dialog v-model="dialog" max-width="500px" id="printable">
-        <v-card class="rounded-xl">
+      <v-dialog v-model="dialog" max-width="500px">
+        <v-card class="rounded-xl" id="printable">
           <v-form>
             <v-card-title>
               <span class="text-h-6"
@@ -425,13 +425,13 @@ export default {
       return this.$moment(strdate).format("D MMMM YYYY H:mm");
     },
     print() {
-      // window.document.body.innerHTML = document.getElementById(
-      //   "printable"
-      // ).innerHTML; //(1
+      window.document.body.innerHTML = document.getElementById(
+        "printable"
+      ).innerHTML; //(1
 
       window.print(); //(2
 
-      //this.$router.go({ path: this.$router.currentRoute.path, force: true }); //(3
+      this.$router.go({ path: this.$router.currentRoute.path, force: true }); //(3
     },
     async printInvoice() {
       //console.log(window.location.href);
@@ -554,17 +554,10 @@ export default {
 
       WinPrint.document.close();
       WinPrint.focus();
-      var ua = navigator.userAgent.toLowerCase();
-      var isAndroid = ua.indexOf("android") > -1;
+      // var ua = navigator.userAgent.toLowerCase();
+      // var isAndroid = ua.indexOf("android") > -1;
       setTimeout(() => {
-        if (isAndroid) {
-          // https://developers.google.com/cloud-print/docs/gadget
-          var gadget = new cloudprint.Gadget();
-          //gadget.setPrintDocument("url", $('title').html(), window.location.href, "utf-8");
-          gadget.openPrintDialog();
-        } else {
-          WinPrint.print();
-        }
+        WinPrint.print();
         //WinPrint.close();
       }, 500);
       //WinPrint.print();

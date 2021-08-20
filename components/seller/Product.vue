@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="6" sm="6" md="4" lg="3"  style="padding: 6px;"> 
+  <v-col cols="6" sm="6" md="4" lg="3" style="padding: 6px;">
     <v-card
       class=" rounded-xl cursor"
       color="grey lighten-4"
@@ -7,7 +7,7 @@
       @click="addTopping"
     >
       <v-img
-        height="150px"
+        height="100%"
         contain
         :aspect-ratio="16 / 9"
         :src="$nuxt.context.env.config.IMG_URL + product.img"
@@ -26,14 +26,38 @@
         </h3>
       </v-card-text>
     </v-card>
-    <v-dialog v-model="dialogTopping" width="500">
-      <v-card>
-        <v-card-title class="text-h5 grey lighten-2">
-          เลือก TOPPING {{ product.product_name }}
+    <v-dialog v-model="dialogTopping" width="450">
+      <v-card class="rounded-xl">
+        <v-card-title>
+          <v-row>
+            <v-col cols="12" sm="4" md="4" lg="4">
+              <v-sheet
+                color="white"
+                elevation="15"
+                height="80"
+                width="80"
+                class="rounded-circle"
+              >
+                <v-img
+                  height="100%"
+                  contain
+                   class="rounded-circle"
+                  :src="$nuxt.context.env.config.IMG_URL + product.img"
+                >
+                </v-img> </v-sheet
+            ></v-col>
+            <v-col cols="12" sm="8" md="8" lg="8">
+              <p class=" ma-2 mt-6">
+                เลือก ท็อปปิ้ง {{ product.product_name }}
+              </p></v-col
+            >
+          </v-row>
         </v-card-title>
-
-        <v-sheet class="pl-7">
+        <v-divider></v-divider>
+        <v-sheet class="pl-7 ">
           <v-checkbox
+            class="caption"
+            color="red"
             @click="thinkPriceTopping"
             v-model="selected"
             v-for="top in filterTopping"
@@ -46,9 +70,17 @@
         <v-divider></v-divider>
 
         <v-card-actions>
-          <h1>ราคา {{ priceMergeTopping }} บาท</h1>
+          <h3 class="subheading text-uppercase pl-2 mb-4">
+            ราคา {{ priceMergeTopping }} บาท
+          </h3>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="addOrder">
+          <v-btn
+            class="text-uppercase ma-0"
+            color="primary"
+            label
+            small
+            @click="addOrder"
+          >
             ตกลง
           </v-btn>
         </v-card-actions>

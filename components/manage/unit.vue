@@ -1,6 +1,10 @@
 <template>
   <div class="ma-3 rounded-lg">
-    <v-card class="mx-auto mt-6  py-3 rounded-xl" elevaation="5" justify-centaer>
+    <v-card
+      class="mx-auto mt-6  py-3 rounded-xl"
+      elevaation="5"
+      justify-centaer
+    >
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -236,23 +240,35 @@ export default {
       this.dialogDelete = true;
     },
     deleteItemConfirm() {
-      this.unit.splice(this.editedIndex, 1);
-      this.$axios
-        .$delete("/unit/" + this.deleteId)
-        .then(res => {
-          this.$emit("refresh");
-          this.closeDelete();
-          this.$swal({
-            type: "success",
-            title: res.message
-          });
-        })
-        .catch(e => {
-          this.$swal({
-            type: "error",
-            title: e
-          });
+      const result = this.unit.find(u => u._id === this.deleteId);
+      // console.log(result);
+      if (result.products.length !== 0) {
+        //alert("ลบไม่ได้นะจ้ะ");
+        this.$swal.fire({
+          type: "error",
+          title:
+            "ลบบ่ได้เด้อ มีการใช้งานที่สินค้าตามรายชื่อด้านล่าง ไปไล่เปลี่ยนอันอื่นก่อนเด้หล่า",
+          text: result.products.map(p => p.product_name)
         });
+      } else {
+        this.unit.splice(this.editedIndex, 1);
+        this.$axios
+          .$delete("/unit/" + this.deleteId)
+          .then(res => {
+            this.$emit("refresh");
+            this.closeDelete();
+            this.$swal({
+              type: "success",
+              title: res.message
+            });
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
+      }
     },
     close() {
       this.dialog = false;

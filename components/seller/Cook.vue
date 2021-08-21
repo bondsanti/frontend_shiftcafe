@@ -360,7 +360,7 @@
                   {{ formatPrice(item.price) }}
                 </v-col>
               </v-row>
-              <v-row no-gutters>
+              <v-row no-gutters v-if="item.topping.length !== 0">
                 - {{ convertArrayToString(item.topping) }}</v-row
               >
             </div>

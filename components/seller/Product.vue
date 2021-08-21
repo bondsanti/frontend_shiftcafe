@@ -41,7 +41,7 @@
                 <v-img
                   height="100%"
                   contain
-                   class="rounded-circle"
+                  class="rounded-circle"
                   :src="$nuxt.context.env.config.IMG_URL + product.img"
                 >
                 </v-img> </v-sheet
@@ -100,8 +100,12 @@ export default {
   }),
   methods: {
     addTopping() {
-      this.priceMergeTopping = this.product.price;
-      this.dialogTopping = true;
+      if (this.product.ref_cate_id.topping.length !== 0) {
+        this.priceMergeTopping = this.product.price;
+        this.dialogTopping = true;
+      } else {
+        this.addOrder();
+      }
     },
     addOrder() {
       this.$emit("addTopping", this.selected);
@@ -119,11 +123,14 @@ export default {
         parseInt(this.priceMergeTopping) + parseInt(toppingPrice);
     },
     filterToppingTrue() {
-      this.filterTopping = this.product.topping.filter(t => t.status === true);
+      this.filterTopping = this.product.ref_cate_id.topping.filter(
+        t => t.status === true
+      );
       //console.log(this.filterTopping);
     }
   },
   created() {
+    //console.log(this.product);
     this.filterToppingTrue();
   }
 };

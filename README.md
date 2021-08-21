@@ -1,26 +1,47 @@
-# SHIFT_FRONTEND
+# SHIFT_FRONTEND ☕
 
-> My premium Nuxt.js project
-
-## Build Setup
-
-# icon
+# icon 📦
 ```
 https://pictogrammers.github.io/@mdi/font/5.0.45/
 
 ```
+## Installation ⚒️
 
-```bash
-# install dependencies
-$ yarn install
-# serve with hot reload at localhost:3000
-$ yarn run dev
-# build for production and launch server
-$ yarn run build
-$ yarn start
+> We recommend you use yarn
 
-# generate static project
-$ yarn run generate
-```
+1. Install all packages
 
-For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
+   ```bash
+   yarn
+
+   # npm install [for npm]
+   ```
+
+2. Run development server
+
+   ```bash
+   yarn serve
+
+   # npm run serve [for npm]
+   ```
+
+3. Generate build files for deployment
+
+   ```bash
+   yarn run build
+
+   # npm run build [for npm]
+   # yarn start
+   ```
+
+4. Generate static project
+
+    ```generate
+
+    yarn run build
+
+    ```
+
+## Social Media 🌍
+- Facebook : [https://www.facebook.com/DevFong88/](https://www.facebook.com/DevFong88/)
+- Line  : [@devfong ](@devfong )

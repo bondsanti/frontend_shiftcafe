@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Topbar />
+    <!-- <Topbar /> -->
     <Sidebar />
     <v-main class="secondary">
       <nuxt />
@@ -10,15 +10,16 @@
 </template>
 
 <script>
-import Topbar from "@/components/layout/Topbar.vue";
+// import Topbar from "@/components/layout/Topbar.vue";
 import Sidebar from "@/components/layout/Sidebar.vue";
 import Footer from "@/components/layout/Footer.vue";
 
 export default {
   components: {
-    Topbar,
+    // Topbar,
     Sidebar,
-    Footer
+    Footer,
+  
   }
 };
 </script>

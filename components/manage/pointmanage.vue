@@ -268,7 +268,7 @@ export default {
           this.$emit("refreshPoint");
           //console.log(res);
           this.$swal({
-            type: "success",
+            type: "error",
             title: res.message
           });
           this.dialog = false;

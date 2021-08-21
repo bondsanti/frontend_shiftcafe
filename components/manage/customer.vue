@@ -31,8 +31,6 @@
             color="error"
             dark
             @click="dialogView = false"
-          
-            
             text
           >
             <v-icon aria-hidden="false" class="mx-2" plain>
@@ -250,7 +248,12 @@
               </v-card-text>
               <v-divider class="mb-3"></v-divider>
               <v-card-actions>
-                <v-btn class="ma-1 rounded-xl" color="primary" dark @click="closeadd">
+                <v-btn
+                  class="ma-1 rounded-xl"
+                  color="primary"
+                  dark
+                  @click="closeadd"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -423,7 +426,12 @@
                 </v-alert>
               </v-card-text>
               <v-card-actions>
-                <v-btn class="ma-1 rounded-xl" color="primary" dark @click="close">
+                <v-btn
+                  class="ma-1 rounded-xl"
+                  color="primary"
+                  dark
+                  @click="close"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -447,7 +455,7 @@
           <!--****************************** edi ********************************************************************************************************* -->
           <!-- dialogDelete -->
           <v-dialog v-model="dialogDelete" max-width="410">
-            <v-card  class="rounded-xl">
+            <v-card class="rounded-xl">
               <v-card-title class="primary--text text-center">
                 คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
               </v-card-title>
@@ -455,7 +463,12 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
 
-                <v-btn @click="closeDelete" class="ma-1 rounded-xl" color="info" plain>
+                <v-btn
+                  @click="closeDelete"
+                  class="ma-1 rounded-xl"
+                  color="info"
+                  plain
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -862,15 +875,14 @@ export default {
       return "#FFCC80";
     },
     save() {
-      this.$refs.form.validate();
       if (this.type === "add") {
+        this.$refs.form.validate();
         this.loading = true;
-        this.$emit("addCustomer", {
-          ...this.customerItme
+        this.$emit("addCustomer", {    ...this.customerItme
         });
         this.$swal({
           type: "success",
-          title: res.message
+          title: "ใช้งานได้"
         });
         this.closeadd();
       } else {

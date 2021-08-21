@@ -289,6 +289,22 @@ export default {
       this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
+        // this.$axios
+        //   .post("https://notify-api.line.me/api/notify", {
+        //     headers: {
+        //       "Content-Type": "application/x-www-form-urlencoded",
+        //       Authorization:
+        //         "Bearer j7U4MD5lkr2kSss9zJg7SiObRI4gHWUVMOTwkZLq47u"
+        //     },
+        //     data: "message=testing"
+        //   })
+        //   .then(response => {
+        //     console.log(response);
+        //   })
+        //   .catch(err => {
+        //     console.log(err);
+        //   });
+        
         this.$axios
           .$post("/unit/", this.units)
           .then(res => {

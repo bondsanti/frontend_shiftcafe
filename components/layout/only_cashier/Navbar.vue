@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-navigation-drawer v-model="drawer" fixed app color="#1d1d1d" dark>
+    <v-navigation-drawer v-model="drawer" fixed  temporary app color="#1d1d1d" dark>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -48,8 +48,9 @@
         </v-list-item-content>
       </v-list-item>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app color="#1d1d1d" dark>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+    <!-- -------------------------------------------------------------------------------------------------------------------- -->
+    <v-app-bar app color="#1d1d1d" dark>
+      <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-toolbar-title class="hidden-xs-only">{{
         this.$store.getters["setting"][0].head_title
       }}</v-toolbar-title>
@@ -76,7 +77,7 @@ export default {
   data() {
     return {
       clipped: false,
-      drawer: false,
+      drawer: null,
       fixed: false,
       items: [
         {

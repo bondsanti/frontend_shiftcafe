@@ -3,7 +3,6 @@
     <!-- photo -->
     <v-dialog v-model="dialogPhoto" max-width="500" max-height="300">
       <v-card class="rounded-xl">
-      
         <v-row no-gutters>
           <v-col cols="12">
             <v-row no-gutters align="center" justify="center">
@@ -14,7 +13,11 @@
       </v-card>
     </v-dialog>
     <!-- // -->
-    <v-card class="mx-auto mt-6  py-3 rounded-xl" elevaation="5" justify-centaer>
+    <v-card
+      class="mx-auto mt-6  py-3 rounded-xl"
+      elevaation="5"
+      justify-centaer
+    >
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -254,17 +257,6 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
-            class="ma-2 white--text rounded-xl "
-            elevation="15"
-            color="cyan accent-3"
-            @click="topping(item)"
-          >
-            <v-icon aria-hidden="false" class="mx-2">
-              mdi-food-apple
-            </v-icon>
-            ท็อปปิ้ง
-          </v-btn>
-          <v-btn
             class="ma-2 white--text rounded-xl"
             elevation="15"
             color="warning"
@@ -301,205 +293,6 @@
         </template>
       </v-data-table>
     </v-card>
-    <v-row justify="space-around">
-      <v-dialog
-        transition="dialog-top-transition"
-        max-width="900"
-        v-model="dialogTopping"
-        height="auto"
-        persistent
-      >
-        <v-card class="rounded-xl">
-          <v-toolbar color="primary" dark
-            >เพิ่ม ท็อปปิ้ง <v-spacer></v-spacer
-            ><v-btn
-              class="ma-1 mr-1 rounded-xl"
-              elevation="24"
-              color="red"
-              @click="
-                dialogTopping = false;
-                toppingArray = [];
-                $nuxt.refresh();
-              "
-              >ปิด</v-btn
-            ></v-toolbar
-          >
-          <v-sheet class="pa-5">
-            <v-row>
-              <v-col cols="3"><h5>ชื่อ</h5></v-col>
-              <v-col cols="3"><h5>คิดเพิ่ม</h5></v-col>
-              <v-col cols="3"><h5>สถานะ</h5></v-col>
-              <v-col cols="3"><h5>หมายเหตุ</h5></v-col>
-            </v-row>
-            <v-row v-for="(top, i) in toppingArray" :key="i">
-              <v-col cols="3"
-                ><h5>{{ i + 1 }}. {{ top.name }}</h5></v-col
-              >
-              <v-col cols="3"
-                ><h5>{{ top.price }} บาท</h5></v-col
-              >
-              <v-col cols="3" class="hidden-xs-only">
-                <v-switch
-                  :color="getColor(top.status)"
-                  class="ma-0"
-                  hide-details
-                  v-model="top.status"
-                  inset
-                  :label="top.status ? 'เปิดใช้' : 'ปิดใช้'"
-                ></v-switch>
-              </v-col>
-
-              <v-col cols="3" md="2" class="hidden-xs-only">
-                <div class="d-flex flex-row  flex-wrap justify-center">
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        small
-                        elevation="24"
-                        fab
-                        v-bind="attrs"
-                        v-on="on"
-                        plain
-                        class="warning"
-                        raised
-                        @click="editTopping(top, i)"
-                        ><v-icon>mdi-grease-pencil</v-icon></v-btn
-                      >
-                    </template>
-                    <span>แก้ไขท๊อป</span>
-                  </v-tooltip>
-
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        small
-                        elevation="24"
-                        fab
-                        plain
-                        color="error"
-                        v-bind="attrs"
-                        v-on="on"
-                        raisedb
-                        @click="deleteTopping(i)"
-                        ><v-icon>mdi-trash-can</v-icon></v-btn
-                      >
-                    </template>
-                    <span>ลบท๊อป</span>
-                  </v-tooltip>
-                </div>
-              </v-col>
-
-              <v-col cols="6" md="1" class="hidden-sm-and-up">
-                <v-expansion-panels focusable small class="rounded-xl">
-                  <v-expansion-panel class="rounded-xl">
-                    <v-expansion-panel-header
-                      ><v-icon class="hidden-xs-only"
-                        >mdi-menu</v-icon
-                      ></v-expansion-panel-header
-                    >
-                    <v-expansion-panel-content>
-                      <v-row class="justify-center my-1">
-                        <v-switch
-                          :color="getColor(top.status)"
-                          class="ma-0"
-                          hide-details
-                          v-model="top.status"
-                          inset
-                          :label="top.status ? 'เปิดใช้' : 'ปิดใช้'"
-                        ></v-switch>
-                      </v-row>
-
-                      <v-row class="justify-center my-1">
-                        <v-tooltip top>
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                              small
-                              elevation="24"
-                              fab
-                              v-bind="attrs"
-                              v-on="on"
-                              plain
-                              class="warning"
-                              raised
-                              @click="editTopping(top, i)"
-                              ><v-icon>mdi-grease-pencil</v-icon></v-btn
-                            >
-                          </template>
-                          <span>แก้ไขท๊อป</span>
-                        </v-tooltip>
-                        <v-tooltip top>
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                              small
-                              elevation="24"
-                              fab
-                              plain
-                              color="error"
-                              v-bind="attrs"
-                              v-on="on"
-                              raisedb
-                              @click="deleteTopping(i)"
-                              ><v-icon>mdi-trash-can</v-icon></v-btn
-                            >
-                          </template>
-                          <span>ลบท๊อป</span>
-                        </v-tooltip>
-                      </v-row>
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                </v-expansion-panels>
-              </v-col>
-            </v-row>
-          </v-sheet>
-          <v-divider></v-divider>
-          <v-card-actions class="pa-3">
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  v-model="toppingName"
-                  filled
-                  label="ชื่อ TOPPING"
-                  outlined
-                  class="rounded-xl"
-                  hide-details
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="3">
-                <v-text-field
-                  v-model="toppingPrice"
-                  filled
-                  class="rounded-xl"
-                  label="ราคา"
-                  outlined
-                  hide-details
-                ></v-text-field>
-              </v-col>
-
-              <v-col cols="12" sm="3" align-self="center">
-                <v-btn
-                  elevation="24"
-                  raised
-                  class="white--text  rounded-xl "
-                  color="green"
-                  @click="addTopping"
-                  >{{ toppingType === "edit" ? "แก้ไข" : "เพิ่ม" }}
-                </v-btn>
-                <v-btn
-                  color="primary"
-                  elevation="24"
-                  class=" rounded-xl
-                  "
-                  raised
-                  @click="saveTopping"
-                  >บันทึก</v-btn
-                >
-              </v-col>
-            </v-row>
-            <!-- <v-spacer></v-spacer> -->
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-row>
   </div>
 </template>
 
@@ -565,13 +358,7 @@ export default {
 
     image: {
       src: null
-    },
-    dialogTopping: false,
-    toppingArray: [],
-    toppingEditId: null,
-    toppingName: "",
-    toppingPrice: "",
-    toppingType: "add"
+    }
   }),
   computed: {
     formTitle() {
@@ -594,67 +381,7 @@ export default {
       this.levelmemberitme = { img: item.img };
       this.dialogPhoto = true;
     },
-    topping(item) {
-      this.productsItem._id = item._id;
-      this.dialogTopping = true;
-      this.toppingArray = item.topping;
-    },
-    saveTopping() {
-      this.$axios
-        .post("/product-topping/" + this.productsItem._id, {
-          topping: this.toppingArray
-        })
-        .then(res => {
-          if (res.status === 200) {
-            this.$swal.fire({
-              type: "success",
-              title: res.data.message
-            });
-            this.clearTopping();
-            this.dialogTopping = false;
-            this.toppingArray = [];
-          } else {
-            this.$swal.fire({
-              type: "error",
-              title: res.data.message
-            });
-          }
-        });
-    },
-    addTopping() {
-      if (this.toppingType === "edit") {
-        this.toppingArray[this.toppingEditId].name = this.toppingName;
-        this.toppingArray[this.toppingEditId].price = this.toppingPrice;
 
-        this.clearTopping();
-      } else {
-        if (this.toppingName.length !== 0 || this.toppingPrice.length !== 0) {
-          const toppingObj = {
-            id: this.toppingArray.length + 0,
-            name: this.toppingName,
-            price: this.toppingPrice,
-            status: true
-          };
-          this.toppingArray.push(toppingObj);
-          this.clearTopping();
-        }
-      }
-    },
-    editTopping(top, i) {
-      this.toppingEditId = i;
-      this.toppingType = "edit";
-      this.toppingName = top.name;
-      this.toppingPrice = top.price;
-    },
-    deleteTopping(i) {
-      this.toppingArray.splice(i, 1);
-      this.clearTopping();
-    },
-    clearTopping() {
-      this.toppingType = "add";
-      this.toppingName = "";
-      this.toppingPrice = "";
-    },
     crop() {
       const { coordinates, canvas } = this.$refs.cropper.getResult();
       canvas.toBlob(blob => {

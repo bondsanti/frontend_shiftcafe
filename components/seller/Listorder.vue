@@ -213,9 +213,13 @@ export default {
         pro => pro.product_name === this.orders[i].name
       );
       //console.log(product);
+      const filterTopping = product[0].ref_cate_id.topping.filter(
+        t => t.status === true
+      );
+
       this.selected = this.orders[i].topping;
       this.productTopping.name = product[0].product_name;
-      this.productTopping.topping = product[0].topping;
+      this.productTopping.topping = filterTopping;
       this.productTopping.price = product[0].price;
       this.productTopping.idInOrder = i;
       this.thinkPriceTopping();
@@ -254,7 +258,7 @@ export default {
 
               //count มากกว่า 1 แสดงว่าในออเดอร์มีรายการเดียวกับที่เราแก้ไขอยู่
               if (count > 1) {
-                console.log(position);
+                // console.log(position);
                 if (k == i) {
                   this.orders[position[1]].qty =
                     parseInt(this.orders[position[1]].qty) +
@@ -263,7 +267,7 @@ export default {
                   this.orders[position[1]].price =
                     this.orders[position[1]].qty * this.priceMergeTopping;
                   this.orders[position[1]].topping = this.selected;
-                  console.log(count + "k>i");
+                  //console.log(count + "k>i");
                   this.orders.splice(position[0], 1);
                   setTimeout(this.totalPrice, 300);
                 } else {
@@ -274,8 +278,8 @@ export default {
                   this.orders[position[0]].price =
                     this.orders[position[0]].qty * this.priceMergeTopping;
                   this.orders[position[0]].topping = this.selected;
-                  console.log(count + "k<i");
-                  console.log("i :" + i + " k :" + k);
+                  // console.log(count + "k<i");
+                  // console.log("i :" + i + " k :" + k);
                   this.orders.splice(position[1], 1);
                   setTimeout(this.totalPrice, 300);
                 }

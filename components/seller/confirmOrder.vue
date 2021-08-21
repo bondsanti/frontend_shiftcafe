@@ -567,9 +567,9 @@ export default {
           //console.log(pay);
           if (pay.status === 200) {
             if (!money.noBill) {
-              this.print(money, pay.data.data);
+              this.print(money, pay.data.data, pay.data.order_id);
             }
-            this.for_chef(pay.data.data.ref_order_id);
+            //this.for_chef(pay.data.order_id);
             this.$emit("closeDialog_cook");
             this.$emit("closeDialog");
             this.$emit("clearOrder2");
@@ -623,13 +623,14 @@ export default {
           coupon_id: this.coupon_id
         };
         this.$axios.post("/payment", newPayment).then(pay => {
-          console.log(pay.data.order_id);
+          //console.log(pay.data.order_id);
           if (pay.status === 200) {
             this.invoice = pay.data.invoice;
             if (!money.noBill) {
-              this.print(money, pay.data.data);
+              this.print(money, pay.data.data, pay.data.order_id);
             }
-            this.for_chef(pay.data.order_id);
+            // setTimeout(this.for_chef(pay.data.order_id), 2000);
+            //this.for_chef(pay.data.order_id);
             this.$emit("closeDialog_cook");
             this.$emit("closeDialog");
             this.$emit("clearOrder2");
@@ -791,8 +792,9 @@ export default {
         this.$emit("closeDialog");
       }
     },
-    print(money, pay) {
+    async print(money, pay, order_id) {
       const cusName = this.customers.filter(cus => cus._id === this.cusId);
+      const order = await this.$axios.$get("/order/" + order_id);
       //console.log(cusName);
       var WinPrint = window.open(
         "",
@@ -840,23 +842,24 @@ export default {
       WinPrint.document.write(
         "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th><th style='border-bottom: thin dotted;border-top: thin dotted' colspan='2' width='100px'>ราคา</th></tr>"
       );
-      for (let i in this.orders) {
+      //console.log(this.orders);
+      for (let i in order.list_product) {
         WinPrint.document.write("<tr style='border-bottom: thin solid'>");
         WinPrint.document.write(
           `<td style='padding-left:20px;'>${parseInt(i) + 1}</td><td >${
-            this.orders[i].name
+            order.list_product[i].name
           } ${
-            this.orders[i].normal_price
+            order.list_product[i].normal_price
           } บาท</td><td style='padding-left:20px;'>${
-            this.orders[i].qty
+            order.list_product[i].qty
           }</td><td style='padding-left:20px;'>${this.formatPrice(
-            this.orders[i].price
+            order.list_product[i].price
           )} </td><td style='padding-right:20px;'>฿</td>`
         );
         WinPrint.document.write("</tr>");
-        for (let j in this.orders[i].topping) {
+        for (let j in order.list_product[i].topping) {
           WinPrint.document.write(
-            `<tr><td></td><td > - ${this.orders[i].topping[j].name} เพิ่ม ${this.orders[i].topping[j].price} บาท</td></td></tr>`
+            `<tr><td></td><td > - ${order.list_product[i].topping[j].name} เพิ่ม ${order.list_product[i].topping[j].price} บาท</td></td></tr>`
           );
         }
       }
@@ -865,26 +868,26 @@ export default {
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write(
-        "<table  style='margin-top:20px;font-size: 0.6em;'>"
+        "<table  style='margin-top:20px;margin-bottom:30px;font-size: 0.6em;'>"
       );
       WinPrint.document.write(
         `<tr><th width='1000px' align=left style='padding-right:60px;'>อาหารเครื่องดื่ม</th><th width='100px'>${this.formatPrice(
-          this.subtotal
+          pay.total_price
         )} </th><th>บาท</th></tr>`
       );
-      if (this.coupon !== 0) {
-        const dis = Math.round((this.subtotal * this.coupon) / 100);
+      if (pay.discount_price !== 0) {
+        //const dis = Math.round((this.subtotal * this.coupon) / 100);
         WinPrint.document.write(
           `<tr><th width='1000px' align=left style='padding-right:60px;'>ส่วนลด</th><th width='100px'>${this.formatPrice(
-            dis
+            pay.discount_price
           )} </th><th>บาท</th></tr>`
         );
       }
-      if (this.tax !== 0) {
-        const vat = Math.round((this.subtotal * this.tax) / 100);
+      if (pay.vat_price !== 0) {
+        //const vat = Math.round((this.subtotal * this.tax) / 100);
         WinPrint.document.write(
           `<tr><th width='1000px' align=left style='padding-right:60px;'>ภาษี</th><th width='100px'>${this.formatPrice(
-            vat
+            pay.vat_price
           )} </th><th>บาท</th></tr>`
         );
       }
@@ -907,25 +910,11 @@ export default {
         `<tr><th  align=center style='padding-left:60px' >**ขอบคุณที่ใช้บริการ**</th></tr>`
       );
       WinPrint.document.write("</table>");
-      WinPrint.document.close();
-      WinPrint.focus();
-      setTimeout(() => {
-        WinPrint.print();
-        //WinPrint.close();
-      }, 500);
-      //setTimeout(this.for_chef(pay.ref_order_id), 700);
-      //WinPrint.close();
-    },
-    async for_chef(order_id) {
-      const order = await this.$axios.$get("/order/" + order_id);
-      //console.log(order);
-      var WinPrint = window.open(
-        "",
-        "",
-        "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
-      );
 
-      WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
+      //for chef
+      WinPrint.document.write(
+        "<hr><table style='width: 100%;font-size: 0.4em;'>"
+      );
 
       WinPrint.document.write(
         `<tr><th align='left'>พนักงานที่รับออเดอร์ : ${order.ref_emp_id.fname} ${order.ref_emp_id.lname}</th></tr>`
@@ -946,7 +935,7 @@ export default {
         "<table   style='width: 100%;font-size: 0.5em;'>"
       );
       WinPrint.document.write(
-        "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th></tr>"
+        "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px' colspan='2'>จำนวน</th></tr>"
       );
       let subTotal = 0;
       let list = order.list_product;
@@ -969,13 +958,77 @@ export default {
         "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
       );
       WinPrint.document.write("</table>");
-
       WinPrint.document.close();
       WinPrint.focus();
-      WinPrint.print();
-      // setTimeout(() => {
-      //   WinPrint.print();
-      // }, 1000);
+      setTimeout(() => {
+        WinPrint.print();
+        WinPrint.close();
+      }, 500);
+      //setTimeout(this.for_chef(pay.ref_order_id), 700);
+      //WinPrint.close();
+    },
+    async for_chef(order_id) {
+      // const order = await this.$axios.$get("/order/" + order_id);
+      // // console.log(order_id);
+      // // console.log(order);
+      // var WinPrint = window.open(
+      //   "",
+      //   "",
+      //   "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
+      // );
+      // if (WinPrint) {
+      //   WinPrint.document.write(
+      //     "<table style='width: 100%;font-size: 0.4em;'>"
+      //   );
+      //   WinPrint.document.write(
+      //     `<tr><th align='left'>พนักงานที่รับออเดอร์ : ${order.ref_emp_id.fname} ${order.ref_emp_id.lname}</th></tr>`
+      //   );
+      //   WinPrint.document.write(
+      //     `<tr><th align='left'>ชื่อบิล : ${order.bill_name}</th></tr>`
+      //   );
+      //   WinPrint.document.write(
+      //     `<tr><th align='center'>วันที่ ${this.formatDate(
+      //       order.datetime
+      //     )} </th></tr>`
+      //   );
+      //   WinPrint.document.write(
+      //     "<tr><th align='center'>***สำหรับจัดทำอาหารและเครื่องดื่ม***</th></tr>"
+      //   );
+      //   WinPrint.document.write("</table>");
+      //   WinPrint.document.write(
+      //     "<table   style='width: 100%;font-size: 0.5em;'>"
+      //   );
+      //   WinPrint.document.write(
+      //     "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px' colspan='2'>จำนวน</th></tr>"
+      //   );
+      //   let subTotal = 0;
+      //   let list = order.list_product;
+      //   for (let j in list) {
+      //     subTotal = subTotal + parseInt(list[j].price);
+      //     WinPrint.document.write("<tr style='border-bottom: thin solid'>");
+      //     WinPrint.document.write(
+      //       `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
+      //         list[j].name
+      //       }</td><td style='padding-left:20px;'>${list[j].qty}</td>`
+      //     );
+      //     WinPrint.document.write("</tr>");
+      //     for (let k in list[j].topping) {
+      //       WinPrint.document.write(
+      //         `<tr><td></td><td > - ${list[j].topping[k].name} </td></td></tr>`
+      //       );
+      //     }
+      //   }
+      //   WinPrint.document.write(
+      //     "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
+      //   );
+      //   WinPrint.document.write("</table>");
+      //   WinPrint.document.close();
+      //   WinPrint.focus();
+      //   //WinPrint.print();
+      //   setTimeout(() => {
+      //     WinPrint.print();
+      //   }, 500);
+      // }
     },
     formatDate(date) {
       this.$moment().format("LLLL");

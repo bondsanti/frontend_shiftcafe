@@ -236,7 +236,7 @@
                       <h3>{{ order.price }} ฿.</h3>
                     </v-col>
                   </div> -->
-                  <v-list-item two-line v-for="(order, i) in orders" :key="i">
+                  <v-list-item three-line v-for="(order, i) in orders" :key="i">
                     <v-list-item-content>
                       <v-list-item-title class="d-flex flex-row ma-1 mx-16">
                         <v-col cols="6">
@@ -251,6 +251,9 @@
                       </v-list-item-title>
                       <v-list-item-subtitle class="ml-16">{{
                         convertArrayToString(order.topping)
+                      }}</v-list-item-subtitle>
+                      <v-list-item-subtitle class="ml-16">{{
+                        order.detail
                       }}</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
@@ -911,9 +914,9 @@ export default {
       );
       WinPrint.document.write("</table>");
 
-      //for chef
+      //for chef********************************************************************************************
       WinPrint.document.write(
-        "<hr><table style='width: 100%;font-size: 0.4em;'>"
+        "<hr style='break-after:page'><table style='width: 100%;font-size: 0.4em;'>"
       );
 
       WinPrint.document.write(
@@ -951,6 +954,11 @@ export default {
         for (let k in list[j].topping) {
           WinPrint.document.write(
             `<tr><td></td><td > - ${list[j].topping[k].name} </td></td></tr>`
+          );
+        }
+        if (list[j].detail.length !== 0) {
+          WinPrint.document.write(
+            `<tr><td></td><td > ** ${list[j].detail} **</td></td></tr>`
           );
         }
       }

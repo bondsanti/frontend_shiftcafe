@@ -53,9 +53,9 @@
                   </v-sheet>
                 </v-col>
 
-                <v-col cols="4" class="mx-2">
+                <v-col cols="4" class="mx-2" @click="editTopping(i)">
                   <!-- <h3>{{ order.name }}</h3> -->
-                  <h3 v-text="order.name"></h3>
+                  <h3 v-text="order.name" class="text-wrap"></h3>
                 </v-col>
                 <v-col cols="3">
                   <div class="d-flex flex-row justify-space-around">
@@ -73,8 +73,13 @@
                 </v-col>
               </v-list-item-title>
               <v-list-item-subtitle>
-                <p class="text-truncate cursor" @click="editTopping(i)">
+                <p class="text-truncate cursor pb-2 mb-0">
                   {{ convertArrayToString(order.topping) }}
+                </p>
+              </v-list-item-subtitle>
+              <v-list-item-subtitle>
+                <p class="text-truncate cursor pb-2 mb-0">
+                  {{ order.detail }}
                 </p>
               </v-list-item-subtitle>
             </v-list-item-content>
@@ -150,7 +155,7 @@
             </v-col>
           </v-row>
         </v-card-title>
-        <v-sheet class="pl-7">
+        <v-sheet class="pl-7 pr-7 pt-7">
           <v-checkbox
             @click="thinkPriceTopping"
             v-model="selected"
@@ -159,6 +164,11 @@
             :label="top.name"
             :value="top"
           ></v-checkbox>
+          <v-text-field
+            solo
+            label="รายละเอียดเพิ่มเติม"
+            v-model="detailTopping"
+          ></v-text-field>
         </v-sheet>
 
         <v-divider></v-divider>
@@ -205,7 +215,8 @@ export default {
     },
     dialogTopping: false,
     selected: [],
-    priceMergeTopping: 0
+    priceMergeTopping: 0,
+    detailTopping: null
   }),
   methods: {
     editTopping(i) {
@@ -218,6 +229,7 @@ export default {
       );
 
       this.selected = this.orders[i].topping;
+      this.detailTopping = this.orders[i].detail;
       this.productTopping.name = product[0].product_name;
       this.productTopping.topping = filterTopping;
       this.productTopping.price = product[0].price;
@@ -240,6 +252,7 @@ export default {
       let count = 0;
       let position = [];
       this.orders[k].topping = this.selected;
+      this.orders[k].detail = this.detailTopping;
       this.orders[k].price = this.orders[k].qty * this.priceMergeTopping;
 
       let newTopping = newOrderTopping.map(t => t.name);
@@ -381,7 +394,8 @@ export default {
         qty: 1,
         price: parseInt(this.product2[i].price) + parseInt(toppingPrice),
         topping: topping,
-        normal_price: this.product2[i].price
+        normal_price: this.product2[i].price,
+        detail: ""
       };
 
       for (let i in this.orders) {

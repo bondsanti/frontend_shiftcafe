@@ -126,6 +126,8 @@
       :couponParent="coupon"
     />
     <Cook
+      :products="products"
+      :unit="unit"
       :holdDl="holdDl"
       :orderDl="orderDl"
       :orderOnDatabase="orderOnDatabase"
@@ -155,14 +157,16 @@ export default {
       customers,
       orderOnDatabase,
       bank,
-      coupon
+      coupon,
+      unit
     ] = await Promise.all([
       context.$axios.$get("/product"),
       context.$axios.$get("/category"),
       context.$axios.$get("/customer2"),
       context.$axios.$get("/order-hold"),
       context.$axios.$get("/bank"),
-      context.$axios.$get("/coupon")
+      context.$axios.$get("/coupon"),
+      context.$axios.$get("/unit")
     ]);
 
     return {
@@ -172,7 +176,8 @@ export default {
       customers,
       orderOnDatabase,
       bank,
-      coupon
+      coupon,
+      unit
     };
   },
   components: {

@@ -107,6 +107,9 @@
                   ><v-icon left> mdi-account-plus </v-icon>
                   ลงทะเบียนลูกค้า</span
                 >
+                <v-btn text color="error" class="mr-4" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
               <v-divider class="mb-3"></v-divider>
               <v-card-text> </v-card-text>
@@ -121,12 +124,14 @@
                           color="#1D1D1D"
                           :items="pnamesec"
                           v-model="customerItme.pname"
+                          clearable
                           :rules="requiredRules"
                         ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.fname"
+                          clearable
                           maxlength="25"
                           :rules="requiredRules"
                           label="ชื่อ"
@@ -138,6 +143,7 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.lname"
+                          clearable
                           maxlength="25"
                           :rules="requiredRules"
                           label="นามสกุล"
@@ -148,19 +154,56 @@
                       </v-col>
 
                       <v-col cols="12" sm="6">
-                        <date-picker
+                        <!-- <date-picker
                           class="my-datepicker"
                           placeholder="วันเกิด"
                           :rules="requiredRules"
                           v-model="customerItme.birthday"
                           lang="th"
                           valueType="format"
-                        ></date-picker>
+                        ></date-picker> -->
+                        <v-menu
+                          ref="menu"
+                          v-model="menu"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-x
+                          min-width="auto"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="customerItme.birthday"
+                              clearable
+                              label="วันเกิด"
+                              append-icon="mdi-calendar"
+                              :rules="requiredRules"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                              outlined
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="customerItme.birthday"
+                            locale="th"
+                            :active-picker.sync="activePicker"
+                            :max="
+                              new Date(
+                                Date.now() -
+                                  new Date().getTimezoneOffset() * 60000
+                              )
+                                .toISOString()
+                                .substr(0, 10)
+                            "
+                            min="1950-01-01"
+                          ></v-date-picker>
+                        </v-menu>
                       </v-col>
 
                       <v-col cols="12" sm="4">
                         <v-text-field
                           v-model="customerItme.tel"
+                          clearable
                           hint="ไม่ต้องเติม - ในเบอร์โทรศัพท์"
                           maxlength="10"
                           min="0"
@@ -193,6 +236,7 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.email"
+                          clearable
                           label="อีเมล"
                           :rules="emailRules"
                           outlined
@@ -203,6 +247,7 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.address"
+                          clearable
                           :rules="requiredRules"
                           label="ที่อยู่"
                           outlined
@@ -210,7 +255,7 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="12">
                         <v-select
                           label="ระดับ"
                           outlined
@@ -218,11 +263,12 @@
                           item-text="name"
                           item-value="_id"
                           v-model="customerItme.ref_level_id"
+                          clearable
                           :items="level"
                           :rules="rules"
                         ></v-select>
                       </v-col>
-                      <v-col cols="12" sm="6">
+                      <!-- <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.point"
                           type="number"
@@ -232,7 +278,7 @@
                           disabled
                           color="#1D1D1D"
                         ></v-text-field>
-                      </v-col>
+                      </v-col> -->
                     </v-row>
                   </div>
                 </v-form>
@@ -284,6 +330,9 @@
                   <v-icon left> mdi-account-plus </v-icon>
                   แก้ไขข้อมูลลูกค้า
                 </span>
+                <v-btn text color="error" class="mr-4" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
               <v-divider class="mb-3"></v-divider>
               <v-card-text> </v-card-text>
@@ -299,11 +348,13 @@
                           :items="pnamesec"
                           v-model="customerItme.pname"
                           :rules="requiredRules"
+                          clearable
                         ></v-select>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.fname"
+                          clearable
                           maxlength="25"
                           :rules="requiredRules"
                           label="ชื่อ"
@@ -315,6 +366,7 @@
                       <v-col cols="12" sm="4">
                         <v-text-field
                           v-model="customerItme.lname"
+                          clearable
                           maxlength="25"
                           :rules="requiredRules"
                           label="นามสกุล"
@@ -325,18 +377,48 @@
                       </v-col>
 
                       <v-col cols="12" sm="6">
-                        <date-picker
-                          placeholder="วันเกิด"
-                          :rules="requiredRules"
-                          lang="th"
-                          v-model="customerItme.birthday"
-                          valueType="format"
-                        ></date-picker>
+                        <v-menu
+                          ref="menu"
+                          v-model="menu2"
+                          :close-on-content-click="false"
+                          transition="scale-transition"
+                          offset-x
+                          min-width="auto"
+                        >
+                          <template v-slot:activator="{ on, attrs }">
+                            <v-text-field
+                              v-model="customerItme.birthday"
+                              clearable
+                              label="วันเกิด"
+                              :rules="requiredRules"
+                              append-icon="mdi-calendar"
+                              readonly
+                              v-bind="attrs"
+                              v-on="on"
+                              outlined
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="customerItme.birthday"
+                            locale="th"
+                            :active-picker.sync="activePicker"
+                            :max="
+                              new Date(
+                                Date.now() -
+                                  new Date().getTimezoneOffset() * 60000
+                              )
+                                .toISOString()
+                                .substr(0, 10)
+                            "
+                            min="1950-01-01"
+                          ></v-date-picker>
+                        </v-menu>
                       </v-col>
 
                       <v-col cols="12" sm="4">
                         <v-text-field
                           v-model="customerItme.tel"
+                          clearable
                           hint="ไม่ต้องเติม - ในเบอร์โทรศัพท์"
                           maxlength="10"
                           :rules="numberRules"
@@ -372,6 +454,7 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.email"
+                          clearable
                           label="อีเมล"
                           :rules="emailRules"
                           outlined
@@ -382,6 +465,7 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.address"
+                          clearable
                           :rules="requiredRules"
                           label="ที่อยู่"
                           outlined
@@ -389,7 +473,7 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="12" sm="6">
+                      <v-col cols="12" sm="12">
                         <v-select
                           label="ระดับ"
                           outlined
@@ -402,7 +486,7 @@
                           :rules="rules"
                         ></v-select>
                       </v-col>
-                      <v-col cols="12" sm="6">
+                      <!-- <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="customerItme.point"
                           type="number"
@@ -412,7 +496,7 @@
                           disabled
                           color="#1D1D1D"
                         ></v-text-field>
-                      </v-col>
+                      </v-col> -->
                     </v-row>
                   </div>
                 </v-form>
@@ -575,6 +659,11 @@ import "vue2-datepicker/locale/th";
 export default {
   layout: "layoutCashier",
   data: () => ({
+    //
+    activePicker: null,
+    menu: false,
+    menu2: false,
+    //
     teltrue: false,
     telErr: false,
     dialogadd: false,
@@ -669,7 +758,10 @@ export default {
     time1: null,
     type: null,
     deleteId: null,
-    requiredRules: [v => !!v.length <= 25 || "โปรดกรอกข้อความให้ครบในช่อง!"],
+    requiredRules: [
+      v => !!v || "โปรดกรอกข้อความให้ครบในช่อง",
+      v => (v && v.length <= 50) || "เกิน 50 ตัวอักษร"
+    ],
     emailRules: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
       v =>
@@ -693,6 +785,9 @@ export default {
     },
     dialogadd(val) {
       val || this.closeadd();
+    },
+    menu(val) {
+      val && setTimeout(() => (this.activePicker = "YEAR"));
     }
   },
   created() {
@@ -700,9 +795,8 @@ export default {
   },
   filters: {
     moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
       var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("Do MMMM YYYY");
+      return moment(strdate).format("D/MM/YY");
     }
   },
 
@@ -742,6 +836,18 @@ export default {
     editItem(item) {
       this.type = "edit";
       this.customerItme = item;
+      this.customerItme = {
+        _id: item._id,
+        pname: item.pname,
+        fname: item.fname,
+        lname: item.lname,
+        birthday: new Date(item.birthday).toISOString().substr(0, 10),
+        tel: item.tel,
+        email: item.email,
+        address: item.address,
+        ref_level_id: item.ref_level_id,
+        point: item.point
+      };
       this.dialog = true;
     },
     addItem() {
@@ -878,13 +984,23 @@ export default {
       if (this.type === "add") {
         this.$refs.form.validate();
         this.loading = true;
-        this.$emit("addCustomer", {    ...this.customerItme
-        });
-        this.$swal({
-          type: "success",
-          title: "ใช้งานได้"
-        });
-        this.closeadd();
+        this.$axios
+          .$post("/customer/", this.customerItme)
+          .then(res => {
+            //  console.log(res.message);
+            this.$emit("refresh");
+            this.closeadd();
+            this.$swal.fire({
+              type: "success",
+              title: res.message
+            });
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
       } else {
         this.loading = true;
         this.$axios

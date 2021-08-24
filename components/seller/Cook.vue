@@ -401,6 +401,7 @@
       :statusCook="preConfirm.status_cook"
       @closeDialog_cook="closeDialog_cook"
       ref="childRef"
+      :printOrder="false"
     />
   </div>
 </template>

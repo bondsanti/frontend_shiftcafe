@@ -723,6 +723,17 @@ export default {
         {
           name: "ออกให้",
           value: item.ref_emp_id.fname + " " + item.ref_emp_id.lname
+        },
+     
+         {
+          name: "start",
+          value: item.start 
+        }
+        ,
+     
+         {
+          name: "end",
+          value: item.end  
         }
       ];
 

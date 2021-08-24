@@ -1,7 +1,7 @@
 <template>
   <div class="ma-3">
     <!-- view -->
-    <v-dialog v-model="dialogView" max-width="400px">
+    <v-dialog v-model="dialogView" max-width="500px">
       <v-card class="rounded-xl">
         <v-form>
           <v-card-title>

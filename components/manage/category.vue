@@ -25,7 +25,7 @@
             <v-btn
               color="primary"
               dark
-              class="ma-5 rounded-xl"
+              class="ma-2  rounded-xl"
               elevation="24"
               v-bind="attrs"
               v-on="on"
@@ -35,6 +35,7 @@
             </v-btn>
           </template>
         </v-dialog>
+        <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-text-field
@@ -295,7 +296,7 @@
                       <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
-                            class="ml-2 mt-3"
+                            class=" mt-3"
                             fab
                             icon
                             v-bind="attrs"
@@ -316,7 +317,7 @@
                       <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
-                            class="ml-2 mt-3"
+                            class=" mt-3"
                             fab
                             icon
                             v-bind="attrs"
@@ -337,7 +338,7 @@
                       <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
                           <v-btn
-                            class="ml-2 mt-3"
+                            class=" mt-3"
                             fab
                             icon
                             v-bind="attrs"
@@ -351,9 +352,9 @@
                             <v-icon>mdi-food-apple</v-icon>
                           </v-btn>
                         </template>
-                        <span>Topping</span>
+                        <span>ท็อปปิ้ง</span>
                       </v-tooltip>
-                      <!-- ลบ -->
+                      <!-- topping -->
                     </v-card-actions>
                   </div>
                 </div>
@@ -539,7 +540,7 @@
                               v-bind="attrs"
                               v-on="on"
                               plain
-                              class="warning"
+                              class="warning ma-2 mr-2"
                               raised
                               @click="editTopping(top, i)"
                               ><v-icon>mdi-grease-pencil</v-icon></v-btn
@@ -553,8 +554,9 @@
                               small
                               elevation="24"
                               fab
+                              class="ma-2"
                               plain
-                              color="error"
+                              color="error "
                               v-bind="attrs"
                               v-on="on"
                               raisedb
@@ -578,7 +580,7 @@
                 <v-text-field
                   v-model="toppingName"
                   filled
-                  label="ชื่อ TOPPING"
+                  label="ชื่อท็อปปิ้ง"
                   outlined
                   class="rounded-xl"
                   hide-details
@@ -598,23 +600,37 @@
               </v-col>
 
               <v-col cols="12" sm="3" align-self="center">
-                <v-btn
-                  elevation="24"
-                  raised
-                  class="white--text  rounded-xl "
-                  color="green"
-                  @click="addTopping"
-                  >{{ toppingType === "edit" ? "แก้ไข" : "เพิ่ม" }}
-                </v-btn>
-                <v-btn
-                  color="primary"
-                  elevation="24"
-                  class=" rounded-xl
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      elevation="24"
+                      raised
+                      v-bind="attrs"
+                      v-on="on"
+                      class="white--text  rounded-xl "
+                      color="green"
+                      @click="addTopping"
+                      >{{ toppingType === "edit" ? "แก้ไข" : "เพิ่ม" }}
+                    </v-btn>
+                  </template>
+                  <span>ต้องกดบันทึกไม่งั้นท็อปปิ้งไม่เพิ่ม</span>
+                </v-tooltip>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      color="primary"
+                      elevation="24"
+                      class=" rounded-xl
                   "
-                  raised
-                  @click="saveTopping"
-                  >บันทึก</v-btn
-                >
+                      v-bind="attrs"
+                      v-on="on"
+                      raised
+                      @click="saveTopping"
+                      >บันทึก</v-btn
+                    >
+                  </template>
+                  <span>ต้องกดบันทึกไม่งั้นท็อปปิ้งไม่เพิ่ม</span>
+                </v-tooltip>
               </v-col>
             </v-row>
             <!-- <v-spacer></v-spacer> -->
@@ -732,6 +748,15 @@ export default {
           this.clearTopping();
         }
       }
+      this.$swal.fire({
+        type: "success",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        title: "เพิ่ม"
+      });
     },
     saveTopping() {
       this.$axios
@@ -764,6 +789,15 @@ export default {
     deleteTopping(i) {
       this.toppingArray.splice(i, 1);
       this.clearTopping();
+      this.$swal.fire({
+        type: "error",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        title: "ลบ"
+      });
     },
     clearTopping() {
       this.toppingType = "add";

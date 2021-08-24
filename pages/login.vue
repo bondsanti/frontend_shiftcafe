@@ -103,7 +103,6 @@ export default {
   data() {
     return {
       showPass: false,
-      
       username: "",
       password: "",
       snackbar: false,
@@ -144,6 +143,19 @@ export default {
           } else {
             this.$router.push("/member");
           }
+          this.$swal.fire({
+            type: "success",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            title: res.data.message,
+            didOpen: toast => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            }
+          });
         } else {
           this.snackbar = true;
           this.error = res.data.message;

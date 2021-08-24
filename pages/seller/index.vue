@@ -124,6 +124,9 @@
       @clearOrder2="clearOrder2"
       :bank2="bank"
       :couponParent="coupon"
+      :printOrder="true"
+      :unit="unit"
+      :products="products"
     />
     <Cook
       :products="products"

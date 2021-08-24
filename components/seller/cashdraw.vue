@@ -7,7 +7,7 @@
             <v-btn
               color="primary"
               dark
-              class="mr-5 rounded-xl"
+              class="mr-5 rounded-xl ma-2"
               elevation="15"
               v-bind="attrs"
               v-on="on"
@@ -209,7 +209,7 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn plain color="info" @click="closeDelete">
-                  <v-icon aria-hidden="false" class="mx-2 ma-1">
+                  <v-icon aria-hidden="false" class="mx- ma-1">
                     mdi-close-box </v-icon
                   >ยกเลิก</v-btn
                 >
@@ -230,20 +230,22 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
-            class="mr-1 rounded-xl"
+            class="mr-1 rounded-xl ma-2"
             elevation="24"
             color="warning"
+            small
             @click="editItem(item)"
           >
-            <v-icon aria-hidden="false" class="mx-2">
+            <v-icon aria-hidden="false" class="mx-2 ">
               mdi-pencil-plus
             </v-icon>
             แก้ไข
           </v-btn>
           <v-btn
-            class="mr-1 rounded-xl"
+            class="mr-1 rounded-xl ma-2"
             elevation="24"
             color="error"
+            small
             :disabled="$store.getters['position'] === 'cashier'"
             @click="deleteItem(item)"
           >

@@ -1,12 +1,12 @@
 <template>
   <div class="ma-3">
     <!-- 1 -->
-    <v-dialog v-model="dialogView" max-width="400px">
+    <v-dialog v-model="dialogView" max-width="500px">
       <v-card class="rounded-xl">
         <v-form>
           <v-card-title>
             <span class="text-h">
-              <v-icon left> mdi-account-search</v-icon> รหัสลูกค้า ลำดับ.#{{
+              <v-icon left> mdi-account-search</v-icon> รหัสลูกค้า ID{{
                 itemBy.member_no
               }}
             </span>
@@ -53,7 +53,7 @@
             <v-btn
               color="primary"
               dark
-              class="ma-5 rounded-xl"
+              class="ma-2 mr-1 rounded-xl"
               v-bind="attrs"
               v-on="on"
               @click="addItem"

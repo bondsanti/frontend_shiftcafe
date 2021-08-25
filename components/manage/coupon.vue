@@ -43,7 +43,7 @@
             <v-btn
               color="primary"
               dark
-              class="mr-5 rounded-xl"
+              class="mr-5 rounded-xl mb-2 "
               elevation="15"
               v-bind="attrs"
               v-on="on"
@@ -448,14 +448,19 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn small class=" white--text" color="teal" @click="Detail(item)">
+          <v-btn
+            small
+            class=" white--text mb-2 "
+            color="teal"
+            @click="Detail(item)"
+          >
             <v-icon aria-hidden="false" class="">
               mdi-eye-settings-outline
             </v-icon>
             ดูข้อมูล
           </v-btn>
 
-          <v-btn small class="" color="warning" @click="editItem(item)">
+          <v-btn small class="mb-2 " color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="">
               mdi-pencil
             </v-icon>
@@ -464,7 +469,7 @@
 
           <v-btn
             rounded-lx
-            class=""
+            class="mb-2 "
             color="error"
             small
             @click="deleteItem(item)"

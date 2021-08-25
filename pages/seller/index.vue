@@ -19,8 +19,8 @@
         <v-card class=" rounded-xl pb-1 " color="#ededed" elevation="5">
           <!-- <v-row> -->
           <v-app-bar width="100%" color="white" flat>
-            <v-col cols="3" sm="6" md="3" class="hidden-sm-and-down"
-              ><h2>{{ cateName }}</h2></v-col
+            <v-col cols="3" sm="6" md="3" class="hidden-sm-and-down "
+              ><h2 class="font-weight-black">{{ cateName }}</h2></v-col
             >
             <v-col cols="12" sm="12" md="9">
               <div class="d-flex flex-row">

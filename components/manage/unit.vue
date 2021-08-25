@@ -141,7 +141,7 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
-            class="mr-1 rounded-xl"
+            class="mr-1  mb-2 rounded-xl"
             elevation="24"
             small
             color="warning"
@@ -153,7 +153,7 @@
             แก้ไข
           </v-btn>
           <v-btn
-            class="mr-1 rounded-xl"
+            class="mr-1 mb-2  rounded-xl"
             elevation="24"
             color="error"
             small

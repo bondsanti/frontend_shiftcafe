@@ -3,15 +3,16 @@
 Step 1: ติดตั้ง pdfmake ในโปรเจ็คของเรา
 
 ```bash
-npm install pdfmake — save
+npm install pdfmake
 
-# npm install [for npm]
+#  [for npm]
 ```
 
-Step 2: ทำการ เอาไฟล์ ที่เตรียมไว้ไปทับ ใน
+Step 2: หาต้องการเพิ่ม  font ไปแก้ที่
 
 ```bash
-(project)/node_modules/pdfmake/example/fonts
 
-# build ,Example
+ vfis_fonsts.js เป็น base64  font ที่ใช้อยู่ในโพล์เดอร์ fonts ไม่ต้องก๊อปไปมีไว้ให้แค่ดู นาจา ที่จะเพิ่มก็อ่านไฟล์ vfis_fonsts.js ดูนะแปลงเป็น base64 เอง
+
+#  vfis_fonsts.js 
 ```

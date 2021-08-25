@@ -959,6 +959,10 @@ export default {
         {
           name: "ตำแหน่ง",
           value: item.ref_level_id.level_name
+        },
+          {
+          name: "แต้มสะสม",
+          value: item.point
         }
       ];
 

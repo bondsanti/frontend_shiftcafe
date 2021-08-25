@@ -33,15 +33,13 @@
             <v-col cols="12" sm="4" md="4" lg="4">
               <v-sheet
                 color="white"
-                elevation="15"
+               
                 height="80"
                 width="80"
                 class="rounded-circle"
               >
                 <v-img
-                  height="100%"
-                  contain
-                  class="rounded-circle"
+                 
                   :src="$nuxt.context.env.config.IMG_URL + product.img"
                 >
                 </v-img> </v-sheet
@@ -53,8 +51,8 @@
             >
           </v-row>
         </v-card-title>
-        <v-divider></v-divider>
-        <v-sheet class="pl-7 ">
+        <!-- <v-divider></v-divider> -->
+        <!-- <v-sheet class="pl-7 ">
           <v-checkbox
             class="caption"
             color="red"
@@ -65,9 +63,48 @@
             :label="top.name"
             :value="top"
           ></v-checkbox>
-        </v-sheet>
+        </v-sheet> -->
+        <!--  -->
 
-        <v-divider></v-divider>
+        <v-list>
+          <v-list-item-group v-model="selected" multiple>
+            <template v-for="top in filterTopping">
+              <v-divider v-if="!top" :key="top._id"></v-divider>
+
+              <v-list-item
+                v-else
+                :key="top._id"
+                :value="top"
+                active-class="deep-purple--text text--accent-4"
+              >
+                <template v-slot:default="{ active }">
+                  <v-list-item-content>
+                    <v-list-item-avatar>
+                      <v-avatar 
+                        ><img src="../../assets/icons/shopping.png"
+                      /></v-avatar>
+                    </v-list-item-avatar>
+                  </v-list-item-content>
+
+                  <v-list-item-content>
+                    <v-list-item-title v-text="top.name"> </v-list-item-title>
+                  </v-list-item-content>
+
+                  <v-list-item-action>
+                    <v-checkbox
+                      @click="thinkPriceTopping"
+                      :input-value="active"
+                      color="deep-purple accent-4"
+                    ></v-checkbox>
+                  </v-list-item-action>
+                </template>
+              </v-list-item>
+            </template>
+          </v-list-item-group>
+        </v-list>
+
+        <!--  -->
+        <!-- <v-divider></v-divider> -->
 
         <v-card-actions>
           <h3 class="subheading text-uppercase pl-2 mb-4">

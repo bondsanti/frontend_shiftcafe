@@ -15,61 +15,64 @@
       height="auto"
       elevation="5"
     >
-      <div class="d-flex flex-row justify-space-between ml-15 mt-2 mb-5">
-        <h3 class="d-flex flex-column mr-0 mt-1">ชื่อ</h3>
+      <div class="d-flex flex-row justify-space-between ml-10 mt-2 mb-5">
+        <h4 class="d-flex flex-column mt-1 ">
+          หมายเหตุ
+        </h4>
         |
-        <h3 class="d-flex flex-column mt-1">
+        <h4 class="d-flex flex-column mr-0 mt-1">ชื่อ</h4>
+        |
+        <h4 class="d-flex flex-column mt-1">
           จำนวน
-        </h3>
+        </h4>
         |
-        <h3 class="d-flex flex-column mr-15 mt-1">ราคา</h3>
+        <h4 class="d-flex flex-column mr-13 mt-1 ">ราคา</h4>
       </div>
       <v-list-item-group
         v-model="selectedItem"
         active-class="info--text"
         color="primary"
       >
-        <!-- <v-divider></v-divider> -->
         <div v-for="(order, i) in orders" :key="i">
-          <!-- <div class="d-flex flex-row  mt-1"> -->
           <v-divider></v-divider>
           <v-list-item two-line>
             <v-list-item-content>
               <v-list-item-title class="d-flex flex-row ma-0 pa-0">
-                <v-col cols="1" class="ma-0">
-                  <v-sheet
-                    class="mx-auto rounded-xl"
-                    height="30"
-                    width="30"
-                    elevation="6"
-                  >
-                    <v-icon
-                      color="red"
-                      class="mr-3"
-                      @click="deleteOrder(i)"
-                      size="30px"
-                      >mdi-trash-can-outline</v-icon
+                <v-row align="center" justify="center">
+                  <v-btn-toggle>
+                    <v-btn small color="#E53935" @click="deleteOrder(i)">
+                      <v-icon color="#FFFFFF">mdi-delete-variant</v-icon>
+                    </v-btn>
+                    <v-btn
+                      small
+                      color="#039BE5"
+                      class="white--text"
+                      @click="editTopping(i)"
+                      >ปรับ</v-btn
                     >
-                  </v-sheet>
-                </v-col>
+                  </v-btn-toggle>
+                </v-row>
 
-                <v-col cols="4" class="mx-2" @click="editTopping(i)">
-                  <!-- <h3>{{ order.name }}</h3> -->
-                  <h3 v-text="order.name" class="text-wrap"></h3>
+                <v-col cols="3" class="mx-2 ml-2">
+                  <h4 v-text="order.name" class="text-wrap"></h4>
                 </v-col>
-                <v-col cols="3">
+                <!-- + - -->
+                <v-col cols="2">
                   <div class="d-flex flex-row justify-space-around">
-                    <v-icon class="cursor" size="30px" @click="deleteQty(i)"
+                    <v-icon class="cursor" size="25px" @click="deleteQty(i)"
                       >mdi-minus-circle-outline</v-icon
                     >
-                    <h3 class="">{{ order.qty }}</h3>
-                    <v-icon size="30px" class=" cursor" @click="addQty(i)"
+                    <h4 class="">{{ order.qty }}</h4>
+                    <v-icon size="25px" class=" cursor" @click="addQty(i)"
                       >mdi-plus-circle-outline</v-icon
                     >
                   </div>
                 </v-col>
-                <v-col cols="4" align="center">
-                  <h3 class="d-flex flex-column">{{ order.price }}</h3>
+                <!-- + - -->
+                <v-col cols="3" align="center">
+                  <h4 class="d-flex flex-column mx-2 ml-5">
+                    {{ order.price }}
+                  </h4>
                 </v-col>
               </v-list-item-title>
               <v-list-item-subtitle>
@@ -132,22 +135,16 @@
     </div>
     <v-dialog v-model="dialogTopping" width="450">
       <v-card class="rounded-xl">
-        <v-card-title class="text-h5 grey lighten-2">
+        <v-card-title class="text-h5  lighten-2">
           <v-row>
             <v-col cols="12" sm="4" md="4" lg="4">
               <v-sheet
                 color="white"
-                elevation="15"
-                height="100"
-                width="100"
+                height="80"
+                width="80"
                 class="rounded-circle  "
               >
-                <v-img
-                  height="100%"
-                  contain
-                  class="rounded-circle"
-                  src="/milkshake.svg"
-                ></v-img>
+                <v-img src="/clipboard.png"></v-img>
               </v-sheet>
             </v-col>
             <v-col cols="12" sm="8" md="8" lg="8">
@@ -155,7 +152,7 @@
             </v-col>
           </v-row>
         </v-card-title>
-        <v-sheet class="pl-7 pr-7 pt-7">
+        <!-- <v-sheet class="pl-7 pr-7 pt-7">
           <v-checkbox
             @click="thinkPriceTopping"
             v-model="selected"
@@ -169,9 +166,50 @@
             label="รายละเอียดเพิ่มเติม"
             v-model="detailTopping"
           ></v-text-field>
-        </v-sheet>
+        </v-sheet> -->
+        <v-list>
+          <v-list-item-group v-model="selected" multiple>
+            <template v-for="top in productTopping.topping">
+              <v-divider v-if="!top" :key="top._id"></v-divider>
 
-        <v-divider></v-divider>
+              <v-list-item
+                v-else
+                :key="top._id"
+                :value="top"
+                active-class="deep-purple--text text--accent-4"
+              >
+                <template v-slot:default="{ active }">
+                  <v-list-item-content>
+                    <v-list-item-avatar>
+                      <v-avatar
+                        ><img src="../../assets/icons/shopping.png"
+                      /></v-avatar>
+                    </v-list-item-avatar>
+                  </v-list-item-content>
+
+                  <v-list-item-content>
+                    <v-list-item-title v-text="top.name"> </v-list-item-title>
+                  </v-list-item-content>
+
+                  <v-list-item-action>
+                    <v-checkbox
+                      @click="thinkPriceTopping"
+                      :input-value="active"
+                      color="deep-purple accent-4"
+                    ></v-checkbox>
+                  </v-list-item-action>
+                </template>
+              </v-list-item>
+            </template>
+          </v-list-item-group>
+        </v-list>
+        <v-text-field
+          class="mx-2 mt-2"
+          prepend-inner-icon="mdi-tooltip-text-outline"
+          label="รายละเอียดเพิ่มเติม"
+          v-model="detailTopping"
+          rounded
+        ></v-text-field>
 
         <v-card-actions>
           <h3 class="subheading text-uppercase pl-2 mb-4">

@@ -65,8 +65,8 @@
             :src="`${$nuxt.context.env.config.IMG_URL}${item.img}`"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
-            width="70px"
-            height="70px"
+            width="100px"
+            height="100px"
             contain
             @click="photo(item)"
           />

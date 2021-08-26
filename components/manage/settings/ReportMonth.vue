@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <v-dialog
-      v-model="dialogDay"
+      v-model="dialogMonth"
       fullscreen
       hide-overlay
       transition="dialog-bottom-transition"
@@ -12,7 +12,7 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title
-            >รายงานยอดขายประจำวันที่ {{ formatDate(daytime) }}</v-toolbar-title
+            >รายงานยอดขายประจำเดือน {{ formatDate(daytime) }}</v-toolbar-title
           >
           <v-spacer></v-spacer>
           <v-toolbar-items>
@@ -32,19 +32,18 @@
             <h2>{{ $store.getters["setting"][0].restaurant }}</h2>
           </v-row>
           <v-row class="justify-center align-center">
-            <h3>รายงานยอดขายประจำวันที่ {{ formatDate(daytime) }}</h3>
+            <h3>รายงานยอดขายประจำเดือน {{ formatDate(daytime) }}</h3>
           </v-row>
           <v-row class="justify-center align-center mt-6">
             <p style="font-size:14px">
-              ยอดขายประจำวันที่ {{ formatDate(daytime) }} 08:00 -
-              {{ formatDate(daytime) }} 20:00
+              ยอดขายประจำเดือน {{ formatDate(daytime) }}
             </p>
             <p style="font-size:14px" class="mx-8">จำนวน : {{ count }}</p>
             <p style="font-size:14px">
               รวมยอด : ฿ {{ formatPrice(total) }} บาท
             </p>
           </v-row>
-          <v-row class="mx-auto ">
+          <v-row class="mx-auto">
             <v-simple-table dense>
               <template v-slot:default>
                 <thead>
@@ -93,7 +92,7 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "./vfs_fonts";
 export default {
-  props: ["dialogDay", "daytime"],
+  props: ["dialogMonth", "daytime"],
 
   data() {
     return {
@@ -107,7 +106,7 @@ export default {
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
-      return this.$moment(strdate).format("DD MMMM YYYY ");
+      return this.$moment(strdate).format("MMMM YYYY ");
     },
     makeReport(payments) {
       this.count = 0;
@@ -150,6 +149,7 @@ export default {
               this.list[i].qty += newObj.qty;
               this.list[i].total =
                 parseInt(this.list[i].total) + parseInt(newObj.total);
+              this.list[i].price = this.list[i].total / this.list[i].qty;
               // setTimeout(this.totalPrice, 300);
               return;
             }
@@ -195,14 +195,10 @@ export default {
       };
       const documentDefinitions = {
         info: {
-          title: `รายงานประจำวันที่ ${this.daytime}`,
+          title: `รายงานประจำเดือน ${this.formatDate(this.daytime)}`,
           author: this.$store.getters["setting"][0].restaurant
         },
         header: {
-          // text: this.$store.getters["setting"][0].restaurant,
-          // fontSize: 22,
-          // alignment: "center",
-          // bold: true,
           ul: [
             {
               text: this.$store.getters["setting"][0].restaurant,
@@ -212,7 +208,7 @@ export default {
               listType: "none"
             },
             {
-              text: `รายงานยอดขายประจำวันที่ ${this.formatDate(this.daytime)}`,
+              text: `รายงานยอดขายประจำเดือน ${this.formatDate(this.daytime)}`,
               fontSize: 16,
               bold: true,
               alignment: "center",
@@ -226,13 +222,11 @@ export default {
               listType: "none"
             },
             {
-              text: `ยอดขายวันที่ : ${this.formatDate(
+              text: `ยอดขายประจำเดือน ${this.formatDate(
                 this.daytime
-              )} 08:00 น. - ${this.formatDate(
-                this.daytime
-              )} 20:00 น.  จำนวน : ${
-                this.count
-              } รายการ  รวมยอด : ฿ ${this.formatPrice(this.total)} บาท`,
+              )}  จำนวน : ${this.count} รายการ  รวมยอด : ฿ ${this.formatPrice(
+                this.total
+              )} บาท`,
               fontSize: 16,
 
               alignment: "center",
@@ -240,7 +234,7 @@ export default {
             }
           ]
         },
-        pageMargins: [40, 100, 40, 60],
+        pageMargins: [40, 70, 40, 60],
         content: [
           {
             layout: "lightHorizontalLines", // optional
@@ -265,9 +259,9 @@ export default {
         }
       };
       pdfMake.createPdf(documentDefinitions).open();
-      // pdfMake
-      //   .createPdf(documentDefinitions)
-      //   .download(`รายงาน:${this.daytime}.pdf`);
+      //   pdfMake
+      //     .createPdf(documentDefinitions)
+      //     .download(`รายงาน:${this.formatDate(this.daytime)}.pdf`);
     }
   },
   created() {}

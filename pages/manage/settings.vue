@@ -68,7 +68,7 @@
         <v-card class="mx-auto rounded-xl" max-width="500" color="primary">
           <v-card-title>
             <h5 class="text-h5 white--text ">
-              รายงานประจำวันที่
+              รายงานขายสินค้า
               <v-avatar class="mx-auto" size="60" max-width="90px" tile>
                 <v-img src="/wallet.gif"></v-img>
               </v-avatar>
@@ -77,8 +77,7 @@
           </v-card-title>
 
           <v-card-text class="white--text text-center">
-            08:00 {{ formatDate(Date.now()) }} - 20:00
-            {{ formatDate(Date.now()) }}
+            {{ item.map(i => i) }}
           </v-card-text>
           <v-divider color="white" class="mx-auto"></v-divider>
           <v-card-actions>
@@ -86,9 +85,9 @@
               block
               class="primary--text rounded-xl"
               color="white"
-              @click="dialogPre = true"
+              @click="dialogPhylum = true"
             >
-              ตรวจสอบ
+              เลือกประเภทรายงาน
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -105,6 +104,11 @@
             <v-divider></v-divider>
 
             <v-stepper-step :complete="e1 > 2" step="2">
+              แยกตาม
+            </v-stepper-step>
+            <v-divider></v-divider>
+
+            <v-stepper-step :complete="e1 > 3" step="3">
               เลือกวันที่
             </v-stepper-step>
           </v-stepper-header>
@@ -113,6 +117,7 @@
             <v-stepper-content step="1">
               <v-autocomplete
                 :items="item"
+                v-model="reportType"
                 outlined
                 dense
                 chips
@@ -125,12 +130,44 @@
                 ถัดไป
               </v-btn>
 
-              <v-btn text @click="dialogPre = false">
+              <v-btn
+                text
+                @click="
+                  dialogPre = false;
+                  e1 = 1;
+                "
+              >
+                ยกเลิก
+              </v-btn>
+            </v-stepper-content>
+            <v-stepper-content step="2">
+              <v-autocomplete
+                :items="item2"
+                v-model="reportType"
+                outlined
+                dense
+                chips
+                small-chips
+                label="โปรดเลือกประเภทรายงาน"
+                class="ma-2"
+              ></v-autocomplete>
+
+              <v-btn color="primary" class="ma-2 rounded-xl" @click="e1 = 3">
+                ถัดไป
+              </v-btn>
+
+              <v-btn
+                text
+                @click="
+                  dialogPre = false;
+                  e1 = 1;
+                "
+              >
                 ยกเลิก
               </v-btn>
             </v-stepper-content>
 
-            <v-stepper-content step="2">
+            <v-stepper-content step="3">
               <v-menu
                 ref="menu"
                 v-model="menu"
@@ -161,11 +198,17 @@
                 </v-date-picker>
               </v-menu>
 
-              <v-btn color="primary" @click="dialogRe = true">
+              <v-btn color="primary" @click="confirmReport">
                 ยืนยัน
               </v-btn>
 
-              <v-btn text @click="dialogPre = false">
+              <v-btn
+                text
+                @click="
+                  dialogPre = false;
+                  e1 = 1;
+                "
+              >
                 ยกเลิก
               </v-btn>
             </v-stepper-content>
@@ -174,9 +217,20 @@
       </v-dialog>
     </v-row>
     <Report
-      :dialogRe="dialogRe"
-      @closeRe="dialogRe = false"
-      :payments="paymentToday"
+      ref="report"
+      :dialogDay="dialogDay"
+      @closeRe="dialogDay = false"
+      :daytime="date"
+    />
+    <report-month
+      ref="reportMonth"
+      :dialogMonth="dialogMonth"
+      @closeRe="dialogMonth = false"
+      :daytime="date"
+    />
+    <report-by-phylum
+      :dialogPhylum="dialogPhylum"
+      @closeRe="dialogPhylum = false"
     />
   </div>
 </template>
@@ -185,6 +239,8 @@
 import setpayoutspoints from "@/components/manage/settings/setpayoutspoints.vue";
 import Customizer from "@/components/manage/settings/Customizer.vue";
 import Report from "@/components/manage/settings/Report.vue";
+import ReportMonth from "@/components/manage/settings/ReportMonth.vue";
+import ReportByPhylum from "@/components/manage/settings/ReportByPhylum.vue";
 
 export default {
   layout: "layoutManage",
@@ -212,7 +268,9 @@ export default {
   components: {
     setpayoutspoints,
     Customizer,
-    Report
+    Report,
+    ReportMonth,
+    ReportByPhylum
   },
   async asyncData(context) {
     const [settings, payments] = await Promise.all([
@@ -223,6 +281,23 @@ export default {
     return { settings, payments };
   },
   methods: {
+    confirmReport() {
+      if (this.reportType === "ประจำวัน") {
+        this.filterPayment();
+        this.$refs.report.makeReport(this.paymentToday);
+        this.dialogDay = true;
+        this.dialogPre = false;
+        this.e1 = 1;
+        this.reportType = "ประจำวัน";
+      } else {
+        this.filterPaymentMonth();
+        this.$refs.reportMonth.makeReport(this.paymentMonth);
+        this.dialogMonth = true;
+        this.dialogPre = false;
+        this.e1 = 1;
+        this.reportType = "ประจำวัน";
+      }
+    },
     async refresh() {
       this.settings = await this.$axios.$get("/setting");
     },
@@ -238,7 +313,7 @@ export default {
       return this.$moment(strdate).format("DD MMMM YYYY ");
     },
     filterPayment() {
-      let date = new Date();
+      let date = new Date(this.date);
       const day = this.payments.filter(d => {
         return (
           new Date(d.datetime).getDate() === date.getDate() &&
@@ -247,16 +322,34 @@ export default {
         );
       });
       this.paymentToday = day;
-      //console.log(day);
+      //console.log(this.paymentToday);
+    },
+    filterPaymentMonth() {
+      let date = new Date(this.date);
+      let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+      let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+      const month = this.payments.filter(y => {
+        return (
+          new Date(y.datetime).getTime() >= firstDay.getTime() &&
+          new Date(y.datetime).getTime() <= lastDay.getTime()
+        );
+      });
+      this.paymentMonth = month;
     }
   },
   data() {
     return {
-      dialogRe: false,
+      reportType: "ประจำวัน",
+      dialogDay: false,
+      dialogMonth: false,
+      dialogPhylum: false,
       paymentToday: [],
+      paymentMonth: [],
       dialogPre: false,
       e1: 1,
-      item: ["ประจำวัน"],
+      item: ["ประจำวัน", "ประจำเดือน"],
+      item2: ["ชนิดสินค้า", "หมวดหมู่สินค้า"],
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -264,7 +357,7 @@ export default {
     };
   },
   created() {
-    this.filterPayment();
+    //this.filterPayment();
     //console.log(this.payments);
   }
 };

@@ -13,7 +13,7 @@
             <v-spacer></v-spacer>
           </v-card-title>
           <v-card-text class="white--text text-center">
-            พิ่มวิธีการชำระเงิน
+            เพิ่มวิธีการชำระเงิน
           </v-card-text>
           <v-divider color="white" class="mx-auto"></v-divider>
           <v-card-actions>
@@ -86,7 +86,7 @@
               block
               class="primary--text rounded-xl"
               color="white"
-              @click="dialogRe = true"
+              @click="dialogPre = true"
             >
               ตรวจสอบ
             </v-btn>
@@ -94,7 +94,90 @@
         </v-card>
       </v-col>
     </v-row>
-    <Report :dialogRe="dialogRe" @closeRe="dialogRe = false" />
+    <v-row>
+      <v-dialog v-model="dialogPre" max-width="500px" persistent>
+        <v-stepper v-model="e1" class=" rounded-xl">
+          <v-stepper-header>
+            <v-stepper-step :complete="e1 > 1" step="1">
+              เลือกประเภทรายงาน
+            </v-stepper-step>
+
+            <v-divider></v-divider>
+
+            <v-stepper-step :complete="e1 > 2" step="2">
+              เลือกวันที่
+            </v-stepper-step>
+          </v-stepper-header>
+
+          <v-stepper-items>
+            <v-stepper-content step="1">
+              <v-autocomplete
+                :items="item"
+                outlined
+                dense
+                chips
+                small-chips
+                label="โปรดเลือกประเภทรายงาน"
+                class="ma-2"
+              ></v-autocomplete>
+
+              <v-btn color="primary" class="ma-2 rounded-xl" @click="e1 = 2">
+                ถัดไป
+              </v-btn>
+
+              <v-btn text @click="dialogPre = false">
+                ยกเลิก
+              </v-btn>
+            </v-stepper-content>
+
+            <v-stepper-content step="2">
+              <v-menu
+                ref="menu"
+                v-model="menu"
+                :close-on-content-click="false"
+                :return-value.sync="date"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="date"
+                    label="โปรดเลือกวันที่"
+                    prepend-icon="mdi-calendar"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker v-model="date" no-title scrollable>
+                  <v-spacer></v-spacer>
+                  <v-btn text color="primary" @click="menu = false">
+                    ยกเลิก
+                  </v-btn>
+                  <v-btn text color="primary" @click="$refs.menu.save(date)">
+                    ตกลง
+                  </v-btn>
+                </v-date-picker>
+              </v-menu>
+
+              <v-btn color="primary" @click="dialogRe = true">
+                ยืนยัน
+              </v-btn>
+
+              <v-btn text @click="dialogPre = false">
+                ยกเลิก
+              </v-btn>
+            </v-stepper-content>
+          </v-stepper-items>
+        </v-stepper>
+      </v-dialog>
+    </v-row>
+    <Report
+      :dialogRe="dialogRe"
+      @closeRe="dialogRe = false"
+      :payments="paymentToday"
+    />
   </div>
 </template>
 
@@ -132,9 +215,12 @@ export default {
     Report
   },
   async asyncData(context) {
-    const [settings] = await Promise.all([context.$axios.$get("/setting")]);
+    const [settings, payments] = await Promise.all([
+      context.$axios.$get("/setting"),
+      context.$axios.$get("/payment-year")
+    ]);
     //console.log(settings);
-    return { settings };
+    return { settings, payments };
   },
   methods: {
     async refresh() {
@@ -150,12 +236,36 @@ export default {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
       return this.$moment(strdate).format("DD MMMM YYYY ");
+    },
+    filterPayment() {
+      let date = new Date();
+      const day = this.payments.filter(d => {
+        return (
+          new Date(d.datetime).getDate() === date.getDate() &&
+          new Date(d.datetime).getMonth() === date.getMonth() &&
+          new Date(d.datetime).getFullYear() === date.getFullYear()
+        );
+      });
+      this.paymentToday = day;
+      //console.log(day);
     }
   },
   data() {
     return {
-      dialogRe: false
+      dialogRe: false,
+      paymentToday: [],
+      dialogPre: false,
+      e1: 1,
+      item: ["ประจำวัน"],
+      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+        .toISOString()
+        .substr(0, 10),
+      menu: false
     };
+  },
+  created() {
+    this.filterPayment();
+    //console.log(this.payments);
   }
 };
 </script>

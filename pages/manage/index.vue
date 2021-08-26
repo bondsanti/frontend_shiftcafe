@@ -5,7 +5,15 @@
 
       <v-row>
         <v-col cols="12" sm="12">
-          <p class="mb-4">ยอดขายประจำวันที่ {{ formatDate(dateNow) }}</p>
+          <!-- <v-row align="center" class="spacer" no-gutters>
+            <v-card max-width="434" class="mx-auto rounded-xl" tile>
+              <p class="mb-4">ยอดขายประจำวันที่ {{ formatDate(dateNow) }}</p>
+              <v-avatar class="mx-auto " size="105" max-width="90px" tile>
+                <v-img src="/analytics.png"></v-img>
+              </v-avatar>
+            </v-card>
+          </v-row> -->
+
           <apexcharts
             :animations="animations"
             @sendDateIndex="sendDateIndex"

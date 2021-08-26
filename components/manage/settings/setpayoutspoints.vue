@@ -12,8 +12,9 @@
           ตั้งค่าการจ่ายแต้ม
 
           <v-avatar class="mx-auto" size="60" max-width="90px" tile>
-            <v-img src="/wallet.gif"></v-img>
+           <v-img src="/wallet_1.png"></v-img>
           </v-avatar>
+       
         </h5>
         <v-spacer></v-spacer>
       </v-card-title>
@@ -49,7 +50,8 @@
             <v-col cols="12">
               <v-text-field
                 label="บาท"
-                outlined
+                
+                solo
                 class="rounded-xl"
                 v-model="settingitem.price_buy"
                 prefix="฿"
@@ -69,7 +71,7 @@
             <v-col cols="12">
               <v-text-field
                 label="แต้ม"
-                outlined
+                solo
                 class="rounded-xl"
                 v-model="settingitem.point"
                 prefix="P"

@@ -16,6 +16,7 @@
             <v-btn color="primary" dark v-bind="attrs" v-on="on">
               วันที่ {{ formatDate(dateNow) }}
             </v-btn>
+            
           </template>
           <v-date-picker
             v-model="dateNow"

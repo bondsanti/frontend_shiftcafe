@@ -40,15 +40,19 @@
               <v-list-item-title class="d-flex flex-row ma-0 pa-0">
                 <v-row align="center" justify="center">
                   <v-btn-toggle>
-                    <v-btn small color="#E53935" @click="deleteOrder(i)">
+                    <v-btn
+                      small
+                      style="background-color: #ff0000;"
+                      @click="deleteOrder(i)"
+                    >
                       <v-icon color="#FFFFFF">mdi-delete-variant</v-icon>
                     </v-btn>
                     <v-btn
                       small
-                      color="#039BE5"
+                      style="background-color: #0080ff;"
                       class="white--text"
                       @click="editTopping(i)"
-                      >ปรับ</v-btn
+                      ><h4>ปรับ</h4></v-btn
                     >
                   </v-btn-toggle>
                 </v-row>

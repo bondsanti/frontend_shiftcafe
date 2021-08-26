@@ -132,6 +132,7 @@
 
                       <v-row v-if="bank === 'transfer'">
                         <v-card
+                          style="border-radius: 12px;"
                           width="30%"
                           height="10%"
                           class="ma-1"
@@ -147,7 +148,7 @@
                               $nuxt.context.env.config.IMG_URL + bank.img_cover
                             "
                             height="100px"
-                            class="grey darken-4"
+                            style="background-color: #ffffff; "
                           ></v-img>
                           <v-card-title
                             :class="
@@ -187,7 +188,7 @@
                         @click="cancelOrder"
                         >ยกเลิกออเดอร์</v-btn
                       >
-                      <v-btn
+                      <!-- <v-btn
                         rounded
                         large
                         block
@@ -195,7 +196,7 @@
                         dark
                         @click="for_chef('61176050b67417169c7ba9b0')"
                         >test</v-btn
-                      >
+                      > -->
                     </v-col>
                     <v-col>
                       <v-btn
@@ -209,16 +210,17 @@
                     </v-col>
                   </v-row>
                 </v-col>
-                <v-col cols="12" md="6">
+
+                <v-col cols="12" md="6" style="border: 1px inset #757575; ">
                   <v-row class="ma-2 mx-14">
                     <v-col cols="6" justify-center>
-                      <h1>ชื่ออาหาร</h1>
+                      <h2>ชื่ออาหาร</h2>
                     </v-col>
                     <v-col cols="3">
-                      <h1>จำนวน</h1>
+                      <h2>จำนวน</h2>
                     </v-col>
                     <v-col cols="3">
-                      <h1>ราคา</h1>
+                      <h2>ราคา</h2>
                     </v-col>
                   </v-row>
                   <!-- <div
@@ -236,28 +238,38 @@
                       <h3>{{ order.price }} ฿.</h3>
                     </v-col>
                   </div> -->
-                  <v-list-item three-line v-for="(order, i) in orders" :key="i">
-                    <v-list-item-content>
-                      <v-list-item-title class="d-flex flex-row ma-1 mx-16">
-                        <v-col cols="6">
-                          <h3>{{ order.name }}</h3>
-                        </v-col>
-                        <v-col cols="3" class="pl-16">
-                          <h3>{{ order.qty }}</h3>
-                        </v-col>
-                        <v-col cols="3" class="pl-10">
-                          <h3>{{ order.price }} ฿.</h3>
-                        </v-col>
-                      </v-list-item-title>
-                      <v-list-item-subtitle class="ml-16">{{
-                        convertArrayToString(order.topping)
-                      }}</v-list-item-subtitle>
-                      <v-list-item-subtitle class="ml-16">{{
-                        order.detail
-                      }}</v-list-item-subtitle>
-                    </v-list-item-content>
-                  </v-list-item>
-
+                  <v-list-item-group
+                    v-model="selectedItem"
+                    active-class="deep-primary--text text--accent-4"
+                    multiple
+                  >
+                    <v-list-item
+                      three-line
+                      v-for="(order, i) in orders"
+                      :key="i"
+                      style="border: 1px inset #757575;"
+                    >
+                      <v-list-item-content>
+                        <v-list-item-title class="d-flex flex-row ma-1 mx-16">
+                          <v-col cols="6">
+                            <h3>{{ order.name }}</h3>
+                          </v-col>
+                          <v-col cols="3" class="pl-16">
+                            <h3>{{ order.qty }}</h3>
+                          </v-col>
+                          <v-col cols="3" class="pl-10">
+                            <h3>{{ order.price }} ฿.</h3>
+                          </v-col>
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="ml-16">{{
+                          convertArrayToString(order.topping)
+                        }}</v-list-item-subtitle>
+                        <v-list-item-subtitle class="ml-16">{{
+                          order.detail
+                        }}</v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list-item-group>
                   <v-row
                     v-if="coupon !== 0"
                     class="justify-space-between ma-1 mx-16 mt-14"
@@ -267,7 +279,7 @@
                   </v-row>
                   <v-row class="justify-space-between ma-1 mx-16">
                     <h2>ราคา</h2>
-                    <h2>{{ formatPrice(subtotal) }}</h2>
+                    <h2>{{ formatPrice(subtotal) }} บาท</h2>
                   </v-row>
                   <v-row
                     v-if="tax !== 0"

@@ -32,7 +32,7 @@
                 ><v-btn block @click="addNum('3')">3</v-btn></v-col
               >
               <v-col cols="3"
-                ><v-btn block color="red" @click="silver('100')"
+                ><v-btn block color="red" class="white--text" @click="silver('100')"
                   >100 ฿</v-btn
                 ></v-col
               >
@@ -48,7 +48,7 @@
                 ><v-btn block @click="addNum('6')">6</v-btn></v-col
               >
               <v-col cols="3"
-                ><v-btn block color="purple darken-1" @click="silver('500')"
+                ><v-btn block color="purple darken-1" class="white--text" @click="silver('500')"
                   >500 ฿</v-btn
                 ></v-col
               >
@@ -64,7 +64,7 @@
                 ><v-btn block @click="addNum('9')">9</v-btn></v-col
               >
               <v-col cols="3"
-                ><v-btn block color="orange lighten-4" @click="silver('1000')"
+                ><v-btn block color="orange lighten-1" class="white--text" @click="silver('1000')"
                   >1000 ฿</v-btn
                 ></v-col
               >
@@ -84,7 +84,7 @@
                 ></v-col
               >
               <v-col cols="3"
-                ><v-btn block color="green" @click="silver('2000')"
+                ><v-btn block color="green" class="white--text" @click="silver('2000')"
                   >ชำระเต็ม</v-btn
                 ></v-col
               >
@@ -163,6 +163,7 @@ export default {
   }),
   props: ["netPrice", "checkout", "subPrice"],
   methods: {
+    
     calMoney() {
       setTimeout(() => {
         //console.log(this.receive);
@@ -170,7 +171,7 @@ export default {
         const netPrice = Math.round(this.netPrice);
         if (
           parseInt(this.receive) < netPrice ||
-          this.receive === NaN ||
+          this.receive === NaN||
           this.receive === null ||
           this.receive === 0 ||
           this.receive === ""

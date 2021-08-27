@@ -46,7 +46,7 @@
             ></v-col>
             <v-col cols="12" sm="8" md="8" lg="8">
               <p class=" ma-2 mt-6">
-                เลือก ท็อปปิ้ง {{ product.product_name }}
+                เลือกท็อปปิ้ง {{ product.product_name }}
               </p></v-col
             >
           </v-row>
@@ -75,7 +75,7 @@
                 v-else
                 :key="top._id"
                 :value="top"
-                active-class="deep-purple--text text--accent-4"
+                active-class="red--text text--accent-4"
               >
                 <template v-slot:default="{ active }">
                   <v-list-item-content>
@@ -94,7 +94,7 @@
                     <v-checkbox
                       @click="thinkPriceTopping"
                       :input-value="active"
-                      color="deep-purple accent-4"
+                      color="red accent-4"
                     ></v-checkbox>
                   </v-list-item-action>
                 </template>

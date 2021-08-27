@@ -2,7 +2,7 @@
   <!-- <v-col cols="12" sm="12" md="4" class="hidden-sm-and-down"> -->
   <div>
     <v-card
-      class="rounded-xl d-flex flex-row justify-center align-center"
+      class="rounded-lg d-flex flex-row justify-center align-center"
       elevation="2"
       height="65px"
     >
@@ -11,7 +11,7 @@
       </span>
     </v-card>
     <v-card
-      class="rounded-xl d-flex flex-column mt-3"
+      class="rounded-lg d-flex flex-column mt-3"
       height="auto"
       elevation="5"
     >
@@ -30,7 +30,7 @@
       </div>
       <v-list-item-group
         v-model="selectedItem"
-        active-class="info--text"
+        active-class="red--text text--accent-4"
         color="primary"
       >
         <div v-for="(order, i) in orders" :key="i">
@@ -62,7 +62,7 @@
                 </v-col>
                 <!-- + - -->
                 <v-col cols="2">
-                  <div class="d-flex flex-row justify-space-around">
+                  <div class="d-flex flex-row justify-space-around" >
                     <v-icon class="cursor" size="25px" @click="deleteQty(i)"
                       >mdi-minus-circle-outline</v-icon
                     >
@@ -180,7 +180,7 @@
                 v-else
                 :key="top._id"
                 :value="top"
-                active-class="deep-purple--text text--accent-4"
+                active-class="red--text text--accent-4"
               >
                 <template v-slot:default="{ active }">
                   <v-list-item-content>
@@ -199,7 +199,7 @@
                     <v-checkbox
                       @click="thinkPriceTopping"
                       :input-value="active"
-                      color="deep-purple accent-4"
+                      color="red accent-4"
                     ></v-checkbox>
                   </v-list-item-action>
                 </template>

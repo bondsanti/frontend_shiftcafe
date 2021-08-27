@@ -26,9 +26,9 @@
               <v-btn color="teal" @click="printInvoice" dark class="rounded-xl">
                 <v-icon left> mdi-printer </v-icon>พิมพ์ใบเสร็จรับเงิน
               </v-btn>
-              <v-btn color="teal" @click="print" dark class="rounded-xl">
+              <!-- <v-btn color="teal" @click="print" dark class="rounded-xl">
                 <v-icon left> mdi-printer </v-icon>พิมพ์เทส
-              </v-btn>
+              </v-btn> -->
               <v-spacer></v-spacer>
 
               <v-btn color="error" @click="close" class="rounded-xl">

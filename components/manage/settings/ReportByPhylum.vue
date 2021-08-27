@@ -11,8 +11,12 @@
           <v-btn icon dark @click="$emit('closeRe')">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title
-            >รายงานยอดขายประจำเดือน {{ formatDate(daytime) }}</v-toolbar-title
+          <v-toolbar-title>
+            {{
+              reportType === "ประจำวัน"
+                ? "รายงานยอดขายประจำวันที่ " + formatDate(daytime)
+                : "รายงานยอดขายประจำเดือน " + formatDate2(daytime)
+            }}</v-toolbar-title
           >
           <v-spacer></v-spacer>
           <v-toolbar-items>
@@ -32,22 +36,24 @@
             <h2>{{ $store.getters["setting"][0].restaurant }}</h2>
           </v-row>
           <v-row class="justify-center align-center">
-            <h3>รายงานยอดขายประจำเดือน {{ formatDate(daytime) }}</h3>
+            <h3>
+              {{
+                reportType === "ประจำวัน"
+                  ? "รายงานยอดขายประจำวันที่ " + formatDate(daytime)
+                  : "รายงานยอดขายประจำเดือน " + formatDate2(daytime)
+              }}
+            </h3>
           </v-row>
           <v-row class="justify-center align-center">
             <h3>แยกตามประเภทสินค้า</h3>
           </v-row>
           <v-row class="justify-center align-center mt-6">
             <p style="font-size:14px">
-              ยอดขายประจำเดือน {{ formatDate(daytime) }}
-            </p>
-            <p style="font-size:14px" class="mx-8">จำนวน : {{ count }}</p>
-            <p style="font-size:14px">
-              รวมยอด : ฿ {{ formatPrice(total) }} บาท
+              สินค้าขายดี 5 อันดับแรก
             </p>
           </v-row>
-          <v-row class="mx-auto">
-            <h4>อาหารที่ขายดีสามอันดับแรก</h4>
+          <v-row class="mx-auto my-5" v-for="(unit, i) in units" :key="i">
+            <h4>{{ unit.u_name }}ขายดี 5 อันดับแรก</h4>
             <v-simple-table dense>
               <template v-slot:default>
                 <thead>
@@ -70,48 +76,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(item, i) in listSort" :key="i">
-                    <td>{{ i + 1 }}</td>
-                    <td>
-                      {{
-                        item.topping.length !== 0
-                          ? item.name + " - " + item.topping.map(t => t.name)
-                          : item.name
-                      }}
-                    </td>
-                    <td>{{ item.qty }}</td>
-                    <td>฿ {{ formatPrice(item.price) }}</td>
-                    <td>฿ {{ formatPrice(item.total) }}</td>
-                  </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
-          </v-row>
-          <v-row class="mx-auto my-10">
-            <h4>เครื่องดื่มที่ขายดีสามอันดับแรก</h4>
-            <v-simple-table dense>
-              <template v-slot:default>
-                <thead>
-                  <tr>
-                    <th class="text-left" width="60px">
-                      ลำดับ
-                    </th>
-                    <th class="text-left" width="300px">
-                      รายการ
-                    </th>
-                    <th class="text-left" width="100px">
-                      จำนวน
-                    </th>
-                    <th class="text-left" width="200px">
-                      ต่อหน่วย
-                    </th>
-                    <th class="text-left" width="200px">
-                      รวม
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(item, i) in listSort" :key="i">
+                  <tr v-for="(item, i) in filterProduct(unit._id)" :key="i">
                     <td>{{ i + 1 }}</td>
                     <td>
                       {{
@@ -137,7 +102,7 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "./vfs_fonts";
 export default {
-  props: ["dialogPhylum", "daytime"],
+  props: ["dialogPhylum", "daytime", "reportType", "reportBy", "units"],
 
   data() {
     return {
@@ -146,20 +111,21 @@ export default {
         { name: "test", qty: 1, price: 10, total: 10, topping: [] },
         { name: "test", qty: 1, price: 10, total: 10, topping: [] }
       ],
-      list: [],
-      count: 0,
-      total: 0
+      list: []
     };
   },
   methods: {
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("DD MMMM YYYY ");
+    },
+    formatDate2(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
       return this.$moment(strdate).format("MMMM YYYY ");
     },
     makeReport(payments) {
-      this.count = 0;
-      this.total = 0;
       this.list = [];
       const res = [];
       payments.map(p => {
@@ -168,15 +134,11 @@ export default {
       res.map(r => {
         this.replace(r);
       });
+
       //console.log(this.list);
-      this.list.map(l => {
-        this.count += parseInt(l.qty);
-        this.total += parseInt(l.total);
-      });
-      //console.log(this.list);
-      this.listSort = this.list.sort((a, b) => b.qty - a.qty);
     },
     replace(obj) {
+      //console.log(obj);
       let toppingPrice = 0;
       obj.topping.map(t => (toppingPrice += t.price));
       const newObj = {
@@ -184,7 +146,8 @@ export default {
         qty: obj.qty,
         price: parseInt(obj.normal_price) + parseInt(toppingPrice),
         total: obj.price,
-        topping: obj.topping
+        topping: obj.topping,
+        unit: obj.ref_pro_id ? obj.ref_pro_id.ref_uid : ""
       };
       for (let i in this.list) {
         let newTopping = newObj.topping.map(t => t._id);
@@ -207,25 +170,57 @@ export default {
       }
       this.list.push(newObj);
     },
+    filterProduct(id) {
+      const result = this.list.filter(l => l.unit === id);
+      const result2 = result.sort((a, b) => b.qty - a.qty);
+      //console.log(result2);
+      return result2.slice(0, 5);
+    },
     formatPrice(value2) {
       const value = parseInt(value2);
       let val = (value / 1).toFixed(2).replace(",", ".");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     async open() {
-      const res = [];
-      //แปลงข้อมูลให้ตรงฟอแมตกับตางรางของพีดีเอฟเมค
-      this.listSort.map((l, i) => {
-        res.push([
-          i + 1,
-          l.topping.length !== 0
-            ? l.name + " - " + l.topping.map(t => t.name)
-            : l.name,
-          l.qty,
-          "฿ " + this.formatPrice(l.price),
-          "฿ " + this.formatPrice(l.total)
-        ]);
-      });
+      const content2 = [];
+      for (let i in this.units) {
+        const response = this.filterProduct(this.units[i]._id);
+        const res = [];
+        //แปลงข้อมูลให้ตรงฟอแมตกับตางรางของพีดีเอฟเมค
+        response.map((l, i) => {
+          res.push([
+            i + 1,
+            l.topping.length !== 0
+              ? l.name + " - " + l.topping.map(t => t.name)
+              : l.name,
+            l.qty,
+            "฿ " + this.formatPrice(l.price),
+            "฿ " + this.formatPrice(l.total)
+          ]);
+        });
+
+        const name = {
+          text: this.units[i].u_name + "ขายดี 5 อันดับแรก",
+          fontSize: 16,
+          bold: true,
+          alignment: "start",
+          listType: "none"
+        };
+        const table = {
+          layout: "lightHorizontalLines", // optional
+          table: {
+            fontSize: 18,
+            headerRows: 1,
+            widths: [30, "*", 80, 80, 80],
+
+            body: [["ลำดับ", "รายการ", "จำนวน", "ต่อหน่วย", "รวม"], ...res]
+          }
+        };
+        content2.push(name, table);
+        // console.log(response);
+        // console.log(res);
+        // console.log(content2);
+      }
 
       pdfMake.vfs = pdfFonts.pdfMake.vfs;
       pdfMake.fonts = {
@@ -244,7 +239,10 @@ export default {
       };
       const documentDefinitions = {
         info: {
-          title: `รายงานประจำเดือน ${this.formatDate(this.daytime)}`,
+          title:
+            this.reportType === "ประจำวัน"
+              ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
+              : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime),
           author: this.$store.getters["setting"][0].restaurant
         },
         header: {
@@ -257,7 +255,10 @@ export default {
               listType: "none"
             },
             {
-              text: `รายงานยอดขายประจำเดือน ${this.formatDate(this.daytime)}`,
+              text:
+                this.reportType === "ประจำวัน"
+                  ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
+                  : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime),
               fontSize: 16,
               bold: true,
               alignment: "center",
@@ -271,11 +272,7 @@ export default {
               listType: "none"
             },
             {
-              text: `ยอดขายประจำเดือน ${this.formatDate(
-                this.daytime
-              )}  จำนวน : ${this.count} รายการ  รวมยอด : ฿ ${this.formatPrice(
-                this.total
-              )} บาท`,
+              text: `สินค้าขายดี 5 อันดับแรก`,
               fontSize: 16,
 
               alignment: "center",
@@ -284,42 +281,7 @@ export default {
           ]
         },
         pageMargins: [40, 100, 40, 60],
-        content: [
-          {
-            text: `อาหาร`,
-            fontSize: 16,
-            bold: true,
-            alignment: "start",
-            listType: "none"
-          },
-          {
-            layout: "lightHorizontalLines", // optional
-            table: {
-              fontSize: 18,
-              headerRows: 1,
-              widths: [30, "*", 80, 80, 80],
-
-              body: [["ลำดับ", "รายการ", "จำนวน", "ต่อหน่วย", "รวม"], ...res]
-            }
-          },
-          {
-            text: `เครื่องดื่ม`,
-            fontSize: 16,
-            bold: true,
-            alignment: "start",
-            listType: "none"
-          },
-          {
-            layout: "lightHorizontalLines", // optional
-            table: {
-              fontSize: 18,
-              headerRows: 1,
-              widths: [30, "*", 80, 80, 80],
-
-              body: [["ลำดับ", "รายการ", "จำนวน", "ต่อหน่วย", "รวม"], ...res]
-            }
-          }
-        ],
+        content: content2,
         footer: function(currentPage, pageCount) {
           return {
             text: "หน้า " + currentPage.toString() + " จาก " + pageCount,
@@ -332,9 +294,11 @@ export default {
         }
       };
       pdfMake.createPdf(documentDefinitions).open();
-      //   pdfMake
-      //     .createPdf(documentDefinitions)
-      //     .download(`รายงาน:${this.formatDate(this.daytime)}.pdf`);
+      // pdfMake
+      //   .createPdf(documentDefinitions)
+      //   .download( this.reportType === "ประจำวัน"
+      //           ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
+      //           : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime));
     }
   },
   created() {}

@@ -85,7 +85,7 @@
               block
               class="primary--text rounded-xl"
               color="white"
-              @click="dialogPhylum = true"
+              @click="dialogPre = true"
             >
               เลือกประเภทรายงาน
             </v-btn>
@@ -143,12 +143,12 @@
             <v-stepper-content step="2">
               <v-autocomplete
                 :items="item2"
-                v-model="reportType"
+                v-model="reportBy"
                 outlined
                 dense
                 chips
                 small-chips
-                label="โปรดเลือกประเภทรายงาน"
+                label="แยกตาม"
                 class="ma-2"
               ></v-autocomplete>
 
@@ -282,20 +282,32 @@ export default {
   },
   methods: {
     confirmReport() {
-      if (this.reportType === "ประจำวัน") {
-        this.filterPayment();
-        this.$refs.report.makeReport(this.paymentToday);
-        this.dialogDay = true;
-        this.dialogPre = false;
-        this.e1 = 1;
-        this.reportType = "ประจำวัน";
+      if (this.reportBy === "ชนิดสินค้า") {
+        if (this.reportType === "ประจำวัน") {
+          this.filterPayment();
+          this.$refs.report.makeReport(this.paymentToday);
+          this.dialogDay = true;
+          this.dialogPre = false;
+          this.e1 = 1;
+          this.reportType = "ประจำวัน";
+          this.reportBy = "ชนิดสินค้า";
+        } else {
+          this.filterPaymentMonth();
+          this.$refs.reportMonth.makeReport(this.paymentMonth);
+          this.dialogMonth = true;
+          this.dialogPre = false;
+          this.e1 = 1;
+          this.reportType = "ประจำวัน";
+          this.reportBy = "ชนิดสินค้า";
+        }
       } else {
-        this.filterPaymentMonth();
-        this.$refs.reportMonth.makeReport(this.paymentMonth);
-        this.dialogMonth = true;
-        this.dialogPre = false;
-        this.e1 = 1;
-        this.reportType = "ประจำวัน";
+        if (this.reportType === "ประจำวัน") {
+          this.dialogPhylum = true;
+          this.dialogPre = false;
+          this.e1 = 1;
+          this.reportType = "ประจำวัน";
+          this.reportBy = "ชนิดสินค้า";
+        }
       }
     },
     async refresh() {
@@ -341,6 +353,7 @@ export default {
   data() {
     return {
       reportType: "ประจำวัน",
+      reportBy: "ชนิดสินค้า",
       dialogDay: false,
       dialogMonth: false,
       dialogPhylum: false,
@@ -349,7 +362,7 @@ export default {
       dialogPre: false,
       e1: 1,
       item: ["ประจำวัน", "ประจำเดือน"],
-      item2: ["ชนิดสินค้า", "หมวดหมู่สินค้า"],
+      item2: ["ชนิดสินค้า", "ประเภทสินค้า"],
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),

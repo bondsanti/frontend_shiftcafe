@@ -237,7 +237,7 @@
                     </v-col>
                   </div> -->
                   <v-list-item-group
-                    v-model="selectedItem"
+                    
                     active-class="deep-primary--text text--accent-4"
                     multiple
                   >

@@ -44,6 +44,12 @@
               รวมยอด : ฿ {{ formatPrice(total) }} บาท
             </p>
           </v-row>
+          <v-row class="justify-center align-center mt-3">
+            <p class="mx-2">เงินสด {{ cash }}</p>
+            <p class="mx-2">โอนผ่านธนาคาร {{ transfer }}</p>
+            <p class="mx-2">ส่วนลด {{ discountPrice }}</p>
+            <p class="mx-2">ภาษี {{ vatPrice }}</p>
+          </v-row>
           <v-row class="mx-auto ">
             <v-simple-table dense>
               <template v-slot:default>
@@ -100,7 +106,11 @@ export default {
       listSort: [],
       list: [],
       count: 0,
-      total: 0
+      total: 0,
+      vatPrice: 0,
+      discountPrice: 0,
+      cash: 0,
+      transfer: 0
     };
   },
   methods: {
@@ -110,17 +120,45 @@ export default {
       return this.$moment(strdate).format("DD MMMM YYYY ");
     },
     makeReport(payments) {
+      this.vatPrice = 0;
+      this.discountPrice = 0;
+      this.cash = 0;
+      this.transfer = 0;
+      const cash = payments.filter(p => p.type_payment === "cash");
+      const transfer = payments.filter(p => p.type_payment === "transfer");
+      cash.map(c => {
+        this.cash += c.total_price;
+        this.vatPrice += c.vat_price;
+        this.discountPrice += c.discount_price;
+      });
+      transfer.map(t => {
+        this.transfer += t.total_price;
+        this.vatPrice += t.vat_price;
+        this.discountPrice += t.discount_price;
+      });
+      console.log(this.cash);
+      console.log(this.transfer);
+      console.log(cash);
+      console.log(transfer);
       this.count = 0;
       this.total = 0;
       this.list = [];
       const res = [];
+      let total_price = 0;
+      let vat1 = 0;
+      let dis1 = 0;
       payments.map(p => {
+        total_price += p.total_price;
+        vat1 += p.vat_price;
+        dis1 += p.discount_price;
         res.push(...p.ref_order_id.list_product);
       });
+      console.log(
+        "ทั้งหมด " + total_price + " ส่วนลด " + dis1 + " ภาษี " + vat1
+      );
       res.map(r => {
         this.replace(r);
       });
-      //console.log(this.list);
       this.list.map(l => {
         this.count += parseInt(l.qty);
         this.total += parseInt(l.total);

@@ -229,6 +229,10 @@
       :daytime="date"
     />
     <report-by-phylum
+      ref="reportPhylum"
+      :units="units"
+      :reportType="reportType"
+      :reportBy="reportBy"
       :dialogPhylum="dialogPhylum"
       @closeRe="dialogPhylum = false"
     />
@@ -273,12 +277,13 @@ export default {
     ReportByPhylum
   },
   async asyncData(context) {
-    const [settings, payments] = await Promise.all([
+    const [settings, payments, units] = await Promise.all([
       context.$axios.$get("/setting"),
-      context.$axios.$get("/payment-year")
+      context.$axios.$get("/payment-year"),
+      context.$axios.$get("/unit")
     ]);
     //console.log(settings);
-    return { settings, payments };
+    return { settings, payments, units };
   },
   methods: {
     confirmReport() {
@@ -289,24 +294,26 @@ export default {
           this.dialogDay = true;
           this.dialogPre = false;
           this.e1 = 1;
-          this.reportType = "ประจำวัน";
-          this.reportBy = "ชนิดสินค้า";
         } else {
           this.filterPaymentMonth();
           this.$refs.reportMonth.makeReport(this.paymentMonth);
           this.dialogMonth = true;
           this.dialogPre = false;
           this.e1 = 1;
-          this.reportType = "ประจำวัน";
-          this.reportBy = "ชนิดสินค้า";
         }
       } else {
         if (this.reportType === "ประจำวัน") {
+          this.filterPayment();
+          this.$refs.reportPhylum.makeReport(this.paymentToday);
           this.dialogPhylum = true;
           this.dialogPre = false;
           this.e1 = 1;
-          this.reportType = "ประจำวัน";
-          this.reportBy = "ชนิดสินค้า";
+        } else {
+          this.filterPaymentMonth();
+          this.$refs.reportPhylum.makeReport(this.paymentMonth);
+          this.dialogPhylum = true;
+          this.dialogPre = false;
+          this.e1 = 1;
         }
       }
     },

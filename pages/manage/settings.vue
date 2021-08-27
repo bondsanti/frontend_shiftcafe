@@ -7,7 +7,7 @@
             <h5 class="text-h5 white--text">
               ตั้งค่าการชำระเงิน
               <v-avatar class="mx-auto" size="60" max-width="90px" tile>
-                <v-img src="/wallet.gif"></v-img>
+                <v-img src="/credit-card.png"></v-img>
               </v-avatar>
             </h5>
             <v-spacer></v-spacer>
@@ -36,7 +36,7 @@
             <h5 class="text-h5 white--text ">
               ตั้งค่าและปรับแต่งเว็บ
               <v-avatar class="mx-auto" size="60" max-width="90px" tile>
-                <v-img src="/wallet.gif"></v-img>
+                <v-img src="/settings.png"></v-img>
               </v-avatar>
             </h5>
             <v-spacer></v-spacer>
@@ -70,7 +70,7 @@
             <h5 class="text-h5 white--text ">
               รายงานประจำวันที่
               <v-avatar class="mx-auto" size="60" max-width="90px" tile>
-                <v-img src="/wallet.gif"></v-img>
+                <v-img src="/ds.png"></v-img>
               </v-avatar>
             </h5>
             <v-spacer></v-spacer>

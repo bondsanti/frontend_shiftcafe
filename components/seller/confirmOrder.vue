@@ -132,7 +132,6 @@
 
                       <v-row v-if="bank === 'transfer'">
                         <v-card
-                          style="border-radius: 12px;"
                           width="30%"
                           height="10%"
                           class="ma-1"
@@ -144,11 +143,10 @@
                           "
                         >
                           <v-img
-                            :src="
-                              $nuxt.context.env.config.IMG_URL + bank.img_cover
+                            :src="$nuxt.context.env.config.IMG_URL + bank.img_cover
                             "
                             height="100px"
-                            style="background-color: #ffffff; "
+                            style="background-color:#FFEBEE; "
                           ></v-img>
                           <v-card-title
                             :class="

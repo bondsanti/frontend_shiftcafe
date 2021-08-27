@@ -26,9 +26,9 @@
               <v-btn color="teal" @click="printInvoice" dark class="rounded-xl">
                 <v-icon left> mdi-printer </v-icon>พิมพ์ใบเสร็จรับเงิน
               </v-btn>
-              <v-btn color="teal" @click="print" dark class="rounded-xl">
+              <!-- <v-btn color="teal" @click="print" dark class="rounded-xl">
                 <v-icon left> mdi-printer </v-icon>พิมพ์เทส
-              </v-btn>
+              </v-btn> -->
               <v-spacer></v-spacer>
 
               <v-btn color="error" @click="close" class="rounded-xl">
@@ -193,13 +193,44 @@ export default {
           sortable: true,
           value: "datetime"
         },
-        { text: "หมายเลขบิล", value: "invoice" },
-        { text: "ประเภทการชำระเงิน", value: "type_payment" },
-        { text: "ยอดสุทธิ", value: "net_price" },
-        { text: "เงินรับมา", value: "receive_money" },
-        { text: "เงินทอน", value: "withdraw_money" },
-        { text: "สถานะ", value: "status" },
-        { text: "หมายเหตุ", value: "actions", sortable: false }
+        {
+          text: "หมายเลขบิล",
+          align: "start",
+          sortable: true,
+          value: "invoice"
+        },
+        {
+          text: "ประเภทการชำระเงิน",
+          align: "start",
+          sortable: true,
+          value: "type_payment"
+        },
+        {
+          text: "ยอดสุทธิ",
+          align: "start",
+          sortable: false,
+          value: "net_price"
+        },
+        {
+          text: "เงินรับมา",
+          align: "start",
+          sortable: false,
+          value: "receive_money"
+        },
+        {
+          text: "เงินทอน",
+          align: "start",
+          sortable: false,
+          value: "withdraw_money"
+        },
+        { text: "สถานะ", align: "start", sortable: false, value: "status" },
+        {
+          text: "หมายเหตุ",
+          align: "start",
+          sortable: false,
+          value: "actions",
+          sortable: false
+        }
       ],
       detailArr: [],
       order_id: "",

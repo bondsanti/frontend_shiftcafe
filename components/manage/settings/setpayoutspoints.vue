@@ -12,9 +12,8 @@
           ตั้งค่าการจ่ายแต้ม
 
           <v-avatar class="mx-auto" size="60" max-width="90px" tile>
-           <v-img src="/wallet_1.png"></v-img>
+            <v-img src="/wallet_1.png"></v-img>
           </v-avatar>
-       
         </h5>
         <v-spacer></v-spacer>
       </v-card-title>
@@ -42,39 +41,26 @@
         <div>
           <v-row>
             <v-col cols="12">
-              <v-subheader
-                >จำนวลเงิน
-                <v-icon large>mdi-point-of-sale </v-icon></v-subheader
-              >
-            </v-col>
-            <v-col cols="12">
               <v-text-field
-                label="บาท"
-                
-                solo
+                label="จำนวลเงิน"
+                prepend-inner-icon="mdi-point-of-sale"
                 class="rounded-xl"
                 v-model="settingitem.price_buy"
                 prefix="฿"
                 type="number"
+                rounded
               >
               </v-text-field>
             </v-col>
           </v-row>
-
           <v-row>
             <v-col cols="12">
-              <v-subheader
-                >จำนวลแต้ม
-                <v-icon large>mdi-file-powerpoint-box</v-icon></v-subheader
-              >
-            </v-col>
-            <v-col cols="12">
               <v-text-field
-                label="แต้ม"
-                solo
+                label="จำนวลแต้ม"
+                prepend-inner-icon="mdi-file-powerpoint-box"
                 class="rounded-xl"
                 v-model="settingitem.point"
-                prefix="P"
+                rounded
                 type="number"
               ></v-text-field>
             </v-col>

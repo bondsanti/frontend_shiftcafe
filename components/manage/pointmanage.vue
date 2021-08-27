@@ -60,7 +60,7 @@
               <v-card>
                 <v-card-title>
                   <span class="text-h5">
-                    <v-icon left>mdi-card-account-details-outline </v-icon>
+                    <v-icon left>mdi-file-powerpoint-box </v-icon>
                     จัดการพอยท์ เพิ่ม/ลด
                   </span>
                   <v-btn text color="error" class="mr-4" @click="reset">
@@ -180,37 +180,28 @@ export default {
     headers: [
       {
         text: "ลำดับ",
-        sortable: false,
         value: "No"
       },
       {
         text: "ชื่อลูกค้าที่ถูกจัดการ",
-        align: "start",
-        sortable: true,
         value: "ref_cus_id"
       },
       {
         text: "ชื่อพนักงานที่จัดการ",
-        sortable: false,
         value: "ref_emp_id"
       },
 
       {
         text: "แต้ม(P)",
-        align: "start",
-        sortable: false,
         value: "point"
       },
       {
         text: "สถานะ",
-        align: "start",
-        sortable: false,
         value: "status"
       },
 
       {
         text: "วันทีเพิ่มลดแต้ม",
-        sortable: false,
         value: "datetime"
       }
       //   { text: "Actions", value: "actions", sortable: false }

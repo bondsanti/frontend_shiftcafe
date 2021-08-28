@@ -33,15 +33,11 @@
             <v-col cols="12" sm="4" md="4" lg="4">
               <v-sheet
                 color="white"
-               
                 height="80"
                 width="80"
                 class="rounded-circle"
               >
-                <v-img
-                 
-                  :src="$nuxt.context.env.config.IMG_URL + product.img"
-                >
+                <v-img :src="$nuxt.context.env.config.IMG_URL + product.img">
                 </v-img> </v-sheet
             ></v-col>
             <v-col cols="12" sm="8" md="8" lg="8">
@@ -80,7 +76,7 @@
                 <template v-slot:default="{ active }">
                   <v-list-item-content>
                     <v-list-item-avatar>
-                      <v-avatar 
+                      <v-avatar
                         ><img src="../../assets/icons/shopping.png"
                       /></v-avatar>
                     </v-list-item-avatar>
@@ -137,6 +133,7 @@ export default {
   }),
   methods: {
     addTopping() {
+      this.filterToppingTrue();
       if (this.product.ref_cate_id.topping.length !== 0) {
         this.priceMergeTopping = this.product.price;
         this.dialogTopping = true;

@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <v-dialog
-      v-model="dialogPhylum"
+      v-model="dialogInvoice"
       fullscreen
       hide-overlay
       transition="dialog-bottom-transition"
@@ -16,8 +16,8 @@
               reportType === "ประจำวัน"
                 ? "รายงานยอดขายประจำวันที่ " + formatDate(daytime)
                 : "รายงานยอดขายประจำเดือน " + formatDate2(daytime)
-            }}</v-toolbar-title
-          >
+            }}
+          </v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn dark text @click="open">
@@ -45,43 +45,51 @@
             </h3>
           </v-row>
           <v-row class="justify-center align-center">
-            <h3>แยกตามประเภทสินค้า</h3>
+            <h4>แยกตามใบเสร็จรับเงิน</h4>
           </v-row>
-          <v-row class="justify-center align-center mt-6">
-            <p style="font-size:14px">
-              สินค้าขายดี 5 อันดับแรก
-            </p>
-          </v-row>
-          <v-row class="mx-auto my-5" v-for="(unit, i) in units" :key="i">
-            <v-col cols="12">
-              <h4>{{ unit.u_name }}ขายดี 5 อันดับแรก</h4>
-            </v-col>
+          <v-row class="mx-auto justify-center ">
             <v-simple-table dense>
               <template v-slot:default>
                 <thead>
                   <tr>
-                    <th class="text-left" width="60px">
+                    <th class="text-left" width="auto">
                       ลำดับ
                     </th>
-                    <th class="text-left" width="300px">
-                      รายการ
+                    <th class="text-left" width="auto">
+                      เลขที่ใบเสร็จรับเงิน
                     </th>
-                    <th class="text-left" width="100px">
-                      จำนวน
+                    <th class="text-left" width="auto">
+                      จำนวนเงิน
+                    </th>
+                    <th class="text-left" width="auto">
+                      ส่วนลด
+                    </th>
+                    <th class="text-left" width="auto">
+                      ภาษี
+                    </th>
+                    <th class="text-left" width="auto">
+                      รวมทั้งสิ้น
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(item, i) in filterProduct(unit._id)" :key="i">
-                    <td>{{ i + 1 }}</td>
+                  <tr v-for="(item, i) in list" :key="i">
                     <td>
-                      {{
-                        item.topping.length !== 0
-                          ? item.name + " - " + item.topping.map(t => t.name)
-                          : item.name
-                      }}
+                      {{ i + 1 }}
                     </td>
-                    <td>{{ item.qty }}</td>
+                    <td>{{ item.invoice }}</td>
+                    <td>{{ formatPrice(item.total_price) }}</td>
+                    <td>{{ formatPrice(item.discount_price) }}</td>
+                    <td>{{ formatPrice(item.vat_price) }}</td>
+                    <td>{{ formatPrice(item.net_price) }}</td>
+                  </tr>
+                  <tr>
+                    <td>ยอดรวม</td>
+                    <td>{{ count }} รายการ</td>
+                    <td>{{ formatPrice(total) }}</td>
+                    <td>{{ formatPrice(discount) }}</td>
+                    <td>{{ formatPrice(vat) }}</td>
+                    <td>{{ formatPrice(net) }}</td>
                   </tr>
                 </tbody>
               </template>
@@ -96,11 +104,17 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "./vfs_fonts";
 export default {
-  props: ["dialogPhylum", "daytime", "reportType", "reportBy", "units"],
+  props: ["dialogInvoice", "daytime", "reportType", "reportBy"],
 
   data() {
     return {
-      list: []
+      listSort: [],
+      list: [],
+      count: 0,
+      total: 0,
+      discount: 0,
+      vat: 0,
+      net: 0
     };
   },
   methods: {
@@ -115,19 +129,16 @@ export default {
       return this.$moment(strdate).format("MMMM YYYY ");
     },
     makeReport(payments) {
-      this.list = [];
-      const res = [];
       payments.map(p => {
-        res.push(...p.ref_order_id.list_product);
+        this.count++;
+        this.total += p.total_price;
+        this.discount += p.discount_price;
+        this.vat += p.vat_price;
+        this.net += p.net_price;
       });
-      res.map(r => {
-        this.replace(r);
-      });
-
-      //console.log(this.list);
+      this.list = payments;
     },
     replace(obj) {
-      //console.log(obj);
       let toppingPrice = 0;
       obj.topping.map(t => (toppingPrice += t.price));
       const newObj = {
@@ -135,8 +146,7 @@ export default {
         qty: obj.qty,
         price: parseInt(obj.normal_price) + parseInt(toppingPrice),
         total: obj.price,
-        topping: obj.topping,
-        unit: obj.ref_pro_id ? obj.ref_pro_id.ref_uid : ""
+        topping: obj.topping
       };
       for (let i in this.list) {
         let newTopping = newObj.topping.map(t => t._id);
@@ -150,7 +160,6 @@ export default {
               this.list[i].qty += newObj.qty;
               this.list[i].total =
                 parseInt(this.list[i].total) + parseInt(newObj.total);
-              this.list[i].price = this.list[i].total / this.list[i].qty;
               // setTimeout(this.totalPrice, 300);
               return;
             }
@@ -159,55 +168,24 @@ export default {
       }
       this.list.push(newObj);
     },
-    filterProduct(id) {
-      const result = this.list.filter(l => l.unit === id);
-      const result2 = result.sort((a, b) => b.qty - a.qty);
-      //console.log(result2);
-      return result2.slice(0, 5);
-    },
     formatPrice(value2) {
       const value = parseInt(value2);
       let val = (value / 1).toFixed(2).replace(",", ".");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     async open() {
-      const content2 = [];
-      for (let i in this.units) {
-        const response = this.filterProduct(this.units[i]._id);
-        const res = [];
-        //แปลงข้อมูลให้ตรงฟอแมตกับตางรางของพีดีเอฟเมค
-        response.map((l, i) => {
-          res.push([
-            i + 1,
-            l.topping.length !== 0
-              ? l.name + " - " + l.topping.map(t => t.name)
-              : l.name,
-            l.qty
-          ]);
-        });
-
-        const name = {
-          text: this.units[i].u_name + "ขายดี 5 อันดับแรก",
-          fontSize: 16,
-          bold: true,
-          alignment: "start",
-          listType: "none"
-        };
-        const table = {
-          layout: "lightHorizontalLines", // optional
-          table: {
-            fontSize: 18,
-            headerRows: 1,
-            widths: [30, "*", 80],
-
-            body: [["ลำดับ", "รายการ", "จำนวน"], ...res]
-          }
-        };
-        content2.push(name, table);
-        // console.log(response);
-        // console.log(res);
-        // console.log(content2);
-      }
+      const res = [];
+      //แปลงข้อมูลให้ตรงฟอแมตกับตางรางของพีดีเอฟเมค
+      this.list.map((l, i) => {
+        res.push([
+          i + 1,
+          l.invoice,
+          this.formatPrice(l.total_price),
+          this.formatPrice(l.discount_price),
+          this.formatPrice(l.vat_price),
+          this.formatPrice(l.net_price)
+        ]);
+      });
 
       pdfMake.vfs = pdfFonts.pdfMake.vfs;
       pdfMake.fonts = {
@@ -252,23 +230,69 @@ export default {
               listType: "none"
             },
             {
-              text: `แยกตามประเภทสินค้า`,
+              text: `แยกตามใบเสร็จรับเงิน`,
               fontSize: 16,
               bold: true,
-              alignment: "center",
-              listType: "none"
-            },
-            {
-              text: `สินค้าขายดี 5 อันดับแรก`,
-              fontSize: 16,
-
               alignment: "center",
               listType: "none"
             }
           ]
         },
-        pageMargins: [40, 100, 40, 60],
-        content: content2,
+        pageMargins: [40, 80, 40, 60],
+        content: [
+          {
+            layout: "lightHorizontalLines", // optional
+            table: {
+              fontSize: 18,
+              headerRows: 1,
+              widths: ["*", "*", "*", "*", "*", "*"],
+
+              body: [
+                [
+                  "ลำดับ",
+                  "เลขที่ใบเสร็จรับเงิน",
+                  "จำนวนเงิน",
+                  "ส่วนลด",
+                  "ภาษี",
+                  "รวมทั้งสิ้น"
+                ],
+                ...res,
+                [
+                  {
+                    text: "ยอดรวม",
+                    fontSize: 16,
+                    bold: true
+                  },
+                  {
+                    text: this.count + " รายการ",
+                    fontSize: 16,
+                    bold: true
+                  },
+                  {
+                    text: this.formatPrice(this.total),
+                    fontSize: 16,
+                    bold: true
+                  },
+                  {
+                    text: this.formatPrice(this.discount),
+                    fontSize: 16,
+                    bold: true
+                  },
+                  {
+                    text: this.formatPrice(this.vat),
+                    fontSize: 16,
+                    bold: true
+                  },
+                  {
+                    text: this.formatPrice(this.net),
+                    fontSize: 16,
+                    bold: true
+                  }
+                ]
+              ]
+            }
+          }
+        ],
         footer: function(currentPage, pageCount) {
           return {
             text: "หน้า " + currentPage.toString() + " จาก " + pageCount,
@@ -283,9 +307,11 @@ export default {
       pdfMake.createPdf(documentDefinitions).open();
       // pdfMake
       //   .createPdf(documentDefinitions)
-      //   .download( this.reportType === "ประจำวัน"
-      //           ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
-      //           : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime));
+      //   .download(
+      //     this.reportType === "ประจำวัน"
+      //       ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
+      //       : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime)
+      //   );
     }
   },
   created() {}

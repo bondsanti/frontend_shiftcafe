@@ -26,18 +26,8 @@
         </h3>
       </v-card-text>
     </v-card>
-    <v-dialog v-model="dialogTopping" width="450">
+    <v-dialog v-model="dialogTopping" width="480">
       <v-card class="rounded-xl">
-        <v-card-actions class="d-flex justify-end  ">
-          <v-btn
-            color="red darken-1 "
-            text
-            @click="dialogTopping = false"
-          >
-            <v-icon> mdi-close</v-icon>
-          </v-btn></v-card-actions
-        >
-
         <v-card-title>
           <v-row>
             <v-col cols="12" sm="4" md="4" lg="4">
@@ -55,6 +45,7 @@
                 เลือกท็อปปิ้ง {{ product.product_name }}
               </p></v-col
             >
+            <v-col cols="1" sm="1" md="1" lg> </v-col>
           </v-row>
         </v-card-title>
         <!-- <v-divider></v-divider> -->
@@ -86,9 +77,8 @@
                 <template v-slot:default="{ active }">
                   <v-list-item-content>
                     <v-list-item-avatar>
-
                       <v-avatar rounded tile size="32"
-                        ><img rounded src="../../assets/icons/shopping.png"         
+                        ><img rounded src="../../assets/icons/shopping.png"
                       /></v-avatar>
                     </v-list-item-avatar>
                   </v-list-item-content>
@@ -118,15 +108,23 @@
             ราคา {{ priceMergeTopping }} บาท
           </h3>
           <v-spacer></v-spacer>
-
+          <v-spacer></v-spacer>
           <v-btn
             class="text-uppercase ma-0"
-            color="primary"
+            color="info"
             label
             small
             @click="addOrder"
           >
             ตกลง
+            <v-icon right>mdi-content-save</v-icon>
+          </v-btn>
+
+          <v-btn small color="red darken-3" class="white--text" @click="dialogTopping = false">
+            ปิด
+            <v-icon right color="white">
+              mdi-close-circle
+            </v-icon>
           </v-btn>
         </v-card-actions>
       </v-card>

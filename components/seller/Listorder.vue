@@ -62,7 +62,7 @@
                 </v-col>
                 <!-- + - -->
                 <v-col cols="2">
-                  <div class="d-flex flex-row justify-space-around" >
+                  <div class="d-flex flex-row justify-space-around">
                     <v-icon class="cursor" size="25px" @click="deleteQty(i)"
                       >mdi-minus-circle-outline</v-icon
                     >
@@ -139,15 +139,6 @@
     </div>
     <v-dialog v-model="dialogTopping" width="450">
       <v-card class="rounded-xl">
-          <v-card-actions class="d-flex justify-end  ">
-          <v-btn
-            color="red darken-1 "
-            text
-            @click="dialogTopping = false"
-          >
-            <v-icon> mdi-close</v-icon>
-          </v-btn></v-card-actions
-        >
         <v-card-title class="text-h5  lighten-2">
           <v-row>
             <v-col cols="12" sm="4" md="4" lg="4">
@@ -195,7 +186,7 @@
                   <v-list-item-content>
                     <v-list-item-avatar>
                       <v-avatar rounded tile size="32"
-                        ><img  rounded src="../../assets/icons/shopping.png"
+                        ><img rounded src="../../assets/icons/shopping.png"
                       /></v-avatar>
                     </v-list-item-avatar>
                   </v-list-item-content>
@@ -231,12 +222,23 @@
           <v-spacer></v-spacer>
           <v-btn
             class="text-uppercase ma-0"
-            color="primary"
+            color="info"
             label
             small
             @click="afterEditTopping"
           >
-            ตกลง
+            ตกลง <v-icon right>mdi-content-save</v-icon>
+          </v-btn>
+          <v-btn
+            small
+            color="red darken-3"
+            class="white--text"
+            @click="dialogTopping = false"
+          >
+            ปิด
+            <v-icon right color="white">
+              mdi-close-circle
+            </v-icon>
           </v-btn>
         </v-card-actions>
       </v-card>

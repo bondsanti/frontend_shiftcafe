@@ -246,7 +246,6 @@ export default {
       return this.$moment(strdate).format("D MMMM YYYY H:mm");
     },
     changCate(cate) {
-      //console.log(cate);
       this.product2 = this.products;
       //console.log(this.product2[0]);
       this.cateId = cate._id;

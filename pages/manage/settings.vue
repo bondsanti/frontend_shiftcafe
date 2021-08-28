@@ -68,7 +68,7 @@
         <v-card class="mx-auto rounded-xl" max-width="500" color="primary">
           <v-card-title>
             <h5 class="text-h5 white--text ">
-              รายงานขายสินค้า
+              รายงาน
               <v-avatar class="mx-auto" size="60" max-width="90px" tile>
                 <v-img src="/ds.png"></v-img>
               </v-avatar>
@@ -218,16 +218,13 @@
     </v-row>
     <Report
       ref="report"
+      :reportType="reportType"
+      :reportBy="reportBy"
       :dialogDay="dialogDay"
       @closeRe="dialogDay = false"
       :daytime="date"
     />
-    <report-month
-      ref="reportMonth"
-      :dialogMonth="dialogMonth"
-      @closeRe="dialogMonth = false"
-      :daytime="date"
-    />
+
     <report-by-phylum
       ref="reportPhylum"
       :units="units"
@@ -236,6 +233,14 @@
       :dialogPhylum="dialogPhylum"
       @closeRe="dialogPhylum = false"
     />
+    <report-by-invoice
+      ref="reportInvoice"
+      :reportType="reportType"
+      :reportBy="reportBy"
+      :dialogInvoice="dialogInvoice"
+      @closeRe="dialogInvoice = false"
+      :daytime="date"
+    />
   </div>
 </template>
 
@@ -243,7 +248,7 @@
 import setpayoutspoints from "@/components/manage/settings/setpayoutspoints.vue";
 import Customizer from "@/components/manage/settings/Customizer.vue";
 import Report from "@/components/manage/settings/Report.vue";
-import ReportMonth from "@/components/manage/settings/ReportMonth.vue";
+import ReportByInvoice from "@/components/manage/settings/ReportByInvoice.vue";
 import ReportByPhylum from "@/components/manage/settings/ReportByPhylum.vue";
 
 export default {
@@ -273,7 +278,7 @@ export default {
     setpayoutspoints,
     Customizer,
     Report,
-    ReportMonth,
+    ReportByInvoice,
     ReportByPhylum
   },
   async asyncData(context) {
@@ -288,33 +293,32 @@ export default {
   methods: {
     confirmReport() {
       if (this.reportBy === "ชนิดสินค้า") {
-        if (this.reportType === "ประจำวัน") {
-          this.filterPayment();
-          this.$refs.report.makeReport(this.paymentToday);
-          this.dialogDay = true;
-          this.dialogPre = false;
-          this.e1 = 1;
-        } else {
-          this.filterPaymentMonth();
-          this.$refs.reportMonth.makeReport(this.paymentMonth);
-          this.dialogMonth = true;
-          this.dialogPre = false;
-          this.e1 = 1;
-        }
-      } else {
-        if (this.reportType === "ประจำวัน") {
-          this.filterPayment();
-          this.$refs.reportPhylum.makeReport(this.paymentToday);
-          this.dialogPhylum = true;
-          this.dialogPre = false;
-          this.e1 = 1;
-        } else {
-          this.filterPaymentMonth();
-          this.$refs.reportPhylum.makeReport(this.paymentMonth);
-          this.dialogPhylum = true;
-          this.dialogPre = false;
-          this.e1 = 1;
-        }
+        this.$refs.report.makeReport(
+          this.reportType === "ประจำวัน"
+            ? this.filterPayment()
+            : this.filterPaymentMonth()
+        );
+        this.dialogDay = true;
+        this.dialogPre = false;
+        this.e1 = 1;
+      } else if (this.reportBy === "ประเภทสินค้า") {
+        this.$refs.reportPhylum.makeReport(
+          this.reportType === "ประจำวัน"
+            ? this.filterPayment()
+            : this.filterPaymentMonth()
+        );
+        this.dialogPhylum = true;
+        this.dialogPre = false;
+        this.e1 = 1;
+      } else if (this.reportBy === "ใบเสร็จรับเงิน") {
+        this.$refs.reportInvoice.makeReport(
+          this.reportType === "ประจำวัน"
+            ? this.filterPayment()
+            : this.filterPaymentMonth()
+        );
+        this.dialogInvoice = true;
+        this.dialogPre = false;
+        this.e1 = 1;
       }
     },
     async refresh() {
@@ -340,8 +344,9 @@ export default {
           new Date(d.datetime).getFullYear() === date.getFullYear()
         );
       });
-      this.paymentToday = day;
+      // this.paymentToday = day;
       //console.log(this.paymentToday);
+      return day;
     },
     filterPaymentMonth() {
       let date = new Date(this.date);
@@ -354,7 +359,8 @@ export default {
           new Date(y.datetime).getTime() <= lastDay.getTime()
         );
       });
-      this.paymentMonth = month;
+      // this.paymentMonth = month;
+      return month;
     }
   },
   data() {
@@ -362,14 +368,14 @@ export default {
       reportType: "ประจำวัน",
       reportBy: "ชนิดสินค้า",
       dialogDay: false,
-      dialogMonth: false,
+      dialogInvoice: false,
       dialogPhylum: false,
       paymentToday: [],
       paymentMonth: [],
       dialogPre: false,
       e1: 1,
       item: ["ประจำวัน", "ประจำเดือน"],
-      item2: ["ชนิดสินค้า", "ประเภทสินค้า"],
+      item2: ["ชนิดสินค้า", "ประเภทสินค้า", "ใบเสร็จรับเงิน"],
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),

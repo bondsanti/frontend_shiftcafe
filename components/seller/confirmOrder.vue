@@ -26,7 +26,6 @@
                 สมัครสมาชิก
                 <v-icon>mdi-account</v-icon>
               </v-tab> -->
-             
             </v-tabs>
             <v-spacer></v-spacer>
             <v-toolbar-items>
@@ -168,7 +167,7 @@
                   <v-row class="ma-3" align="center">
                     <!-- เปิดภาษี -->
 
-                    <!-- <h2 class="d-flex mr-5">ภาษี</h2>
+                    <h2 class="d-flex mr-5">ภาษี</h2>
                     <v-radio-group
                       v-model="vat"
                       row
@@ -177,7 +176,7 @@
                     >
                       <v-radio label="ไม่บวกภาษี" value="1"></v-radio>
                       <v-radio label="บวกภาษี" value="2"></v-radio>
-                    </v-radio-group> -->
+                    </v-radio-group>
                   </v-row>
                   <v-row>
                     <v-col>
@@ -564,10 +563,8 @@ export default {
           );
         } else {
           this.tax = 7;
-          let net =
-            (this.subtotal * this.tax) / 100 +
-            this.subtotal -
-            (this.subtotal * this.coupon) / 100;
+          let discount = this.subtotal - (this.subtotal * this.coupon) / 100;
+          let net = (discount * this.tax) / 100 + discount;
           return Math.round(net);
         }
       } else {
@@ -762,6 +759,10 @@ export default {
       //console.log(selectCoupon);
     },
     checkTypePayment() {
+      let discount = Math.round((this.subtotal * this.coupon) / 100);
+      let afterDiscount = Math.round(this.subtotal - discount);
+      let vat = Math.round((afterDiscount * this.tax) / 100);
+      let afterVat = Math.round(afterDiscount + vat);
       if (this.bank === "cash") {
         this.bank_id = null;
         const newPayment1 = {
@@ -770,14 +771,10 @@ export default {
           orders: this.orders,
           type_order: this.type_order,
           total_price: this.subtotal,
-          discount_price: Math.round((this.subtotal * this.coupon) / 100),
-          after_discount: Math.round(
-            this.subtotal - [(this.subtotal * this.coupon) / 100]
-          ),
-          vat_price: Math.round((this.subtotal * this.tax) / 100),
-          after_vat: Math.round(
-            (this.subtotal * this.tax) / 100 + this.subtotal
-          ),
+          discount_price: discount,
+          after_discount: afterDiscount,
+          vat_price: vat,
+          after_vat: afterVat,
           net_price: Math.round(this.thinkPrice(this.subtotal))
         };
         return newPayment1;
@@ -790,14 +787,10 @@ export default {
           orders: this.orders,
           type_order: this.type_order,
           total_price: this.subtotal,
-          discount_price: Math.round((this.subtotal * this.coupon) / 100),
-          after_discount: Math.round(
-            this.subtotal - [(this.subtotal * this.coupon) / 100]
-          ),
-          vat_price: Math.round((this.subtotal * this.tax) / 100),
-          after_vat: Math.round(
-            (this.subtotal * this.tax) / 100 + this.subtotal
-          ),
+          discount_price: discount,
+          after_discount: afterDiscount,
+          vat_price: vat,
+          after_vat: afterVat,
           net_price: Math.round(this.thinkPrice(this.subtotal))
         };
         return newPayment2;

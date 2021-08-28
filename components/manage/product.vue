@@ -332,7 +332,7 @@ export default {
     headers: [
       { text: "ลำดับ", sortable: true, value: "No" },
       { text: "ภาพ", sortable: true, value: "img" },
-      { text: "ชื่อสิ้นค้า", sortable: true, value: "product_name" },
+      { text: "ชื่อสินค้า", sortable: true, value: "product_name" },
       { text: "ประเภท", sortable: true, value: "ref_uid.u_name" },
       { text: "หมวดหมู่", sortable: true, value: "ref_cate_id.cate_name" },
       { text: "ราคาต้นทุน", sortable: true, value: "price_cost" },

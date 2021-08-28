@@ -68,7 +68,7 @@
         <v-card class="mx-auto rounded-xl" max-width="500" color="primary">
           <v-card-title>
             <h5 class="text-h5 white--text ">
-              รายงานขายสินค้า
+              รายงาน
               <v-avatar class="mx-auto" size="60" max-width="90px" tile>
                 <v-img src="/ds.png"></v-img>
               </v-avatar>
@@ -85,7 +85,7 @@
               block
               class="primary--text rounded-xl"
               color="white"
-              @click="dialogPhylum = true"
+              @click="dialogPre = true"
             >
               เลือกประเภทรายงาน
             </v-btn>
@@ -143,12 +143,12 @@
             <v-stepper-content step="2">
               <v-autocomplete
                 :items="item2"
-                v-model="reportType"
+                v-model="reportBy"
                 outlined
                 dense
                 chips
                 small-chips
-                label="โปรดเลือกประเภทรายงาน"
+                label="แยกตาม"
                 class="ma-2"
               ></v-autocomplete>
 
@@ -218,19 +218,28 @@
     </v-row>
     <Report
       ref="report"
+      :reportType="reportType"
+      :reportBy="reportBy"
       :dialogDay="dialogDay"
       @closeRe="dialogDay = false"
       :daytime="date"
     />
-    <report-month
-      ref="reportMonth"
-      :dialogMonth="dialogMonth"
-      @closeRe="dialogMonth = false"
-      :daytime="date"
-    />
+
     <report-by-phylum
+      ref="reportPhylum"
+      :units="units"
+      :reportType="reportType"
+      :reportBy="reportBy"
       :dialogPhylum="dialogPhylum"
       @closeRe="dialogPhylum = false"
+    />
+    <report-by-invoice
+      ref="reportInvoice"
+      :reportType="reportType"
+      :reportBy="reportBy"
+      :dialogInvoice="dialogInvoice"
+      @closeRe="dialogInvoice = false"
+      :daytime="date"
     />
   </div>
 </template>
@@ -239,7 +248,7 @@
 import setpayoutspoints from "@/components/manage/settings/setpayoutspoints.vue";
 import Customizer from "@/components/manage/settings/Customizer.vue";
 import Report from "@/components/manage/settings/Report.vue";
-import ReportMonth from "@/components/manage/settings/ReportMonth.vue";
+import ReportByInvoice from "@/components/manage/settings/ReportByInvoice.vue";
 import ReportByPhylum from "@/components/manage/settings/ReportByPhylum.vue";
 
 export default {
@@ -269,33 +278,47 @@ export default {
     setpayoutspoints,
     Customizer,
     Report,
-    ReportMonth,
+    ReportByInvoice,
     ReportByPhylum
   },
   async asyncData(context) {
-    const [settings, payments] = await Promise.all([
+    const [settings, payments, units] = await Promise.all([
       context.$axios.$get("/setting"),
-      context.$axios.$get("/payment-year")
+      context.$axios.$get("/payment-year"),
+      context.$axios.$get("/unit")
     ]);
     //console.log(settings);
-    return { settings, payments };
+    return { settings, payments, units };
   },
   methods: {
     confirmReport() {
-      if (this.reportType === "ประจำวัน") {
-        this.filterPayment();
-        this.$refs.report.makeReport(this.paymentToday);
+      if (this.reportBy === "ชนิดสินค้า") {
+        this.$refs.report.makeReport(
+          this.reportType === "ประจำวัน"
+            ? this.filterPayment()
+            : this.filterPaymentMonth()
+        );
         this.dialogDay = true;
         this.dialogPre = false;
         this.e1 = 1;
-        this.reportType = "ประจำวัน";
-      } else {
-        this.filterPaymentMonth();
-        this.$refs.reportMonth.makeReport(this.paymentMonth);
-        this.dialogMonth = true;
+      } else if (this.reportBy === "ประเภทสินค้า") {
+        this.$refs.reportPhylum.makeReport(
+          this.reportType === "ประจำวัน"
+            ? this.filterPayment()
+            : this.filterPaymentMonth()
+        );
+        this.dialogPhylum = true;
         this.dialogPre = false;
         this.e1 = 1;
-        this.reportType = "ประจำวัน";
+      } else if (this.reportBy === "ใบเสร็จรับเงิน") {
+        this.$refs.reportInvoice.makeReport(
+          this.reportType === "ประจำวัน"
+            ? this.filterPayment()
+            : this.filterPaymentMonth()
+        );
+        this.dialogInvoice = true;
+        this.dialogPre = false;
+        this.e1 = 1;
       }
     },
     async refresh() {
@@ -321,8 +344,9 @@ export default {
           new Date(d.datetime).getFullYear() === date.getFullYear()
         );
       });
-      this.paymentToday = day;
+      // this.paymentToday = day;
       //console.log(this.paymentToday);
+      return day;
     },
     filterPaymentMonth() {
       let date = new Date(this.date);
@@ -335,21 +359,23 @@ export default {
           new Date(y.datetime).getTime() <= lastDay.getTime()
         );
       });
-      this.paymentMonth = month;
+      // this.paymentMonth = month;
+      return month;
     }
   },
   data() {
     return {
       reportType: "ประจำวัน",
+      reportBy: "ชนิดสินค้า",
       dialogDay: false,
-      dialogMonth: false,
+      dialogInvoice: false,
       dialogPhylum: false,
       paymentToday: [],
       paymentMonth: [],
       dialogPre: false,
       e1: 1,
       item: ["ประจำวัน", "ประจำเดือน"],
-      item2: ["ชนิดสินค้า", "หมวดหมู่สินค้า"],
+      item2: ["ชนิดสินค้า", "ประเภทสินค้า", "ใบเสร็จรับเงิน"],
       date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),

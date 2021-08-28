@@ -86,8 +86,12 @@
                 <template v-slot:default="{ active }">
                   <v-list-item-content>
                     <v-list-item-avatar>
+
                       <v-avatar rounded tile size="32"
                         ><img rounded src="../../assets/icons/shopping.png"
+                      <v-avatar
+                        ><img src="../../assets/icons/shopping.png"
+
                       /></v-avatar>
                     </v-list-item-avatar>
                   </v-list-item-content>
@@ -144,6 +148,7 @@ export default {
   }),
   methods: {
     addTopping() {
+      this.filterToppingTrue();
       if (this.product.ref_cate_id.topping.length !== 0) {
         this.priceMergeTopping = this.product.price;
         this.dialogTopping = true;

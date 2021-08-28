@@ -11,9 +11,13 @@
           <v-btn icon dark @click="$emit('closeRe')">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title
-            >รายงานยอดขายประจำวันที่ {{ formatDate(daytime) }}</v-toolbar-title
-          >
+          <v-toolbar-title>
+            {{
+              reportType === "ประจำวัน"
+                ? "รายงานยอดขายประจำวันที่ " + formatDate(daytime)
+                : "รายงานยอดขายประจำเดือน " + formatDate2(daytime)
+            }}
+          </v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn dark text @click="open">
@@ -32,19 +36,18 @@
             <h2>{{ $store.getters["setting"][0].restaurant }}</h2>
           </v-row>
           <v-row class="justify-center align-center">
-            <h3>รายงานยอดขายประจำวันที่ {{ formatDate(daytime) }}</h3>
+            <h3>
+              {{
+                reportType === "ประจำวัน"
+                  ? "รายงานยอดขายประจำวันที่ " + formatDate(daytime)
+                  : "รายงานยอดขายประจำเดือน " + formatDate2(daytime)
+              }}
+            </h3>
           </v-row>
-          <v-row class="justify-center align-center mt-6">
-            <p style="font-size:14px">
-              ยอดขายประจำวันที่ {{ formatDate(daytime) }} 08:00 -
-              {{ formatDate(daytime) }} 20:00
-            </p>
-            <p style="font-size:14px" class="mx-8">จำนวน : {{ count }}</p>
-            <p style="font-size:14px">
-              รวมยอด : ฿ {{ formatPrice(total) }} บาท
-            </p>
+          <v-row class="justify-center align-center">
+            <h4>แยกตามชนิดสินค้า</h4>
           </v-row>
-          <v-row class="mx-auto ">
+          <v-row class="mx-auto justify-center ">
             <v-simple-table dense>
               <template v-slot:default>
                 <thead>
@@ -52,17 +55,11 @@
                     <th class="text-left" width="60px">
                       ลำดับ
                     </th>
-                    <th class="text-left" width="300px">
+                    <th class="text-left" width="auto">
                       รายการ
                     </th>
-                    <th class="text-left" width="100px">
+                    <th class="text-left" width="auto">
                       จำนวน
-                    </th>
-                    <th class="text-left" width="200px">
-                      ต่อหน่วย
-                    </th>
-                    <th class="text-left" width="200px">
-                      รวม
                     </th>
                   </tr>
                 </thead>
@@ -77,8 +74,11 @@
                       }}
                     </td>
                     <td>{{ item.qty }}</td>
-                    <td>฿ {{ formatPrice(item.price) }}</td>
-                    <td>฿ {{ formatPrice(item.total) }}</td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>ยอดรวม</td>
+                    <td>{{ count }} รายการ</td>
                   </tr>
                 </tbody>
               </template>
@@ -93,14 +93,13 @@
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "./vfs_fonts";
 export default {
-  props: ["dialogDay", "daytime"],
+  props: ["dialogDay", "daytime", "reportType", "reportBy"],
 
   data() {
     return {
       listSort: [],
       list: [],
-      count: 0,
-      total: 0
+      count: 0
     };
   },
   methods: {
@@ -109,21 +108,25 @@ export default {
       let strdate = this.$moment(date).add(543, "years");
       return this.$moment(strdate).format("DD MMMM YYYY ");
     },
+    formatDate2(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("MMMM YYYY ");
+    },
     makeReport(payments) {
       this.count = 0;
-      this.total = 0;
       this.list = [];
       const res = [];
+
       payments.map(p => {
         res.push(...p.ref_order_id.list_product);
       });
+
       res.map(r => {
         this.replace(r);
       });
-      //console.log(this.list);
       this.list.map(l => {
         this.count += parseInt(l.qty);
-        this.total += parseInt(l.total);
       });
       //console.log(this.list);
       this.listSort = this.list.sort((a, b) => b.qty - a.qty);
@@ -172,9 +175,7 @@ export default {
           l.topping.length !== 0
             ? l.name + " - " + l.topping.map(t => t.name)
             : l.name,
-          l.qty,
-          "฿ " + this.formatPrice(l.price),
-          "฿ " + this.formatPrice(l.total)
+          l.qty
         ]);
       });
 
@@ -195,14 +196,13 @@ export default {
       };
       const documentDefinitions = {
         info: {
-          title: `รายงานประจำวันที่ ${this.daytime}`,
+          title:
+            this.reportType === "ประจำวัน"
+              ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
+              : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime),
           author: this.$store.getters["setting"][0].restaurant
         },
         header: {
-          // text: this.$store.getters["setting"][0].restaurant,
-          // fontSize: 22,
-          // alignment: "center",
-          // bold: true,
           ul: [
             {
               text: this.$store.getters["setting"][0].restaurant,
@@ -212,7 +212,10 @@ export default {
               listType: "none"
             },
             {
-              text: `รายงานยอดขายประจำวันที่ ${this.formatDate(this.daytime)}`,
+              text:
+                this.reportType === "ประจำวัน"
+                  ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
+                  : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime),
               fontSize: 16,
               bold: true,
               alignment: "center",
@@ -224,32 +227,35 @@ export default {
               bold: true,
               alignment: "center",
               listType: "none"
-            },
-            {
-              text: `ยอดขายวันที่ : ${this.formatDate(
-                this.daytime
-              )} 08:00 น. - ${this.formatDate(
-                this.daytime
-              )} 20:00 น.  จำนวน : ${
-                this.count
-              } รายการ  รวมยอด : ฿ ${this.formatPrice(this.total)} บาท`,
-              fontSize: 16,
-
-              alignment: "center",
-              listType: "none"
             }
           ]
         },
-        pageMargins: [40, 100, 40, 60],
+        pageMargins: [40, 80, 40, 60],
         content: [
           {
             layout: "lightHorizontalLines", // optional
             table: {
               fontSize: 18,
               headerRows: 1,
-              widths: [30, "*", 80, 80, 80],
+              widths: [30, "*", 80],
 
-              body: [["ลำดับ", "รายการ", "จำนวน", "ต่อหน่วย", "รวม"], ...res]
+              body: [
+                ["ลำดับ", "รายการ", "จำนวน"],
+                ...res,
+                [
+                  "",
+                  {
+                    text: "ยอดรวม",
+                    fontSize: 16,
+                    bold: true
+                  },
+                  {
+                    text: this.count + " รายการ",
+                    fontSize: 16,
+                    bold: true
+                  }
+                ]
+              ]
             }
           }
         ],
@@ -267,7 +273,11 @@ export default {
       pdfMake.createPdf(documentDefinitions).open();
       // pdfMake
       //   .createPdf(documentDefinitions)
-      //   .download(`รายงาน:${this.daytime}.pdf`);
+      //   .download(
+      //     this.reportType === "ประจำวัน"
+      //       ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
+      //       : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime)
+      //   );
     }
   },
   created() {}

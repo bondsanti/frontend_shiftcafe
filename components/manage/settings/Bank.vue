@@ -197,7 +197,7 @@
                                 required
                                 @change="loadImage($event)"
                               />
-                              เลือกรูปภาพ
+                              เลือกรูปคิวอาร์โค้ด
                             </v-btn>
                           </v-col>
                           <v-col> </v-col>
@@ -254,7 +254,7 @@
                                 required
                                 @change="loadImage2($event)"
                               />
-                              เลือกรูปภาพ
+                              เลือกรูปปก
                             </v-btn>
                           </v-col>
                           <v-col> </v-col>
@@ -503,7 +503,7 @@ export default {
             banknumber: [
       v => !!v || "เขาเลขบัญชี 10 หลัก แต่มีบ้างธนาคารมี12,14,15หลัก",
       v => (/\d{10}/.test(v) && v.length >= 10) || "ใส่ตัวเลขเกิน10ตัว",
-      v => (/\d{10}/.test(v) && v.length <= 15) || "ใส่ตัวเลขไม่ถึง15ตัว",
+      v => (/\d{10}/.test(v) && v.length <= 15) || "ใส่ตัวเลขเกิน15ตัว",
     ],
       //แคป
       result: {

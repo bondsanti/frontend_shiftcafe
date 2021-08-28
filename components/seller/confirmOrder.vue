@@ -21,10 +21,12 @@
                 ยืนยันคำสั่งซื้อ
                 <v-icon>mdi-food</v-icon>
               </v-tab>
-              <v-tab href="#tab-2">
+              <!-- มีปัญหา -->
+              <!-- <v-tab href="#tab-2">
                 สมัครสมาชิก
                 <v-icon>mdi-account</v-icon>
-              </v-tab>
+              </v-tab> -->
+             
             </v-tabs>
             <v-spacer></v-spacer>
             <v-toolbar-items>
@@ -143,7 +145,8 @@
                           "
                         >
                           <v-img
-                            :src="$nuxt.context.env.config.IMG_URL + bank.img_cover
+                            :src="
+                              $nuxt.context.env.config.IMG_URL + bank.img_cover
                             "
                             height="100px"
                             style="background-color:#FFEBEE; "
@@ -163,7 +166,9 @@
                   </v-row>
 
                   <v-row class="ma-3" align="center">
-                    <h2 class="d-flex mr-5">ภาษี</h2>
+                    <!-- เปิดภาษี -->
+
+                    <!-- <h2 class="d-flex mr-5">ภาษี</h2>
                     <v-radio-group
                       v-model="vat"
                       row
@@ -172,7 +177,7 @@
                     >
                       <v-radio label="ไม่บวกภาษี" value="1"></v-radio>
                       <v-radio label="บวกภาษี" value="2"></v-radio>
-                    </v-radio-group>
+                    </v-radio-group> -->
                   </v-row>
                   <v-row>
                     <v-col>
@@ -237,7 +242,6 @@
                     </v-col>
                   </div> -->
                   <v-list-item-group
-                    
                     active-class="deep-primary--text text--accent-4"
                     multiple
                   >
@@ -456,12 +460,14 @@ export default {
     customers2: [],
     tab: "tab-1",
     cus: {
+      _id: "",
       pname: "",
       fname: "",
       lname: "",
       birthday: "",
       tel: "",
       email: "",
+      ref_level_id: "6110e00e07a98e09c472a9d0",
       address: ""
     },
     valid: true,
@@ -482,6 +488,7 @@ export default {
     tax: 0,
     alert: false,
     alertText: ""
+
     //bank3: []
   }),
   methods: {
@@ -516,10 +523,12 @@ export default {
         const res = this.customers.find(c => {
           return c.fname === "guest" && c.lname === "guest";
         });
+        // มีปัญหา
         this.cusId = res._id;
+        //
         this.cusIdGuest = res._id;
       }
-      //console.log(this.cusIdGuest);
+      console.log(this.cusId);
     },
 
     async addCus() {
@@ -529,9 +538,12 @@ export default {
       const res = await this.$axios.post("/customer", this.cus);
       if (res.status === 200) {
         this.customers = await this.$axios.$get("/customer");
+        // มีปัญหา
         this.improveCus();
+        //
         this.error = res.data.message;
         this.dialog2 = true;
+        this;
         this.tab = "tab-1";
       } else {
         this.error = res.data.message;
@@ -626,7 +638,7 @@ export default {
           list_product: this.orders,
           type_order: this.type_order,
           total_price: this.subtotal,
-          bill_name: "cash now"
+          bill_name: "จ่ายเงินสดตอนนี้"
         };
         //const order = await this.$axios.$post("/order", newOrder);
         //console.log(order.data);

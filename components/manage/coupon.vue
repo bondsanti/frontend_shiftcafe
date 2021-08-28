@@ -1,12 +1,12 @@
 <template>
   <div class="ma-3">
     <!-- 1 -->
-    <v-dialog v-model="dialogView" max-width="400px">
+    <v-dialog v-model="dialogView" max-width="500px">
       <v-card>
         <v-form>
           <v-card-title>
             <span class="text-h">
-              <v-icon left> mdi-ticket</v-icon>ชื่อคูปอง
+              <v-icon left> mdi-ticket-percent-outline</v-icon>ชื่อคูปอง
               {{ itemBy.codename }}
             </span>
           </v-card-title>
@@ -88,9 +88,8 @@
                   เพิ่มข้อมูลคูปอง
                 </span>
               </v-card-title>
-
-              <v-card-text>
-                <v-form ref="form">
+              <v-form v-model="valid" ref="form">
+                <v-card-text>
                   <div>
                     <v-row>
                       <v-col cols="12"> </v-col>
@@ -98,6 +97,7 @@
                         <v-text-field
                           outlined
                           label="ชื่อคูปอง"
+                          :rules="rules"
                           v-model="couponitem.codename"
                           color="#1D1D1D"
                           @keypress.enter="check"
@@ -132,6 +132,7 @@
                           item-value="_id"
                           :items="Empname.flat()"
                           v-model="couponitem.ref_emp_id"
+                          :rules="rules"
                         ></v-select>
                       </v-col>
 
@@ -147,6 +148,7 @@
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
                               v-model="couponitem.start"
+                              :rules="rules"
                               label="วันที่เริ่มใช้"
                               append-icon="mdi-calendar"
                               readonly
@@ -157,6 +159,7 @@
                           </template>
                           <v-date-picker
                             v-model="couponitem.start"
+                            :rules="rules"
                             locale="th"
                             elevation="15"
                             :active-picker.sync="activePicker"
@@ -177,6 +180,7 @@
                           <template v-slot:activator="{ on, attrs }">
                             <v-text-field
                               v-model="couponitem.end"
+                              :rules="rules"
                               label="วันหมดอายุ"
                               append-icon="mdi-calendar"
                               readonly
@@ -187,6 +191,7 @@
                           </template>
                           <v-date-picker
                             v-model="couponitem.end"
+                            :rules="rules"
                             @input="menu2 = false"
                             elevation="15"
                             locale="th"
@@ -203,6 +208,7 @@
                           color="#1D1D1D"
                           :items="discount"
                           v-model="couponitem.discount"
+                          :rules="rules"
                           type="number"
                         ></v-select>
                       </v-col>
@@ -212,14 +218,15 @@
                           outlined
                           label="จำนวลคูปองที่สมารถใช้ได้ต่อครั้ง"
                           v-model="couponitem.num_use"
+                          :rules="rules"
                           type="number"
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
                     </v-row>
                   </div>
-                </v-form>
-              </v-card-text>
+                </v-card-text>
+              </v-form>
               <v-card-actions>
                 <v-btn
                   class="ma-1 rounded-xl"
@@ -239,6 +246,7 @@
                   class="ma-1 rounded-xl"
                   elevation="15"
                   color="info"
+                  :disabled="!valid"
                   @click="save()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
@@ -534,6 +542,8 @@ export default {
     DatePicker
   },
   data: () => ({
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    valid: true,
     //
     activePicker: null,
     activePicker2: null,
@@ -565,7 +575,7 @@ export default {
         value: 0
       },
       {
-        text: "ใช้งานแล้ว",
+        text: "เริ่มใช้งาน",
         value: 1
       },
       {
@@ -792,6 +802,18 @@ export default {
         {
           name: "วันหมดอายุ",
           value: this.moment2(item.end)
+        },
+        {
+          name: "จำนวลคูปองที่เหลือ",
+          value: item.num_use
+        },
+        {
+          name: "ส่วนลด",
+          value: item.discount + "%"
+        },
+        {
+          name: "สถานะคูปอง",
+          value: this.getTxt(item.status)
         }
       ];
 
@@ -799,10 +821,10 @@ export default {
       //console.log(item);
     },
     getTxt(status) {
-      if (status === 0) return "รอใช้งาน";
-      else if (status === 1) return "ใช้งานแล้ว";
+      if (status === 0) return "รอใช้งาน / ครบยอด";
+      else if (status === 1) return "เริ่มใช้งาน";
       else if (status === 2) return "หมดอายุ";
-      else if (status === 3) return "ยกเลิก";
+      else if (status === 3) return "ยกเลิกใช้งาน";
       else return "อื่นๆ";
     },
     getColor(status) {
@@ -839,6 +861,7 @@ export default {
       this.type = "edit";
       this.couponitem = {
         status: 0,
+        _id: item._id,
         codename: item.codename,
         ref_emp_id_by: item.ref_emp_id_by,
         ref_emp_id: item.ref_emp_id,
@@ -896,6 +919,7 @@ export default {
     save() {
       if (this.type === "add") {
         this.loading = true;
+        this.$refs.form.validate();
         this.$axios
           .$post("/coupon/", this.couponitem)
           .then(res => {

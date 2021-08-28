@@ -828,9 +828,9 @@
           {{ item.lname }}
         </template>
         <template v-slot:[`item.username`]="{ item }">
-          <v-icon class="ma-2 ml-2" color="primary">
+          <!-- <v-icon class="ma-2 ml-2" color="primary">
             mdi-identifier
-          </v-icon>
+          </v-icon> -->
           {{ item.username }}
         </template>
         <template v-slot:[`item.birthday`]="{ item }">
@@ -882,7 +882,7 @@ export default {
       { text: "ชื่อ", align: "start", value: "fname" },
       { text: "นามสกุล", align: "start", value: "lname" },
       // { text: "ภาพ", sortable: false, value: "img" },
-      { text: "ไอดีใช้เข้าระบบ", align: "start", value: "username" },
+      { text: "ไอดีใช้เข้าระบบ", align: "start", value: "username"},
       { text: "ตำแหน่ง", align: "start", value: "ref_id_role.position" },
       //{ text: "เลขบัตรประชาชน", align: "start", value: "idcard" },
       // { text: "นามสกุล", align: "start", value: "lname"},

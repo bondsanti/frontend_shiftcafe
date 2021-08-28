@@ -66,7 +66,7 @@
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
             width="100px"
-            height="100px"
+            height="110px"
             contain
             @click="photo(item)"
           />
@@ -81,129 +81,133 @@
                   {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
                 >
               </v-card-title>
+              <v-form v-model="valid" ref="form">
+                <v-card-text>
+                  <div>
+                    <v-row>
+                      <v-col cols="12"> </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="ชื่อสิ้นค้า"
+                          :rules="rules"
+                          v-model="productsItem.product_name"
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
 
-              <v-card-text>
-                <div>
-                  <v-row>
-                    <v-col cols="12"> </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-select
+                          label="หมวดหมู่"
+                          outlined
+                          color="#1D1D1D"
+                          item-text="name"
+                          item-value="_id"
+                          :rules="rules"
+                          :items="categoryname.flat()"
+                          v-model="productsItem.ref_cate_id"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-select
+                          label="ประเภท"
+                          outlined
+                          color="#1D1D1D"
+                          :rules="rules"
+                          item-text="name"
+                          item-value="_id"
+                          :items="unitname.flat()"
+                          v-model="productsItem.ref_uid"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="ราคาต้นทุน"
+                          :rules="rules"
+                          suffix="฿"
+                          type="number"
+                          min="0"
+                          v-model="productsItem.price_cost"
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
 
-                    <v-col cols="12" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ชื่อสิ้นค้า"
-                        v-model="productsItem.product_name"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="ราคาขาย"
+                          suffix="฿"
+                          type="number"
+                          min="0"
+                          :rules="rules"
+                          v-model="productsItem.price"
+                          required
+                          color="#1D1D1D"
+                        ></v-text-field>
+                      </v-col>
 
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-select
-                        label="หมวดหมู่"
-                        outlined
-                        color="#1D1D1D"
-                        item-text="name"
-                        item-value="_id"
-                        :items="categoryname.flat()"
-                        v-model="productsItem.ref_cate_id"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-select
-                        label="ประเภท"
-                        outlined
-                        color="#1D1D1D"
-                        item-text="name"
-                        item-value="_id"
-                        :items="unitname.flat()"
-                        v-model="productsItem.ref_uid"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ราคาต้นทุน"
-                        suffix="฿"
-                        type="number"
-                        min="0"
-                        v-model="productsItem.price_cost"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <h3 v-if="image.src" class="text-center ml-12  mt-3">
+                          รูปภาพประกอบ
+                        </h3>
 
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ราคาขาย"
-                        suffix="฿"
-                        type="number"
-                        min="0"
-                        v-model="productsItem.price"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" class="mt-n7">
-                      <h3 v-if="image.src" class="text-center ml-12  mt-3">
-                        รูปภาพประกอบ
-                      </h3>
-
-                      <example-wrapper
-                        class="getting-result-second-example"
-                        noBoder
-                        v-if="image.src"
-                      >
-                        <cropper
-                          class="cropper"
-                          ref="cropper"
-                          :src="image.src"
-                        />
-                        <results
-                          :coordinates="result.coordinates"
-                          :image="result.img"
-                        />
-                        <!-- <div class="crop-button" @click="crop">Crop Image</div> -->
-                        <div class="crop-button">
-                          <v-btn
-                            class="mx-5 rounded-xl"
-                            elevation="15"
-                            @click="crop"
-                            color="green"
-                            >ดูรูปตัวอย่าง</v-btn
-                          ><v-btn
-                            class="mx-5 rounded-xl"
-                            elevation="15"
-                            color="orange"
-                            @click="croppedFinish"
-                            >ตัดรูปภาพ</v-btn
-                          >
-                        </div>
-                      </example-wrapper>
-                      <v-row>
-                        <v-col>
-                          <v-btn
-                            @click="$refs.file.click()"
-                            class="upload-example__button rounded-xl"
-                            elevation="15"
-                          >
-                            <input
-                              type="file"
-                              ref="file"
-                              accept="image/*"
-                              required
-                              @change="loadImage($event)"
-                            />
-                            เลือกรูปภาพ
-                          </v-btn>
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-card-text>
-
+                        <example-wrapper
+                          class="getting-result-second-example"
+                          noBoder
+                          v-if="image.src"
+                        >
+                          <cropper
+                            class="cropper"
+                            ref="cropper"
+                            :src="image.src"
+                          />
+                          <results
+                            :coordinates="result.coordinates"
+                            :image="result.img"
+                          />
+                          <!-- <div class="crop-button" @click="crop">Crop Image</div> -->
+                          <div class="crop-button">
+                            <v-btn
+                              class="mx-5 rounded-xl"
+                              elevation="15"
+                              @click="crop"
+                              color="green"
+                              >ดูรูปตัวอย่าง</v-btn
+                            ><v-btn
+                              class="mx-5 rounded-xl"
+                              elevation="15"
+                              color="orange"
+                              @click="croppedFinish"
+                              >ตัดรูปภาพ</v-btn
+                            >
+                          </div>
+                        </example-wrapper>
+                        <v-row>
+                          <v-col>
+                            <v-btn
+                              @click="$refs.file.click()"
+                              class="upload-example__button rounded-xl"
+                              elevation="15"
+                            >
+                              <input
+                                type="file"
+                                ref="file"
+                                accept="image/*"
+                                required
+                                @change="loadImage($event)"
+                              />
+                              เลือกรูปภาพ
+                            </v-btn>
+                          </v-col>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </div>
+                </v-card-text>
+              </v-form>
               <v-card-actions>
                 <v-btn
                   class="ma-1 rounded-xl"
@@ -222,6 +226,7 @@
                   class="ma-1 rounded-xl"
                   elevation="15"
                   color="info"
+                  :disabled="!valid"
                   @click="save"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
@@ -314,6 +319,8 @@ export default {
 
       img: null
     },
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    valid: true,
     dialog: false,
     dialogDelete: false,
     dialogPhoto: false,
@@ -494,6 +501,7 @@ export default {
     save() {
       if (this.type === "add") {
         this.loading = true;
+        this.$refs.form.validate();
         let formdata = new FormData();
         formdata.append("product_name", this.productsItem.product_name);
         formdata.append("ref_uid", this.productsItem.ref_uid);

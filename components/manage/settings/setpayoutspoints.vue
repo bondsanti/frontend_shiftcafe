@@ -46,7 +46,6 @@
                 prepend-inner-icon="mdi-point-of-sale"
                 class="rounded-xl"
                 v-model="settingitem.price_buy"
-                prefix="฿"
                 type="number"
                 rounded
               >

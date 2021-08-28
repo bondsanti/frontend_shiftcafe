@@ -398,6 +398,7 @@
       :subtotal="preConfirm.subtotal"
       :idOrder="preConfirm.idOrder"
       :orders="preConfirm.orders"
+      :couponParent="preConfirm.couponParent"
       :statusCook="preConfirm.status_cook"
       @closeDialog_cook="closeDialog_cook"
       ref="childRef"
@@ -426,7 +427,8 @@ export default {
       orders: null,
       subtotal: null,
       idOrder: null,
-      status_cook: null
+      status_cook: null,
+      couponParent:null
     }
   }),
   methods: {
@@ -490,6 +492,7 @@ export default {
     async checkout(i) {
       this.preConfirm.customers = await this.$axios.$get("/customer2");
       this.preConfirm.banks = await this.$axios.$get("/bank");
+      this.preConfirm.couponParent =await this.$axios.$get("/coupon")
       this.preConfirm.subtotal = this.orderOnDatabase[i].total_price;
       this.preConfirm.idOrder = this.orderOnDatabase[i]._id;
       this.preConfirm.orders = this.orderOnDatabase[i].list_product;

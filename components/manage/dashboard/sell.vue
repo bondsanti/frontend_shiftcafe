@@ -182,24 +182,24 @@ export default {
       let endDay = new Date(today.getFullYear(), month2 + 1, 0);
 
       //return this.formatDate(startDay) + " - " + this.formatDate(endDay);
-      return `1/${this.monthNamesThai[today.getMonth()]}/${today.getFullYear() +
-        543} - ${endDay.getDate()}/${
+      return `1  ${this.monthNamesThai[today.getMonth()]} ${today.getFullYear() +
+        543} - ${endDay.getDate()} ${
         this.monthNamesThai[today.getMonth()]
-      }/${today.getFullYear() + 543} `;
+      } ${today.getFullYear() + 543} `;
     },
 
     formatDate2() {
       const today = new Date(this.dateNow);
 
-      return `${this.monthNamesThai[today.getMonth()]} / ${today.getFullYear() +
+      return `${this.monthNamesThai[today.getMonth()]}  ${today.getFullYear() +
         543}`;
     },
     formatDate3() {
       const today = new Date(this.dateNow);
 
-      return `${today.getDate()} / ${
+      return ` ${today.getDate()}  ${
         this.monthNamesThai[today.getMonth()]
-      } / ${today.getFullYear() + 543}`;
+      }  ${today.getFullYear() + 543}`;
     },
     formatPrice(value2) {
       const value = parseInt(value2);

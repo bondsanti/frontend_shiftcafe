@@ -139,6 +139,15 @@
     </div>
     <v-dialog v-model="dialogTopping" width="450">
       <v-card class="rounded-xl">
+          <v-card-actions class="d-flex justify-end  ">
+          <v-btn
+            color="red darken-1 "
+            text
+            @click="dialogTopping = false"
+          >
+            <v-icon> mdi-close</v-icon>
+          </v-btn></v-card-actions
+        >
         <v-card-title class="text-h5  lighten-2">
           <v-row>
             <v-col cols="12" sm="4" md="4" lg="4">
@@ -185,8 +194,8 @@
                 <template v-slot:default="{ active }">
                   <v-list-item-content>
                     <v-list-item-avatar>
-                      <v-avatar
-                        ><img src="../../assets/icons/shopping.png"
+                      <v-avatar rounded tile size="32"
+                        ><img  rounded src="../../assets/icons/shopping.png"
                       /></v-avatar>
                     </v-list-item-avatar>
                   </v-list-item-content>

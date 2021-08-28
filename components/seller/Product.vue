@@ -28,20 +28,26 @@
     </v-card>
     <v-dialog v-model="dialogTopping" width="450">
       <v-card class="rounded-xl">
+        <v-card-actions class="d-flex justify-end  ">
+          <v-btn
+            color="red darken-1 "
+            text
+            @click="dialogTopping = false"
+          >
+            <v-icon> mdi-close</v-icon>
+          </v-btn></v-card-actions
+        >
+
         <v-card-title>
           <v-row>
             <v-col cols="12" sm="4" md="4" lg="4">
               <v-sheet
                 color="white"
-               
                 height="80"
                 width="80"
                 class="rounded-circle"
               >
-                <v-img
-                 
-                  :src="$nuxt.context.env.config.IMG_URL + product.img"
-                >
+                <v-img :src="$nuxt.context.env.config.IMG_URL + product.img">
                 </v-img> </v-sheet
             ></v-col>
             <v-col cols="12" sm="8" md="8" lg="8">
@@ -80,8 +86,8 @@
                 <template v-slot:default="{ active }">
                   <v-list-item-content>
                     <v-list-item-avatar>
-                      <v-avatar 
-                        ><img src="../../assets/icons/shopping.png"
+                      <v-avatar rounded tile size="32"
+                        ><img rounded src="../../assets/icons/shopping.png"
                       /></v-avatar>
                     </v-list-item-avatar>
                   </v-list-item-content>
@@ -111,6 +117,7 @@
             ราคา {{ priceMergeTopping }} บาท
           </h3>
           <v-spacer></v-spacer>
+
           <v-btn
             class="text-uppercase ma-0"
             color="primary"

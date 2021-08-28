@@ -88,10 +88,7 @@
                     <v-list-item-avatar>
 
                       <v-avatar rounded tile size="32"
-                        ><img rounded src="../../assets/icons/shopping.png"
-                      <v-avatar
-                        ><img src="../../assets/icons/shopping.png"
-
+                        ><img rounded src="../../assets/icons/shopping.png"         
                       /></v-avatar>
                     </v-list-item-avatar>
                   </v-list-item-content>

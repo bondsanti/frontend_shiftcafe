@@ -184,6 +184,7 @@
                             ></v-text-field>
                           </template>
                           <v-date-picker
+                            @change="$refs.menu.save()"
                             v-model="customerItme.birthday"
                             locale="th"
                             :active-picker.sync="activePicker"
@@ -613,8 +614,20 @@
           </v-chip>
         </template>
         <template v-slot:[`item.ref_level_id.level_name`]="{ item }">
-          <v-chip :color="getColor(item.ref_level_id.level_name)" dark small>
-            {{ item.ref_level_id.level_name }}
+          <v-chip
+            :color="
+              getColor(
+                item.ref_level_id ? item.ref_level_id.level_name : 'classic'
+              )
+            "
+            dark
+            small
+          >
+            {{
+              item.ref_level_id
+                ? item.ref_level_id.level_name
+                : "การใช้จ่ายไม่ถึงระดับที่กำหนด"
+            }}
           </v-chip>
         </template>
         <template v-slot:[`item.birthday`]="{ item }">
@@ -960,7 +973,7 @@ export default {
           name: "ตำแหน่ง",
           value: item.ref_level_id.level_name
         },
-          {
+        {
           name: "แต้มสะสม",
           value: item.point
         }

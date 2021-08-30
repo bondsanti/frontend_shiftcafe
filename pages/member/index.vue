@@ -121,7 +121,7 @@
                 class="flex-grow-1 flex-shrink-0"
               >
                 <h4 class="pa-2 text-truncate" outlined tile>
-                  {{ loadData.birthday | moment }}
+                  {{ formatDate(loadData.birthday) }}
                 </h4>
               </v-col>
             </v-row>
@@ -213,7 +213,8 @@
                     <v-divider></v-divider>
 
                     <v-card-text>
-                      {{ items.detail }}
+                      <p>{{ items.detail }}</p>
+                      <p>ซื้อสินค้าขั้นต่ำ {{ items.target_price }} บาท</p>
                     </v-card-text>
                   </div>
                 </v-expand-transition>
@@ -291,13 +292,20 @@ export default {
       "/customer/" + context.$auth.user._id
     );
     const levelMember = await context.$axios.$get("/level-member");
-    let dataMember=[]
+    let dataMember = [];
     for (let i in levelMember) {
       dataMember.push({ ...levelMember[i], show: false });
     }
 
-    console.log(dataMember);
-
+    //เรียงจากน้อยไปมาก เรียงตาม target_price
+    const dataMem = dataMember.sort((a, b) => a.target_price - b.target_price);
+    //หา target ใหม่เพื่อเปลี่ยนระดับสมาชิด
+    const newTarget = dataMem.find(
+      d => loadData.ref_level_id.target_price < d.target_price
+    );
+    //console.log(newTarget);
+    //นำ target_price ใหม่ที่ได้ไปเปลี่ยนอันเก่า
+    loadData.ref_level_id.target_price = newTarget.target_price;
     const data = await context.$axios.$get(
       "/payment/customer/" + context.$auth.user._id
     );
@@ -316,6 +324,11 @@ export default {
   },
 
   methods: {
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY ");
+    },
     getAgeDate(date) {
       const futureDate = moment()
         .date(Number)
@@ -356,12 +369,6 @@ export default {
             this.dialog = false;
           });
       }
-    }
-  },
-  filters: {
-    moment: function(date) {
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY");
     }
   }
 };

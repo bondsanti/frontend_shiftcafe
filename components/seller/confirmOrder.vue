@@ -22,10 +22,10 @@
                 <v-icon>mdi-food</v-icon>
               </v-tab>
               <!-- มีปัญหา -->
-              <!-- <v-tab href="#tab-2">
+              <v-tab href="#tab-2">
                 สมัครสมาชิก
                 <v-icon>mdi-account</v-icon>
-              </v-tab> -->
+              </v-tab>
             </v-tabs>
             <v-spacer></v-spacer>
             <v-toolbar-items>
@@ -320,14 +320,15 @@
           </v-tabs-items>
           <v-tabs-items v-model="tab">
             <v-tab-item value="tab-2">
-              <v-container>
+              <div class="ma-10">
                 <v-form v-model="valid" ref="form">
-                  <v-row class="mx-16">
-                    <v-col cols="12">
-                      <h1>ข้อมูลลูกค้า</h1>
-                    </v-col>
+                  <v-row class="justify-center align-center my-1">
+                    <h1>ข้อมูลลูกค้า</h1>
+                  </v-row>
+                  <v-row class="justify-center align-center my-1">
                     <v-col cols="12">
                       <v-select
+                        hide-details
                         v-model="cus.pname"
                         label="คำนำหน้า"
                         outlined
@@ -336,8 +337,11 @@
                         :rules="rules"
                       ></v-select>
                     </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
+                  </v-row>
+                  <v-row class="justify-center align-center my-1">
+                    <v-col cols="12" md="6">
                       <v-text-field
+                        hide-details
                         v-model="cus.fname"
                         outlined
                         label="ชื่อ"
@@ -346,8 +350,9 @@
                         :rules="rules"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
+                    <v-col cols="12" md="6">
                       <v-text-field
+                        hide-details
                         v-model="cus.lname"
                         outlined
                         label="นามสกุล"
@@ -356,8 +361,10 @@
                         :rules="rules"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-text-field
+                  </v-row>
+                  <v-row class="my-1">
+                    <v-col cols="12" md="6">
+                      <!-- <v-text-field
                         v-model="cus.birthday"
                         type="date"
                         outlined
@@ -365,21 +372,61 @@
                         required
                         color="primary"
                         :rules="rules"
-                      ></v-text-field>
+                      ></v-text-field> -->
+                      <v-menu
+                        ref="menu"
+                        v-model="menu"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-x
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="cus.birthday"
+                            clearable
+                            label="วันเกิด"
+                            :rules="rules"
+                            append-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            outlined
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          @change="$refs.menu.save()"
+                          v-model="cus.birthday"
+                          locale="th"
+                          :max="
+                            new Date(
+                              Date.now() -
+                                new Date().getTimezoneOffset() * 60000
+                            )
+                              .toISOString()
+                              .substr(0, 10)
+                          "
+                          min="1950-01-01"
+                        ></v-date-picker>
+                      </v-menu>
                     </v-col>
-                    <v-col cols="12" class="mt-n7">
+                    <v-col cols="12" md="6">
                       <v-text-field
+                        @click:append="checkTelephone"
+                        append-icon="mdi-phone-check"
                         v-model="cus.tel"
                         type="number"
                         outlined
-                        label="เบอร์โทร"
+                        :label="checkTelRes"
                         required
                         color="primary"
                         counter="10"
                         :rules="telRules"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" class="mt-n7">
+                  </v-row>
+                  <v-row class="justify-center align-center my-1">
+                    <v-col cols="12" md="6">
                       <v-text-field
                         v-model="cus.email"
                         outlined
@@ -389,21 +436,25 @@
                         :rules="rules"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-textarea
+                    <v-col cols="12" md="6">
+                      <v-text-field
                         v-model="cus.address"
                         color="primary"
                         outlined
                         name=""
                         label="ที่อยู่"
                         :rules="rules"
-                      ></v-textarea>
+                      ></v-text-field>
                     </v-col>
-                    <v-col cols="12">
-                      <v-btn color="primary" @click="addCus" :disabled="!valid"
-                        >บันทึก</v-btn
-                      >
-                    </v-col>
+                  </v-row>
+                  <v-row class="justify-center align-center">
+                    <v-btn
+                      color="primary"
+                      @click="addCus"
+                      :disabled="!valid"
+                      class="ma-5"
+                      >บันทึก</v-btn
+                    >
                   </v-row>
                 </v-form>
 
@@ -426,7 +477,7 @@
                     </v-card>
                   </v-dialog>
                 </v-row>
-              </v-container>
+              </div>
             </v-tab-item>
           </v-tabs-items>
         </v-card>
@@ -452,7 +503,6 @@ export default {
     "orders",
     "subtotal",
     "dialog",
-    "customers",
     "idOrder",
     "bank2",
     "statusCook",
@@ -481,6 +531,7 @@ export default {
     cusId: "",
     cusIdGuest: null,
     customers2: [],
+    customers: [],
     tab: "tab-1",
     cus: {
       _id: "",
@@ -490,7 +541,6 @@ export default {
       birthday: "",
       tel: "",
       email: "",
-      ref_level_id: "6110e00e07a98e09c472a9d0",
       address: ""
     },
     valid: true,
@@ -510,11 +560,46 @@ export default {
     bank_id: null,
     tax: 0,
     alert: false,
-    alertText: ""
-
-    //bank3: []
+    alertText: "",
+    checkTelRes: "เบอร์โทรศัพท์",
+    menu: false,
+    activePicker: null
   }),
   methods: {
+    checkTelephone() {
+      const resTel = this.customers.filter(c => c.tel === this.cus.tel);
+      //console.log(resTel);
+      if (this.cus.tel.length !== 10) {
+        this.$swal.fire({
+          type: "error",
+          title: "เบอร์โทรศัพท์ไม่ถูกต้อง",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000
+        });
+      } else {
+        if (resTel.length === 0) {
+          this.$swal.fire({
+            type: "success",
+            title: "สามารถใช้หมายเลขโทรศัพท์นี้ได้",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000
+          });
+        } else {
+          this.$swal.fire({
+            type: "warning",
+            title: "มีหมายเลขโทรศัพท์นี้ในระบบแล้ว",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000
+          });
+        }
+      }
+    },
     convertArrayToString(topping) {
       let string = "";
       topping.map(t => {
@@ -531,7 +616,11 @@ export default {
       this.$emit("closeDialog");
     },
 
-    improveCus() {
+    show() {
+      // console.log(this.customers);
+    },
+    async improveCus() {
+      this.customers = await this.$axios.$get("/customer2");
       for (let i in this.customers) {
         let cus = {
           _id: this.customers[i]._id,
@@ -549,7 +638,6 @@ export default {
         //
         this.cusIdGuest = res._id;
       }
-      console.log(this.cusId);
     },
 
     async addCus() {
@@ -558,10 +646,17 @@ export default {
       this.dialog2 = true;
       const res = await this.$axios.post("/customer", this.cus);
       if (res.status === 200) {
-        this.customers = await this.$axios.$get("/customer");
-        // มีปัญหา
         this.improveCus();
-        //
+        this.cus = {
+          _id: "",
+          pname: "",
+          fname: "",
+          lname: "",
+          birthday: "",
+          tel: "",
+          email: "",
+          address: ""
+        };
         this.error = res.data.message;
         this.dialog2 = true;
         this;
@@ -630,7 +725,7 @@ export default {
             this.alert = false;
             this.coupon_id = null;
             this.coupon = 0;
-            this.discount_type === "no";
+            this.discount_type = "no";
             this.$swal.fire({
               position: "center",
               type: "success",
@@ -691,7 +786,7 @@ export default {
             this.alert = false;
             this.coupon_id = null;
             this.coupon = 0;
-            this.discount_type === "no";
+            this.discount_type = "no";
             this.$swal.fire({
               position: "center",
               type: "success",
@@ -935,7 +1030,7 @@ export default {
       }
       WinPrint.document.write(
         `<tr><th width='1000px' align=left style='padding-right:60px'>ยอดรวมสุทธิ</th><th width='100px'>${this.formatPrice(
-          Math.round(this.thinkPrice(this.subtotal))
+          Math.round(this.thinkPrice(pay.net_price))
         )} </th><th>บาท</th></tr>`
       );
       WinPrint.document.write(

@@ -117,7 +117,6 @@
       :orders="dataFromList.orders"
       :subtotal="dataFromList.subTotal"
       @closeDialog="dialog = false"
-      :customers="customers"
       @addCus="refreshUser"
       :idOrder="dataFromList.idOrder"
       @clearOrder="clearOrder"

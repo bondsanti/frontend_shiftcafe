@@ -131,7 +131,6 @@ export default {
 
   data() {
     return {
-      listSort: [],
       list: [],
       count: 0,
       total: 0,
@@ -161,6 +160,7 @@ export default {
       }
     },
     forMonth(payments) {
+      this.list = [];
       this.count = 0;
       this.total = 0;
       this.discount = 0;

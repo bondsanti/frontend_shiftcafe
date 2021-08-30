@@ -76,10 +76,22 @@
           <v-dialog v-model="dialog" max-width="700px" persistent>
             <v-card>
               <v-card-title>
-                <span class="text-h5"
+                <span class="text-h5 mr-5"
                   ><v-icon left> mdi-ticket-percent-outline </v-icon>
                   {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
                 >
+                <v-switch
+                  v-model="productsItem.discount"
+                  color="green"
+                  class="ma-0"
+                  hide-details
+                  inset
+                  :label="
+                    productsItem.discount
+                      ? 'สามารถใช้ส่วนลดกับรายการอาหารนี้ได้'
+                      : 'ไม่สามารถใช้ส่วนลดกับรายการอาหารนี้ได้'
+                  "
+                ></v-switch>
               </v-card-title>
               <v-form v-model="valid" ref="form">
                 <v-card-text>
@@ -350,7 +362,8 @@ export default {
       ref_cate_id: " ",
       price_cost: " ",
       price: "",
-      img: ""
+      img: "",
+      discount: true
     },
     type: null,
     deleteId: null,
@@ -449,7 +462,8 @@ export default {
         ref_cate_id: item.ref_cate_id ? item.ref_cate_id._id : "",
         price_cost: item.price_cost,
         price: item.price,
-        img: item.img
+        img: item.img,
+        discount: item.discount
       };
       this.dialog = true;
     },
@@ -465,7 +479,8 @@ export default {
         ref_cate_id: " ",
         price_cost: " ",
         price: "",
-        img: ""
+        img: "",
+        discount: true
       };
       this.dialog = true;
     },
@@ -508,7 +523,7 @@ export default {
         formdata.append("ref_cate_id", this.productsItem.ref_cate_id);
         formdata.append("price_cost", this.productsItem.price_cost);
         formdata.append("price", this.productsItem.price);
-        //formdata.append("stock", this.productsItem.stock);
+        formdata.append("discount", this.productsItem.discount);
         formdata.append("img", this.preImg);
         //console.log(this.productsItem);
         //this.$emit("addProduct", formdata);
@@ -548,6 +563,7 @@ export default {
         formdata.append("ref_cate_id", this.productsItem.ref_cate_id);
         formdata.append("price_cost", this.productsItem.price_cost);
         formdata.append("price", this.productsItem.price);
+        formdata.append("discount", this.productsItem.discount);
         //formdata.append("stock", this.productsItem.stock);
         if (this.preImg !== null) {
           formdata.append("img", this.preImg);

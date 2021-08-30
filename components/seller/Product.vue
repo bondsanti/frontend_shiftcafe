@@ -120,7 +120,12 @@
             <v-icon right>mdi-content-save</v-icon>
           </v-btn>
 
-          <v-btn small color="red darken-3" class="white--text" @click="dialogTopping = false">
+          <v-btn
+            small
+            color="red darken-3"
+            class="white--text"
+            @click="dialogTopping = false"
+          >
             ปิด
             <v-icon right color="white">
               mdi-close-circle
@@ -167,9 +172,13 @@ export default {
         parseInt(this.priceMergeTopping) + parseInt(toppingPrice);
     },
     filterToppingTrue() {
-      this.filterTopping = this.product.ref_cate_id.topping.filter(
-        t => t.status === true
-      );
+      if (this.product.ref_cate_id.topping) {
+        this.filterTopping = this.product.ref_cate_id.topping.filter(
+          t => t.status === true
+        );
+      } else {
+        this.filterTopping = [];
+      }
       //console.log(this.filterTopping);
     }
   },

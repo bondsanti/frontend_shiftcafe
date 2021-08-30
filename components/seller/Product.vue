@@ -37,8 +37,9 @@
                 width="80"
                 class="rounded-circle"
               >
-                <v-img :src="$nuxt.context.env.config.IMG_URL + product.img">
-                </v-img> </v-sheet
+                <v-avatar rounded tile size="72"
+                  ><img rounded src="../../assets/icons/shopping.png"
+                /></v-avatar> </v-sheet
             ></v-col>
             <v-col cols="12" sm="8" md="8" lg="8">
               <p class=" ma-2 mt-6">
@@ -49,7 +50,7 @@
           </v-row>
         </v-card-title>
         <!-- <v-divider></v-divider> -->
-        <!-- <v-sheet class="pl-7 ">
+        <v-sheet class="ml-7 mb-7 ">
           <v-checkbox
             class="caption"
             color="red"
@@ -59,11 +60,17 @@
             :key="top._id"
             :label="top.name"
             :value="top"
-          ></v-checkbox>
-        </v-sheet> -->
+          >
+            <template v-slot:label>
+              <h3 class="font-weight-light ">{{ top.name }}</h3>
+              <h3 class="font-weight-light ml-3">ราคา {{ top.price }}</h3>
+              <h3 class="font-weight-light ml-2">บาท</h3>
+            </template>
+          </v-checkbox>
+        </v-sheet>
         <!--  -->
 
-        <v-list>
+        <!-- <v-list>
           <v-list-item-group v-model="selected" multiple>
             <template v-for="top in filterTopping">
               <v-divider v-if="!top" :key="top._id"></v-divider>
@@ -78,8 +85,10 @@
                   <v-list-item-content>
                     <v-list-item-avatar>
                       <v-avatar rounded tile size="32"
-                        ><img rounded src="../../assets/icons/shopping.png"
-                      /></v-avatar>
+                        >
+                        <img rounded src="../../assets/icons/shopping.png"
+                      />
+                      </v-avatar>
                     </v-list-item-avatar>
                   </v-list-item-content>
 
@@ -98,7 +107,7 @@
               </v-list-item>
             </template>
           </v-list-item-group>
-        </v-list>
+        </v-list> -->
 
         <!--  -->
         <!-- <v-divider></v-divider> -->

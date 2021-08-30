@@ -5,11 +5,17 @@
         <v-card class="rounded-xl">
           <v-form>
             <v-card-title>
-              <span class="text-h"
+              <span class="text-h text-center"
                 ><v-icon left> mdi-note-text-outline </v-icon> หมายเลขออเดอร์ :
-                {{ itemBy.order_no }}<br />พนักงานที่รับออเดอร์ :
-                {{ itemBy.length !== 0 ? itemBy.ref_emp_id.fname : "" }}
-                {{ itemBy.length !== 0 ? itemBy.ref_emp_id.lname : "" }}</span
+                {{ itemBy.order_no }}
+
+                <br />
+
+                <p class="text-center">
+                  พนักงานที่รับออเดอร์ :
+                  {{ itemBy.length !== 0 ? itemBy.ref_emp_id.fname : "" }}
+                  {{ itemBy.length !== 0 ? itemBy.ref_emp_id.lname : "" }}
+                </p></span
               >
             </v-card-title>
             <v-divider class="mb-3"></v-divider>
@@ -79,9 +85,9 @@
               :headers="headers"
               :items="orderTableData"
               :search="search"
-              :items-per-page="15"
+              :items-per-page="25"
               :footer-props="{
-                'items-per-page-options': [15, 20, 30, 40, 50, -1],
+                'items-per-page-options': [ 30, 40, 50, -1],
                 prevIcon: 'mdi-chevron-left',
                 nextIcon: 'mdi-chevron-right',
                 'items-per-page-text': 'ข้อมูลหน้าต่อไป'
@@ -90,6 +96,15 @@
               :sort-desc="[true, false]"
               class="mb-n5"
             >
+              <template v-slot:[`item.No`]="{ index }">
+                {{ index + 1 }}
+              </template>
+              <template v-slot:[`item.status_cook`]="{ item }">
+                <v-chip :color="getColor2(item.status_cook)" dark small>
+                  {{ item.status_cook }}
+                </v-chip>
+              </template>
+
               <template v-slot:[`item.status`]="{ item }">
                 <v-chip :color="getColor(item.status)" dark small>
                   {{ item.status }}
@@ -131,6 +146,7 @@ export default {
       },
       itemBy: [],
       headers: [
+        { text: "ลำดับ", sortable: false, value: "No" },
         {
           text: "วัน เวลา",
           align: "start",
@@ -138,6 +154,7 @@ export default {
           value: "datetime"
         },
         { text: "ชื่อบิล", value: "bill_name" },
+        { text: "สถานะสั่งทำ", value: "status_cook" },
         { text: "สถานะ", value: "status" },
         { text: "ยอดสั่งซื้อ", value: "total_price" },
         { text: "หมายเหตุ", value: "actions", sortable: false }
@@ -151,6 +168,8 @@ export default {
         return {
           datetime: this.formatDate(item.datetime),
           bill_name: item.bill_name,
+          status_cook:
+            item.status_cook === 0 ? "ยังไม่ได้สั่งทำ" : "สั่งทำแล้ว",
           status: item.status === 0 ? "รอชำระเงิน" : "ชำระเงินแล้ว",
           total_price: item.total_price,
           actions: item
@@ -167,6 +186,11 @@ export default {
     getColor(status) {
       if (status === "รอชำระเงิน") return "#757575";
       else return "green";
+    },
+    getColor2(status) {
+      if (status === "สั่งทำแล้ว") return "#2196F3";
+      else if (status === "ยังไม่ได้สั่งทำ") return "#F44336";
+      return "primary";
     },
 
     Detail(item) {

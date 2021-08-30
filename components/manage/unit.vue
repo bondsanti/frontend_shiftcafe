@@ -60,8 +60,8 @@
           <v-dialog v-model="dialog" max-width="500px">
             <v-card class="rounded-xl">
               <v-card-title>
-                <span class="text-h5"
-                  ><v-icon left> mdi-barley </v-icon>
+                <span class="text-h5">
+                  <v-icon left> mdi-barley </v-icon>
                   {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}
                 </span>
               </v-card-title>
@@ -122,8 +122,8 @@
                 <v-btn color="info" plain class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box </v-icon
-                  >ยกเลิก</v-btn
-                >
+                  >ยกเลิก
+                </v-btn>
                 <v-btn
                   color="error"
                   plain
@@ -132,8 +132,8 @@
                 >
                   <v-icon aria-hidden="false" class="mx-4">
                     mdi-delete-forever </v-icon
-                  >ลบ</v-btn
-                >
+                  >ลบ
+                </v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -200,12 +200,26 @@ export default {
     valid: true,
     search: "",
     headers: [
-      { text: "ลำดับ", value: "No" },
-      { text: "ชื่อหม่วดหมู่", align: "start", value: "u_name" },
-      { text: "หมายเหตุ", value: "actions", sortable: false }
+      {
+        text: "ลำดับ",
+        value: "No"
+      },
+      {
+        text: "ชื่อหม่วดหมู่",
+        align: "start",
+        value: "u_name"
+      },
+      {
+        text: "หมายเหตุ",
+        value: "actions",
+        sortable: false
+      }
     ],
     editedIndex: -1,
-    units: { _id: "", u_name: "" },
+    units: {
+      _id: "",
+      u_name: ""
+    },
     type: null,
     deleteId: null,
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"]
@@ -304,7 +318,7 @@ export default {
         //   .catch(err => {
         //     console.log(err);
         //   });
-        
+
         this.$axios
           .$post("/unit/", this.units)
           .then(res => {

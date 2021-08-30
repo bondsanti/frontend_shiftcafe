@@ -46,9 +46,9 @@
         :headers="headers"
         :items="pointTableData"
         :search="search"
-        :items-per-page="10"
+        :items-per-page="25"
         :footer-props="{
-          'items-per-page-options': [10, 20, 30, 40, 50, -1],
+          'items-per-page-options': [ 30, 40, 50, -1],
           prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'

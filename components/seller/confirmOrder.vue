@@ -164,20 +164,41 @@
                     </v-col>
                   </v-row>
 
-                  <v-row class="ma-3" align="center">
-                    <!-- เปิดภาษี -->
+                  <v-card-actions>
+                    <v-btn color="orange lighten-2" text>
+                      <h2>เปิดการใช้งานภาษี</h2>
+                    </v-btn>
 
-                    <h2 class="d-flex mr-5">ภาษี</h2>
-                    <v-radio-group
-                      v-model="vat"
-                      row
-                      class="d-flex"
-                      @change="thinkPrice"
-                    >
-                      <v-radio label="ไม่บวกภาษี" value="1"></v-radio>
-                      <v-radio label="บวกภาษี" value="2"></v-radio>
-                    </v-radio-group>
-                  </v-row>
+                    <v-spacer></v-spacer>
+
+                    <v-btn icon @click="show = !show">
+                      <v-icon>{{
+                        show ? "mdi-chevron-up" : "mdi-chevron-down"
+                      }}</v-icon>
+                    </v-btn>
+                  </v-card-actions>
+
+                  <v-expand-transition>
+                    <div v-show="show">
+                      <v-divider></v-divider>
+                      <v-card-text>
+                        <!-- เปิดภาษี -->
+                        <v-row class="ma-3" align="center">
+                          <h2 class="d-flex mr-5">ภาษี</h2>
+                          <v-radio-group
+                            v-model="vat"
+                            row
+                            class="d-flex"
+                            @change="thinkPrice"
+                          >
+                            <v-radio label="ไม่บวกภาษี" value="1"></v-radio>
+                            <v-radio label="บวกภาษี" value="2"></v-radio>
+                          </v-radio-group>
+                        </v-row>
+                      </v-card-text>
+                    </div>
+                  </v-expand-transition>
+
                   <v-row>
                     <v-col>
                       <v-btn
@@ -426,6 +447,7 @@ export default {
   components: {
     Calculator
   },
+    show: "",
   props: [
     "orders",
     "subtotal",
@@ -440,6 +462,8 @@ export default {
     "printOrder"
   ],
   data: () => ({
+
+    show: false,
     items: ["นาย", "นาง", "น.ส.", "ด.ช.", "ด.ญ"],
     items2: [
       { value: 0, name: "0 %" },
@@ -506,9 +530,7 @@ export default {
     closeDialog() {
       this.$emit("closeDialog");
     },
-    show() {
-      // console.log(this.customers);
-    },
+
     improveCus() {
       for (let i in this.customers) {
         let cus = {

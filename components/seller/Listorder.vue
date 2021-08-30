@@ -148,7 +148,9 @@
                 width="80"
                 class="rounded-circle  "
               >
-                <v-img src="/clipboard.png"></v-img>
+                <v-avatar rounded tile size="72"
+                  ><v-img src="/clipboard.png"></v-img
+                ></v-avatar>
               </v-sheet>
             </v-col>
             <v-col cols="12" sm="8" md="8" lg="8">
@@ -156,22 +158,31 @@
             </v-col>
           </v-row>
         </v-card-title>
-        <!-- <v-sheet class="pl-7 pr-7 pt-7">
+        <v-sheet class="ml-7 mr-7 mt-7">
           <v-checkbox
             @click="thinkPriceTopping"
             v-model="selected"
             v-for="top in productTopping.topping"
             :key="top._id"
+            color="red"
             :label="top.name"
             :value="top"
-          ></v-checkbox>
+          >
+            <template v-slot:label>
+              <h3 class="font-weight-light ">{{ top.name }}</h3>
+              <h3 class="font-weight-light ml-3">ราคา {{ top.price }}</h3>
+              <h3 class="font-weight-light ml-2">บาท</h3>
+            </template></v-checkbox
+          >
           <v-text-field
-            solo
+            class="mx-2 mt-2"
+            prepend-inner-icon="mdi-tooltip-text-outline"
             label="รายละเอียดเพิ่มเติม"
             v-model="detailTopping"
+            rounded
           ></v-text-field>
-        </v-sheet> -->
-        <v-list>
+        </v-sheet>
+        <!-- <v-list>
           <v-list-item-group v-model="selected" multiple>
             <template v-for="top in productTopping.topping">
               <v-divider v-if="!top" :key="top._id"></v-divider>
@@ -206,14 +217,7 @@
               </v-list-item>
             </template>
           </v-list-item-group>
-        </v-list>
-        <v-text-field
-          class="mx-2 mt-2"
-          prepend-inner-icon="mdi-tooltip-text-outline"
-          label="รายละเอียดเพิ่มเติม"
-          v-model="detailTopping"
-          rounded
-        ></v-text-field>
+        </v-list> -->
 
         <v-card-actions>
           <h3 class="subheading text-uppercase pl-2 mb-4">

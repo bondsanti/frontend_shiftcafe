@@ -13,7 +13,7 @@ export default {
   head() {
     return {
       titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
-      title: "จัดการข้อมูลลูกค้า",
+      title: "สมัครสมาชิก",
       meta: [
         {
           hid: "description",

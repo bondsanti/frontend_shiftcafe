@@ -5,20 +5,20 @@
         <v-card class="rounded-xl" id="printable">
           <v-form>
             <v-card-title>
-              <span class="text-h-6"
-                ><v-icon left> mdi-note-text-outline </v-icon>
-                หมายเลขใบเสร็จรับเงิน : {{ itemBy.invoice }}</span
-              >
+              <span class="text-h-6">
+                <v-icon left> mdi-note-text-outline </v-icon>
+                หมายเลขใบเสร็จรับเงิน : {{ itemBy.invoice }}
+              </span>
             </v-card-title>
             <v-divider class="mb-3"></v-divider>
             <v-card-text>
               <v-row v-for="(de, i) in detailArr" :key="i">
-                <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center"
-                  ><h4>{{ de.name }}</h4></v-col
-                >
-                <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center"
-                  ><h4>{{ de.value }}</h4></v-col
-                >
+                <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center">
+                  <h4>{{ de.name }}</h4>
+                </v-col>
+                <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center">
+                  <h4>{{ de.value }}</h4>
+                </v-col>
               </v-row>
             </v-card-text>
             <v-divider class="mt-3"></v-divider>
@@ -59,9 +59,9 @@
               :headers="headers"
               :items="invoiceTableData"
               :search="search"
-              :items-per-page="15"
+              :items-per-page="40"
               :footer-props="{
-                'items-per-page-options': [15, 20, 30, 40, 50, -1],
+                'items-per-page-options': [40, 50, 60, -1],
                 prevIcon: 'mdi-chevron-left',
                 nextIcon: 'mdi-chevron-right',
                 'items-per-page-text': 'ข้อมูลหน้าต่อไป'
@@ -71,6 +71,9 @@
               :custom-sort="customSort"
               class="mb-n5"
             >
+              <template v-slot:[`item.No`]="{ index }">
+                {{ index + 1 }}
+              </template>
               <template v-slot:[`item.type_payment`]="{ item }">
                 <v-chip :color="getColor(item.type_payment)" dark small>
                   {{ item.type_payment }}
@@ -157,9 +160,8 @@
             class="ma-2  rounded-xl"
             @click="dialogDelete = false"
           >
-            <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon
-            >ปิด</v-btn
-          >
+            <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon>ปิด
+          </v-btn>
           <v-btn color="red" class="ma-2  rounded-xl" @click="manageBill" dark>
             <v-icon aria-hidden="false"
               >{{
@@ -167,10 +169,8 @@
                   ? "mdi-delete-forever"
                   : "mdi-newspaper-variant-outline"
               }} </v-icon
-            >{{
-              typePayment === "disable" ? "ยกเลิกบิล" : "เปิดการใช้งานบิล"
-            }}</v-btn
-          >
+            >{{ typePayment === "disable" ? "ยกเลิกบิล" : "เปิดการใช้งานบิล" }}
+          </v-btn>
           <v-spacer></v-spacer>
         </v-card-actions>
       </v-card>
@@ -187,6 +187,10 @@ export default {
 
       itemBy: {},
       headers: [
+        {
+          text: "ลำดับ",
+          value: "No"
+        },
         {
           text: "วัน เวลา",
           align: "start",
@@ -223,7 +227,12 @@ export default {
           sortable: false,
           value: "withdraw_money"
         },
-        { text: "สถานะ", align: "start", sortable: false, value: "status" },
+        {
+          text: "สถานะ",
+          align: "start",
+          sortable: false,
+          value: "status"
+        },
         {
           text: "หมายเหตุ",
           align: "start",
@@ -462,7 +471,10 @@ export default {
 
       window.print(); //(2
 
-      this.$router.go({ path: this.$router.currentRoute.path, force: true }); //(3
+      this.$router.go({
+        path: this.$router.currentRoute.path,
+        force: true
+      }); //(3
     },
     async printInvoice() {
       //console.log(window.location.href);

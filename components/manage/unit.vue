@@ -37,6 +37,7 @@
 
       <v-data-table
         :headers="headers"
+        multi-sort
         :items="unit"
         :search="search"
         :items-per-page="15"

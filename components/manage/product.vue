@@ -50,6 +50,7 @@
       <v-data-table
         :headers="headers"
         :items="product"
+        multi-sort
         :search="search"
         :items-per-page="20"
         :footer-props="{
@@ -342,7 +343,7 @@ export default {
     sortBy: "ชื่อ",
     sortDesc: false,
     headers: [
-      { text: "ลำดับ", sortable: true, value: "No" },
+      { text: "ลำดับ", sortable: false, value: "No" },
       { text: "ภาพ", sortable: true, value: "img" },
       { text: "ชื่อสินค้า", sortable: true, value: "product_name" },
       { text: "ประเภท", sortable: true, value: "ref_uid.u_name" },

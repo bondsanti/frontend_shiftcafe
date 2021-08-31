@@ -616,9 +616,9 @@ export default {
       this.$emit("closeDialog");
     },
 
-    show() {
-      // console.log(this.customers);
-    },
+    // show() {
+    //   // console.log(this.customers);
+    // },
     async improveCus() {
       this.customers = await this.$axios.$get("/customer2");
       for (let i in this.customers) {
@@ -752,7 +752,7 @@ export default {
           list_product: this.orders,
           type_order: this.type_order,
           total_price: this.subtotal,
-          bill_name: "จ่ายเงินสดตอนนี้"
+          bill_name: "จ่ายเงินเลย"
         };
         //const order = await this.$axios.$post("/order", newOrder);
         //console.log(order.data);

@@ -586,7 +586,9 @@ export default {
     photo(item) {
       this.result.img = null;
       this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
-      this.levelmemberitme = { img: item.img };
+      this.levelmemberitme = {
+        img: item.img
+      };
       this.dialogPhoto = true;
     },
     // แก้ไข

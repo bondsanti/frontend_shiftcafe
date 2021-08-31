@@ -48,7 +48,7 @@
         :search="search"
         :items-per-page="25"
         :footer-props="{
-          'items-per-page-options': [ 30, 40, 50, -1],
+          'items-per-page-options': [30, 40, 50, -1],
           prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
@@ -182,6 +182,11 @@ export default {
         text: "ลำดับ",
         value: "No"
       },
+
+      {
+        text: "วันทีเพิ่มลดแต้ม",
+        value: "datetime"
+      },
       {
         text: "ชื่อลูกค้าที่ถูกจัดการ",
         value: "ref_cus_id"
@@ -198,12 +203,8 @@ export default {
       {
         text: "สถานะ",
         value: "status"
-      },
-
-      {
-        text: "วันทีเพิ่มลดแต้ม",
-        value: "datetime"
       }
+
       //   { text: "Actions", value: "actions", sortable: false }
     ],
     cusId: null,
@@ -217,9 +218,7 @@ export default {
     pointTableData() {
       return this.pointmanage.map(item => {
         return {
-          ref_cus_id: `${item.ref_cus_id ? item.ref_cus_id.pname : ""} ${
-            item.ref_cus_id ? item.ref_cus_id.fname : ""
-          } ${item.ref_cus_id ? item.ref_cus_id.lname : ""}`,
+          ref_cus_id: `${item.ref_cus_id ? item.ref_cus_id.pname : ""} ${ item.ref_cus_id ? item.ref_cus_id.fname : "" } ${item.ref_cus_id ? item.ref_cus_id.lname : ""}`,
           ref_emp_id: `${item.ref_emp_id.fname} ${item.ref_emp_id.lname}`,
           point: item.point,
           status: item.status === "plus" ? "เพิ่ม" : "ลบ",

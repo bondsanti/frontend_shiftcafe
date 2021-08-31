@@ -396,6 +396,8 @@
       :customers="preConfirm.customers"
       :bank2="preConfirm.banks"
       :subtotal="preConfirm.subtotal"
+      :lodDai="preConfirm.lodDai"
+      :lodBorDai="preConfirm.lodBorDai"
       :idOrder="preConfirm.idOrder"
       :orders="preConfirm.orders"
       :couponParent="preConfirm.couponParent"
@@ -428,7 +430,9 @@ export default {
       subtotal: null,
       idOrder: null,
       status_cook: null,
-      couponParent:null
+      couponParent: null,
+      lodDai: 0,
+      lodBorDai: 0
     }
   }),
   methods: {
@@ -490,16 +494,33 @@ export default {
       });
     },
     async checkout(i) {
+      this.preConfirm.lodDai = 0;
+      this.preConfirm.lodBorDai = 0;
+      //หาราคาสินค้าที่สามารถลดได้
+      const discount = this.orderOnDatabase[i].list_product.filter(
+        o => o.discount === true
+      );
+      discount.map(d => {
+        this.preConfirm.lodDai += parseInt(d.price);
+      });
+      //หาราคาสินค้าที่สามารถลดไม่ได้
+      const noDiscount = this.orderOnDatabase[i].list_product.filter(
+        o => o.discount === false
+      );
+      noDiscount.map(n => {
+        this.preConfirm.lodBorDai += parseInt(n.price);
+      });
+
       this.preConfirm.customers = await this.$axios.$get("/customer2");
       this.preConfirm.banks = await this.$axios.$get("/bank");
-      this.preConfirm.couponParent =await this.$axios.$get("/coupon")
+      this.preConfirm.couponParent = await this.$axios.$get("/coupon");
       this.preConfirm.subtotal = this.orderOnDatabase[i].total_price;
       this.preConfirm.idOrder = this.orderOnDatabase[i]._id;
       this.preConfirm.orders = this.orderOnDatabase[i].list_product;
       this.preConfirm.status_cook = this.orderOnDatabase[i].status_cook;
       this.$refs.childRef.improveCus();
       this.dialog = true;
-      //console.log(this.preConfirm.customers);
+      //console.log(this.preConfirm);
     },
     async closeDialog_cook() {
       this.$emit("refreshUser");

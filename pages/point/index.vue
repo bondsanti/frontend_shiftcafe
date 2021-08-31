@@ -50,7 +50,7 @@
                   class="mb-n5"
                 >
                   <template v-slot:[`item.datetime`]="{ item }">
-                    <span>{{ item.datetime | moment }}</span>
+                    <span>{{ formatDate(item.datetime) }}</span>
                   </template>
                   <template v-slot:[`item.point_by`]="{ item }">
                     <v-chip :color="getForm(item.point_by)" dark small>
@@ -94,6 +94,11 @@ export default {
     };
   },
   methods: {
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY H:mm");
+    },
     formatPrice(point) {
       const value = parseInt(point);
       let val = (value / 1).toFixed(0).replace(",", ".");
@@ -124,18 +129,36 @@ export default {
     const loadPoint = await context.$axios.$get(
       "/point-manage/customer/" + context.$auth.user._id
     );
-
-    const data = await context.$axios.$get(
-      "/payment/customer/" + context.$auth.user._id
-    );
+    let dataMember = [];
     let totalprice = 0;
-    for (let key in data) {
-      totalprice += data[key].net_price;
-    }
-    let target_price = loadData.ref_level_id.target_price;
-
     let Sumtotal = 0;
-    Sumtotal = (totalprice / target_price) * 100;
+    if (loadData.ref_level_id) {
+      //เรียงจากน้อยไปมาก เรียงตาม target_price
+      const dataMem = dataMember.sort(
+        (a, b) => a.target_price - b.target_price
+      );
+      //หา target ใหม่เพื่อเปลี่ยนระดับสมาชิด
+      const newTarget = dataMem.find(
+        d => loadData.ref_level_id.target_price < d.target_price
+      );
+      //console.log(newTarget);
+      //นำ target_price ใหม่ที่ได้ไปเปลี่ยนอันเก่า
+      loadData.ref_level_id.target_price = newTarget
+        ? newTarget.target_price
+        : 1000000;
+      const data = await context.$axios.$get(
+        "/payment/customer/" + context.$auth.user._id
+      );
+      for (let key in data) {
+        totalprice += data[key].net_price;
+      }
+      let target_price = loadData.ref_level_id.target_price;
+
+      Sumtotal = (totalprice / target_price) * 100;
+    } else {
+      Sumtotal = 0;
+      totalprice = 0;
+    }
     //console.log(loadPoint);
     //console.log(context.$auth.user);
     return { loadData, loadPoint, totalprice, Sumtotal };

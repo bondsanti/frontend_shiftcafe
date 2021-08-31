@@ -140,17 +140,36 @@ export default {
     const loadData = await context.$axios.$get(
       "/customer/" + context.$auth.user._id
     );
-    const data = await context.$axios.$get(
-      "/payment/customer/" + context.$auth.user._id
-    );
+    let dataMember = [];
     let totalprice = 0;
-    for (let key in data) {
-      totalprice += data[key].net_price;
-    }
-    let target_price = loadData.ref_level_id.target_price;
-
     let Sumtotal = 0;
-    Sumtotal = (totalprice / target_price) * 100;
+    if (loadData.ref_level_id) {
+      //เรียงจากน้อยไปมาก เรียงตาม target_price
+      const dataMem = dataMember.sort(
+        (a, b) => a.target_price - b.target_price
+      );
+      //หา target ใหม่เพื่อเปลี่ยนระดับสมาชิด
+      const newTarget = dataMem.find(
+        d => loadData.ref_level_id.target_price < d.target_price
+      );
+      //console.log(newTarget);
+      //นำ target_price ใหม่ที่ได้ไปเปลี่ยนอันเก่า
+      loadData.ref_level_id.target_price = newTarget
+        ? newTarget.target_price
+        : 1000000;
+      const data = await context.$axios.$get(
+        "/payment/customer/" + context.$auth.user._id
+      );
+      for (let key in data) {
+        totalprice += data[key].net_price;
+      }
+      let target_price = loadData.ref_level_id.target_price;
+
+      Sumtotal = (totalprice / target_price) * 100;
+    } else {
+      Sumtotal = 0;
+      totalprice = 0;
+    }
     //console.log(loadData);
     //console.log(context.$auth.user);
     return { loadData, totalprice, Sumtotal };

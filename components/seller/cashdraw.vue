@@ -189,6 +189,7 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
+        multi-sort
         :items="cashTableData"
         :search="search"
         :items-per-page="15"
@@ -307,12 +308,12 @@ export default {
       items: ["นำเงินเข้า", "นำเงินออก"],
       headers: [
         { text: "ลำดับ", sortable: false, value: "no" },
-        { text: "วันที่", align: "start", sortable: false, value: "datetime" },
+        { text: "วันที่", align: "start", sortable: true, value: "datetime" },
         { text: "ผู้ทำการบันทึก", value: "ref_emp_id" },
         { text: "ประเภท", value: "type" },
         { text: "จำนวนเงิน", value: "total_money" },
         { text: "หมายเหตุ", value: "remark" },
-        { text: "หมายเหตุ", value: "actions" }
+        { text: "หมายเหตุ", value: "actions", sortable: false }
       ]
     };
   },

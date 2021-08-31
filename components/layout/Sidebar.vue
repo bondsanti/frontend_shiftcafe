@@ -101,6 +101,11 @@ export default {
           icon: "mdi-cog ",
           title: "ตั้งค่า",
           to: "/manage/settings"
+        },
+         {
+          icon: "mdi-folder-clock-outline",
+          title: "บันทึกกิจกรรม",
+          to: "/manage/log"
         }
       ],
 
@@ -167,6 +172,7 @@ export default {
 
           to: "/manage/invoice"
         }
+
       ],
       miniVariant: false,
       title: "admin"

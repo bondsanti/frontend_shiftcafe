@@ -257,7 +257,8 @@ export default {
     // can be lowered with dense property.
     selectedItem: 1,
     //
-
+    loddai: 0,
+    lodBorDai: 0,
     orders: [],
     subTotal: 0,
     bill_name: null,
@@ -373,18 +374,34 @@ export default {
       const confirmObj = {
         orders: this.orders,
         subTotal: this.subTotal,
-        idOrder: this.idForEditOrder
+        idOrder: this.idForEditOrder,
+        lodDai: this.loddai,
+        lodBorDai: this.lodBorDai
       };
       this.$emit("openDialog", confirmObj);
       this.idForEditOrder = null;
     },
     totalPrice() {
       let subTotal = 0;
+      this.lodBorDai = 0;
+      this.loddai = 0;
+      //หาราคาสินค้าที่สามารถลดได้
+      const discount = this.orders.filter(o => o.discount === true);
+      discount.map(d => {
+        this.loddai += parseInt(d.price);
+      });
+      //หาราคาสินค้าที่สามารถลดไม่ได้
+      const noDiscount = this.orders.filter(o => o.discount === false);
+      noDiscount.map(n => {
+        this.lodBorDai += parseInt(n.price);
+      });
+
       for (let j in this.orders) {
         subTotal = subTotal + parseInt(this.orders[j].price);
       }
 
       this.subTotal = subTotal;
+      // console.log(this.loddai + " || " + this.lodBorDai);
     },
     formatPrice(value2) {
       const value = parseInt(value2);
@@ -452,7 +469,8 @@ export default {
         price: parseInt(this.product2[i].price) + parseInt(toppingPrice),
         topping: topping,
         normal_price: this.product2[i].price,
-        detail: ""
+        detail: "",
+        discount: this.product2[i].discount
       };
 
       for (let i in this.orders) {
@@ -475,6 +493,7 @@ export default {
       }
       this.orders.push(orderObj);
       setTimeout(this.totalPrice, 300);
+      //console.log(this.orders);
     },
     deleteOrder(i) {
       this.orders.splice(i, 1);

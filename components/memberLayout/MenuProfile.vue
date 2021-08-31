@@ -3,7 +3,11 @@
     <div class="text-center mb-5">
       <v-img
         height="100%"
-        :src="`${$nuxt.context.env.config.IMG_URL}${loadData.ref_level_id.img}`"
+        :src="
+          `${$nuxt.context.env.config.IMG_URL}${
+            loadData.ref_level_id ? loadData.ref_level_id.img : 'logo.ico'
+          }`
+        "
       >
         <v-row align="end">
           <v-col align-self="start" class="pa-6" cols="3">
@@ -35,7 +39,9 @@
             <!-- <strong>{{ formatPrice(Sumtotal) }}%</strong> -->
             <strong
               >{{ formatPrice(totalprice) }}/{{
-                formatPrice(loadData.ref_level_id.target_price)
+                formatPrice(
+                  loadData.ref_level_id ? loadData.ref_level_id.target_price : 0
+                )
               }}</strong
             >
           </v-progress-linear>
@@ -59,7 +65,10 @@
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
+              <v-list-item-title
+                v-text="item.text"
+                class="pa-2"
+              ></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>

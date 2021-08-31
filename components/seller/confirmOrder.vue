@@ -165,7 +165,7 @@
                   </v-row>
 
                   <v-card-actions>
-                    <v-btn color="orange lighten-2" text>
+                    <v-btn color="orange lighten-2" text @click="show = !show">
                       <h2>เปิดการใช้งานภาษี</h2>
                     </v-btn>
 
@@ -312,7 +312,7 @@
                   </v-row>
                   <v-row class="justify-space-between ma-1 mx-16">
                     <h2>ราคาสุทธิ</h2>
-                    <h2>{{ formatPrice(thinkPrice(subtotal)) }} บาท</h2>
+                    <h2>{{ formatPrice(thinkPrice()) }} บาท</h2>
                   </v-row>
                 </v-col>
               </div>
@@ -485,7 +485,7 @@
     </v-row>
     <Calculator
       :checkout="checkout"
-      :netPrice="thinkPrice(subtotal)"
+      :netPrice="thinkPrice()"
       @closeCheckout="checkout = false"
       @save="save"
       @print="print"
@@ -498,7 +498,6 @@ export default {
   components: {
     Calculator
   },
-    show: "",
   props: [
     "orders",
     "subtotal",
@@ -509,10 +508,11 @@ export default {
     "couponParent",
     "unit",
     "products",
-    "printOrder"
+    "printOrder",
+    "lodDai",
+    "lodBorDai"
   ],
   data: () => ({
-
     show: false,
     items: ["นาย", "นาง", "น.ส.", "ด.ช.", "ด.ญ"],
     items2: [
@@ -616,9 +616,9 @@ export default {
       this.$emit("closeDialog");
     },
 
-    show() {
-      // console.log(this.customers);
-    },
+    // show() {
+    //   // console.log(this.customers);
+    // },
     async improveCus() {
       this.customers = await this.$axios.$get("/customer2");
       for (let i in this.customers) {
@@ -671,18 +671,23 @@ export default {
       let val = (value / 1).toFixed(2).replace(",", ".");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
+    //คิดเงิน
     thinkPrice() {
+      // console.log(this.lodBorDai);
+      // console.log(this.lodDai);
       if (this.cus_type === "member" || this.discount_type === "coupong") {
         if (this.vat === "1") {
           this.tax = 0;
-          return Math.round(
-            this.subtotal - (this.subtotal * this.coupon) / 100
-          );
+          let discount = Math.round((this.lodDai * this.coupon) / 100);
+          let afterDiscount = this.lodDai - discount + this.lodBorDai;
+          return afterDiscount;
         } else {
           this.tax = 7;
-          let discount = this.subtotal - (this.subtotal * this.coupon) / 100;
-          let net = (discount * this.tax) / 100 + discount;
-          return Math.round(net);
+          let discount = Math.round((this.lodDai * this.coupon) / 100);
+          let afterDiscount = this.lodDai - discount + this.lodBorDai;
+          let vat = Math.round((afterDiscount * this.tax) / 100);
+          let afterVat = Math.round(afterDiscount + vat);
+          return afterVat;
         }
       } else {
         if (this.vat === "1") {
@@ -876,8 +881,8 @@ export default {
       //console.log(selectCoupon);
     },
     checkTypePayment() {
-      let discount = Math.round((this.subtotal * this.coupon) / 100);
-      let afterDiscount = Math.round(this.subtotal - discount);
+      let discount = Math.round((this.lodDai * this.coupon) / 100);
+      let afterDiscount = this.lodDai - discount + this.lodBorDai;
       let vat = Math.round((afterDiscount * this.tax) / 100);
       let afterVat = Math.round(afterDiscount + vat);
       if (this.bank === "cash") {
@@ -892,7 +897,7 @@ export default {
           after_discount: afterDiscount,
           vat_price: vat,
           after_vat: afterVat,
-          net_price: Math.round(this.thinkPrice(this.subtotal))
+          net_price: this.thinkPrice()
         };
         return newPayment1;
       } else {
@@ -908,7 +913,7 @@ export default {
           after_discount: afterDiscount,
           vat_price: vat,
           after_vat: afterVat,
-          net_price: Math.round(this.thinkPrice(this.subtotal))
+          net_price: this.thinkPrice()
         };
         return newPayment2;
       }
@@ -1202,6 +1207,7 @@ export default {
   created() {
     this.improveCus();
     this.cusId = this.cusIdGuest;
+
     //this.improveBank();
   }
 };

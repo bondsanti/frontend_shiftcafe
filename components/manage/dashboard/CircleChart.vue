@@ -34,7 +34,7 @@
         <component
           :is="apexchart"
           max-width="100"
-          height="500"
+          height="auto"
           type="bar"
           :options="chartOptions"
           :series="series"

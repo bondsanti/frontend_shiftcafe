@@ -126,24 +126,26 @@ export default {
   },
   methods: {
     // ออกจากระบบ
-    async logout() {
-      await this.$auth.logout();
-      this.$router.push("/login");
-      this.$swal.fire({
-        type: "info",
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        title: "ออกจากระบบเรียบร้อยแล้ว",
-        didOpen: toast => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        }
+    logout() {
+      this.$axios.$post("/authen/logout").then(async () => {
+        await this.$auth.logout();
+        this.$router.push("/login");
+        this.$swal.fire({
+          type: "info",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          title: "ออกจากระบบเรียบร้อยแล้ว",
+          didOpen: toast => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          }
+        });
       });
     },
-    // 
+    //
     checkStaff() {
       if (this.$store.getters["position"] === "staff") {
         this.items = [

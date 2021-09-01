@@ -882,7 +882,7 @@ export default {
       { text: "ชื่อ", align: "start", value: "fname" },
       { text: "นามสกุล", align: "start", value: "lname" },
       // { text: "ภาพ", sortable: false, value: "img" },
-      { text: "ไอดีใช้เข้าระบบ", align: "start", value: "username"},
+      { text: "ไอดีใช้เข้าระบบ", align: "start", value: "username" },
       { text: "ตำแหน่ง", align: "start", value: "ref_id_role.position" },
       //{ text: "เลขบัตรประชาชน", align: "start", value: "idcard" },
       // { text: "นามสกุล", align: "start", value: "lname"},
@@ -1029,10 +1029,11 @@ export default {
       this.$axios
         .post("/authen/verify-otp", {
           verify: this.otpToken,
-          code: this.otpCode
+          code: this.otpCode,
+          emp_spoof: this.itemForRight
         })
         .then(res => {
-          console.log(res);
+          //console.log(res);
           if (res.status === 200) {
             this.otpResult = {
               icon: "mdi-lock-open-check",
@@ -1164,7 +1165,7 @@ export default {
         });
       });
       this.dialogManager = true;
-      //console.log(this.manager);
+      //console.log(this.itemForRight);
     },
     moment2(date) {
       this.$moment().format("LLLL");

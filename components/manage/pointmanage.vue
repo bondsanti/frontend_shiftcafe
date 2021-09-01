@@ -47,6 +47,8 @@
         :items="pointTableData"
         :search="search"
         :items-per-page="25"
+        :sort-by="['datetime']"
+        :sort-desc="[true, false]"
         :footer-props="{
           'items-per-page-options': [30, 40, 50, -1],
           prevIcon: 'mdi-chevron-left',
@@ -218,7 +220,9 @@ export default {
     pointTableData() {
       return this.pointmanage.map(item => {
         return {
-          ref_cus_id: `${item.ref_cus_id ? item.ref_cus_id.pname : ""} ${ item.ref_cus_id ? item.ref_cus_id.fname : "" } ${item.ref_cus_id ? item.ref_cus_id.lname : ""}`,
+          ref_cus_id: `${item.ref_cus_id ? item.ref_cus_id.pname : ""} ${
+            item.ref_cus_id ? item.ref_cus_id.fname : ""
+          } ${item.ref_cus_id ? item.ref_cus_id.lname : ""}`,
           ref_emp_id: `${item.ref_emp_id.fname} ${item.ref_emp_id.lname}`,
           point: item.point,
           status: item.status === "plus" ? "เพิ่ม" : "ลบ",

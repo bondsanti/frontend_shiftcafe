@@ -514,7 +514,7 @@ export default {
   ],
   data: () => ({
     show: false,
-    items: ["นาย", "นาง", "น.ส.", "ด.ช.", "ด.ญ"],
+    items: ["นาย", "นาง", "นางสาว", "ด.ช.", "ด.ญ"],
     items2: [
       { value: 0, name: "0 %" },
       { value: 3, name: "3 %" },

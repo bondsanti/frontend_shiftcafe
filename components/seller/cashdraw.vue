@@ -18,10 +18,10 @@
           <v-card class="rounded-xl ">
             <v-form>
               <v-card-title>
-                <span class="text-h"
-                  ><v-icon left> mdi-cash-register </v-icon>
-                  กรอกข้อมูลเงินทอน</span
-                >
+                <span class="text-h">
+                  <v-icon left> mdi-cash-register </v-icon>
+                  กรอกข้อมูลเงินทอน
+                </span>
                 <v-btn text color="error" class="mr-4" @click="reset">
                   รีเซ็ตแบบฟอร์ม
                 </v-btn>
@@ -126,9 +126,9 @@
           <v-card class="rounded-xl">
             <v-form>
               <v-card-title>
-                <span class="text-h"
-                  ><v-icon left> mdi-cash-register </v-icon> แก้ไขข้อมูล</span
-                >
+                <span class="text-h">
+                  <v-icon left> mdi-cash-register </v-icon> แก้ไขข้อมูล
+                </span>
                 <v-btn text color="error" class="mr-4" @click="reset">
                   รีเซ็ตแบบฟอร์ม
                 </v-btn>
@@ -191,6 +191,8 @@
         :headers="headers"
         multi-sort
         :items="cashTableData"
+        :sort-by="['datetime']"
+        :sort-desc="[true, false]"
         :search="search"
         :items-per-page="15"
         :footer-props="{
@@ -212,8 +214,8 @@
                 <v-btn plain color="info" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx- ma-1">
                     mdi-close-box </v-icon
-                  >ยกเลิก</v-btn
-                >
+                  >ยกเลิก
+                </v-btn>
                 <v-btn
                   plain
                   color="error"
@@ -222,8 +224,8 @@
                 >
                   <v-icon aria-hidden="false" class="mx-4">
                     mdi-delete-forever </v-icon
-                  >ลบ</v-btn
-                >
+                  >ลบ
+                </v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -307,13 +309,36 @@ export default {
       },
       items: ["นำเงินเข้า", "นำเงินออก"],
       headers: [
-        { text: "ลำดับ", sortable: false, value: "no" },
-        { text: "วันที่", align: "start", sortable: true, value: "datetime" },
-        { text: "ผู้ทำการบันทึก", value: "ref_emp_id" },
-        { text: "ประเภท", value: "type" },
-        { text: "จำนวนเงิน", value: "total_money" },
-        { text: "หมายเหตุ", value: "remark" },
-        { text: "หมายเหตุ", value: "actions", sortable: false }
+        {
+          text: "ลำดับ",
+          sortable: false,
+          value: "no"
+        },
+        {
+          text: "วันที่",
+          value: "datetime"
+        },
+        {
+          text: "ผู้ทำการบันทึก",
+          value: "ref_emp_id"
+        },
+        {
+          text: "ประเภท",
+          value: "type"
+        },
+        {
+          text: "จำนวนเงิน",
+          value: "total_money"
+        },
+        {
+          text: "หมายเหตุ",
+          value: "remark"
+        },
+        {
+          text: "หมายเหตุ",
+          value: "actions",
+          sortable: false
+        }
       ]
     };
   },
@@ -454,7 +479,7 @@ export default {
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
-      return this.$moment(strdate).format("D MMMM YYYY ");
+      return this.$moment(strdate).format("วันที่ DD MMMM YYYY ");
     }
   },
 

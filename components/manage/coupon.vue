@@ -71,6 +71,7 @@
         :items="coupon"
         :search="search"
         :items-per-page="10"
+        :sort-by="['codename']"
         :footer-props="{
           'items-per-page-options': [10, 20, 30, 40, 50, -1],
           prevIcon: 'mdi-chevron-left',
@@ -678,7 +679,6 @@ export default {
       },
       {
         text: "ชื่อคูปอง",
-        align: "start",
         value: "codename"
       },
       // {

@@ -43,7 +43,6 @@ Material Design Icons : [https://pictogrammers.github.io/@mdi/font/5.0.45/](http
 
    ```
 
-## ---> ค้นห้า เปิดภาษี
 
 ## Social Media 🌍
 

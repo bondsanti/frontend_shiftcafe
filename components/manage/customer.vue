@@ -50,7 +50,11 @@
             <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details elevation="24" class="rounded-xl" solo></v-text-field>
         </v-card-title>
 
-        <v-data-table :headers="headers" :items="customer" :search="search" multi-sort :items-per-page="15" :footer-props="{
+        <v-data-table :headers="headers" :items="customer" 
+        :sort-desc="[true, false]"
+        
+         :sort-by="['datetime']"
+        :search="search" multi-sort :items-per-page="15" :footer-props="{
           'items-per-page-options': [15, 20, 30, 40, 50, -1],
 
           prevIcon: 'mdi-chevron-left',
@@ -409,7 +413,7 @@ export default {
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valid: true,
     search: "",
-    pnamesec: ["นาย", "นาง", "นางสาว"],
+    pnamesec: ["นาย", "นาง", "นางสาว", "ด.ช.", "ด.ญ"],
     level: [],
     headers: [
       {

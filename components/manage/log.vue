@@ -26,6 +26,7 @@
         multi-sort
         :items="LogTableData"
         :search="search"
+        :sort-by="['datetime']"
         :items-per-page="30"
         :footer-props="{
           'items-per-page-options': [30, 40, 50, -1],

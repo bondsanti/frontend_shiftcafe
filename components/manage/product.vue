@@ -59,6 +59,7 @@
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
         }"
+        :sort-by="['product_name']"
       >
         >
         <template v-slot:[`item.img`]="{ item }">

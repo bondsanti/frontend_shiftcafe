@@ -53,9 +53,9 @@
           border="left"
           class="text-center"
         >
-          โปรดตวรจสอบหน่วยนับให้ดีก่อนลบประเภทอหารที่ใช้อยู่
+          หน้านี้เป็นการเก็บเหตุการณ์ทั้งหมดในเว็บไซต์
           <q class="font-weight-black ">
-            ระบบจะมีปัญหาได้
+            ระบบจะบันทึกกิจกรรมทุกอย่าง
           </q>
         </v-alert>
       </v-card-text>
@@ -80,7 +80,7 @@ export default {
         value: "datetime"
       },
       {
-        text: "",
+        text: "บุคคลที่ดำเนินการ",
         align: "start",
         value: "emp_id"
       },

@@ -102,7 +102,7 @@ export default {
           title: "ตั้งค่า",
           to: "/manage/settings"
         },
-         {
+        {
           icon: "mdi-folder-clock-outline",
           title: "บันทึกกิจกรรม",
           to: "/manage/log"
@@ -172,28 +172,29 @@ export default {
 
           to: "/manage/invoice"
         }
-
       ],
       miniVariant: false,
       title: "admin"
     };
   },
   methods: {
-    async logout() {
-      await this.$auth.logout();
-      this.$router.push("/login");
-      this.$swal.fire({
-        type: "info",
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        title: "ออกจากระบบเรียบร้อยแล้ว",
-        didOpen: toast => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        }
+    logout() {
+      this.$axios.$post("/authen/logout").then(async () => {
+        await this.$auth.logout();
+        this.$router.push("/login");
+        this.$swal.fire({
+          type: "info",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          title: "ออกจากระบบเรียบร้อยแล้ว",
+          didOpen: toast => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          }
+        });
       });
     },
     getTime() {

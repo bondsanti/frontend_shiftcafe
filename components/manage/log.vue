@@ -97,9 +97,14 @@ export default {
     LogTableData() {
       return this.log.map(item => {
         return {
-          emp_id: `${item.emp_id ? item.emp_id.username : ""} ${
-            item.emp_id ? item.emp_id.fname : ""
-          } ${item.emp_id ? item.emp_id.lname : ""}`,
+          // emp_id: `${item.emp_id ? item.emp_id.username : ""} ${
+          //   item.emp_id ? item.emp_id.fname : ""
+          // } ${item.emp_id ? item.emp_id.lname : ""}`,
+          emp_id: `${
+            item.emp_id
+              ? item.emp_id.fname + " " + item.emp_id.lname
+              : "ไม่พบรหัสพนักงานนี้"
+          }`,
           _id: item._id,
           datetime: this.formatDate(item.datetime),
           activity: item.activity

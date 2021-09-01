@@ -270,14 +270,14 @@ export default {
           font: "THSarabunNew"
         }
       };
-      pdfMake.createPdf(documentDefinitions).open();
-      // pdfMake
-      //   .createPdf(documentDefinitions)
-      //   .download(
-      //     this.reportType === "ประจำวัน"
-      //       ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
-      //       : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime)
-      //   );
+      //pdfMake.createPdf(documentDefinitions).open();
+      pdfMake
+        .createPdf(documentDefinitions)
+        .download(
+          this.reportType === "ประจำวัน"
+            ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
+            : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime)
+        );
     }
   },
   created() {}

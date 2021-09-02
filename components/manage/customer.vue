@@ -65,7 +65,7 @@
                 <img src="@/assets/img/photo-2.jpg" class="mt-2 mb-2 rounded-circle" aspect-ratio="1" style="width: 50px; height: 50px" />
             </template>
             <template v-slot:top>
-                <!-- add -->
+                <!--------------------------------------------------------- add -------------------------------------------------------->
                 <v-dialog v-model="dialogadd" max-width="800px">
                     <v-card class="rounded-xl">
                         <v-card-title>
@@ -74,7 +74,7 @@
                                 ลงทะเบียนลูกค้า
                             </span>
                             <v-btn text color="error" class="mr-4" @click="reset">
-                                รีเซ็ตแบบฟอร์ม
+                                รีเซ็ตแบบฟอร์มนะจ๊ะ
                             </v-btn>
                         </v-card-title>
                         <v-divider class="mb-3"></v-divider>
@@ -93,15 +93,7 @@
                                             <v-text-field v-model="customerItme.lname" clearable maxlength="25" :rules="requiredRules" label="นามสกุล" outlined required color="#1D1D1D"></v-text-field>
                                         </v-col>
 
-                                        <v-col cols="12" sm="6">
-                                            <!-- <date-picker
-                          class="my-datepicker"
-                          placeholder="วันเกิด"
-                          :rules="requiredRules"
-                          v-model="customerItme.birthday"
-                          lang="th"
-                          valueType="format"
-                        ></date-picker> -->
+                                        <v-col cols="12" sm="6">              
                                             <v-menu ref="menu" v-model="menu" :close-on-content-click="false" transition="scale-transition" offset-x min-width="auto">
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-text-field v-model="customerItme.birthday" clearable label="วันเกิด" append-icon="mdi-calendar" :rules="requiredRules" readonly v-bind="attrs" v-on="on" outlined></v-text-field>
@@ -136,20 +128,9 @@
                                         <v-col cols="12" sm="6">
                                             <v-text-field v-model="customerItme.address" clearable :rules="requiredRules" label="ที่อยู่" outlined required color="#1D1D1D"></v-text-field>
                                         </v-col>
-                                        <v-col cols="12" sm="12">
-                                            <v-select label="ระดับ" outlined color="#1D1D1D" item-text="name" item-value="_id" v-model="customerItme.ref_level_id" clearable :items="level" :rules="rules"></v-select>
-                                        </v-col>
-                                        <!-- <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="customerItme.point"
-                          type="number"
-                          label="แต้ม"
-                          outlined
-                          required
-                          disabled
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col> -->
+                                        <!-- <v-col cols="12" sm="12">
+                                          <v-select label="ระดับ" outlined color="#1D1D1D" item-text="name" item-value="_id" :disabled="$store.getters['position'] === 'cashier'" v-model="customerItme.ref_level_id" :items="level"></v-select>
+                                        </v-col>                 -->
                                     </v-row>
                                 </div>
                             </v-form>
@@ -172,7 +153,7 @@
                                 ยกเลิก
                             </v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn class="ma-1 rounded-xl" color="info" :disabled="!valid" @click="save()">
+                            <v-btn class="ma-1 rounded-xl" color="info" :disabled="!valid"  @click="save()">
                                 <v-icon aria-hidden="false" class="mx-2">
                                     mdi-content-save
                                 </v-icon>
@@ -247,19 +228,9 @@
                                             <v-text-field v-model="customerItme.address" clearable :rules="requiredRules" label="ที่อยู่" outlined required color="#1D1D1D"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="12">
-                                            <v-select label="ระดับ" outlined color="#1D1D1D" item-text="name" item-value="_id" :disabled="$store.getters['position'] === 'cashier'" v-model="customerItme.ref_level_id" :items="level" :rules="rules"></v-select>
+                                            <v-select label="ระดับ" outlined color="#1D1D1D" item-text="name" item-value="_id" :disabled="$store.getters['position'] === 'cashier'" v-model="customerItme.ref_level_id" :items="level"></v-select>
                                         </v-col>
-                                        <!-- <v-col cols="12" sm="6">
-                        <v-text-field
-                          v-model="customerItme.point"
-                          type="number"
-                          label="แต้ม"
-                          outlined
-                          required
-                          disabled
-                          color="#1D1D1D"
-                        ></v-text-field>
-                      </v-col> -->
+                   
                                     </v-row>
                                 </div>
                             </v-form>
@@ -278,7 +249,7 @@
                                 ยกเลิก
                             </v-btn>
                             <v-spacer></v-spacer>
-                            <v-btn class="ma-1 rounded-xl" color="info" :disabled="!valid" @click="save()">
+                            <v-btn class="ma-1 rounded-xl" color="info" @click="save()">
                                 <v-icon aria-hidden="false" class="mx-2">
                                     mdi-content-save
                                 </v-icon>
@@ -446,11 +417,6 @@ export default {
         sortable: true,
         value: "ref_level_id.level_name"
       },
-      // {
-      //   text: "วันเกิด",
-      //   align: "start",
-      //   value: "birthday"
-      // },
       {
         text: "วันที่อัพเดทข้อมูล",
         sortable: true,
@@ -572,7 +538,6 @@ export default {
           title: "ใช้งานได้"
         });
       }
-      //return { category };
     },
 
     editItem(item) {
@@ -603,7 +568,6 @@ export default {
         tel: "null",
         email: "",
         address: "",
-        ref_level_id: "",
         point: "0"
       };
       this.dialogadd = true;
@@ -733,8 +697,8 @@ export default {
 
     save() {
       if (this.type === "add") {
-        this.$refs.form.validate();
         this.loading = true;
+        this.$refs.form.validate();
         this.$axios
           .$post("/customer/", this.customerItme)
           .then(res => {

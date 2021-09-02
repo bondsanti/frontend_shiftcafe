@@ -305,6 +305,12 @@
           <span>{{ item.exp | moment }}</span>
         </template>
 
+        <template v-slot:[`item.discount`]="{ item }">
+          <v-chip :color="getColor(item.discount)" dark small>
+            {{ getTxt(item.discount) }}
+          </v-chip>
+        </template>
+
         <template v-slot:no-data>
           <v-btn color="primary" @click="product">
             Reset
@@ -354,6 +360,7 @@ export default {
       // { text: "สต็อก", sortable: false, value: "stock" },
       // { text: "id", sortable: false, value: "_id" },
       //{ text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
+      { text: "เข้าร่วมส่วนลด", sortable: true, value: "discount" },
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
@@ -598,6 +605,11 @@ export default {
       if (status === true) return " green";
       else if (status === false) return "red";
       else return "primary ";
+    },
+    getTxt(status) {
+      if (status === true) return "เข้า";
+      else if (status === false) return "ไม่เข้า";
+      else return "error";
     },
     improveUn() {
       for (let i in this.unit) {

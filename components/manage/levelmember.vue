@@ -673,9 +673,9 @@ export default {
     },
     // บันทึก
     save() {
-      this.$refs.form.validate();
       if (this.type === "add") {
         this.loading = true;
+        this.$refs.form.validate();
         let formdata = new FormData();
         formdata.append("level_name", this.levelmemberitme.level_name);
         formdata.append("discount", this.levelmemberitme.discount);

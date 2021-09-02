@@ -32,7 +32,7 @@
     >
       <v-card-title>
         <!-- ********************************************************************************************************************************************************************** -->
-        <v-dialog v-model="dialogadd" max-width="500px">
+        <v-dialog v-model="dialogadd" max-width="650px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               color="primary"
@@ -92,6 +92,9 @@
                   ><v-icon left>mdi-card-account-details-outline </v-icon>
                   เพิ่มข้อมูลพนักงาน</span
                 >
+                <v-btn text color="error" class="mr-4 ml-2" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
 
               <v-card-text>
@@ -316,7 +319,7 @@
           <!-- ********************************************************************************************************************************************************************** -->
 
           <!-- edi------------------------------------------------------------------ -->
-          <v-dialog v-model="dialog" max-width="600px">
+          <v-dialog v-model="dialog" max-width="650px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
@@ -547,6 +550,9 @@
                   ><v-icon left> mdi-card-account-details-outline </v-icon>
                   เปลี่ยนรหัสผ่าน</span
                 >
+                <v-btn text color="error" class="mr-4 ml-2" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
 
               <v-card-text>
@@ -1181,14 +1187,26 @@ export default {
         this.usernametrue = false;
         this.$swal({
           type: "error",
-          title: "ไม่สามารถใช้งานได้"
+          title: "ไม่สามารถใช้งานได้",
+          toast: true,
+          position: "top-end",
+          html: `Username มีผู้ใช้งานอยู่แล้ว`,
+          showConfirmButton: false,
+          timer: 10000,
+          timerProgressBar: true
         });
       } else {
         this.usernameErr = false;
         this.usernametrue = true;
         this.$swal({
           type: "success",
-          title: "ใช้งานได้"
+          title: "ใช้งานได้",
+          toast: true,
+          position: "top-end",
+          html: `สามารถใช้งาน Username นี้ได้`,
+          showConfirmButton: false,
+          timer: 10000,
+          timerProgressBar: true
         });
       }
       //return { category };

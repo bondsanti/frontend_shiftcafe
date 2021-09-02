@@ -224,6 +224,15 @@
                           color="#1D1D1D"
                         ></v-text-field>
                       </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-textarea
+                          outlined
+                          v-model="couponitem.detail"
+                          :rules="rules"
+                          clearable
+                          label="รายละเอียดส่วนลด"
+                        ></v-textarea>
+                      </v-col>
                     </v-row>
                   </div>
                 </v-card-text>
@@ -401,6 +410,15 @@
                           :items="status"
                           v-model="couponitem.status"
                         ></v-select>
+                      </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-textarea
+                          outlined
+                          v-model="couponitem.detail"
+                          :rules="rules"
+                          clearable
+                          label="รายละเอียดส่วนลด"
+                        ></v-textarea>
                       </v-col>
                     </v-row>
                   </div>
@@ -732,7 +750,8 @@ export default {
       start: "",
       end: "",
       discount: "",
-      num_use: ""
+      num_use: "",
+      detail: ""
     },
     type: null,
     deleteId: null,
@@ -814,6 +833,10 @@ export default {
         {
           name: "สถานะคูปอง",
           value: this.getTxt(item.status)
+        },
+        {
+          name: "รายละเอียดส่วนลด",
+          value: item.detail
         }
       ];
 
@@ -853,7 +876,8 @@ export default {
         start: "",
         end: "",
         discount: "",
-        num_use: ""
+        num_use: "",
+        detail: ""
       };
       this.dialog = true;
     },
@@ -868,7 +892,8 @@ export default {
         start: new Date(item.start).toISOString().substr(0, 10),
         end: new Date(item.end).toISOString().substr(0, 10),
         discount: item.discount,
-        num_use: item.num_use
+        num_use: item.num_use,
+        detail: item.detail
       };
       this.dialogedit = true;
     },

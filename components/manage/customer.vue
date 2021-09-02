@@ -73,7 +73,7 @@
                                 <v-icon left> mdi-account-plus </v-icon>
                                 ลงทะเบียนลูกค้า
                             </span>
-                            <v-btn text color="error" class="mr-4" @click="reset">
+                            <v-btn text color="error" class="mr-4 ml-3" @click="reset">
                                 รีเซ็ตแบบฟอร์มนะจ๊ะ
                             </v-btn>
                         </v-card-title>
@@ -318,7 +318,7 @@
             <template v-slot:[`item.ref_level_id.level_name`]="{ item }">
                 <v-chip :color="
               getColor(
-                item.ref_level_id ? item.ref_level_id.level_name : 'classic'
+                item.ref_level_id ? item.ref_level_id.level_name : 'no_level'
               )
             " dark small>
                     {{
@@ -528,13 +528,25 @@ export default {
         this.teltrue = false;
         this.$swal({
           type: "error",
-          title: "ไม่สามารถใช้งานได้"
+          title: "ไม่สามารถใช้งานได้",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          
+          timerProgressBar: true
         });
       } else {
         this.telErr = false;
         this.teltrue = true;
         this.$swal({
           type: "success",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
           title: "ใช้งานได้"
         });
       }
@@ -669,6 +681,10 @@ export default {
         {
           name: "แต้มสะสม",
           value: item.point
+        },
+        {
+          name: "รหัสผ่าน",
+          value: item.password
         }
       ];
 
@@ -677,10 +693,11 @@ export default {
     },
 
     getColor(status) {
-      if (status === "classic") return "brown";
-      else if (status === "silver") return "blue-grey";
-      else if (status === "gold") return "amber";
-      else if (status === "Platinnum") return "cyan";
+      if (status === "classic") return "#6D4C41";
+      else if (status === "silver") return "#546E7A";
+      else if (status === "gold") return "#f9d423";
+      else if (status === "platinum") return "#00ACC1";
+      else if (status === "no_level") return "#ff758c";
       return "black";
     },
 

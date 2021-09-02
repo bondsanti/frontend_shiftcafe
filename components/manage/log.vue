@@ -23,7 +23,7 @@
 
       <v-data-table
         :headers="headers"
-        multi-sort
+        
         :items="LogTableData"
         :search="search"
         :sort-by="['datetime']"
@@ -78,6 +78,7 @@ export default {
       },
       {
         text: "วันที่",
+        sortable: true,
         value: "datetime"
       },
       {
@@ -87,8 +88,7 @@ export default {
       },
       {
         text: "เหตุการณ์",
-        value: "activity",
-        sortable: false
+        value: "activity"
       }
     ]
   }),

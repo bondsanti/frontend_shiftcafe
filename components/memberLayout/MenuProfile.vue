@@ -11,17 +11,28 @@
       >
         <v-row align="end">
           <v-col align-self="start" class="pa-6" cols="3">
-            <v-avatar class="profile" size="100">
+            <v-avatar
+              class="profile ma-2"
+              :size="
+                $vuetify.breakpoint.xs || $vuetify.breakpoint.md ? 50 : 100
+              "
+            >
               <v-img
                 src="profile-member.png"
                 style="border: 2px solid #ffffff"
               ></v-img>
             </v-avatar>
           </v-col>
-          <v-col align-self="start" class="pa-5 mt-10 " cols="9">
-            <h4 class="award1 pa-2 text-truncate text-uppercase" outlined tile>
+          <v-col align-self="start" class="  mt-5 " cols="9">
+            <p
+              :class="
+                $vuetify.breakpoint.xs || $vuetify.breakpoint.md
+                  ? 'award1 pa-2 pl-5 text-truncate text-uppercas caption'
+                  : 'award1 pa-2 pl-10 text-truncate text-uppercas text-lg-body-1'
+              "
+            >
               {{ loadData.fname }} {{ loadData.lname }}
-            </h4>
+            </p>
           </v-col>
         </v-row>
       </v-img>
@@ -172,6 +183,13 @@ export default {
       const value = parseInt(Sumtotal);
       let val = (value / 1).toFixed(2).replace(",", ".");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+    classForText() {
+      if (this.$vuetify.breakpoint.xs || this.$vuetify.breakpoint.md) {
+        return "award1 pa-2 text-truncate text-uppercas caption";
+      } else {
+        return "award1 pa-2 text-truncate text-uppercas";
+      }
     }
   }
 };

@@ -297,6 +297,9 @@ export default {
       dataMember.push({ ...levelMember[i], show: false });
     }
 
+    const startDate = new Date(loadData.mission.start);
+    const endDate = new Date(loadData.mission.end);
+
     let totalprice = 0;
     let Sumtotal = 0;
     if (loadData.ref_level_id) {
@@ -304,7 +307,7 @@ export default {
       const dataMem = dataMember.sort(
         (a, b) => a.target_price - b.target_price
       );
-      //หา target ใหม่เพื่อเปลี่ยนระดับสมาชิด
+      //หา target ใหม่เพื่อเปลี่ยนระดับสมาชิก
       const newTarget = dataMem.find(
         d => loadData.ref_level_id.target_price < d.target_price
       );
@@ -316,7 +319,13 @@ export default {
       const data = await context.$axios.$get(
         "/payment/customer/" + context.$auth.user._id
       );
-      for (let key in data) {
+      const newData = data.filter(p => {
+        return (
+          new Date(p.datetime).getTime() >= startDate.getTime() &&
+          new Date(p.datetime).getTime() <= endDate.getTime()
+        );
+      });
+      for (let key in newData) {
         totalprice += data[key].net_price;
       }
       let target_price = loadData.ref_level_id.target_price;
@@ -326,7 +335,6 @@ export default {
       Sumtotal = 0;
       totalprice = 0;
     }
-
     //console.log(loadData);
     //console.log(context.$auth.user);
     return { loadData, totalprice, Sumtotal, dataMember };

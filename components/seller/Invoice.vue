@@ -66,9 +66,8 @@
                 nextIcon: 'mdi-chevron-right',
                 'items-per-page-text': 'ข้อมูลหน้าต่อไป'
               }"
-              :sort-by="['datetime']"
-              :sort-desc="[true, false]"
-              :custom-sort="customSort"
+              sort-by="datetime"
+              :sort-desc="true"
               class="mb-n5"
             >
               <template v-slot:[`item.No`]="{ index }">

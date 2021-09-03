@@ -493,9 +493,24 @@ export default {
       this.dialogDelete = true;
     },
     deleteItemConfirm() {
-      this.product.splice(this.editedIndex, 1);
-      this.$axios.$delete("/product/" + this.deleteId).then(() => {});
-      this.closeDelete();
+      const pro = this.listOrder.filter(l => l.ref_pro_id === this.deleteId);
+      //console.log(pro);
+      if (pro.length !== 0) {
+        this.$swal.fire({
+          type: "error",
+          title:
+            "ไม่สามารถลบสินค้านี้ได้ เพราะมีการใช้งานอยู่ที่ประวัติคำสั่งซื้อเก่าๆ"
+        });
+      } else {
+        this.$axios.$delete("/product/" + this.deleteId).then(() => {
+          this.product.splice(this.editedIndex, 1);
+          this.closeDelete();
+          this.$swal.fire({
+            type: "success",
+            title: "ลบสินค้าสำเร็จ"
+          });
+        });
+      }
     },
     close() {
       this.result.img = null;
@@ -618,10 +633,11 @@ export default {
       }
     }
   },
-  props: ["product", "unit", "category"],
+  props: ["product", "unit", "category", "list-order"],
   created() {
     this.improveUn();
     this.improveCatename();
+    //console.log(this.listOrder);
   }
 };
 </script>

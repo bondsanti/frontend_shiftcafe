@@ -274,7 +274,9 @@
                       <v-list-item-content>
                         <v-list-item-title class="d-flex flex-row ma-1 mx-16">
                           <v-col cols="6">
-                            <h3>{{ order.name }}</h3>
+                            <h3>
+                              {{ order.discount ? "" : "**" }}{{ order.name }}
+                            </h3>
                           </v-col>
                           <v-col cols="3" class="pl-16">
                             <h3>{{ order.qty }}</h3>
@@ -989,8 +991,8 @@ export default {
         WinPrint.document.write("<tr style='border-bottom: thin solid'>");
         WinPrint.document.write(
           `<td style='padding-left:20px;'>${parseInt(i) + 1}</td><td >${
-            order.list_product[i].name
-          } ${
+            order.list_product[i].discount ? "" : "**"
+          }${order.list_product[i].name} ${
             order.list_product[i].normal_price
           } บาท</td><td style='padding-left:20px;'>${
             order.list_product[i].qty
@@ -1035,7 +1037,7 @@ export default {
       }
       WinPrint.document.write(
         `<tr><th width='1000px' align=left style='padding-right:60px'>ยอดรวมสุทธิ</th><th width='100px'>${this.formatPrice(
-          Math.round(this.thinkPrice(pay.net_price))
+          pay.net_price
         )} </th><th>บาท</th></tr>`
       );
       WinPrint.document.write(
@@ -1049,12 +1051,13 @@ export default {
         )} </th><th>บาท</th></tr>`
       );
       WinPrint.document.write(
-        `<tr><th  align=center style='padding-left:60px' >**ขอบคุณที่ใช้บริการ**</th></tr>`
+        `
+        <tr ><th align=start colspan=2>หมายเหตุ ** คือสินค้านั้นไม่สามารถใช้กับส่วนลดได้</th><th></th></tr>
+        <tr ><th align=center style='padding-left:60px' >ขอบคุณที่ใช้บริการ</th></tr>
+        `
       );
-      WinPrint.document.write("</table>");
+      WinPrint.document.write("</table><hr style='break-after:page'>");
 
-      const food = this.unit.find(u => u.u_name == "อาหาร");
-      const drink = this.unit.find(u => u.u_name == "เครื่องดื่ม");
       let list = order.list_product;
       const compareFood = id => {
         const res = this.products.find(p => p._id === id);
@@ -1063,124 +1066,67 @@ export default {
       list.map(l => {
         l.unit = compareFood(l.ref_pro_id).ref_uid._id;
       });
-      // const filterFood = (id)=>{
-      //   const res = list.map(l.unit === id)
-      //   return res
-      // }
-      const foodArr = list.filter(l => l.unit === food._id);
-      const drinkArr = list.filter(l => l.unit === drink._id);
+      const filterByUnit = id => {
+        const Arr = list.filter(l => l.unit === id);
+        return Arr;
+      };
+
       //WinPrint.document.write("<img src='" + __dirname + "25.png'>");
       if (this.printOrder === true) {
-        if (foodArr.length !== 0) {
-          //for drink **************************************************************************************
+        this.unit.map(u => {
+          const resArr = filterByUnit(u._id);
+          if (resArr.length !== 0) {
+            //for drink **************************************************************************************
 
-          WinPrint.document.write(
-            "<hr style='break-after:page'><table style='width: 100%;font-size: 0.4em;'>"
-          );
-
-          WinPrint.document.write(
-            `<tr><th align='left'>พนักงานที่รับออเดอร์ : ${order.ref_emp_id.fname} ${order.ref_emp_id.lname}</th></tr>`
-          );
-          WinPrint.document.write(
-            `<tr><th align='left'>ชื่อบิล : ${order.bill_name}</th></tr>`
-          );
-          WinPrint.document.write(
-            `<tr><th align='center'>วันที่ ${this.formatDate(
-              order.datetime
-            )} </th></tr>`
-          );
-          WinPrint.document.write(
-            "<tr><th align='center'>***สำหรับจัดทำอาหาร***</th></tr>"
-          );
-          WinPrint.document.write("</table>");
-          WinPrint.document.write(
-            "<table   style='width: 100%;font-size: 0.5em;margin-bottom:30px;'>"
-          );
-          WinPrint.document.write(
-            "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th></tr>"
-          );
-          //let subTotal = 0;
-
-          for (let j in foodArr) {
-            //subTotal = subTotal + parseInt(list[j].price);
-            WinPrint.document.write("<tr style='border-bottom: thin solid'>");
             WinPrint.document.write(
-              `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
-                foodArr[j].name
-              }</td><td style='padding-left:20px;'>${foodArr[j].qty}</td>`
+              "<table style='width: 100%;font-size: 0.4em;'>"
             );
-            WinPrint.document.write("</tr>");
-            for (let k in foodArr[j].topping) {
-              WinPrint.document.write(
-                `<tr><td></td><td > - ${foodArr[j].topping[k].name} </td></td></tr>`
-              );
-            }
-            if (foodArr[j].detail.length !== 0) {
-              WinPrint.document.write(
-                `<tr><td></td><td > ** ${foodArr[j].detail} **</td></td></tr>`
-              );
-            }
-          }
-          WinPrint.document.write(
-            "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
-          );
-          WinPrint.document.write("</table>");
-        }
 
-        if (drinkArr.length !== 0) {
-          //for drink************************************************************************************************************
-          WinPrint.document.write(
-            "<hr style='break-after:page'><table style='width: 100%;font-size: 0.4em;'>"
-          );
-
-          WinPrint.document.write(
-            `<tr><th align='left'>พนักงานที่รับออเดอร์ : ${order.ref_emp_id.fname} ${order.ref_emp_id.lname}</th></tr>`
-          );
-          WinPrint.document.write(
-            `<tr><th align='left'>ชื่อบิล : ${order.bill_name}</th></tr>`
-          );
-          WinPrint.document.write(
-            `<tr><th align='center'>วันที่ ${this.formatDate(
-              order.datetime
-            )} </th></tr>`
-          );
-          WinPrint.document.write(
-            "<tr><th align='center'>***สำหรับจัดทำเครื่องดื่ม***</th></tr>"
-          );
-          WinPrint.document.write("</table>");
-          WinPrint.document.write(
-            "<table   style='width: 100%;font-size: 0.5em;'>"
-          );
-          WinPrint.document.write(
-            "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th></tr>"
-          );
-          //let subTotal = 0;
-
-          for (let j in drinkArr) {
-            //subTotal = subTotal + parseInt(drinkArr[j].price);
-            WinPrint.document.write("<tr style='border-bottom: thin solid'>");
             WinPrint.document.write(
-              `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
-                drinkArr[j].name
-              }</td><td style='padding-left:20px;'>${drinkArr[j].qty}</td>`
+              `<tr><th align='left'>พนักงานที่รับออเดอร์ : ${order.ref_emp_id.fname} ${order.ref_emp_id.lname}</th></tr>`
             );
-            WinPrint.document.write("</tr>");
-            for (let k in drinkArr[j].topping) {
+            WinPrint.document.write(
+              `<tr><th align='left'>ชื่อบิล : ${order.bill_name}</th></tr>`
+            );
+            WinPrint.document.write(
+              `<tr><th align='center'>วันที่ ${this.formatDate(
+                order.datetime
+              )} </th></tr>`
+            );
+            WinPrint.document.write(
+              `<tr><th align='center'>***สำหรับจัดทำ${u.u_name}***</th></tr>`
+            );
+            WinPrint.document.write("</table>");
+            WinPrint.document.write(
+              "<table   style='width: 100%;font-size: 0.5em;margin-bottom:30px;'>"
+            );
+            WinPrint.document.write(
+              "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th></tr>"
+            );
+            //let subTotal = 0;
+
+            resArr.map((r, j) => {
+              WinPrint.document.write("<tr style='border-bottom: thin solid'>");
               WinPrint.document.write(
-                `<tr><td></td><td > - ${drinkArr[j].topping[k].name} </td></td></tr>`
+                `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
+                  r.name
+                }</td><td style='padding-left:20px;'>${r.qty}</td>`
               );
-            }
-            if (drinkArr[j].detail.length !== 0) {
-              WinPrint.document.write(
-                `<tr><td></td><td > ** ${drinkArr[j].detail} **</td></td></tr>`
-              );
-            }
+              WinPrint.document.write("</tr>");
+              for (let k in r.topping) {
+                WinPrint.document.write(
+                  `<tr><td></td><td > - ${r.topping[k].name} </td></td></tr>`
+                );
+              }
+              if (r.detail.length !== 0) {
+                WinPrint.document.write(
+                  `<tr><td></td><td > ** ${r.detail} **</td></td></tr>`
+                );
+              }
+            });
+            WinPrint.document.write("</table><hr style='break-after:page'>");
           }
-          WinPrint.document.write(
-            "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
-          );
-          WinPrint.document.write("</table>");
-        }
+        });
       }
 
       WinPrint.document.close();

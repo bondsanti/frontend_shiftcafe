@@ -129,15 +129,19 @@ export default {
     const loadPoint = await context.$axios.$get(
       "/point-manage/customer/" + context.$auth.user._id
     );
-    let dataMember = [];
+    const levelMember = await context.$axios.$get("/level-member");
+
+    const startDate = new Date(loadData.mission.start);
+    const endDate = new Date(loadData.mission.end);
+
     let totalprice = 0;
     let Sumtotal = 0;
     if (loadData.ref_level_id) {
       //เรียงจากน้อยไปมาก เรียงตาม target_price
-      const dataMem = dataMember.sort(
+      const dataMem = levelMember.sort(
         (a, b) => a.target_price - b.target_price
       );
-      //หา target ใหม่เพื่อเปลี่ยนระดับสมาชิด
+      //หา target ใหม่เพื่อเปลี่ยนระดับสมาชิก
       const newTarget = dataMem.find(
         d => loadData.ref_level_id.target_price < d.target_price
       );
@@ -149,7 +153,13 @@ export default {
       const data = await context.$axios.$get(
         "/payment/customer/" + context.$auth.user._id
       );
-      for (let key in data) {
+      const newData = data.filter(p => {
+        return (
+          new Date(p.datetime).getTime() >= startDate.getTime() &&
+          new Date(p.datetime).getTime() <= endDate.getTime()
+        );
+      });
+      for (let key in newData) {
         totalprice += data[key].net_price;
       }
       let target_price = loadData.ref_level_id.target_price;

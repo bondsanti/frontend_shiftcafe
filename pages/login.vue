@@ -73,7 +73,7 @@
 import { mapState } from "vuex";
 export default {
   layout: "login",
-  middleware: "isLoggedIn",
+  middleware: ["isLoggedIn", "refresh"],
   async asyncData(context) {
     const setting = await context.$axios.$get("/setting");
     return {

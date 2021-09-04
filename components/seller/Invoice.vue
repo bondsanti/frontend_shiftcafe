@@ -26,6 +26,18 @@
               <v-btn color="teal" @click="printInvoice" dark class="rounded-xl">
                 <v-icon left> mdi-printer </v-icon>พิมพ์ใบเสร็จรับเงิน
               </v-btn>
+              <v-btn fab color="green" @click="printInvoicePdf" dark small>
+                <v-icon>mdi-cellphone </v-icon>
+              </v-btn>
+              <v-btn
+                fab
+                color="light-green accent-3"
+                @click="printInvoicePdfPos"
+                dark
+                small
+              >
+                <v-icon>mdi-printer-pos </v-icon>
+              </v-btn>
               <!-- <v-btn color="teal" @click="print" dark class="rounded-xl">
                 <v-icon left> mdi-printer </v-icon>พิมพ์เทส
               </v-btn> -->
@@ -178,6 +190,8 @@
 </template>
 
 <script>
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "@/components/manage/settings/vfs_fonts";
 export default {
   data() {
     return {
@@ -475,6 +489,876 @@ export default {
         force: true
       }); //(3
     },
+    convertImgToBase64URL(url) {
+      //console.log(url);
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = () => {
+          let canvas = document.createElement("CANVAS");
+          const ctx = canvas.getContext("2d");
+          canvas.height = img.height;
+          canvas.width = img.width;
+          ctx.drawImage(img, 0, 0);
+          const dataURL = canvas.toDataURL();
+          canvas = null;
+          resolve(dataURL);
+        };
+        img.src = url;
+      });
+    },
+    async printInvoicePdfPos() {
+      const pay = this.itemBy;
+
+      const img = `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`;
+      const show = await this.convertImgToBase64URL(img);
+      //console.log(this.itemBy);
+
+      const dataForTable = [];
+      pay.ref_order_id.list_product.map((o, i) => {
+        const nameList = `${o.discount ? "" : "**"} ${
+          o.topping.length === 0
+            ? o.name
+            : o.name + " " + o.normal_price + " บาท\n"
+        }${o.topping.map(t =>
+          t.price !== 0 ? t.name + " " + t.price + " ฿" : t.name
+        )}`;
+        dataForTable.push([
+          {
+            text: i + 1,
+            border: [false, false, false, false],
+            margin: [0, 2, 0, 2],
+            alignment: "left",
+            bold: true
+          },
+          {
+            text: nameList,
+            border: [false, false, false, false],
+            margin: [0, 2, 0, 2],
+            alignment: "left",
+            bold: true
+          },
+          {
+            text: o.qty,
+            border: [false, false, false, false],
+            margin: [0, 2, 0, 2],
+            alignment: "left",
+            bold: true
+          },
+          {
+            border: [false, false, false, false],
+            text: this.formatPrice(o.price) + " ฿",
+            bold: true,
+            alignment: "right",
+            margin: [0, 2, 0, 2]
+          }
+        ]);
+      });
+
+      const discount = () => {
+        const obj = {
+          columns: [
+            {
+              text: "ส่วนลด",
+              width: "*",
+              fontSize: 14,
+              bold: true,
+              alignment: "left"
+            },
+            {
+              text: this.formatPrice(pay.discount_price) + " บาท",
+              width: "*",
+              fontSize: 14,
+              bold: true,
+              alignment: "right"
+            }
+          ]
+        };
+        if (pay.discount_price !== 0) {
+          return obj;
+        }
+      };
+
+      const vat = () => {
+        const obj = {
+          columns: [
+            {
+              text: "ภาษี",
+              width: "*",
+              fontSize: 14,
+              bold: true,
+              alignment: "left"
+            },
+            {
+              text: this.formatPrice(pay.vat_price) + " บาท",
+              width: "*",
+              fontSize: 14,
+              bold: true,
+              alignment: "right"
+            }
+          ]
+        };
+        if (pay.vat_price !== 0) {
+          return obj;
+        }
+      };
+
+      pdfMake.vfs = pdfFonts.pdfMake.vfs;
+      pdfMake.fonts = {
+        THSarabunNew: {
+          normal: "THSarabunNew.ttf",
+          bold: "THSarabunNew-Bold.ttf",
+          italics: "THSarabunNew-Italic.ttf",
+          bolditalics: "THSarabunNew-BoldItalic.ttf"
+        }
+      };
+      const documentDefinitions = {
+        info: {
+          title: "ใบเสร็จรับเงินเลขที่ " + pay.invoice,
+          author: this.$store.getters["setting"][0].restaurant
+        },
+        pageSize: {
+          width: 320,
+          height: "auto"
+        },
+
+        content: [
+          {
+            columns: [
+              {
+                text: this.$store.getters["setting"][0].restaurant,
+
+                width: "*",
+                fontSize: 14,
+                bold: true,
+                alignment: "left",
+                margin: [0, 10, 0, 0]
+              },
+              {
+                image: show,
+                width: 30,
+                margin: [0, 0, 0, 10]
+              }
+            ]
+          },
+          {
+            columns: [
+              {
+                text: "ที่อยู่ :",
+                width: 48,
+                bold: true,
+                fontSize: 10,
+                alignment: "left"
+              },
+              {
+                text: this.$store.getters["setting"][0].address,
+                width: "*",
+                bold: true,
+                fontSize: 10,
+                alignment: "left"
+              }
+            ]
+          },
+          {
+            columns: [
+              {
+                text: "เบอร์มือถือ :",
+                width: 48,
+                bold: true,
+                fontSize: 10,
+                alignment: "left"
+              },
+              {
+                text: this.$store.getters["setting"][0].tel,
+                width: "*",
+                bold: true,
+                fontSize: 10,
+                alignment: "left"
+              }
+            ]
+          },
+          {
+            columns: [
+              {
+                text: "พนักงานรับเงิน :",
+                bold: true,
+                width: 48,
+                fontSize: 10,
+                alignment: "left"
+              },
+              {
+                text: pay.ref_emp_id.fname + " " + pay.ref_emp_id.lname,
+                width: "*",
+                bold: true,
+                fontSize: 10,
+                alignment: "left"
+              }
+            ]
+          },
+          {
+            text: "ใบเสร็จรับเงินเลขที่ : " + pay.invoice,
+            bold: true,
+            fontSize: 10,
+            alignment: "center"
+          },
+          {
+            text: "วันที่ " + this.formatDate(pay.datetime),
+            bold: true,
+            fontSize: 10,
+            alignment: "center"
+          },
+          {
+            table: {
+              headerRows: 1,
+              widths: [20, "*", 25, "*"],
+              body: [
+                [
+                  {
+                    text: "ลำดับ",
+                    bold: true,
+                    border: [false, true, false, true],
+                    margin: [0, 5, 0, 5]
+                  },
+                  {
+                    text: "รายการ",
+                    bold: true,
+                    border: [false, true, false, true],
+                    margin: [0, 5, 0, 5]
+                  },
+                  {
+                    text: "จำนวน",
+                    bold: true,
+                    border: [false, true, false, true],
+                    margin: [0, 5, 0, 5]
+                  },
+                  {
+                    text: "ราคา",
+                    border: [false, true, false, true],
+                    alignment: "right",
+                    bold: true,
+                    margin: [0, 5, 0, 5]
+                  }
+                ],
+                ...dataForTable,
+                [
+                  {
+                    text: "",
+                    border: [false, true, false, false],
+
+                    alignment: "left"
+                  },
+                  {
+                    text: "",
+                    border: [false, true, false, false],
+
+                    alignment: "left"
+                  },
+                  {
+                    text: "",
+                    border: [false, true, false, false],
+
+                    alignment: "left"
+                  },
+                  {
+                    border: [false, true, false, false],
+                    text: "",
+                    alignment: "right"
+                  }
+                ]
+              ]
+            }
+          },
+          {
+            columns: [
+              {
+                text: "อาหารเครื่องดื่ม",
+                width: "*",
+                fontSize: 14,
+                bold: true,
+                alignment: "left"
+              },
+              {
+                text: this.formatPrice(pay.total_price) + " บาท",
+                width: "*",
+                fontSize: 14,
+                bold: true,
+                alignment: "right"
+              }
+            ]
+          },
+          discount(),
+          vat(),
+          {
+            columns: [
+              {
+                text: "ราคาสุทธิ",
+                width: "*",
+                fontSize: 16,
+                bold: true,
+                alignment: "left"
+              },
+              {
+                text: this.formatPrice(pay.net_price) + " บาท",
+                width: "*",
+                fontSize: 16,
+                bold: true,
+                alignment: "right"
+              }
+            ]
+          },
+          {
+            text: "ขอบคุณที่ใช้บริการครับ/ค่ะ",
+            bold: true,
+            fontSize: 14,
+            alignment: "center",
+            margin: [0, 10, 0, 0]
+          },
+          {
+            text: "หมายเหตุ ** สินค้าไม่สามารถใช้กับส่วนลดได้",
+            bold: true,
+            fontSize: 10,
+            alignment: "left",
+            margin: [0, 5, 0, 0]
+          }
+        ],
+        styles: {
+          notesTitle: {
+            fontSize: 10,
+            bold: true
+          },
+          notesText: {
+            fontSize: 10
+          }
+        },
+        defaultStyle: {
+          columnGap: 5,
+          font: "THSarabunNew"
+        }
+      };
+      pdfMake.createPdf(documentDefinitions).open();
+      // pdfMake
+      //   .createPdf(documentDefinitions)
+      //   .download(
+      //     this.reportType === "ประจำวัน"
+      //       ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
+      //       : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime)
+      //   );
+    },
+    async printInvoicePdf() {
+      const pay = this.itemBy;
+      const { pname, fname, lname, tel, address } = pay.ref_cus_id;
+      const clientName = () => {
+        if (fname !== "guest" || lname !== "guest") {
+          return pname + " " + fname + " " + lname;
+        } else {
+          return "-";
+        }
+      };
+      const clientTel = fname !== "guest" || lname !== "guest" ? tel : "-";
+      const clientAddress =
+        fname !== "guest" || lname !== "guest" ? address : "-";
+
+      const img = `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`;
+      const show = await this.convertImgToBase64URL(img);
+      //console.log(this.itemBy);
+
+      const dataForTable = [];
+      pay.ref_order_id.list_product.map((o, i) => {
+        const nameList = `${o.discount ? "" : "**"} ${
+          o.topping.length === 0
+            ? o.name
+            : o.name + " " + o.normal_price + " บาท\n"
+        }${o.topping.map(t =>
+          t.price !== 0 ? t.name + " " + t.price + " บาท" : t.name
+        )}`;
+        dataForTable.push([
+          {
+            text: i + 1,
+            border: [false, false, false, true],
+            margin: [0, 2, 0, 2],
+            alignment: "left"
+          },
+          {
+            text: nameList,
+            border: [false, false, false, true],
+            margin: [0, 2, 0, 2],
+            alignment: "left"
+          },
+          {
+            text: o.qty,
+            border: [false, false, false, true],
+            margin: [0, 2, 0, 2],
+            alignment: "left"
+          },
+          {
+            border: [false, false, false, true],
+            text: this.formatPrice(o.price) + " บาท",
+            fillColor: "#f5f5f5",
+            alignment: "right",
+            margin: [0, 2, 0, 2]
+          }
+        ]);
+      });
+
+      pdfMake.vfs = pdfFonts.pdfMake.vfs;
+      pdfMake.fonts = {
+        THSarabunNew: {
+          normal: "THSarabunNew.ttf",
+          bold: "THSarabunNew-Bold.ttf",
+          italics: "THSarabunNew-Italic.ttf",
+          bolditalics: "THSarabunNew-BoldItalic.ttf"
+        }
+      };
+      const documentDefinitions = {
+        info: {
+          title: "ใบเสร็จรับเงินเลขที่ " + pay.invoice,
+          author: this.$store.getters["setting"][0].restaurant
+        },
+        content: [
+          {
+            columns: [
+              {
+                image: show,
+                width: 100
+              },
+              [
+                {
+                  text: "ใบเสร็จรับเงิน",
+                  color: "#333333",
+                  width: "*",
+                  fontSize: 28,
+                  bold: true,
+                  alignment: "right",
+                  margin: [0, 0, 0, 1]
+                },
+                {
+                  stack: [
+                    {
+                      columns: [
+                        {
+                          text: "เลขที่คำสั่งซื้อ",
+                          color: "#aaaaab",
+                          bold: true,
+                          width: "*",
+                          fontSize: 12,
+                          alignment: "right"
+                        },
+                        {
+                          text: pay.ref_order_id.order_no,
+                          bold: true,
+                          color: "#333333",
+                          fontSize: 12,
+                          alignment: "right",
+                          width: 100
+                        }
+                      ]
+                    },
+                    {
+                      columns: [
+                        {
+                          text: "วันที่สั่งซื้อ",
+                          color: "#aaaaab",
+                          bold: true,
+                          width: "*",
+                          fontSize: 12,
+                          alignment: "right"
+                        },
+                        {
+                          text: this.formatDate(pay.ref_order_id.datetime),
+                          bold: true,
+                          color: "#333333",
+                          fontSize: 12,
+                          alignment: "right",
+                          width: 100
+                        }
+                      ]
+                    },
+                    {
+                      columns: [
+                        {
+                          text: "สถานะ",
+                          color: "#aaaaab",
+                          bold: true,
+                          fontSize: 12,
+                          alignment: "right",
+                          width: "*"
+                        },
+                        {
+                          text: `จ่ายเงินแล้ว\n( ${
+                            pay.type_payment === "cash"
+                              ? "เงินสด"
+                              : "โอนผ่านธนาคาร"
+                          } )`,
+                          bold: true,
+                          fontSize: 14,
+                          alignment: "right",
+                          color: "green",
+                          width: 100
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            ]
+          },
+          {
+            columns: [
+              {
+                text: "จาก",
+                color: "#aaaaab",
+                bold: true,
+                fontSize: 14,
+                alignment: "left",
+                margin: [0, 20, 0, 5]
+              },
+              {
+                text: "ถึง",
+                color: "#aaaaab",
+                bold: true,
+                fontSize: 14,
+                alignment: "left",
+                margin: [0, 20, 0, 5]
+              }
+            ]
+          },
+          {
+            columns: [
+              {
+                text: this.$store.getters["setting"][0].restaurant,
+                bold: true,
+                color: "#333333",
+                alignment: "left"
+              },
+              {
+                text: clientName(),
+                bold: true,
+                color: "#333333",
+                alignment: "left"
+              }
+            ]
+          },
+          {
+            columns: [
+              {
+                text: "หมายเลขโทรศัพท์",
+                color: "#aaaaab",
+                bold: true,
+                margin: [0, 7, 0, 3]
+              },
+
+              {
+                text: "หมายเลขโทรศัพท์",
+                color: "#aaaaab",
+                bold: true,
+                margin: [0, 7, 0, 3]
+              }
+            ]
+          },
+          {
+            columns: [
+              {
+                text: this.$store.getters["setting"][0].tel,
+                style: "invoiceBillingAddress"
+              },
+              {
+                text: clientTel,
+                style: "invoiceBillingAddress"
+              }
+            ]
+          },
+          {
+            columns: [
+              {
+                text: "ที่อยู่",
+                color: "#aaaaab",
+                bold: true,
+                margin: [0, 7, 0, 3]
+              },
+
+              {
+                text: "ที่อยู่",
+                color: "#aaaaab",
+                bold: true,
+                margin: [0, 7, 0, 3]
+              }
+            ]
+          },
+          {
+            columns: [
+              {
+                text:
+                  this.$store.getters["setting"][0].address + " \n   ประเทศไทย",
+                style: "invoiceBillingAddress"
+              },
+              {
+                text: clientAddress,
+                style: "invoiceBillingAddress"
+              }
+            ]
+          },
+          "\n\n",
+          {
+            width: "100%",
+            alignment: "center",
+            text: `ใบเสร็จรับเงินเลขที่ ${pay.invoice}`,
+            bold: true,
+            margin: [0, 10, 0, 10],
+            fontSize: 15
+          },
+          {
+            layout: {
+              defaultBorder: false,
+              hLineWidth: function(i, node) {
+                return 1;
+              },
+              vLineWidth: function(i, node) {
+                return 1;
+              },
+              hLineColor: function(i, node) {
+                if (i === 1 || i === 0) {
+                  return "#bfdde8";
+                }
+                return "#eaeaea";
+              },
+              vLineColor: function(i, node) {
+                return "#eaeaea";
+              },
+              hLineStyle: function(i, node) {
+                // if (i === 0 || i === node.table.body.length) {
+                return null;
+                //}
+              },
+              // vLineStyle: function (i, node) { return {dash: { length: 10, space: 4 }}; },
+              paddingLeft: function(i, node) {
+                return 10;
+              },
+              paddingRight: function(i, node) {
+                return 10;
+              },
+              paddingTop: function(i, node) {
+                return 2;
+              },
+              paddingBottom: function(i, node) {
+                return 2;
+              },
+              fillColor: function(rowIndex, node, columnIndex) {
+                return "#fff";
+              }
+            },
+            table: {
+              headerRows: 1,
+              widths: [80, "*", 80, 80],
+              body: [
+                [
+                  {
+                    text: "ลำดับที่",
+                    fillColor: "#eaf2f5",
+                    border: [false, true, false, true],
+                    margin: [0, 5, 0, 5]
+                  },
+                  {
+                    text: "รายการ",
+                    fillColor: "#eaf2f5",
+                    border: [false, true, false, true],
+                    margin: [0, 5, 0, 5]
+                  },
+                  {
+                    text: "จำนวน",
+                    fillColor: "#eaf2f5",
+                    border: [false, true, false, true],
+                    margin: [0, 5, 0, 5]
+                  },
+                  {
+                    text: "ราคา",
+                    border: [false, true, false, true],
+                    alignment: "right",
+                    fillColor: "#eaf2f5",
+                    margin: [0, 5, 0, 5]
+                  }
+                ],
+                ...dataForTable
+              ]
+            }
+          },
+          "\n",
+
+          {
+            layout: {
+              defaultBorder: false,
+              hLineWidth: function(i, node) {
+                return 1;
+              },
+              vLineWidth: function(i, node) {
+                return 1;
+              },
+              hLineColor: function(i, node) {
+                return "#eaeaea";
+              },
+              vLineColor: function(i, node) {
+                return "#eaeaea";
+              },
+              hLineStyle: function(i, node) {
+                // if (i === 0 || i === node.table.body.length) {
+                return null;
+                //}
+              },
+              // vLineStyle: function (i, node) { return {dash: { length: 10, space: 4 }}; },
+              paddingLeft: function(i, node) {
+                return 10;
+              },
+              paddingRight: function(i, node) {
+                return 10;
+              },
+              paddingTop: function(i, node) {
+                return 3;
+              },
+              paddingBottom: function(i, node) {
+                return 1;
+              },
+              fillColor: function(rowIndex, node, columnIndex) {
+                return "#fff";
+              }
+            },
+            table: {
+              headerRows: 1,
+              widths: ["*", "auto"],
+              body: [
+                [
+                  {
+                    text: "อาหารเครื่องดื่ม",
+                    border: [false, true, false, true],
+                    alignment: "right",
+                    margin: [0, 1, 0, 1]
+                  },
+                  {
+                    border: [false, true, false, true],
+                    text: this.formatPrice(pay.total_price) + " บาท",
+                    alignment: "right",
+                    fillColor: "#f5f5f5",
+                    margin: [0, 1, 0, 1]
+                  }
+                ],
+                [
+                  {
+                    text: "ส่วนลด",
+                    border: [false, false, false, true],
+                    alignment: "right",
+                    margin: [0, 1, 0, 1]
+                  },
+                  {
+                    text: this.formatPrice(pay.discount_price) + " บาท",
+                    border: [false, false, false, true],
+                    fillColor: "#f5f5f5",
+                    alignment: "right",
+                    margin: [0, 1, 0, 1]
+                  }
+                ],
+                [
+                  {
+                    text: "ภาษี",
+                    border: [false, false, false, true],
+                    alignment: "right",
+                    margin: [0, 1, 0, 1]
+                  },
+                  {
+                    text: this.formatPrice(pay.vat_price) + " บาท",
+                    border: [false, false, false, true],
+                    fillColor: "#f5f5f5",
+                    alignment: "right",
+                    margin: [0, 1, 0, 1]
+                  }
+                ],
+                [
+                  {
+                    text: "ยอดรวมสุทธิ",
+                    bold: true,
+                    fontSize: 20,
+                    alignment: "right",
+                    border: [false, false, false, true],
+                    margin: [0, 1, 0, 1]
+                  },
+                  {
+                    text: this.formatPrice(pay.net_price) + " บาท",
+                    bold: true,
+                    fontSize: 20,
+                    alignment: "right",
+                    border: [false, false, false, true],
+                    fillColor: "#f5f5f5",
+                    margin: [0, 1, 0, 1]
+                  }
+                ],
+                [
+                  {
+                    text: "หมายเหตุ ** สินค้าไม่สามารถใช้กับส่วนลดได้",
+                    bold: true,
+                    fontSize: 14,
+                    alignment: "left",
+                    border: [false, false, false, false],
+                    margin: [0, 5, 0, 5]
+                  },
+                  {
+                    text: "",
+                    bold: true,
+                    fontSize: 20,
+                    alignment: "right",
+                    border: [false, false, false, false],
+
+                    margin: [0, 5, 0, 5]
+                  }
+                ]
+              ]
+            }
+          }
+        ],
+        footer: function(currentPage, pageCount) {
+          return {
+            text: "หน้า " + currentPage.toString() + " จาก " + pageCount,
+            alignment: "center",
+            columns: [
+              {
+                text: "หน้า " + currentPage.toString() + " จาก " + pageCount,
+                color: "#aaaaab",
+                bold: true,
+                fontSize: 14,
+                alignment: "left",
+                margin: [10, 0, 0, 0]
+              },
+              {
+                text: "Powered by DEV FONG",
+                color: "#aaaaab",
+                bold: true,
+                fontSize: 14,
+                alignment: "right",
+                margin: [0, 0, 10, 0]
+              }
+            ]
+          };
+        },
+        styles: {
+          notesTitle: {
+            fontSize: 10,
+            bold: true,
+            margin: [0, 50, 0, 3]
+          },
+          notesText: {
+            fontSize: 10
+          }
+        },
+        defaultStyle: {
+          columnGap: 20,
+          font: "THSarabunNew"
+        }
+      };
+      pdfMake.createPdf(documentDefinitions).open();
+      // pdfMake
+      //   .createPdf(documentDefinitions)
+      //   .download(
+      //     this.reportType === "ประจำวัน"
+      //       ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
+      //       : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime)
+      //   );
+    },
     async printInvoice() {
       //console.log(window.location.href);
       const order = await this.$axios.$get("/order/" + this.order_id);
@@ -543,7 +1427,11 @@ export default {
         WinPrint.document.write("</tr>");
         for (let j in order.list_product[i].topping) {
           WinPrint.document.write(
-            `<tr><td></td><td > - ${order.list_product[i].topping[j].name} เพิ่ม ${order.list_product[i].topping[j].price} บาท</td></td></tr>`
+            `<tr><td></td><td > - ${order.list_product[i].topping[j].name}${
+              order.list_product[i].topping[j].price !== 0
+                ? "เพิ่ม " + order.list_product[i].topping[j].price + " บาท"
+                : ""
+            }</td></td></tr>`
           );
         }
       }

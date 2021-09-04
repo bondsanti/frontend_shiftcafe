@@ -598,7 +598,11 @@ export default {
         WinPrint.document.write("</tr>");
         for (let k in list[j].topping) {
           WinPrint.document.write(
-            `<tr><td></td><td > - ${list[j].topping[k].name} เพิ่ม ${list[j].topping[k].price} บาท</td></td></tr>`
+            `<tr><td></td><td > - ${list[j].topping[k].name}${
+              list[j].topping[k].price !== 0
+                ? "เพิ่ม " + list[j].topping[k].price + " บาท"
+                : ""
+            }</td></td></tr>`
           );
         }
       }

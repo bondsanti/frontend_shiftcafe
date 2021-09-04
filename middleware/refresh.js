@@ -1,3 +1,8 @@
 export default function(context) {
-  context.store.dispatch("checkLogin");
+  context.$axios
+    .$get(context.env.config.BASE_URL + "/setting")
+    .then(res => {
+      context.store.dispatch("checkLogin", res);
+    })
+    .catch(e => context.error(e));
 }

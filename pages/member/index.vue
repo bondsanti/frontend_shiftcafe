@@ -272,9 +272,29 @@ import moment from "moment";
 import MenuProfile from "~/components/memberLayout/MenuProfile";
 export default {
   layout: "layoutMember",
-  middleware: ["auth"],
+  middleware: ["auth", "refresh", "checkMember"],
   components: {
     MenuProfile
+  },
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: this.loadData.fname + " " + this.loadData.lname,
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
   },
   data() {
     return {
@@ -285,9 +305,12 @@ export default {
       }
     };
   },
-  initialize() {},
 
   async asyncData(context) {
+    //เช็คการปรับระดับ
+    const cus = await context.$axios.$get(
+      "/customer/check/" + context.$auth.user._id
+    );
     const loadData = await context.$axios.$get(
       "/customer/" + context.$auth.user._id
     );
@@ -335,8 +358,8 @@ export default {
       Sumtotal = 0;
       totalprice = 0;
     }
-    //console.log(loadData);
-    //console.log(context.$auth.user);
+
+    //console.log(cus);
     return { loadData, totalprice, Sumtotal, dataMember };
   },
 

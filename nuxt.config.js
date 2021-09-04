@@ -85,7 +85,8 @@ module.exports = {
       }
     },
     redirect: {
-      login: "/login"
+      login: "/login",
+      logout: "/login"
     }
   },
   moment: {

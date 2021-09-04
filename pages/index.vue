@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  middleware: ["auth", "checkAll", "refresh"],
+  middleware: ["auth", "checkAll", "refresh", "checkIndex"],
   head() {
     return {
       titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
@@ -37,20 +37,19 @@ export default {
     };
   },
   created() {
-    const position = this.$store.getters["position"];
-    //console.log(position);
-    if (
-      position === "admin" ||
-      position === "manager" ||
-      position === "checker"
-    ) {
-      this.$router.push("/manage");
-    } else if (position === "staff" || position === "cashier") {
-      this.$router.push("/seller");
-    } else {
-      this.$router.push("/member");
-    }
-
+    // const position = this.$store.getters["position"];
+    // //console.log(position);
+    // if (
+    //   position === "admin" ||
+    //   position === "manager" ||
+    //   position === "checker"
+    // ) {
+    //   this.$router.push("/manage");
+    // } else if (position === "staff" || position === "cashier") {
+    //   this.$router.push("/seller");
+    // } else {
+    //   this.$router.push("/member");
+    // }
     //this.$router.push("/");
   }
 };

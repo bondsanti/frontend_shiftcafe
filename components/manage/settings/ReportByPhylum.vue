@@ -118,7 +118,9 @@ export default {
       this.list = [];
       const res = [];
       payments.map(p => {
-        res.push(...p.ref_order_id.list_product);
+        if (p.ref_order_id) {
+          res.push(...p.ref_order_id.list_product);
+        }
       });
       res.map(r => {
         this.replace(r);
@@ -216,12 +218,6 @@ export default {
           bold: "THSarabunNew-Bold.ttf",
           italics: "THSarabunNew-Italic.ttf",
           bolditalics: "THSarabunNew-BoldItalic.ttf"
-        },
-        Roboto: {
-          normal: "Roboto-Regular.ttf",
-          bold: "Roboto-Medium.ttf",
-          italics: "Roboto-Italic.ttf",
-          bolditalics: "Roboto-MediumItalic.ttf"
         }
       };
       const documentDefinitions = {
@@ -272,7 +268,25 @@ export default {
         footer: function(currentPage, pageCount) {
           return {
             text: "หน้า " + currentPage.toString() + " จาก " + pageCount,
-            alignment: "center"
+            alignment: "center",
+            columns: [
+              {
+                text: "หน้า " + currentPage.toString() + " จาก " + pageCount,
+                color: "#aaaaab",
+                bold: true,
+                fontSize: 14,
+                alignment: "left",
+                margin: [10, 0, 0, 0]
+              },
+              {
+                text: "Powered by DEV FONG",
+                color: "#aaaaab",
+                bold: true,
+                fontSize: 14,
+                alignment: "right",
+                margin: [0, 0, 10, 0]
+              }
+            ]
           };
         },
 

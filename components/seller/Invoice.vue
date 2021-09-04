@@ -73,7 +73,7 @@
               :search="search"
               :items-per-page="40"
               :footer-props="{
-                'items-per-page-options': [40, 50, 60, -1],
+                'items-per-page-options': [40, 50, 60],
                 prevIcon: 'mdi-chevron-left',
                 nextIcon: 'mdi-chevron-right',
                 'items-per-page-text': 'ข้อมูลหน้าต่อไป'
@@ -207,19 +207,19 @@ export default {
         {
           text: "วัน เวลา",
           align: "start",
-          sortable: true,
+          // sortable: true,
           value: "datetime"
         },
         {
           text: "หมายเลขบิล",
           align: "start",
-          sortable: true,
+          // sortable: true,
           value: "invoice"
         },
         {
           text: "ประเภทการชำระเงิน",
           align: "start",
-          sortable: true,
+          // sortable: true,
           value: "type_payment"
         },
         {
@@ -250,8 +250,7 @@ export default {
           text: "หมายเหตุ",
           align: "start",
           sortable: false,
-          value: "actions",
-          sortable: false
+          value: "actions"
         }
       ],
       detailArr: [],
@@ -1360,7 +1359,7 @@ export default {
       //   );
     },
     async printInvoice() {
-      //console.log(window.location.href);
+      //console.log(this.itemBy);
       const order = await this.$axios.$get("/order/" + this.order_id);
       //const today = new Date(order.datetime);
 
@@ -1476,6 +1475,7 @@ export default {
           this.itemBy.withdraw_money
         )} </th><th>บาท</th></tr>`
       );
+
       WinPrint.document.write(
         `<tr><th  align=center style='padding-left:60px' >**ขอบคุณที่ใช้บริการ**</th></tr>
         `

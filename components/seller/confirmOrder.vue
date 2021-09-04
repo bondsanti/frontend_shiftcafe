@@ -940,6 +940,14 @@ export default {
     async print(money, pay, order_id) {
       const cusName = this.customers.filter(cus => cus._id === this.cusId);
       const order = await this.$axios.$get("/order/" + order_id);
+      const bankImg = () => {
+        if (pay.ref_bank_id) {
+          const obj = this.bank2.find(b => b._id === pay.ref_bank_id);
+          return obj;
+        } else {
+          return null;
+        }
+      };
       //console.log(cusName);
       var WinPrint = window.open(
         "",
@@ -1054,10 +1062,19 @@ export default {
           money.withdraw
         )} </th><th>บาท</th></tr>`
       );
+      // image bank
+      if (bankImg()) {
+        WinPrint.document.write(
+          `<tr><th  align=center style='padding-left:60px' ><img width='120px' height='120px' src='${
+            this.$nuxt.context.env.config.IMG_URL
+          }${bankImg().img}'></th></tr>
+        `
+        );
+      }
       WinPrint.document.write(
         `
-        <tr ><th align=start colspan=2>หมายเหตุ ** คือสินค้านั้นไม่สามารถใช้กับส่วนลดได้</th><th></th></tr>
         <tr ><th align=center style='padding-left:60px' >ขอบคุณที่ใช้บริการ</th></tr>
+        <tr ><th align=start colspan=2>หมายเหตุ ** สินค้าไม่สามารถใช้กับส่วนลดได้</th><th></th></tr>
         `
       );
       WinPrint.document.write("</table><hr style='break-after:page'>");

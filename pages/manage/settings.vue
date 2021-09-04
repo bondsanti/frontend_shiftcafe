@@ -34,7 +34,7 @@
         <v-card class="mx-auto rounded-xl" max-width="500" color="primary">
           <v-card-title>
             <h5 class="text-h5 white--text ">
-              ตั้งค่าและปรับแต่งเว็บ
+              ตั้งค่า
               <v-avatar class="mx-auto" size="60" max-width="90px" tile>
                 <v-img src="/settings.png"></v-img>
               </v-avatar>

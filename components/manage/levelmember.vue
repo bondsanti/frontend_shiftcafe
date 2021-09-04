@@ -329,6 +329,7 @@
             class="mr1 rounded-xl"
             color="teal"
             elevation="15"
+            
             @click="Detail(item.detail)"
           >
             <div class="d-block  white--text">

@@ -1,14 +1,14 @@
 <template>
   <div class="ma-3">
     <v-card
-      class="mx-auto mt-6  py-3 rounded-xl"
+      class="mx-auto mt-6  py-3 rounded-xl "
       elevaation="5"
       justify-centaer
     >
       <v-card-title>
         <v-btn
           color="primary"
-          class="mr-1 rounded-xl"
+          class="mr-1 mb-6 rounded-xl"
           elevation="15"
           @click="dialog = true"
         >

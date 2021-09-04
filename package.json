@@ -23,7 +23,6 @@
     "vue-advanced-cropper": "^1.8.0",
     "vue-apexcharts": "^1.6.1",
     "vue-image-shadow": "^1.1.0",
-    "vue2-datepicker": "^3.9.1",
     "vue3-apexcharts": "^1.4.0"
   },
   "devDependencies": {

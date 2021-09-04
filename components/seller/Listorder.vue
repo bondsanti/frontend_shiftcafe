@@ -147,16 +147,9 @@
         <v-card-title class="text-h5  lighten-2">
           <v-row>
             <v-col cols="12" sm="4" md="4" lg="4">
-              <v-sheet
-                color="white"
-                height="80"
-                width="80"
-                class="rounded-circle  "
-              >
-                <v-avatar rounded tile size="72"
-                  ><v-img src="/clipboard.png"></v-img
-                ></v-avatar>
-              </v-sheet>
+              <v-avatar rounded tile size="72"
+                ><v-img src="/clipboard.png"></v-img
+              ></v-avatar>
             </v-col>
             <v-col cols="12" sm="8" md="8" lg="8">
               <p class=" ma-2 mt-3">เลือกท็อปปิ้ง{{ productTopping.name }}</p>
@@ -173,13 +166,14 @@
           color="red"
           :label="top.name"
           :value="top"
+          hide-details
         >
           <template v-slot:label>
             <p class=" mt-3">{{ top.name }}</p>
             <p class=" ml-3 mt-3">ราคา {{ top.price }}</p>
             <p class=" ml-2 mt-3">บาท</p>
-          </template></v-checkbox
-        >
+          </template>
+        </v-checkbox>
         <v-text-field
           class="mx-2 mt-1"
           prepend-inner-icon="mdi-tooltip-text-outline"
@@ -535,7 +529,6 @@ export default {
 };
 </script>
 <style>
-
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

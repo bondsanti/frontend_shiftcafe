@@ -1003,7 +1003,11 @@ export default {
         WinPrint.document.write("</tr>");
         for (let j in order.list_product[i].topping) {
           WinPrint.document.write(
-            `<tr><td></td><td > - ${order.list_product[i].topping[j].name} เพิ่ม ${order.list_product[i].topping[j].price} บาท</td></td></tr>`
+            `<tr><td></td><td > - ${order.list_product[i].topping[j].name}${
+              order.list_product[i].topping[j].price !== 0
+                ? "เพิ่ม " + order.list_product[i].topping[j].price + " บาท"
+                : ""
+            }</td></td></tr>`
           );
         }
       }

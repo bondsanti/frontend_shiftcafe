@@ -23,10 +23,11 @@
 
       <v-data-table
         :headers="headers"
-        
         :items="LogTableData"
         :search="search"
-        :sort-by="['datetime']"
+     
+        
+        multi-sort
         :items-per-page="30"
         :footer-props="{
           'items-per-page-options': [30, 40, 50, -1],
@@ -119,7 +120,7 @@ export default {
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
-      return moment(strdate).format("วันที่ DD MMMM YYYY  เวลา H.mm.ss น.");
+      return moment(strdate).format("DD MMMM YYYY  เวลา H.mm.ss น.");
     }
   },
   props: ["log"]

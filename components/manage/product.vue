@@ -19,21 +19,16 @@
       justify-centaer
     >
       <v-card-title>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              class="ma-5 rounded-xl"
-              elevation="15"
-              v-bind="attrs"
-              v-on="on"
-              @click="addItem"
-            >
-              <v-icon left> mdi-food-turkey</v-icon> เพิ่มสินค้า
-            </v-btn>
-          </template>
-        </v-dialog>
+        <v-btn
+          color="primary"
+          dark
+          class="ma-5 rounded-xl"
+          elevation="15"
+          @click="addItem"
+        >
+          <v-icon left> mdi-food-turkey</v-icon> เพิ่มสินค้า
+        </v-btn>
+
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-text-field

@@ -343,7 +343,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .scroll::-webkit-scrollbar {
   width: 17px;
 }

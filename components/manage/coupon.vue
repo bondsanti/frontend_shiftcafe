@@ -38,21 +38,16 @@
       justify-centaer
     >
       <v-card-title>
-        <v-dialog v-model="dialog" max-width="500px" persistent>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              class="mr-5 rounded-xl mb-2 "
-              elevation="15"
-              v-bind="attrs"
-              v-on="on"
-              @click="addItem"
-            >
-              <v-icon left> mdi-ticket-percent-outline</v-icon> จัดการคูปอง
-            </v-btn>
-          </template>
-        </v-dialog>
+        <v-btn
+          color="primary"
+          dark
+          class="mr-5 rounded-xl mb-2 "
+          elevation="15"
+          @click="addItem"
+        >
+          <v-icon left> mdi-ticket-percent-outline</v-icon> จัดการคูปอง
+        </v-btn>
+
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-text-field

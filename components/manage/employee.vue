@@ -858,10 +858,6 @@ import { mapState } from "vuex";
 import moment from "moment";
 import "moment/locale/th";
 
-import DatePicker from "vue2-datepicker";
-import "@/assets/css/datepicker.css";
-import "vue2-datepicker/locale/th";
-
 export default {
   data: () => ({
     //
@@ -971,7 +967,6 @@ export default {
     otpToken: null,
     itemForRight: null
   }),
-  components: { DatePicker },
   computed: {},
   filters: {
     moment: function(date) {

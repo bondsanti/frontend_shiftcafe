@@ -6,8 +6,8 @@
       justify-centaer
     >
       <v-card-title>
-        <v-icon left large>mdi-folder-clock-outline </v-icon>
-        <span>บันทึกกิจกรรม</span>
+        <v-icon left large class=" mb-6 ">mdi-folder-clock-outline </v-icon>
+        <span class=" mb-6 ">บันทึกกิจกรรม</span>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-text-field
@@ -25,8 +25,6 @@
         :headers="headers"
         :items="LogTableData"
         :search="search"
-     
-        
         multi-sort
         :items-per-page="30"
         :footer-props="{

@@ -472,7 +472,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
             small
-            class=" white--text mb-2 "
+            class=" white--text mb-2 rounded-xl "
             color="teal"
             @click="Detail(item)"
           >
@@ -482,7 +482,7 @@
             ดูข้อมูล
           </v-btn>
 
-          <v-btn small class="mb-2 " color="warning" @click="editItem(item)">
+          <v-btn small class="mb-2 rounded-xl " color="warning" @click="editItem(item)">
             <v-icon aria-hidden="false" class="">
               mdi-pencil
             </v-icon>
@@ -491,7 +491,7 @@
 
           <v-btn
             rounded-lx
-            class="mb-2 "
+            class="mb-2 rounded-xl "
             color="error"
             small
             @click="deleteItem(item)"
@@ -547,14 +547,9 @@
 <script>
 import moment from "moment";
 import "moment/locale/th";
-import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/locale/th";
-import "@/assets/css/datepicker.css";
-import "vue2-datepicker/index.css";
+
 export default {
-  components: {
-    DatePicker
-  },
+
   data: () => ({
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valid: true,

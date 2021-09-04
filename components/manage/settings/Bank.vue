@@ -137,6 +137,8 @@
                   outlined
                   label="เลขบัญชี"
                   :rules="banknumber"
+                 counter
+            maxlength="15"
                   v-model="bankitem.bank_number"
                   required
                   type="number"
@@ -389,15 +391,11 @@
           <v-data-iterator
             :headers="headers"
             :items="bank"
+            :items-per-page.sync="itemsPerPage"
+            :page.sync="page"
             :search="search"
-            :items-per-page="15"
-            :footer-props="{
-              'items-per-page-options': [15, 20, 30, 40, 50, -1],
-              'items-per-page-text': 'ข้อมูลหน้าต่อไป'
-            }"
-            :sort-by="['datetime']"
-            :sort-desc="[true, false]"
-            class="mb-n5 "
+             hide-default-footer
+             class="mb-n5 "
           >
             <template v-slot:default="props">
               <v-row>
@@ -477,8 +475,67 @@
                 </v-col>
               </v-row>
             </template>
+              <!-- footer -->
+        <template v-slot:footer>
+          <v-row class="mt-2 mx-3 mt-6 mb-6 mx-6" align="center" justify="center">
+            <span class="grey--text">จำนวนรายการต่อหน้า</span>
+            <v-menu offset-y>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  dark
+                  text
+                  color="primary"
+                  class="ml-2"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  {{ itemsPerPage }}
+                  <v-icon>mdi-chevron-down</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item
+                  v-for="(number, index) in itemsPerPageArray"
+                  :key="index"
+                  @click="updateItemsPerPage(number)"
+                >
+                  <v-list-item-title>{{ number }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+
+            <v-spacer></v-spacer>
+
+            <span class="mr-4 grey--text">
+              หน้า {{ page }} จาก {{ numberOfPages }}
+            </span>
+            <v-btn text dark color="primary" class="mr-1" @click="formerPage">
+              <v-icon>mdi-chevron-left</v-icon>
+            </v-btn>
+            <v-btn text dark color="primary" class="ml-1" @click="nextPage">
+              <v-icon>mdi-chevron-right</v-icon>
+            </v-btn>
+          </v-row>
+        </template>
+        <!-- footer -->
           </v-data-iterator>
           <!-- card main -->
+          <!-- text -->
+            <v-card-text>
+        <v-alert
+          outlined
+          color="info"
+          prominent
+          border="left"
+          class="text-center"
+        >
+         ระบบธนาคาร
+          <q class="font-weight-black ">
+            อัพรูป QRCODE
+          </q>
+        </v-alert>
+      </v-card-text>
+          <!-- text -->
         </v-card>
       </v-col>
     </v-row>
@@ -498,11 +555,15 @@ export default {
   },
   data() {
     return {
+      // 
+      itemsPerPage: 5, page: 1,
+       itemsPerPageArray:  [5, 10, 15, 20, 30],
+      // 
        rules: [value => !!value || "โปรดกรอกธนาคาร"],
       valid: true,
-            banknumber: [
+      banknumber: [
       v => !!v || "เขาเลขบัญชี 10 หลัก แต่มีบ้างธนาคารมี12,14,15หลัก",
-      v => (/\d{10}/.test(v) && v.length >= 10) || "ใส่ตัวเลขเกิน10ตัว",
+      v => (/\d{10}/.test(v) && v.length >= 10) || "ใส่ตัวเลขไม่ถึง10ตัว",
       v => (/\d{10}/.test(v) && v.length <= 15) || "ใส่ตัวเลขเกิน15ตัว",
     ],
       //แคป
@@ -591,8 +652,23 @@ export default {
       val || this.closeviev();
     }
   },
+    computed: {
+      numberOfPages () {
+        return Math.ceil(this.items.length / this.itemsPerPage)
+      },
 
+    },
   methods: {
+      // data-iterators
+    nextPage() {
+      if (this.page + 1 <= this.numberOfPages) this.page += 1;
+    },
+    formerPage() {
+      if (this.page - 1 >= 1) this.page -= 1;
+    },
+    updateItemsPerPage(number) {
+      this.itemsPerPage = number;
+    },
     // ขนาดรูปแคปเริ่มต้น
     defaultSize({ imageSize, visibleArea }) {
       return {

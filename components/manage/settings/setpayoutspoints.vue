@@ -2,7 +2,7 @@
   <div>
     <v-card
       class="mx-auto rounded-xl"
-      max-width="400"
+      max-width="500"
       color="primary"
       v-for="(settings, i) in settings"
       :key="i"

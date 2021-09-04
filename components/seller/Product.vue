@@ -1,32 +1,36 @@
 <template>
   <v-col cols="6" sm="6" md="4" lg="3" style="padding: 6px;">
     <v-card
-      class=" rounded-xl cursor"
+      class=" rounded-lg
+       cursor"
       color="grey lighten-4"
       max-width="600"
+      elevation="24"
       @click="addTopping"
     >
       <v-img
         height="100%"
         contain
-        :aspect-ratio="16 / 9"
+        :aspect-ratio="21 / 9"
         :src="$nuxt.context.env.config.IMG_URL + product.img"
       >
       </v-img>
       <v-card-text class="pt-6 pa-0" style="position: relative;">
         <div
-          :class="[$vuetify.breakpoint.smAndDown ? 'text-h6' : 'text-h5']"
+          :class="[$vuetify.breakpoint.smAndDown ? 'text-h6' : 'text-h6']"
           class="font-weight-Dark primary--text  text-center"
         >
-          {{ product.product_name }}
+          <p>
+            {{ product.product_name }}
+          </p>
         </div>
 
-        <h3 class="text-h5 font-weight-bold info--text  text-center">
+        <p class="text-h5 font-weight-bold info--text  text-center">
           {{ product.price }} ฿
-        </h3>
+        </p>
       </v-card-text>
     </v-card>
-    <v-dialog v-model="dialogTopping" width="470">
+    <v-dialog v-model="dialogTopping" width="500">
       <v-card
         class="rounded-xl"
         style=".v-dialog:not(.v-dialog--fullscreen) {
@@ -36,21 +40,13 @@
         <v-card-title>
           <v-row>
             <v-col cols="12" sm="4" md="4" lg="4">
-              <v-sheet
-                color="white"
-                height="80"
-                width="80"
-                class="rounded-circle"
-              >
-                <v-avatar rounded tile size="72"
-                  ><img rounded src="../../assets/icons/shopping.png"
-                /></v-avatar> </v-sheet
-            ></v-col>
+              <v-avatar rounded tile size="72"
+                ><img rounded src="../../assets/icons/shopping.png"
+              /></v-avatar>
+            </v-col>
             <v-col cols="12" sm="8" md="8" lg="8">
-              <p class=" ma-2 mt-3">
-                เลือกท็อปปิ้ง {{ product.product_name }}
-              </p></v-col
-            >
+              <p class=" ma-2 mt-3">เลือกท็อปปิ้ง {{ product.product_name }}</p>
+            </v-col>
           </v-row>
         </v-card-title>
 
@@ -63,11 +59,12 @@
           :key="top._id"
           :label="top.name"
           :value="top"
+          hide-details
         >
-          <template v-slot:label>
-            <p class=" mt-1">{{ top.name }}</p>
-            <p class=" ml-3  mt-1">ราคา {{ top.price }}</p>
-            <p class="ml-2  mt-1">บาท</p>
+          <template v-slot:label class="mt-n16">
+            <p class=" mt-3">{{ top.name }}</p>
+            <p class=" ml-3  mt-3">ราคา {{ top.price }}</p>
+            <p class="ml-2  mt-3">บาท</p>
           </template>
         </v-checkbox>
 

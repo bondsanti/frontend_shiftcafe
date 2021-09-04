@@ -360,9 +360,7 @@
 <script>
 import moment from "moment";
 import "moment/locale/th";
-import DatePicker from "vue2-datepicker";
-import "@/assets/css/datepicker.css";
-import "vue2-datepicker/locale/th";
+
 export default {
   layout: "layoutCashier",
   data: () => ({
@@ -484,9 +482,7 @@ export default {
     ]
   }),
 
-  components: {
-    DatePicker
-  },
+
   watch: {
     dialog(val) {
       val || this.close();

@@ -52,7 +52,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <h3>ขื่อร้านอาหาร:</h3>
+            <h3>บริษัท:</h3>
           </v-list-item-content>
           <v-list-item-content class="align-end">
             {{ settings.restaurant }}
@@ -159,7 +159,7 @@
               <v-col cols="12" sm="4">
                 <v-text-field
                   outlined
-                  label="ชื่อใบเสร็จ"
+                  label="บริษัท"
                   v-model="settingitem.restaurant"
                   required
                   append-icon="mdi-receipt"

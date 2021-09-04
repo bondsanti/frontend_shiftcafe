@@ -6,22 +6,17 @@
       justify-centaer
     >
       <v-card-title>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              class="ma-2 ma-1 rounded-xl"
-              elevation="24"
-              v-bind="attrs"
-              v-on="on"
-              @click="addItem"
-            >
-              <v-icon left> mdi-barley </v-icon>
-              <span>ประเภทอาหาร</span>
-            </v-btn>
-          </template>
-        </v-dialog>
+        <v-btn
+          color="primary"
+          dark
+          class="ma-2 ma-1 rounded-xl"
+          elevation="24"
+          @click="addItem"
+        >
+          <v-icon left> mdi-barley </v-icon>
+          <span>ประเภทอาหาร</span>
+        </v-btn>
+
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-text-field

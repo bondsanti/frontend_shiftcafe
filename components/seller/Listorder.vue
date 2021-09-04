@@ -138,7 +138,12 @@
       </v-col>
     </div>
     <v-dialog v-model="dialogTopping" width="450">
-      <v-card class="rounded-xl">
+      <v-card
+        class="rounded-xl "
+        style=".v-dialog:not(.v-dialog--fullscreen) {
+    max-height: 100%;
+}"
+      >
         <v-card-title class="text-h5  lighten-2">
           <v-row>
             <v-col cols="12" sm="4" md="4" lg="4">
@@ -154,70 +159,34 @@
               </v-sheet>
             </v-col>
             <v-col cols="12" sm="8" md="8" lg="8">
-              <p class=" ma-2 mt-6">เลือกท็อปปิ้ง{{ productTopping.name }}</p>
+              <p class=" ma-2 mt-3">เลือกท็อปปิ้ง{{ productTopping.name }}</p>
             </v-col>
           </v-row>
         </v-card-title>
-        <v-sheet class="ml-7 mr-7 mt-7">
-          <v-checkbox
-            @click="thinkPriceTopping"
-            v-model="selected"
-            v-for="top in productTopping.topping"
-            :key="top._id"
-            color="red"
-            :label="top.name"
-            :value="top"
-          >
-            <template v-slot:label>
-              <h3 class="font-weight-light ">{{ top.name }}</h3>
-              <h3 class="font-weight-light ml-3">ราคา {{ top.price }}</h3>
-              <h3 class="font-weight-light ml-2">บาท</h3>
-            </template></v-checkbox
-          >
-          <v-text-field
-            class="mx-2 mt-2"
-            prepend-inner-icon="mdi-tooltip-text-outline"
-            label="รายละเอียดเพิ่มเติม"
-            v-model="detailTopping"
-            rounded
-          ></v-text-field>
-        </v-sheet>
-        <!-- <v-list>
-          <v-list-item-group v-model="selected" multiple>
-            <template v-for="top in productTopping.topping">
-              <v-divider v-if="!top" :key="top._id"></v-divider>
 
-              <v-list-item
-                v-else
-                :key="top._id"
-                :value="top"
-                active-class="red--text text--accent-4"
-              >
-                <template v-slot:default="{ active }">
-                  <v-list-item-content>
-                    <v-list-item-avatar>
-                      <v-avatar rounded tile size="32"
-                        ><img rounded src="../../assets/icons/shopping.png"
-                      /></v-avatar>
-                    </v-list-item-avatar>
-                  </v-list-item-content>
-
-                  <v-list-item-content>
-                    <v-list-item-title v-text="top.name"> </v-list-item-title>
-                  </v-list-item-content>
-
-                  <v-list-item-action>
-                    <v-checkbox
-                      @click="thinkPriceTopping"
-                      :input-value="active"
-                      color="red accent-4"
-                    ></v-checkbox>
-                  </v-list-item-action>
-                </template>
-              </v-list-item>
-            </template>
-          </v-list-item-group>
-        </v-list> -->
+        <v-checkbox
+          class="ml-7"
+          @click="thinkPriceTopping"
+          v-model="selected"
+          v-for="top in productTopping.topping"
+          :key="top._id"
+          color="red"
+          :label="top.name"
+          :value="top"
+        >
+          <template v-slot:label>
+            <p class=" mt-3">{{ top.name }}</p>
+            <p class=" ml-3 mt-3">ราคา {{ top.price }}</p>
+            <p class=" ml-2 mt-3">บาท</p>
+          </template></v-checkbox
+        >
+        <v-text-field
+          class="mx-2 mt-1"
+          prepend-inner-icon="mdi-tooltip-text-outline"
+          label="รายละเอียดเพิ่มเติม"
+          v-model="detailTopping"
+          rounded
+        ></v-text-field>
 
         <v-card-actions>
           <h3 class="subheading text-uppercase pl-2 mb-4">
@@ -565,3 +534,25 @@ export default {
   }
 };
 </script>
+<style>
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #1d1d1d;
+}
+</style>

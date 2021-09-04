@@ -2,7 +2,7 @@
   <div>
     <v-card
       class="mx-auto rounded-xl"
-      max-width="500"
+      max-width="400"
       color="primary"
       v-for="(settings, i) in settings"
       :key="i"
@@ -33,7 +33,7 @@
       </v-card-actions>
     </v-card>
 
-    <v-dialog v-model="dialog" max-width="700">
+    <v-dialog v-model="dialog" max-width="400">
       <v-card class="pa-6 rounded-xl">
         <p class="text-md-body-1 text-center">
           ตั้งค่าอัตราการจ่ายแต้ม

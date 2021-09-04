@@ -32,22 +32,18 @@
     >
       <v-card-title>
         <!-- ********************************************************************************************************************************************************************** -->
-        <v-dialog v-model="dialogadd" max-width="650px">
-          <template v-slot:activator="{ on, attrs }">
+       
             <v-btn
               color="primary"
               dark
               class="mr-5 rounded-xl"
-              elevation="15"
-              v-bind="attrs"
-              v-on="on"
+              elevation="15"           
               @click="addItem"
             >
               <v-icon left> mdi-card-account-details-outline </v-icon>
               จัดการพนักงาน
             </v-btn>
-          </template>
-        </v-dialog>
+     
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>

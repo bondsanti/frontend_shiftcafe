@@ -6,30 +6,24 @@
       justify-centaer
     >
       <v-card-title>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              class="mr-1 rounded-xl"
-              elevation="15"
-              @click="dialog = true"
-            >
-              <v-icon left> mdi-file-powerpoint-box </v-icon>จัดการพอยท์
-              เพิ่ม/ลด
-            </v-btn>
+        <v-btn
+          color="primary"
+          class="mr-1 rounded-xl"
+          elevation="15"
+          @click="dialog = true"
+        >
+          <v-icon left> mdi-file-powerpoint-box </v-icon>จัดการพอยท์ เพิ่ม/ลด
+        </v-btn>
 
-            <v-btn
-              color="primary"
-              disabled
-              dark
-              class="mr-5"
-              v-bind="attrs"
-              v-on="on"
-            >
-            </v-btn>
-          </template>
-        </v-dialog>
-
+        <v-btn
+          color="primary"
+          disabled
+          dark
+          class="mr-5"
+          v-bind="attrs"
+          v-on="on"
+        >
+        </v-btn>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-text-field

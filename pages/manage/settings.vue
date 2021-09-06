@@ -63,6 +63,9 @@
       <v-col cols="12" sm="6" md="4" lg="3">
         <setpayoutspoints :settings="settings" @refresh="refresh" />
       </v-col>
+      <v-col cols="12" sm="6" md="4" lg="3">
+        <colortheme :settings="settings" @refresh="refresh" />
+      </v-col>
       <!--  -->
       <v-col cols="12" sm="6" md="4" lg="3">
         <v-card class="mx-auto rounded-xl" max-width="500" color="primary">
@@ -246,6 +249,7 @@
 
 <script>
 import setpayoutspoints from "@/components/manage/settings/setpayoutspoints.vue";
+import colortheme from "@/components/manage/settings/colortheme.vue";
 import Customizer from "@/components/manage/settings/Customizer.vue";
 import Report from "@/components/manage/settings/Report.vue";
 import ReportByInvoice from "@/components/manage/settings/ReportByInvoice.vue";
@@ -275,6 +279,7 @@ export default {
   },
   middleware: ["auth", "check", "refresh", "checkChecker"],
   components: {
+    colortheme,
     setpayoutspoints,
     Customizer,
     Report,
@@ -361,6 +366,11 @@ export default {
       });
       // this.paymentMonth = month;
       return month;
+    },
+    test(){
+const theme = localStorage.getItem("primary");
+    console.log(theme);
+    this.$vuetify.theme.themes.light.primary = localStorage.getItem("primary");
     }
   },
   data() {
@@ -383,6 +393,7 @@ export default {
     };
   },
   created() {
+    this.test()
     //this.filterPayment();
     //console.log(this.payments);
   }

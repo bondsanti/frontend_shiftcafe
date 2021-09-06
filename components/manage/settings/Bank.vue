@@ -290,7 +290,7 @@
 
           <v-btn
             class="ma-1"
-            color="info2"
+            color="Success"
             :disabled="!valid"
             @click="
               save();
@@ -319,7 +319,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="info2"
+            color="Success"
             class="ma-2"
             @click="
               closeDelete();

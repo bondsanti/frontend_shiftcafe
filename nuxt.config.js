@@ -102,8 +102,12 @@ module.exports = {
           primary: "#1d1d1d",
           secondary: "#ededed",
           info: "#39b54a",
-          info2: "#00b894"
-        }
+          accent: "#485fc7",
+          warning: "#ffe08a",
+          error: "#f14668",
+          success: "#00b894"
+        },
+        dark: {}
       }
     }
   },

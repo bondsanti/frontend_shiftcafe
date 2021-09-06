@@ -367,10 +367,12 @@ export default {
       // this.paymentMonth = month;
       return month;
     },
-    test(){
-const theme = localStorage.getItem("primary");
-    console.log(theme);
-    this.$vuetify.theme.themes.light.primary = localStorage.getItem("primary");
+    test() {
+      const theme = localStorage.getItem("primary");
+      console.log(theme);
+      this.$vuetify.theme.themes.light.primary = localStorage.getItem(
+        "primary"
+      );
     }
   },
   data() {
@@ -393,7 +395,7 @@ const theme = localStorage.getItem("primary");
     };
   },
   created() {
-    this.test()
+    //this.test();
     //this.filterPayment();
     //console.log(this.payments);
   }

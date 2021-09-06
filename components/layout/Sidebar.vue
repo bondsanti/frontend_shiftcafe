@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar fixed app color="#1d1d1d" dark>
+    <v-app-bar fixed app color="primary" dark>
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-toolbar-title class="hidden-xs-only">{{
         this.$store.getters["setting"][0].head_title
@@ -9,12 +9,21 @@
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-
+      <!-- <v-switch
+        class="mx-6 mt-6"
+        v-model="$vuetify.theme.dark"
+        hint=""
+        color="info"
+        inset
+        label="ธีม"
+        persistent-hint
+      ></v-switch> -->
       <span class="mr-4  hidden-xs-only font-weight-bold">{{ timer }}</span>
 
       <v-avatar size="36px" class="mr-2 hidden-xs-only">
         <v-icon x-large>mdi-account-circle</v-icon>
       </v-avatar>
+
       <v-toolbar-title
         >{{ $store.getters["displayName"] }} |
         <strong>{{ $store.getters["position"] }}</strong></v-toolbar-title
@@ -29,7 +38,7 @@
       fixed
       temporary
       app
-      color="#1d1d1d"
+      color="primary"
       dark
     >
       <v-list-item>

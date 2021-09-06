@@ -5,7 +5,7 @@
       fixed
       temporary
       app
-      color="#1d1d1d"
+      color="primary"
       dark
     >
       <v-list-item>
@@ -56,7 +56,7 @@
       </v-list-item>
     </v-navigation-drawer>
     <!-- -------------------------------------------------------------------------------------------------------------------- -->
-    <v-app-bar app color="#1d1d1d" dark>
+    <v-app-bar app color="primary" dark>
       <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-toolbar-title class="hidden-xs-only">{{
         this.$store.getters["setting"][0].head_title

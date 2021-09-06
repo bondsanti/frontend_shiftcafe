@@ -25,7 +25,7 @@
               class="mb-n5"
             >
               <template v-slot:[`item.datetime`]="{ item }">
-                <span>{{ item.datetime | moment }}</span>
+                <span>{{ formatDate(item.datetime) }}</span>
               </template>
               <template v-slot:[`item.type_payment`]="{ item }">
                 <v-chip :color="getColor(item.type_payment)" dark small>
@@ -50,7 +50,6 @@
 </template>
 
 <script>
-import moment from "moment";
 import MenuProfile from "~/components/memberLayout/MenuProfile";
 export default {
   layout: "layoutMember",
@@ -94,6 +93,11 @@ export default {
     };
   },
   methods: {
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY H:mm");
+    },
     formatPrice(total_price, discount_price, net_price) {
       const value = parseInt(total_price, discount_price, net_price);
       let val = (value / 1).toFixed(2).replace(",", ".");
@@ -159,13 +163,7 @@ export default {
     //console.log(historyBuy);
     return { loadData, historyBuy, totalprice, Sumtotal };
   },
-  filters: {
-    moment: function(date) {
-      // return moment(date).format('Do MMMM YYYY').add(543, 'years')
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY H:mm");
-    }
-  },
+
   components: {
     MenuProfile
   }

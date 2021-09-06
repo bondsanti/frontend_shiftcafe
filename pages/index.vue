@@ -36,22 +36,7 @@ export default {
       ]
     };
   },
-  created() {
-    // const position = this.$store.getters["position"];
-    // //console.log(position);
-    // if (
-    //   position === "admin" ||
-    //   position === "manager" ||
-    //   position === "checker"
-    // ) {
-    //   this.$router.push("/manage");
-    // } else if (position === "staff" || position === "cashier") {
-    //   this.$router.push("/seller");
-    // } else {
-    //   this.$router.push("/member");
-    // }
-    //this.$router.push("/");
-  }
+  created() {}
 };
 </script>
 

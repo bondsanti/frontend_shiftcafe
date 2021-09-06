@@ -15,15 +15,6 @@
           <v-icon left> mdi-file-powerpoint-box </v-icon>จัดการพอยท์ เพิ่ม/ลด
         </v-btn>
 
-        <v-btn
-          color="primary"
-          disabled
-          dark
-          class="mr-5"
-          v-bind="attrs"
-          v-on="on"
-        >
-        </v-btn>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-text-field
@@ -41,8 +32,6 @@
         :items="pointTableData"
         :search="search"
         :items-per-page="25"
-        :sort-by="['datetime']"
-        :sort-desc="[true, false]"
         :footer-props="{
           'items-per-page-options': [30, 40, 50, -1],
           prevIcon: 'mdi-chevron-left',
@@ -176,28 +165,34 @@ export default {
     headers: [
       {
         text: "ลำดับ",
+        sortable: false,
         value: "No"
       },
 
       {
         text: "วันทีเพิ่มลดแต้ม",
+        sortable: false,
         value: "datetime"
       },
       {
         text: "ชื่อลูกค้าที่ถูกจัดการ",
+        sortable: false,
         value: "ref_cus_id"
       },
       {
         text: "ชื่อพนักงานที่จัดการ",
+        sortable: false,
         value: "ref_emp_id"
       },
 
       {
         text: "แต้ม(P)",
+        sortable: false,
         value: "point"
       },
       {
         text: "สถานะ",
+        sortable: false,
         value: "status"
       }
 
@@ -212,7 +207,7 @@ export default {
   }),
   computed: {
     pointTableData() {
-      return this.pointmanage.map(item => {
+      return this.pointmanage.reverse().map(item => {
         return {
           ref_cus_id: `${item.ref_cus_id ? item.ref_cus_id.pname : ""} ${
             item.ref_cus_id ? item.ref_cus_id.fname : ""

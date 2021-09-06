@@ -93,8 +93,6 @@
                 nextIcon: 'mdi-chevron-right',
                 'items-per-page-text': 'ข้อมูลหน้าต่อไป'
               }"
-              :sort-by="['datetime']"
-              :sort-desc="[true, false]"
               class="mb-n5"
             >
               <template v-slot:[`item.No`]="{ index }">
@@ -151,13 +149,13 @@ export default {
         {
           text: "วัน เวลา",
           align: "start",
-          sortable: true,
+          sortable: false,
           value: "datetime"
         },
-        { text: "ชื่อบิล", value: "bill_name" },
-        { text: "สถานะสั่งทำ", value: "status_cook" },
-        { text: "สถานะ", value: "status" },
-        { text: "ยอดสั่งซื้อ", value: "total_price" },
+        { text: "ชื่อบิล", value: "bill_name", sortable: false },
+        { text: "สถานะสั่งทำ", value: "status_cook", sortable: false },
+        { text: "สถานะ", value: "status", sortable: false },
+        { text: "ยอดสั่งซื้อ", value: "total_price", sortable: false },
         { text: "หมายเหตุ", value: "actions", sortable: false }
       ]
       //historyOrder: []
@@ -165,7 +163,8 @@ export default {
   },
   computed: {
     orderTableData() {
-      return this.historyOrder.map(item => {
+      //console.log(this.historyOrder.reverse());
+      return this.historyOrder.reverse().map(item => {
         return {
           datetime: this.formatDate(item.datetime),
           bill_name: item.bill_name,

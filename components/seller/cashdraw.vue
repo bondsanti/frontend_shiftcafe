@@ -191,8 +191,6 @@
         :headers="headers"
         multi-sort
         :items="cashTableData"
-        :sort-by="['datetime']"
-        :sort-desc="[true, false]"
         :search="search"
         :items-per-page="15"
         :footer-props="{
@@ -316,23 +314,28 @@ export default {
         },
         {
           text: "วันที่",
-          value: "datetime"
+          value: "datetime",
+          sortable: false
         },
         {
           text: "ผู้ทำการบันทึก",
-          value: "ref_emp_id"
+          value: "ref_emp_id",
+          sortable: false
         },
         {
           text: "ประเภท",
-          value: "type"
+          value: "type",
+          sortable: false
         },
         {
           text: "จำนวนเงิน",
-          value: "total_money"
+          value: "total_money",
+          sortable: false
         },
         {
           text: "หมายเหตุ",
-          value: "remark"
+          value: "remark",
+          sortable: false
         },
         {
           text: "หมายเหตุ",
@@ -344,7 +347,7 @@ export default {
   },
   computed: {
     cashTableData() {
-      return this.loadData.map(item => {
+      return this.loadData.reverse().map(item => {
         return {
           _id: item._id,
           datetime: this.formatDate(item.datetime),

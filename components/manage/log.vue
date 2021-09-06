@@ -25,7 +25,6 @@
         :headers="headers"
         :items="LogTableData"
         :search="search"
-        multi-sort
         :items-per-page="30"
         :footer-props="{
           'items-per-page-options': [30, 40, 50, -1],
@@ -77,28 +76,27 @@ export default {
       },
       {
         text: "วันที่",
-        sortable: true,
+        sortable: false,
         value: "datetime"
       },
       {
         text: "บุคคลที่ดำเนินการ",
         align: "start",
-        value: "emp_id"
+        value: "emp_id",
+        sortable: false
       },
       {
         text: "เหตุการณ์",
-        value: "activity"
+        value: "activity",
+        sortable: false
       }
     ]
   }),
 
   computed: {
     LogTableData() {
-      return this.log.map(item => {
+      return this.log.reverse().map(item => {
         return {
-          // emp_id: `${item.emp_id ? item.emp_id.username : ""} ${
-          //   item.emp_id ? item.emp_id.fname : ""
-          // } ${item.emp_id ? item.emp_id.lname : ""}`,
           emp_id: `${
             item.emp_id
               ? item.emp_id.fname + " " + item.emp_id.lname

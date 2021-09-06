@@ -78,13 +78,12 @@
                 nextIcon: 'mdi-chevron-right',
                 'items-per-page-text': 'ข้อมูลหน้าต่อไป'
               }"
-              sort-by="datetime"
-              :sort-desc="true"
               class="mb-n5"
             >
               <template v-slot:[`item.No`]="{ index }">
                 {{ index + 1 }}
               </template>
+
               <template v-slot:[`item.type_payment`]="{ item }">
                 <v-chip :color="getColor(item.type_payment)" dark small>
                   {{ item.type_payment }}
@@ -207,19 +206,19 @@ export default {
         {
           text: "วัน เวลา",
           align: "start",
-          // sortable: true,
+          sortable: false,
           value: "datetime"
         },
         {
           text: "หมายเลขบิล",
           align: "start",
-          // sortable: true,
+          sortable: false,
           value: "invoice"
         },
         {
           text: "ประเภทการชำระเงิน",
           align: "start",
-          // sortable: true,
+          sortable: false,
           value: "type_payment"
         },
         {
@@ -262,7 +261,7 @@ export default {
   },
   computed: {
     invoiceTableData() {
-      return this.historyInvoice.map(item => {
+      return this.historyInvoice.reverse().map(item => {
         return {
           datetime: this.formatDate(item.datetime),
           invoice: item.invoice,
@@ -278,30 +277,6 @@ export default {
     }
   },
   methods: {
-    customSort: function(items, index, isDesc) {
-      items.sort((a, b) => {
-        if (index[0] == "date") {
-          if (!isDesc[0]) {
-            return new Date(b[index]) - new Date(a[index]);
-          } else {
-            return new Date(a[index]) - new Date(b[index]);
-          }
-        } else {
-          if (typeof a[index] !== "undefined") {
-            if (!isDesc[0]) {
-              return a[index]
-                .toLowerCase()
-                .localeCompare(b[index].toLowerCase());
-            } else {
-              return b[index]
-                .toLowerCase()
-                .localeCompare(a[index].toLowerCase());
-            }
-          }
-        }
-      });
-      return items;
-    },
     formatPrice(total_price) {
       const value = parseInt(total_price);
       let val = (value / 1).toFixed(2).replace(",", ".");

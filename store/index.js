@@ -1,6 +1,6 @@
 export const state = () => ({
   position: "",
-  drawer: false,
+  navDrawer: null,
   img: "/logo.jpg",
   setting: [
     {
@@ -21,8 +21,11 @@ export const mutations = {
   setPosition(state, text) {
     state.position = text;
   },
-  set_drawer(state, newVal) {
-    state.drawer = newVal;
+  SET_NAV_DRAWER: (state, payload) => {
+    state.navDrawer = payload;
+  },
+  TOGGLE_NAV_DRAWER: state => {
+    state.navDrawer = !state.navDrawer;
   },
   setSetting(state, value) {
     state.setting = value;
@@ -30,6 +33,7 @@ export const mutations = {
 };
 
 export const actions = {
+  //ใช้กับโหมด server
   nuxtServerInit(vuexContext, context) {
     return context.$axios
       .$get(context.env.config.BASE_URL + "/setting")
@@ -38,11 +42,12 @@ export const actions = {
       })
       .catch(e => context.error(e));
   },
+
   setPosition(vuexContext, text) {
     vuexContext.commit("setPosition", text);
   },
-  checkLogin(vuexContext) {
-    //console.log(vuexContext.state.auth.user.ref_id_role.position);
+  checkLogin(vuexContext, res) {
+    vuexContext.commit("setSetting", res);
     if (vuexContext.state.auth.user) {
       vuexContext.commit(
         "setPosition",

@@ -73,7 +73,7 @@
 import { mapState } from "vuex";
 export default {
   layout: "login",
-  middleware: "isLoggedIn",
+  middleware: ["isLoggedIn", "refresh"],
   async asyncData(context) {
     const setting = await context.$axios.$get("/setting");
     return {
@@ -103,12 +103,12 @@ export default {
   data() {
     return {
       showPass: false,
-      rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
       username: "",
       password: "",
       snackbar: false,
       timeout: 2000,
       error: null,
+      rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
       valid: true
     };
   },
@@ -118,7 +118,8 @@ export default {
       const payload = {
         data: {
           username: this.username,
-          password: this.password
+          password: this.password,
+          type: 0
         }
       };
 
@@ -142,6 +143,19 @@ export default {
           } else {
             this.$router.push("/member");
           }
+          this.$swal.fire({
+            type: "success",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            title: res.data.message,
+            didOpen: toast => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            }
+          });
         } else {
           this.snackbar = true;
           this.error = res.data.message;

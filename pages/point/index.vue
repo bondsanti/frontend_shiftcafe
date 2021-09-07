@@ -50,7 +50,7 @@
                   class="mb-n5"
                 >
                   <template v-slot:[`item.datetime`]="{ item }">
-                    <span>{{ item.datetime | moment }}</span>
+                    <span>{{ formatDate(item.datetime) }}</span>
                   </template>
                   <template v-slot:[`item.point_by`]="{ item }">
                     <v-chip :color="getForm(item.point_by)" dark small>
@@ -77,7 +77,27 @@ import moment from "moment";
 import MenuProfile from "~/components/memberLayout/MenuProfile";
 export default {
   layout: "layoutMember",
-  middleware: ["auth"],
+  middleware: ["auth", "refresh"],
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: "พอยท์",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
+  },
 
   data() {
     return {
@@ -94,6 +114,11 @@ export default {
     };
   },
   methods: {
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY H:mm");
+    },
     formatPrice(point) {
       const value = parseInt(point);
       let val = (value / 1).toFixed(0).replace(",", ".");
@@ -124,18 +149,46 @@ export default {
     const loadPoint = await context.$axios.$get(
       "/point-manage/customer/" + context.$auth.user._id
     );
+    const levelMember = await context.$axios.$get("/level-member");
 
-    const data = await context.$axios.$get(
-      "/payment/customer/" + context.$auth.user._id
-    );
+    const startDate = new Date(loadData.mission.start);
+    const endDate = new Date(loadData.mission.end);
+
     let totalprice = 0;
-    for (let key in data) {
-      totalprice += data[key].net_price;
-    }
-    let target_price = loadData.ref_level_id.target_price;
-
     let Sumtotal = 0;
-    Sumtotal = (totalprice / target_price) * 100;
+    if (loadData.ref_level_id) {
+      //เรียงจากน้อยไปมาก เรียงตาม target_price
+      const dataMem = levelMember.sort(
+        (a, b) => a.target_price - b.target_price
+      );
+      //หา target ใหม่เพื่อเปลี่ยนระดับสมาชิก
+      const newTarget = dataMem.find(
+        d => loadData.ref_level_id.target_price < d.target_price
+      );
+      //console.log(newTarget);
+      //นำ target_price ใหม่ที่ได้ไปเปลี่ยนอันเก่า
+      loadData.ref_level_id.target_price = newTarget
+        ? newTarget.target_price
+        : 1000000;
+      const data = await context.$axios.$get(
+        "/payment/customer/" + context.$auth.user._id
+      );
+      const newData = data.filter(p => {
+        return (
+          new Date(p.datetime).getTime() >= startDate.getTime() &&
+          new Date(p.datetime).getTime() <= endDate.getTime()
+        );
+      });
+      for (let key in newData) {
+        totalprice += data[key].net_price;
+      }
+      let target_price = loadData.ref_level_id.target_price;
+
+      Sumtotal = (totalprice / target_price) * 100;
+    } else {
+      Sumtotal = 0;
+      totalprice = 0;
+    }
     //console.log(loadPoint);
     //console.log(context.$auth.user);
     return { loadData, loadPoint, totalprice, Sumtotal };

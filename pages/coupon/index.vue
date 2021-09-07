@@ -20,21 +20,43 @@
           ></v-text-field>
           <v-row class="">
             <v-col
-              v-for="(rows, dealers) in visiblePages"
-              :key="dealers"
+              v-for="(coupon, i) in visiblePages"
+              :key="i"
               sm="12"
               md="4"
               cols="12"
               class="mt-n2"
             >
-              <v-card class="rounded-xl">
-                <v-img height="100%" src="COUPON.png" elevation="5">
-                  <v-row align="end">
-                    <v-col align-self="start" class="pa-6" cols="4"> </v-col>
-                    <v-col align-self="start" class="pa-5 mt-10 " cols="8">
-                    </v-col>
-                  </v-row>
-                </v-img>
+              <v-card color="primary" dark>
+                <div class="d-flex flex-no-wrap justify-space-around">
+                  <div>
+                    <v-card-title class="text-h5">{{
+                      coupon.codename
+                    }}</v-card-title>
+
+                    <v-card-subtitle
+                      >ระยะเวลา {{ formatDate(coupon.start) }} -
+                      {{ formatDate(coupon.end) }}
+                      <p>{{ coupon.detail }}</p></v-card-subtitle
+                    >
+
+                    <v-card-actions>
+                      <h2>{{ coupon.discount }}%</h2>
+
+                      <v-btn class="ml-2 " outlined rounded small>
+                        เหลือ {{ coupon.num_use }} ครั้ง
+                      </v-btn>
+                    </v-card-actions>
+                  </div>
+
+                  <v-avatar class="ma-2" size="80" tile>
+                    <v-img
+                      :src="
+                        `${$nuxt.context.env.config.IMG_URL}${$store.getters['setting'][0].logo}`
+                      "
+                    ></v-img>
+                  </v-avatar>
+                </div>
               </v-card>
             </v-col>
           </v-row>
@@ -57,75 +79,45 @@
 import MenuProfile from "~/components/memberLayout/MenuProfile";
 export default {
   layout: "layoutMember",
-  middleware: ["auth"],
+  middleware: ["auth", "refresh"],
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: "คูปอง",
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
+  },
+  components: {
+    MenuProfile
+  },
   data() {
     return {
       search: "",
       currentPage: 1,
       perPage: 6,
-      dealers: [
-        {
-          name: "โคตรรวย",
-          url: "/members/history_buy_detail",
-          datedue: "16/2/64",
-          dateorder: "+10 พอยท์"
-        },
-        {
-          name: "โคตรรวย",
-          url: "/members/history_buy_detail",
-          datedue: "16/2/64",
-          dateorder: "+10 พอยท์"
-        },
-        {
-          name: "โคตรรวย",
-          url: "/members/history_buy_detail",
-          datedue: "16/2/64",
-          dateorder: "+10 พอยท์"
-        },
-        {
-          name: "โคตรรวย",
-          url: "/members/history_buy_detail",
-          datedue: "16/2/64",
-          dateorder: "+10 พอยท์"
-        },
-        {
-          name: "โคตรรวย",
-          url: "/members/history_buy_detail",
-          datedue: "16/2/64",
-          dateorder: "+10 พอยท์"
-        },
-        {
-          name: "โคตรรวย",
-          url: "/members/history_buy_detail",
-          datedue: "16/2/64",
-          dateorder: "+10 พอยท์"
-        },
-        {
-          name: "โคตรรวย",
-          url: "/members/history_buy_detail",
-          datedue: "16/2/64",
-          dateorder: "+10 พอยท์"
-        },
-        {
-          name: "โคตรรวย",
-          url: "/members/history_buy_detail",
-          datedue: "16/2/64",
-          dateorder: "+10 พอยท์"
-        },
-        {
-          name: "โคตรรวย",
-          url: "/members/history_buy_detail",
-          datedue: "16/2/64",
-          dateorder: "+10 พอยท์"
-        }
-      ]
+      dealers: []
     };
   },
   computed: {
     visiblePages() {
       if (this.search) {
         return this.dealers.filter(rows => {
-          return rows.name.toLowerCase().includes(this.search.toLowerCase());
+          return rows.codename
+            .toLowerCase()
+            .includes(this.search.toLowerCase());
         });
       } else {
         return this.dealers.slice(
@@ -140,23 +132,65 @@ export default {
     const loadData = await context.$axios.$get(
       "/customer/" + context.$auth.user._id
     );
-    const data = await context.$axios.$get(
-      "/payment/customer/" + context.$auth.user._id
-    );
-    let totalprice = 0;
-    for (let key in data) {
-      totalprice += data[key].net_price;
-    }
-    let target_price = loadData.ref_level_id.target_price;
+    const levelMember = await context.$axios.$get("/level-member");
+    const coupon = await context.$axios.$get("/coupon");
 
+    const startDate = new Date(loadData.mission.start);
+    const endDate = new Date(loadData.mission.end);
+
+    let totalprice = 0;
     let Sumtotal = 0;
-    Sumtotal = (totalprice / target_price) * 100;
+    if (loadData.ref_level_id) {
+      //เรียงจากน้อยไปมาก เรียงตาม target_price
+      const dataMem = levelMember.sort(
+        (a, b) => a.target_price - b.target_price
+      );
+      //หา target ใหม่เพื่อเปลี่ยนระดับสมาชิก
+      const newTarget = dataMem.find(
+        d => loadData.ref_level_id.target_price < d.target_price
+      );
+      //console.log(newTarget);
+      //นำ target_price ใหม่ที่ได้ไปเปลี่ยนอันเก่า
+      loadData.ref_level_id.target_price = newTarget
+        ? newTarget.target_price
+        : 1000000;
+      const data = await context.$axios.$get(
+        "/payment/customer/" + context.$auth.user._id
+      );
+      const newData = data.filter(p => {
+        return (
+          new Date(p.datetime).getTime() >= startDate.getTime() &&
+          new Date(p.datetime).getTime() <= endDate.getTime()
+        );
+      });
+      for (let key in newData) {
+        totalprice += data[key].net_price;
+      }
+      let target_price = loadData.ref_level_id.target_price;
+
+      Sumtotal = (totalprice / target_price) * 100;
+    } else {
+      Sumtotal = 0;
+      totalprice = 0;
+    }
     //console.log(loadData);
     //console.log(context.$auth.user);
-    return { loadData, totalprice, Sumtotal };
+    return { loadData, totalprice, Sumtotal, coupon };
   },
-  components: {
-    MenuProfile
+  methods: {
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY");
+    },
+    filterCoupon() {
+      const res = this.coupon.filter(c => c.status === 1);
+      this.dealers = res;
+      //console.log(res);
+    }
+  },
+  created() {
+    this.filterCoupon();
   }
 };
 </script>

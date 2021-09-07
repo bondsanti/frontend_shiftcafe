@@ -1,7 +1,7 @@
 <template>
-  <v-app-bar :clipped-left="clipped" fixed app color="#1d1d1d" dark>
-    <v-app-bar-nav-icon @click.stop="toggleDrawer" />
-    <v-toolbar-title class="hidden-xs-only">{{
+  <v-app-bar :clipped-left="clipped" fixed app color="primary" dark>
+    <v-app-bar-nav-icon @click.stop="ToggleNavDrawer()" />
+    <v-toolbar-title v-if="!navDrawer" class="hidden-xs-only">{{
       this.$store.getters["setting"][0].head_title
     }}</v-toolbar-title>
     <v-btn icon @click="$nuxt.refresh()">
@@ -30,13 +30,18 @@ export default {
       timer: null
     };
   },
+  computed: {
+    navDrawer() {
+      return this.$store.state.navDrawer;
+    }
+  },
   methods: {
+    ToggleNavDrawer() {
+      this.$store.commit("TOGGLE_NAV_DRAWER");
+    },
     async logout() {
       await this.$auth.logout();
       this.$router.push("/login");
-    },
-    toggleDrawer() {
-      this.$store.commit("set_drawer", !this.$store.state.drawer);
     },
     getTime() {
       let now = new Date();
@@ -52,7 +57,6 @@ export default {
     setInterval(() => {
       this.timer = this.getTime();
     }, 1000);
-    //console.log(this.$store.getters["setting"]);
   }
 };
 </script>

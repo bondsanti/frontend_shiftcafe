@@ -2,14 +2,20 @@
   <div class="" style="height: 100%">
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
       <v-dialog v-model="dialog" max-width="500px">
-        <v-card>
+        <v-card class="rounded-xl">
           <v-form>
             <v-card-title>
-              <span class="text-h"
+              <span class="text-h text-center"
                 ><v-icon left> mdi-note-text-outline </v-icon> หมายเลขออเดอร์ :
-                {{ itemBy.order_no }}<br />พนักงานที่รับออเดอร์ :
-                {{ itemBy.length !== 0 ? itemBy.ref_emp_id.fname : "" }}
-                {{ itemBy.length !== 0 ? itemBy.ref_emp_id.lname : "" }}</span
+                {{ itemBy.order_no }}
+
+                <br />
+
+                <p class="text-center">
+                  พนักงานที่รับออเดอร์ :
+                  {{ itemBy.length !== 0 ? itemBy.ref_emp_id.fname : "" }}
+                  {{ itemBy.length !== 0 ? itemBy.ref_emp_id.lname : "" }}
+                </p></span
               >
             </v-card-title>
             <v-divider class="mb-3"></v-divider>
@@ -51,7 +57,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
 
-              <v-btn color="error" @click="close">
+              <v-btn color="error" @click="close" plain>
                 <v-icon left> mdi-close </v-icon>ปิด
               </v-btn>
             </v-card-actions>
@@ -60,7 +66,7 @@
       </v-dialog>
       <v-row>
         <v-col xs="12" sm="12" md="12" class="">
-          <v-card class="px-6 py-5 mb-5">
+          <v-card class="px-6 py-5 mb-5 rounded-xl">
             <v-card-title>
               <h2 class="text-center">ข้อมูลการสั่งซื้อ</h2>
               <v-spacer></v-spacer>
@@ -70,6 +76,7 @@
                 solo
                 append-icon="mdi-magnify"
                 label="ค้นหา"
+                class="rounded-xl"
                 single-line
                 hide-details
               ></v-text-field>
@@ -78,17 +85,25 @@
               :headers="headers"
               :items="orderTableData"
               :search="search"
-              :items-per-page="15"
+              multi-sort
+              :items-per-page="25"
               :footer-props="{
-                'items-per-page-options': [15, 20, 30, 40, 50, -1],
+                'items-per-page-options': [30, 40, 50, -1],
                 prevIcon: 'mdi-chevron-left',
                 nextIcon: 'mdi-chevron-right',
                 'items-per-page-text': 'ข้อมูลหน้าต่อไป'
               }"
-              :sort-by="['datetime']"
-              :sort-desc="[true, false]"
               class="mb-n5"
             >
+              <template v-slot:[`item.No`]="{ index }">
+                {{ index + 1 }}
+              </template>
+              <template v-slot:[`item.status_cook`]="{ item }">
+                <v-chip :color="getColor2(item.status_cook)" dark small>
+                  {{ item.status_cook }}
+                </v-chip>
+              </template>
+
               <template v-slot:[`item.status`]="{ item }">
                 <v-chip :color="getColor(item.status)" dark small>
                   {{ item.status }}
@@ -99,8 +114,9 @@
               </template>
               <template v-slot:[`item.actions`]="{ item }">
                 <v-btn
-                  class="mr2"
+                  class="mr2 rounded-xl"
                   color="warning"
+                  elevation="15"
                   @click="Detail(item.actions)"
                   small
                 >
@@ -129,15 +145,17 @@ export default {
       },
       itemBy: [],
       headers: [
+        { text: "ลำดับ", sortable: false, value: "No" },
         {
           text: "วัน เวลา",
           align: "start",
-          sortable: true,
+          sortable: false,
           value: "datetime"
         },
-        { text: "ชื่อบิล", value: "bill_name" },
-        { text: "สถานะ", value: "status" },
-        { text: "ยอดสั่งซื้อ", value: "total_price" },
+        { text: "ชื่อบิล", value: "bill_name", sortable: false },
+        { text: "สถานะสั่งทำ", value: "status_cook", sortable: false },
+        { text: "สถานะ", value: "status", sortable: false },
+        { text: "ยอดสั่งซื้อ", value: "total_price", sortable: false },
         { text: "หมายเหตุ", value: "actions", sortable: false }
       ]
       //historyOrder: []
@@ -145,10 +163,13 @@ export default {
   },
   computed: {
     orderTableData() {
-      return this.historyOrder.map(item => {
+      //console.log(this.historyOrder.reverse());
+      return this.historyOrder.reverse().map(item => {
         return {
           datetime: this.formatDate(item.datetime),
           bill_name: item.bill_name,
+          status_cook:
+            item.status_cook === 0 ? "ยังไม่ได้สั่งทำ" : "สั่งทำแล้ว",
           status: item.status === 0 ? "รอชำระเงิน" : "ชำระเงินแล้ว",
           total_price: item.total_price,
           actions: item
@@ -165,6 +186,11 @@ export default {
     getColor(status) {
       if (status === "รอชำระเงิน") return "#757575";
       else return "green";
+    },
+    getColor2(status) {
+      if (status === "สั่งทำแล้ว") return "#2196F3";
+      else if (status === "ยังไม่ได้สั่งทำ") return "#F44336";
+      return "primary";
     },
 
     Detail(item) {

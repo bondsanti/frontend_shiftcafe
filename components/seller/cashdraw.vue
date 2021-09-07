@@ -1,20 +1,30 @@
 <template>
   <div class="ma-3">
-    <v-card class="mx-auto mt-6 py-3" elevaation="5" justify-centaer>
+    <v-card class="mx-auto mt-6 py-3 rounded-xl" elevaation="5" justify-centaer>
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mr-5" v-bind="attrs" v-on="on">
+            <v-btn
+              color="primary"
+              dark
+              class="mr-5 rounded-xl ma-2"
+              elevation="15"
+              v-bind="attrs"
+              v-on="on"
+            >
               <v-icon left> mdi-cash-register</v-icon> ลงข้อมูลเงินทอน
             </v-btn>
           </template>
-          <v-card>
+          <v-card class="rounded-xl ">
             <v-form>
               <v-card-title>
-                <span class="text-h"
-                  ><v-icon left> mdi-cash-register </v-icon>
-                  กรอกข้อมูลเงินทอน</span
-                >
+                <span class="text-h">
+                  <v-icon left> mdi-cash-register </v-icon>
+                  กรอกข้อมูลเงินทอน
+                </span>
+                <v-btn text color="error" class="mr-4" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
               <v-divider class="mb-3"></v-divider>
               <v-form v-model="valid" ref="form">
@@ -24,8 +34,9 @@
                       <v-select
                         v-model="cashdraw.type"
                         label="เลือก"
+                        clearable
                         outlined
-                        color="#1D1D1D"
+                        color="primary"
                         :items="items"
                         :rules="rules"
                         required
@@ -47,6 +58,7 @@
                             label="วันที่"
                             prepend-inner-icon="mdi-calendar"
                             readonly
+                            clearable
                             v-bind="attrs"
                             v-on="on"
                             outlined
@@ -63,22 +75,24 @@
                       <v-text-field
                         outlined
                         label="จำนวนเงิน"
+                        clearable
                         required
                         type="number"
                         v-model="cashdraw.total_money"
                         :rules="rules"
-                        color="#1D1D1D"
+                        color="primary"
                         prefix="฿"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" class="mt-n7">
                       <v-textarea
-                        color="#1D1D1D"
+                        color="primary"
                         outlined
                         v-model="cashdraw.remark"
                         :rules="rules"
                         label="หมายเหตุ"
+                        clearable
                       ></v-textarea>
                     </v-col>
                   </v-row>
@@ -87,10 +101,21 @@
               <v-divider class="mt-n3"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="error" @click="close">
+                <v-btn
+                  color="error"
+                  class="mr-1 rounded-xl"
+                  elevation="15"
+                  @click="close"
+                >
                   <v-icon left> mdi-close </v-icon>ปิด
                 </v-btn>
-                <v-btn color="primary" :disabled="!valid" @click="saveData()">
+                <v-btn
+                  color="primary"
+                  class="mr-1 rounded-xl"
+                  elevation="15"
+                  :disabled="!valid"
+                  @click="saveData()"
+                >
                   <v-icon left> mdi-content-save </v-icon>บันทึก
                 </v-btn>
               </v-card-actions>
@@ -98,12 +123,15 @@
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogeditItem" max-width="500px">
-          <v-card>
+          <v-card class="rounded-xl">
             <v-form>
               <v-card-title>
-                <span class="text-h"
-                  ><v-icon left> mdi-cash-register </v-icon> แก้ไขข้อมูล</span
-                >
+                <span class="text-h">
+                  <v-icon left> mdi-cash-register </v-icon> แก้ไขข้อมูล
+                </span>
+                <v-btn text color="error" class="mr-4" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
               <v-divider class="mb-3"></v-divider>
               <v-form v-model="valid" ref="form">
@@ -112,7 +140,7 @@
                     <v-col cols="12"> </v-col>
                     <v-col cols="12" class="mt-n7">
                       <v-textarea
-                        color="#1D1D1D"
+                        color="primary"
                         outlined
                         v-model="cashdrawedi.remark"
                         :rules="rules"
@@ -125,10 +153,21 @@
               <v-divider class="mt-n3"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="error" @click="closeedit">
+                <v-btn
+                  color="error"
+                  class="mr-1 rounded-xl"
+                  elevation="15"
+                  @click="closeedit"
+                >
                   <v-icon left> mdi-close </v-icon>ปิด
                 </v-btn>
-                <v-btn color="primary" :disabled="!valid" @click="saveData()">
+                <v-btn
+                  color="primary"
+                  class="mr-1 rounded-xl"
+                  elevation="15"
+                  :disabled="!valid"
+                  @click="saveData()"
+                >
                   <v-icon left> mdi-content-save </v-icon>บันทึก
                 </v-btn>
               </v-card-actions>
@@ -141,7 +180,8 @@
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
-          label="ค้นหาข้อมูล"
+          label="ค้นหา"
+          class="rounded-xl"
           single-line
           solo
           hide-details
@@ -149,57 +189,64 @@
       </v-card-title>
       <v-data-table
         :headers="headers"
+        multi-sort
         :items="cashTableData"
         :search="search"
-         :items-per-page="15"
+        :items-per-page="15"
         :footer-props="{
           'items-per-page-options': [15, 20, 30, 40, 50, -1],
-           prevIcon: 'mdi-chevron-left',
+          prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
         }"
       >
         <template v-slot:top>
-          <v-dialog v-model="dialogDelete" max-width="270px">
+          <v-dialog v-model="dialogDelete" max-width="410">
             <v-card>
-              <v-card-title class="black--text  text-body-1 mb-4 ml-6">
-                แน่ใจแล้วใช่มั้ยที่จะลบ
+              <v-card-title class="primary--text text-center">
+                คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
               </v-card-title>
+              <v-divider class="mx-auto"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="info" @click="closeDelete">
-                  <v-icon aria-hidden="false" class="mx-2 ma-1">
+                <v-btn plain color="info" @click="closeDelete">
+                  <v-icon aria-hidden="false" class="mx- ma-1">
                     mdi-close-box </v-icon
-                  >ยกเลิก</v-btn
-                >
+                  >ยกเลิก
+                </v-btn>
                 <v-btn
-                  color="primary"
+                  plain
+                  color="error"
                   :disabled="$store.getters['position'] === 'cashier'"
-                  @click="
-                    deleteItemConfirm();
-                    showAlert();
-                  "
+                  @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="mx-4">
                     mdi-delete-forever </v-icon
-                  >ลบ</v-btn
-                >
+                  >ลบ
+                </v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr2" color="warning" @click="editItem(item)">
-            <v-icon aria-hidden="false" class="mx-2">
+          <v-btn
+            class="mr-1 rounded-xl ma-2"
+            elevation="24"
+            color="warning"
+            small
+            @click="editItem(item)"
+          >
+            <v-icon aria-hidden="false" class="mx-2 ">
               mdi-pencil-plus
             </v-icon>
             แก้ไข
           </v-btn>
           <v-btn
-            rounded-lx
-            class="mr-2"
+            class="mr-1 rounded-xl ma-2"
+            elevation="24"
             color="error"
+            small
             :disabled="$store.getters['position'] === 'cashier'"
             @click="deleteItem(item)"
           >
@@ -235,15 +282,16 @@ export default {
       dialogedi: false,
       dialogDelete: false,
       dialogeditItem: false,
+      //
 
-      menu2: false,
       rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
       valid: true,
+      //
+      menu2: false,
       deleteId: null,
       search: "",
       editedIndex: -1,
       type: null,
-      deleteId: null,
       cashdraw: {
         _id: " ",
         type: "",
@@ -259,20 +307,49 @@ export default {
       },
       items: ["นำเงินเข้า", "นำเงินออก"],
       headers: [
-        { text: "ลำดับ", sortable: false, value: "no" },
-        { text: "วันที่", align: "start", sortable: false, value: "datetime" },
-        { text: "ผู้ทำการบันทึก", value: "ref_emp_id" },
-        { text: "ประเภท", value: "type" },
-        { text: "จำนวนเงิน", value: "total_money" },
-        { text: "หมายเหตุ", value: "remark" },
-        { text: "หมายเหตุ", value: "actions" }
+        {
+          text: "ลำดับ",
+          sortable: false,
+          value: "no"
+        },
+        {
+          text: "วันที่",
+          value: "datetime",
+          sortable: false
+        },
+        {
+          text: "ผู้ทำการบันทึก",
+          value: "ref_emp_id",
+          sortable: false
+        },
+        {
+          text: "ประเภท",
+          value: "type",
+          sortable: false
+        },
+        {
+          text: "จำนวนเงิน",
+          value: "total_money",
+          sortable: false
+        },
+        {
+          text: "หมายเหตุ",
+          value: "remark",
+          sortable: false
+        },
+        {
+          text: "หมายเหตุ",
+          value: "actions",
+          sortable: false
+        }
       ]
     };
   },
   computed: {
     cashTableData() {
-      return this.loadData.map(item => {
+      return this.loadData.reverse().map(item => {
         return {
+          _id: item._id,
           datetime: this.formatDate(item.datetime),
           ref_emp_id: `${item.ref_emp_id.fname} ${item.ref_emp_id.lname}`,
           type: item.type,
@@ -286,24 +363,9 @@ export default {
   created() {
     this.initialize();
   },
-
-  mounted() {
-    this.toast = this.$swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000
-    });
-  },
   methods: {
-    showAlert(msg) {
-      this.toast({
-        type: "success",
-        title: msg
-      });
-    },
-    someFn(ev) {
-      console.log(ev);
+    reset() {
+      this.$refs.form.reset();
     },
     reset() {
       this.$refs.form.reset();
@@ -333,8 +395,22 @@ export default {
     },
     deleteItemConfirm() {
       this.loadData.splice(this.editedIndex, 1);
-      this.$axios.$delete("/withdraw/" + this.deleteId).then(() => {});
-      this.closeDelete();
+      this.$axios
+        .$delete("/withdraw/" + this.deleteId)
+        .then(res => {
+          this.$emit("refresh");
+          this.closeDelete();
+          this.$swal({
+            type: "success",
+            title: res.message
+          });
+        })
+        .catch(e => {
+          this.$swal({
+            type: "error",
+            title: e
+          });
+        });
     },
     close() {
       this.dialog = false;
@@ -365,8 +441,12 @@ export default {
         this.$axios
           .$put("/withdraw/" + this.cashdrawedi._id, this.cashdrawedi)
           .then(res => {
+            // console.log(res);
             this.$emit("refresh");
-            this.showAlert(res.message);
+            this.$swal.fire({
+              type: "success",
+              title: res.message
+            });
             this.closeedit();
             this.type = null;
           })
@@ -374,8 +454,25 @@ export default {
             console.log(e);
           });
       } else {
-        this.$emit("addCashdraw", this.cashdraw);
-        this.close();
+        // add
+        this.loading = true;
+        this.$axios
+          .$post("/withdraw/", this.cashdraw)
+          .then(res => {
+            // console.log(res);
+            this.$emit("refresh");
+            this.close();
+            this.$swal.fire({
+              type: "success",
+              title: res.message
+            });
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
         this.dialog = false;
         this.reset();
         this.type = null;
@@ -385,7 +482,7 @@ export default {
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
-      return this.$moment(strdate).format("D MMMM YYYY ");
+      return this.$moment(strdate).format("วันที่ DD MMMM YYYY ");
     }
   },
 

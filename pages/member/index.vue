@@ -121,7 +121,7 @@
                 class="flex-grow-1 flex-shrink-0"
               >
                 <h4 class="pa-2 text-truncate" outlined tile>
-                  {{ loadData.birthday | moment }}
+                  {{ formatDate(loadData.birthday) }}
                 </h4>
               </v-col>
             </v-row>
@@ -213,7 +213,8 @@
                     <v-divider></v-divider>
 
                     <v-card-text>
-                      {{ items.detail }}
+                      <p>{{ items.detail }}</p>
+                      <p>ซื้อสินค้าขั้นต่ำ {{ items.target_price }} บาท</p>
                     </v-card-text>
                   </div>
                 </v-expand-transition>
@@ -271,9 +272,29 @@ import moment from "moment";
 import MenuProfile from "~/components/memberLayout/MenuProfile";
 export default {
   layout: "layoutMember",
-  middleware: ["auth"],
+  middleware: ["auth", "refresh", "checkMember"],
   components: {
     MenuProfile
+  },
+  head() {
+    return {
+      titleTemplate: `${this.$store.getters["setting"][0].head_title}  | %s`,
+      title: this.loadData.fname + " " + this.loadData.lname,
+      meta: [
+        {
+          hid: "description",
+          name: "description",
+          content: this.$store.getters["setting"][0].sub_title
+        }
+      ],
+      link: [
+        {
+          rel: "icon",
+          type: "image/x-icon",
+          href: `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`
+        }
+      ]
+    };
   },
   data() {
     return {
@@ -284,38 +305,70 @@ export default {
       }
     };
   },
-  initialize() {},
 
   async asyncData(context) {
+    //เช็คการปรับระดับ
+    const cus = await context.$axios.$get(
+      "/customer/check/" + context.$auth.user._id
+    );
     const loadData = await context.$axios.$get(
       "/customer/" + context.$auth.user._id
     );
     const levelMember = await context.$axios.$get("/level-member");
-    let dataMember=[]
+    let dataMember = [];
     for (let i in levelMember) {
       dataMember.push({ ...levelMember[i], show: false });
     }
 
-    console.log(dataMember);
+    const startDate = new Date(loadData.mission.start);
+    const endDate = new Date(loadData.mission.end);
 
-    const data = await context.$axios.$get(
-      "/payment/customer/" + context.$auth.user._id
-    );
     let totalprice = 0;
-    for (let key in data) {
-      totalprice += data[key].net_price;
-    }
-    let target_price = loadData.ref_level_id.target_price;
-
     let Sumtotal = 0;
-    Sumtotal = (totalprice / target_price) * 100;
+    if (loadData.ref_level_id) {
+      //เรียงจากน้อยไปมาก เรียงตาม target_price
+      const dataMem = dataMember.sort(
+        (a, b) => a.target_price - b.target_price
+      );
+      //หา target ใหม่เพื่อเปลี่ยนระดับสมาชิก
+      const newTarget = dataMem.find(
+        d => loadData.ref_level_id.target_price < d.target_price
+      );
+      //console.log(newTarget);
+      //นำ target_price ใหม่ที่ได้ไปเปลี่ยนอันเก่า
+      loadData.ref_level_id.target_price = newTarget
+        ? newTarget.target_price
+        : 1000000;
+      const data = await context.$axios.$get(
+        "/payment/customer/" + context.$auth.user._id
+      );
+      const newData = data.filter(p => {
+        return (
+          new Date(p.datetime).getTime() >= startDate.getTime() &&
+          new Date(p.datetime).getTime() <= endDate.getTime()
+        );
+      });
+      for (let key in newData) {
+        totalprice += data[key].net_price;
+      }
+      let target_price = loadData.ref_level_id.target_price;
 
-    //console.log(loadData);
-    //console.log(context.$auth.user);
+      Sumtotal = (totalprice / target_price) * 100;
+    } else {
+      Sumtotal = 0;
+      totalprice = 0;
+    }
+
+    //console.log(cus);
     return { loadData, totalprice, Sumtotal, dataMember };
   },
 
   methods: {
+    formatDate(date) {
+      this.$moment().format("LLLL");
+      let strdate = this.$moment(date).add(543, "years");
+      return this.$moment(strdate).format("D MMMM YYYY ");
+    },
     getAgeDate(date) {
       const futureDate = moment()
         .date(Number)
@@ -356,12 +409,6 @@ export default {
             this.dialog = false;
           });
       }
-    }
-  },
-  filters: {
-    moment: function(date) {
-      var strdate = moment(date).add(543, "years");
-      return moment(strdate).format("D/MM/YY");
     }
   }
 };

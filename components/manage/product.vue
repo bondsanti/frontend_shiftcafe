@@ -1,37 +1,51 @@
 <template>
   <div class="ma-3">
-    <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
+    <!-- photo -->
+    <v-dialog v-model="dialogPhoto" max-width="500" max-height="300">
+      <v-card class="rounded-xl">
+        <v-row no-gutters>
+          <v-col cols="12">
+            <v-row no-gutters align="center" justify="center">
+              <v-img :src="image.src" contain></v-img>
+            </v-row>
+          </v-col>
+        </v-row>
+      </v-card>
+    </v-dialog>
+    <!-- // -->
+    <v-card
+      class="mx-auto mt-6  py-3 rounded-xl"
+      elevaation="5"
+      justify-centaer
+    >
       <v-card-title>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              class="mr-5"
-              v-bind="attrs"
-              v-on="on"
-              @click="addItem"
-            >
-              <v-icon left> mdi-food-turkey</v-icon> เพิ่มสินค้า
-            </v-btn>
-          </template>
-        </v-dialog>
+        <v-btn
+          color="primary"
+          dark
+          class="ma-5 rounded-xl"
+          elevation="15"
+          @click="addItem"
+        >
+          <v-icon left> mdi-food-turkey</v-icon> เพิ่มสินค้า
+        </v-btn>
+
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-text-field
-         v-model="search"
+          v-model="search"
           append-icon="mdi-magnify"
+          class="rounded-xl"
           label="ค้นหาข้อมูล"
           single-line
           solo
           hide-details
         ></v-text-field>
-        
       </v-card-title>
 
       <v-data-table
         :headers="headers"
         :items="product"
+        multi-sort
         :search="search"
         :items-per-page="20"
         :footer-props="{
@@ -40,6 +54,7 @@
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
         }"
+        :sort-by="['product_name']"
       >
         >
         <template v-slot:[`item.img`]="{ item }">
@@ -47,158 +62,182 @@
             :src="`${$nuxt.context.env.config.IMG_URL}${item.img}`"
             class="mt-2 mb-2 rounded-xl"
             aspect-ratio="1"
-            width="70px"
-            height="70px"
+            width="100px"
+            height="110px"
             contain
+            @click="photo(item)"
           />
         </template>
 
         <template v-slot:top>
-          <v-dialog v-model="dialog" max-width="700px">
+          <v-dialog v-model="dialog" max-width="700px" persistent>
             <v-card>
               <v-card-title>
-                <span class="text-h5"
+                <span class="text-h5 mr-5"
                   ><v-icon left> mdi-ticket-percent-outline </v-icon>
                   {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
                 >
+                <v-switch
+                  v-model="productsItem.discount"
+                  color="green"
+                  class="ma-0"
+                  hide-details
+                  inset
+                  :label="
+                    productsItem.discount
+                      ? 'สามารถใช้ส่วนลดกับรายการอาหารนี้ได้'
+                      : 'ไม่สามารถใช้ส่วนลดกับรายการอาหารนี้ได้'
+                  "
+                ></v-switch>
               </v-card-title>
+              <v-form v-model="valid" ref="form">
+                <v-card-text>
+                  <div>
+                    <v-row>
+                      <v-col cols="12"> </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="ชื่อสิ้นค้า"
+                          :rules="rules"
+                          v-model="productsItem.product_name"
+                          required
+                          color="primary"
+                        ></v-text-field>
+                      </v-col>
 
-              <v-card-text>
-                <div>
-                  <v-row>
-                    <v-col cols="12"> </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-select
+                          label="หมวดหมู่"
+                          outlined
+                          color="primary"
+                          item-text="name"
+                          item-value="_id"
+                          :rules="rules"
+                          :items="categoryname.flat()"
+                          v-model="productsItem.ref_cate_id"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-select
+                          label="ประเภท"
+                          outlined
+                          color="primary"
+                          :rules="rules"
+                          item-text="name"
+                          item-value="_id"
+                          :items="unitname.flat()"
+                          v-model="productsItem.ref_uid"
+                        ></v-select>
+                      </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="ราคาต้นทุน"
+                          :rules="rules"
+                          suffix="฿"
+                          type="number"
+                          min="0"
+                          v-model="productsItem.price_cost"
+                          required
+                          color="primary"
+                        ></v-text-field>
+                      </v-col>
 
-                    <v-col cols="12" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ชื่อสิ้นค้า"
-                        v-model="productsItem.product_name"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
+                      <v-col cols="12" md="6" class="mt-n7">
+                        <v-text-field
+                          outlined
+                          label="ราคาขาย"
+                          suffix="฿"
+                          type="number"
+                          min="0"
+                          :rules="rules"
+                          v-model="productsItem.price"
+                          required
+                          color="primary"
+                        ></v-text-field>
+                      </v-col>
 
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-select
-                        label="หมวดหมู่"
-                        outlined
-                        color="#1D1D1D"
-                        item-text="name"
-                        item-value="_id"
-                        :items="categoryname.flat()"
-                        v-model="productsItem.ref_cate_id"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-select
-                        label="ประเภท"
-                        outlined
-                        color="#1D1D1D"
-                        item-text="name"
-                        item-value="_id"
-                        :items="unitname.flat()"
-                        v-model="productsItem.ref_uid"
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ราคาต้นทุน"
-                        suffix="฿"
-                        type="number"
-                        min="0"
-                        v-model="productsItem.price_cost"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
+                      <v-col cols="12" class="mt-n7">
+                        <h3 v-if="image.src" class="text-center ml-12  mt-3">
+                          รูปภาพประกอบ
+                        </h3>
 
-                    <v-col cols="12" md="6" class="mt-n7">
-                      <v-text-field
-                        outlined
-                        label="ราคาขาย"
-                        suffix="฿"
-                        type="number"
-                        min="0"
-                        v-model="productsItem.price"
-                        required
-                        color="#1D1D1D"
-                      ></v-text-field>
-                    </v-col>
-
-                    <v-col cols="12" class="mt-n7">
-                      <h3 class="text-center ml-12  mt-3">รูปภาพประกอบ</h3>
-
-                      <v-img
-                        v-if="imageURL"
-                        :src="imageURL"
-                        contain
-                        :aspect-ratio="16 / 9"
-                        class="mb-3 ml-12"
-                      ></v-img>
-                      <v-row>
-                        <v-col>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            required
-                            @change="onFileSelected"
+                        <example-wrapper
+                          class="getting-result-second-example"
+                          noBoder
+                          v-if="image.src"
+                        >
+                          <cropper
+                            class="cropper"
+                            ref="cropper"
+                            :src="image.src"
                           />
-                        </v-col>
-                        <v-col>
-                          <v-btn color="primary" @click="dialogCrop = true"
-                            >ตัดรูปภาพ</v-btn
-                          >
-                          <v-dialog
-                            transition="dialog-bottom-transition"
-                            max-width="600"
-                            v-model="dialogCrop"
-                          >
-                            <v-card>
-                              <v-toolbar color="primary" dark
-                                >Opening from the bottom</v-toolbar
-                              >
-
-                              <cropper
-                                ref="cropper"
-                                class="cropper"
-                                :src="imageURL"
-                                :stencil-props="{
-                                  aspectRatio: 10 / 12
-                                }"
-                                @change="change"
+                          <results
+                            :coordinates="result.coordinates"
+                            :image="result.img"
+                          />
+                          <!-- <div class="crop-button" @click="crop">Crop Image</div> -->
+                          <div class="crop-button">
+                            <v-btn
+                              class="mx-5 rounded-xl"
+                              elevation="15"
+                              @click="crop"
+                              color="green"
+                              >ดูรูปตัวอย่าง</v-btn
+                            ><v-btn
+                              class="mx-5 rounded-xl"
+                              elevation="15"
+                              color="orange"
+                              @click="croppedFinish"
+                              >ตัดรูปภาพ</v-btn
+                            >
+                          </div>
+                        </example-wrapper>
+                        <v-row>
+                          <v-col>
+                            <v-btn
+                              @click="$refs.file.click()"
+                              class="upload-example__button rounded-xl"
+                              elevation="15"
+                            >
+                              <input
+                                type="file"
+                                ref="file"
+                                accept="image/*"
+                                required
+                                @change="loadImage($event)"
                               />
-                              <preview
-                                :width="120"
-                                :height="120"
-                                :image="result.image"
-                                :coordinates="result.coordinates"
-                              />
-
-                              <v-card-actions class="justify-end">
-                                <v-btn @click="croppedFinish">ตกลง</v-btn>
-                                <v-btn text @click="dialogCrop = false"
-                                  >ปิด</v-btn
-                                >
-                              </v-card-actions>
-                            </v-card>
-                          </v-dialog>
-                        </v-col>
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </div>
-              </v-card-text>
-
+                              เลือกรูปภาพ
+                            </v-btn>
+                          </v-col>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </div>
+                </v-card-text>
+              </v-form>
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
+                <v-btn
+                  class="ma-1 rounded-xl"
+                  elevation="15"
+                  color="primary"
+                  dark
+                  @click="close"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-ticket-percent-outline
                   </v-icon>
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn class="ma-1" color="info" @click="save">
+                <v-btn
+                  class="ma-1 rounded-xl"
+                  elevation="15"
+                  color="info"
+                  :disabled="!valid"
+                  @click="save"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-ticket-percent-outline
                   </v-icon>
@@ -207,6 +246,7 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+
           <v-dialog v-model="dialogDelete" max-width="270px">
             <v-card>
               <v-card-title class="text-h5 white--text  primary">
@@ -230,15 +270,20 @@
           </v-dialog>
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr2" color="warning" @click="editItem(item)">
+          <v-btn
+            class="ma-2 white--text rounded-xl"
+            elevation="15"
+            color="warning"
+            @click="editItem(item)"
+          >
             <v-icon aria-hidden="false" class="mx-2">
               mdi-pencil
             </v-icon>
             แก้ไข
           </v-btn>
           <v-btn
-            rounded-lx
-            class="mr-2"
+            class="ma-2 rounded-xl"
+            elevation="15"
             color="error"
             @click="deleteItem(item)"
           >
@@ -255,6 +300,12 @@
           <span>{{ item.exp | moment }}</span>
         </template>
 
+        <template v-slot:[`item.discount`]="{ item }">
+          <v-chip :color="getColor(item.discount)" dark small>
+            {{ getTxt(item.discount) }}
+          </v-chip>
+        </template>
+
         <template v-slot:no-data>
           <v-btn color="primary" @click="product">
             Reset
@@ -268,19 +319,26 @@
 <script>
 import { Cropper, Preview } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
+import ExampleWrapper from "@/components/ExampleWrapper";
+import Results from "@/components/Results";
 export default {
   components: {
     Cropper,
-    Preview
+    Preview,
+    ExampleWrapper,
+    Results
   },
   data: () => ({
     result: {
       coordinates: null,
-      image: null,
+
       img: null
     },
+    rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
+    valid: true,
     dialog: false,
     dialogDelete: false,
+    dialogPhoto: false,
     search: "",
     unitname: [],
     categoryname: [],
@@ -288,15 +346,16 @@ export default {
     sortDesc: false,
     headers: [
       { text: "ลำดับ", sortable: false, value: "No" },
-      { text: "ภาพ", sortable: false, value: "img" },
-      { text: "ชื่อสิ้นค้า", sortable: false, value: "product_name" },
-      { text: "ประเภท", sortable: false, value: "ref_uid.u_name" },
-      { text: "หมวดหมู่", sortable: false, value: "ref_cate_id.cate_name" },
-      { text: "ราคาต้นทุน", sortable: false, value: "price_cost" },
-      { text: "ราคา", sortable: false, value: "price" },
+      { text: "ภาพ", sortable: true, value: "img" },
+      { text: "ชื่อสินค้า", sortable: true, value: "product_name" },
+      { text: "ประเภท", sortable: true, value: "ref_uid.u_name" },
+      { text: "หมวดหมู่", sortable: true, value: "ref_cate_id.cate_name" },
+      { text: "ราคาต้นทุน", sortable: true, value: "price_cost" },
+      { text: "ราคา", sortable: true, value: "price" },
       // { text: "สต็อก", sortable: false, value: "stock" },
       // { text: "id", sortable: false, value: "_id" },
       //{ text: "วันที่เพิ่มหน่วย", value: "data", sortable: false },
+      { text: "เข้าร่วมส่วนลด", sortable: true, value: "discount" },
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
@@ -307,7 +366,8 @@ export default {
       ref_cate_id: " ",
       price_cost: " ",
       price: "",
-      img: ""
+      img: "",
+      discount: true
     },
     type: null,
     deleteId: null,
@@ -317,9 +377,12 @@ export default {
       state: false,
       msg: ""
     },
-    imageURL: null,
+
     preImg: null,
-    dialogCrop: false
+
+    image: {
+      src: null
+    }
   }),
   computed: {
     formTitle() {
@@ -335,46 +398,55 @@ export default {
     }
   },
   methods: {
-    change({ coordinates, image, canvas }) {
+    // รูป
+    photo(item) {
+      this.result.img = null;
+      this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
+      this.levelmemberitme = { img: item.img };
+      this.dialogPhoto = true;
+    },
+
+    crop() {
+      const { coordinates, canvas } = this.$refs.cropper.getResult();
       canvas.toBlob(blob => {
-        //console.log(blob);
         this.preImg = blob;
       });
+      this.result.coordinates = coordinates;
 
-      this.result = {
-        coordinates,
-        image,
-        img: canvas.toDataURL()
-      };
+      this.result.img = canvas.toDataURL();
     },
+
     croppedFinish() {
-      this.imageURL = this.result.img;
-      this.dialogCrop = false;
+      const { canvas } = this.$refs.cropper.getResult();
+      canvas.toBlob(blob => {
+        this.preImg = blob;
+      });
+      this.image.src = canvas.toDataURL();
+      this.result.img = null;
     },
 
-    onFileSelected(event) {
-      const reader = new FileReader();
-      reader.onload = event => {
-        this.imageURL = event.target.result;
-      };
-      reader.readAsDataURL(event.target.files[0]);
-      console.log(event.target.files[0]);
-      this.preImg = event.target.files[0];
-      //console.log(this.preImg);
-    },
-    editItem(item) {
-      this.imageURL = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
-      this.type = "edit";
-      this.productsItem = {
-        _id: item._id,
-        product_name: item.product_name,
-        ref_uid: item.ref_uid._id,
-        ref_cate_id: item.ref_cate_id._id,
-        price_cost: item.price_cost,
-        price: item.price,
-        img: item.img
-      };
-      this.dialog = true;
+    loadImage(event) {
+      const { files } = event.target;
+
+      if (files && files[0]) {
+        if (this.image.src) {
+          URL.revokeObjectURL(this.image.src);
+        }
+
+        const blob = URL.createObjectURL(files[0]);
+
+        const reader = new FileReader();
+
+        reader.onload = e => {
+          this.image = {
+            src: blob
+
+            // type: getMimeType(e.target.result, files[0].type)
+          };
+        };
+        this.preImg = files[0];
+        reader.readAsArrayBuffer(files[0]);
+      }
     },
     getProductImage(item) {
       if (this.productsItem.img.length > 0) {
@@ -383,16 +455,36 @@ export default {
         return `${$nuxt.context.env.config.IMG_URL}${item.img}`;
       }
     },
+    editItem(item) {
+      this.result.img = null;
+      this.image.src = `${$nuxt.context.env.config.IMG_URL}${item.img}`;
+      this.type = "edit";
+      this.productsItem = {
+        _id: item._id,
+        product_name: item.product_name,
+        ref_uid: item.ref_uid._id,
+        ref_cate_id: item.ref_cate_id ? item.ref_cate_id._id : "",
+        price_cost: item.price_cost,
+        price: item.price,
+        img: item.img,
+        discount: item.discount
+      };
+      this.dialog = true;
+    },
+
     addItem() {
+      this.image.src = null;
+      this.result.img = null;
       this.type = "add";
-      this.products = {
+      this.productsItem = {
+        _id: "",
         product_name: "",
         ref_uid: "",
         ref_cate_id: " ",
         price_cost: " ",
         price: "",
-        stock: "",
-        img: " "
+        img: "",
+        discount: true
       };
       this.dialog = true;
     },
@@ -403,11 +495,28 @@ export default {
       this.dialogDelete = true;
     },
     deleteItemConfirm() {
-      this.product.splice(this.editedIndex, 1);
-      this.$axios.$delete("/product/" + this.deleteId).then(() => {});
-      this.closeDelete();
+      const pro = this.listOrder.filter(l => l.ref_pro_id === this.deleteId);
+      //console.log(pro);
+      if (pro.length !== 0) {
+        this.$swal.fire({
+          type: "error",
+          title:
+            "ไม่สามารถลบสินค้านี้ได้ เพราะมีการใช้งานอยู่ที่ประวัติคำสั่งซื้อเก่าๆ"
+        });
+      } else {
+        this.$axios.$delete("/product/" + this.deleteId).then(() => {
+          this.product.splice(this.editedIndex, 1);
+          this.closeDelete();
+          this.$swal.fire({
+            type: "success",
+            title: "ลบสินค้าสำเร็จ"
+          });
+        });
+      }
     },
     close() {
+      this.result.img = null;
+      this.image.src;
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
@@ -426,13 +535,14 @@ export default {
     save() {
       if (this.type === "add") {
         this.loading = true;
+        this.$refs.form.validate();
         let formdata = new FormData();
         formdata.append("product_name", this.productsItem.product_name);
         formdata.append("ref_uid", this.productsItem.ref_uid);
         formdata.append("ref_cate_id", this.productsItem.ref_cate_id);
         formdata.append("price_cost", this.productsItem.price_cost);
         formdata.append("price", this.productsItem.price);
-        //formdata.append("stock", this.productsItem.stock);
+        formdata.append("discount", this.productsItem.discount);
         formdata.append("img", this.preImg);
         //console.log(this.productsItem);
         //this.$emit("addProduct", formdata);
@@ -449,16 +559,17 @@ export default {
               stock: "",
               img: " "
             };
-            this.imageURL = null;
+            this.image.src = null;
+            this.result.img = null;
             this.close();
             this.preImg = null;
-            this.$swal({
+            this.$swal.fire({
               type: "success",
               title: res.message
             });
           })
           .catch(e => {
-            this.$swal({
+            this.$swal.fire({
               type: "error",
               title: e
             });
@@ -471,11 +582,12 @@ export default {
         formdata.append("ref_cate_id", this.productsItem.ref_cate_id);
         formdata.append("price_cost", this.productsItem.price_cost);
         formdata.append("price", this.productsItem.price);
+        formdata.append("discount", this.productsItem.discount);
         //formdata.append("stock", this.productsItem.stock);
         if (this.preImg !== null) {
           formdata.append("img", this.preImg);
         }
-        console.log(this.preImg);
+        //console.log(this.preImg);
         this.$axios
           .$put("/product/" + this.productsItem._id, formdata)
           .then(() => {
@@ -490,13 +602,24 @@ export default {
               stock: "",
               img: " "
             };
-            this.imageURL = null;
+            this.image.src = null;
+            this.result.img = null;
             this.preImg = null;
           })
           .catch(e => {
             console.log(e);
           });
       }
+    },
+    getColor(status) {
+      if (status === true) return " green";
+      else if (status === false) return "red";
+      else return "primary ";
+    },
+    getTxt(status) {
+      if (status === true) return "เข้า";
+      else if (status === false) return "ไม่เข้า";
+      else return "error";
     },
     improveUn() {
       for (let i in this.unit) {
@@ -517,17 +640,98 @@ export default {
       }
     }
   },
-  props: ["product", "unit", "category"],
+  props: ["product", "unit", "category", "list-order"],
   created() {
     this.improveUn();
     this.improveCatename();
+    //console.log(this.listOrder);
   }
 };
 </script>
-<style scoped>
+<style scoped lang="scss">
 .cropper {
   height: 600px;
   background: #ddd;
   margin: 0;
+}
+
+.upload-example {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  user-select: none;
+  &__cropper {
+    border: solid 1px #eee;
+    min-height: 300px;
+    max-height: 500px;
+    width: 100%;
+  }
+  &__cropper-wrapper {
+    position: relative;
+  }
+  &__reset-button {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    width: 42px;
+    background: rgba(#3fb37f, 0.7);
+    transition: background 0.5s;
+    &:hover {
+      background: #3fb37f;
+    }
+  }
+  &__buttons-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 17px;
+  }
+  &__button {
+    display: flex;
+    border: none;
+    outline: solid transparent;
+    color: gray;
+    font-size: 16px;
+    padding: 10px 20px;
+    background: #3fb37f;
+    cursor: pointer;
+    transition: background 0.5s;
+    margin: 0 16px;
+    &:hover,
+    &:focus {
+      background: #38d890;
+    }
+    input {
+      display: none;
+    }
+  }
+  &__file-type {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #0d0d0d;
+    border-radius: 5px;
+    padding: 0px 10px;
+    padding-bottom: 2px;
+    font-size: 12px;
+    color: white;
+  }
+}
+.getting-result-second-example {
+  position: relative;
+  .crop-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    position: absolute;
+    left: 50%;
+    top: -10px;
+    transform: translateX(-50%);
+
+    padding: 5px 20px;
+  }
 }
 </style>

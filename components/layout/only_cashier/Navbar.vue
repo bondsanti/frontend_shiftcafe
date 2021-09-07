@@ -1,6 +1,13 @@
 <template>
   <div>
-    <v-navigation-drawer v-model="drawer" fixed app color="#1d1d1d" dark>
+    <v-navigation-drawer
+      v-model="drawer"
+      fixed
+      temporary
+      app
+      color="primary"
+      dark
+    >
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -48,8 +55,9 @@
         </v-list-item-content>
       </v-list-item>
     </v-navigation-drawer>
-    <v-app-bar :clipped-left="clipped" fixed app color="#1d1d1d" dark>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+    <!-- -------------------------------------------------------------------------------------------------------------------- -->
+    <v-app-bar app color="primary" dark>
+      <v-app-bar-nav-icon @click="drawer = !drawer" />
       <v-toolbar-title class="hidden-xs-only">{{
         this.$store.getters["setting"][0].head_title
       }}</v-toolbar-title>
@@ -76,7 +84,7 @@ export default {
   data() {
     return {
       clipped: false,
-      drawer: false,
+      drawer: null,
       fixed: false,
       items: [
         {
@@ -117,10 +125,27 @@ export default {
     };
   },
   methods: {
-    async logout() {
-      await this.$auth.logout();
-      this.$router.push("/login");
+    // ออกจากระบบ
+    logout() {
+      this.$axios.$post("/authen/logout").then(async () => {
+        await this.$auth.logout();
+        this.$router.push("/login");
+        this.$swal.fire({
+          type: "info",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          title: "ออกจากระบบเรียบร้อยแล้ว",
+          didOpen: toast => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          }
+        });
+      });
     },
+    //
     checkStaff() {
       if (this.$store.getters["position"] === "staff") {
         this.items = [

@@ -12,7 +12,7 @@
               v-on="on"
               @click="addItem"
             >
-              <v-icon left> mdi-muffin </v-icon> ท็อปปิ้ง
+              <v-icon left> mdi-food-fork-drink </v-icon> จัดหมวดหมู่สินค้า
             </v-btn>
           </template>
         </v-dialog>
@@ -55,7 +55,7 @@
             <v-card>
               <v-card-title>
                 <span class="text-h5"
-                  ><v-icon left> mdi-muffin </v-icon>
+                  ><v-icon left> mdi-food-fork-drink </v-icon>
                   {{ type === "add" ? "เพิ่มข้อมูล" : "แก้ไขข้อมูล" }}</span
                 >
               </v-card-title>
@@ -123,21 +123,24 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="270px">
+           <v-dialog v-model="dialogDelete" max-width="410">
             <v-card>
-              <v-card-title class="text-h5 white--text  primary">
-                แน่ใจแล้วใช่มั้ยที่จะลบ
+            <v-card-title class="primary--text text-center">
+              
+                 คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
+              
               </v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="info" class="ma-2" @click="closeDelete">
+                <v-btn color="info"   plain class="ma-2" @click="closeDelete">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box </v-icon
                   >ยกเลิก</v-btn
                 >
                 <v-btn
-                  color="primary"
+                  color="error"
                   class="ma-2"
+                   plain
                   @click="
                     deleteItemConfirm();
                     showAlert();
@@ -374,9 +377,12 @@ export default {
   props: ["category"]
 };
 </script>
-<style>
+<style> 
 .cropper {
 	height: 350px;
 	background: #DDD;
 }
+</style>
+<style lang="scss" scoped>
+
 </style>

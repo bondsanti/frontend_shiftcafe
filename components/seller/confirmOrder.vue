@@ -21,6 +21,7 @@
                 ยืนยันคำสั่งซื้อ
                 <v-icon>mdi-food</v-icon>
               </v-tab>
+              <!-- มีปัญหา -->
               <v-tab href="#tab-2">
                 สมัครสมาชิก
                 <v-icon>mdi-account</v-icon>
@@ -147,7 +148,7 @@
                               $nuxt.context.env.config.IMG_URL + bank.img_cover
                             "
                             height="100px"
-                            class="grey darken-4"
+                            style="background-color:#FFEBEE; "
                           ></v-img>
                           <v-card-title
                             :class="
@@ -163,18 +164,41 @@
                     </v-col>
                   </v-row>
 
-                  <v-row class="ma-3" align="center">
-                    <h2 class="d-flex mr-5">ภาษี</h2>
-                    <v-radio-group
-                      v-model="vat"
-                      row
-                      class="d-flex"
-                      @change="thinkPrice"
-                    >
-                      <v-radio label="ไม่บวกภาษี" value="1"></v-radio>
-                      <v-radio label="บวกภาษี" value="2"></v-radio>
-                    </v-radio-group>
-                  </v-row>
+                  <v-card-actions>
+                    <v-btn color="orange lighten-2" text @click="show = !show">
+                      <h2>เปิดการใช้งานภาษี</h2>
+                    </v-btn>
+
+                    <v-spacer></v-spacer>
+
+                    <v-btn icon @click="show = !show">
+                      <v-icon>{{
+                        show ? "mdi-chevron-up" : "mdi-chevron-down"
+                      }}</v-icon>
+                    </v-btn>
+                  </v-card-actions>
+
+                  <v-expand-transition>
+                    <div v-show="show">
+                      <v-divider></v-divider>
+                      <v-card-text>
+                        <!-- เปิดภาษี -->
+                        <v-row class="ma-3" align="center">
+                          <h2 class="d-flex mr-5">ภาษี</h2>
+                          <v-radio-group
+                            v-model="vat"
+                            row
+                            class="d-flex"
+                            @change="thinkPrice"
+                          >
+                            <v-radio label="ไม่บวกภาษี" value="1"></v-radio>
+                            <v-radio label="บวกภาษี" value="2"></v-radio>
+                          </v-radio-group>
+                        </v-row>
+                      </v-card-text>
+                    </div>
+                  </v-expand-transition>
+
                   <v-row>
                     <v-col>
                       <v-btn
@@ -187,6 +211,15 @@
                         @click="cancelOrder"
                         >ยกเลิกออเดอร์</v-btn
                       >
+                      <!-- <v-btn
+                        rounded
+                        large
+                        block
+                        color="red"
+                        dark
+                        @click="for_chef('61176050b67417169c7ba9b0')"
+                        >test</v-btn
+                      > -->
                     </v-col>
                     <v-col>
                       <v-btn
@@ -200,22 +233,23 @@
                     </v-col>
                   </v-row>
                 </v-col>
-                <v-col cols="12" md="6">
+
+                <v-col cols="12" md="6" style="border: 1px inset #757575; ">
                   <v-row class="ma-2 mx-14">
                     <v-col cols="6" justify-center>
-                      <h1>ชื่ออาหาร</h1>
+                      <h2>ชื่ออาหาร</h2>
                     </v-col>
                     <v-col cols="3">
-                      <h1>จำนวน</h1>
+                      <h2>จำนวน</h2>
                     </v-col>
                     <v-col cols="3">
-                      <h1>ราคา</h1>
+                      <h2>ราคา</h2>
                     </v-col>
                   </v-row>
-                  <div
+                  <!-- <div
                     class="d-flex flex-row ma-1 mx-16"
-                    v-for="order in orders"
-                    :key="order.name"
+                    v-for="(order, i) in orders"
+                    :key="i"
                   >
                     <v-col cols="6">
                       <h3>{{ order.name }}</h3>
@@ -226,7 +260,40 @@
                     <v-col cols="3" class="pl-10">
                       <h3>{{ order.price }} ฿.</h3>
                     </v-col>
-                  </div>
+                  </div> -->
+                  <v-list-item-group
+                    active-class="deep-primary--text text--accent-4"
+                    multiple
+                  >
+                    <v-list-item
+                      three-line
+                      v-for="(order, i) in orders"
+                      :key="i"
+                      style="border: 1px inset #757575;"
+                    >
+                      <v-list-item-content>
+                        <v-list-item-title class="d-flex flex-row ma-1 mx-16">
+                          <v-col cols="6">
+                            <h3>
+                              {{ order.discount ? "" : "**" }}{{ order.name }}
+                            </h3>
+                          </v-col>
+                          <v-col cols="3" class="pl-16">
+                            <h3>{{ order.qty }}</h3>
+                          </v-col>
+                          <v-col cols="3" class="pl-10">
+                            <h3>{{ order.price }} ฿.</h3>
+                          </v-col>
+                        </v-list-item-title>
+                        <v-list-item-subtitle class="ml-16">{{
+                          convertArrayToString(order.topping)
+                        }}</v-list-item-subtitle>
+                        <v-list-item-subtitle class="ml-16">{{
+                          order.detail
+                        }}</v-list-item-subtitle>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </v-list-item-group>
                   <v-row
                     v-if="coupon !== 0"
                     class="justify-space-between ma-1 mx-16 mt-14"
@@ -236,7 +303,7 @@
                   </v-row>
                   <v-row class="justify-space-between ma-1 mx-16">
                     <h2>ราคา</h2>
-                    <h2>{{ formatPrice(subtotal) }}</h2>
+                    <h2>{{ formatPrice(subtotal) }} บาท</h2>
                   </v-row>
                   <v-row
                     v-if="tax !== 0"
@@ -247,7 +314,7 @@
                   </v-row>
                   <v-row class="justify-space-between ma-1 mx-16">
                     <h2>ราคาสุทธิ</h2>
-                    <h2>{{ formatPrice(thinkPrice(subtotal)) }} บาท</h2>
+                    <h2>{{ formatPrice(thinkPrice()) }} บาท</h2>
                   </v-row>
                 </v-col>
               </div>
@@ -255,14 +322,15 @@
           </v-tabs-items>
           <v-tabs-items v-model="tab">
             <v-tab-item value="tab-2">
-              <v-container>
+              <div class="ma-10">
                 <v-form v-model="valid" ref="form">
-                  <v-row class="mx-16">
-                    <v-col cols="12">
-                      <h1>ข้อมูลลูกค้า</h1>
-                    </v-col>
+                  <v-row class="justify-center align-center my-1">
+                    <h1>ข้อมูลลูกค้า</h1>
+                  </v-row>
+                  <v-row class="justify-center align-center my-1">
                     <v-col cols="12">
                       <v-select
+                        hide-details
                         v-model="cus.pname"
                         label="คำนำหน้า"
                         outlined
@@ -271,8 +339,11 @@
                         :rules="rules"
                       ></v-select>
                     </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
+                  </v-row>
+                  <v-row class="justify-center align-center my-1">
+                    <v-col cols="12" md="6">
                       <v-text-field
+                        hide-details
                         v-model="cus.fname"
                         outlined
                         label="ชื่อ"
@@ -281,8 +352,9 @@
                         :rules="rules"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" md="6" class="mt-n7">
+                    <v-col cols="12" md="6">
                       <v-text-field
+                        hide-details
                         v-model="cus.lname"
                         outlined
                         label="นามสกุล"
@@ -291,8 +363,10 @@
                         :rules="rules"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-text-field
+                  </v-row>
+                  <v-row class="my-1">
+                    <v-col cols="12" md="6">
+                      <!-- <v-text-field
                         v-model="cus.birthday"
                         type="date"
                         outlined
@@ -300,21 +374,61 @@
                         required
                         color="primary"
                         :rules="rules"
-                      ></v-text-field>
+                      ></v-text-field> -->
+                      <v-menu
+                        ref="menu"
+                        v-model="menu"
+                        :close-on-content-click="false"
+                        transition="scale-transition"
+                        offset-x
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="cus.birthday"
+                            clearable
+                            label="วันเกิด"
+                            :rules="rules"
+                            append-icon="mdi-calendar"
+                            readonly
+                            v-bind="attrs"
+                            v-on="on"
+                            outlined
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          @change="$refs.menu.save()"
+                          v-model="cus.birthday"
+                          locale="th"
+                          :max="
+                            new Date(
+                              Date.now() -
+                                new Date().getTimezoneOffset() * 60000
+                            )
+                              .toISOString()
+                              .substr(0, 10)
+                          "
+                          min="1950-01-01"
+                        ></v-date-picker>
+                      </v-menu>
                     </v-col>
-                    <v-col cols="12" class="mt-n7">
+                    <v-col cols="12" md="6">
                       <v-text-field
+                        @click:append="checkTelephone"
+                        append-icon="mdi-phone-check"
                         v-model="cus.tel"
                         type="number"
                         outlined
-                        label="เบอร์โทร"
+                        :label="checkTelRes"
                         required
                         color="primary"
                         counter="10"
                         :rules="telRules"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" class="mt-n7">
+                  </v-row>
+                  <v-row class="justify-center align-center my-1">
+                    <v-col cols="12" md="6">
                       <v-text-field
                         v-model="cus.email"
                         outlined
@@ -324,21 +438,25 @@
                         :rules="rules"
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" class="mt-n7">
-                      <v-textarea
+                    <v-col cols="12" md="6">
+                      <v-text-field
                         v-model="cus.address"
                         color="primary"
                         outlined
                         name=""
                         label="ที่อยู่"
                         :rules="rules"
-                      ></v-textarea>
+                      ></v-text-field>
                     </v-col>
-                    <v-col cols="12">
-                      <v-btn color="primary" @click="addCus" :disabled="!valid"
-                        >บันทึก</v-btn
-                      >
-                    </v-col>
+                  </v-row>
+                  <v-row class="justify-center align-center">
+                    <v-btn
+                      color="primary"
+                      @click="addCus"
+                      :disabled="!valid"
+                      class="ma-5"
+                      >บันทึก</v-btn
+                    >
                   </v-row>
                 </v-form>
 
@@ -361,7 +479,7 @@
                     </v-card>
                   </v-dialog>
                 </v-row>
-              </v-container>
+              </div>
             </v-tab-item>
           </v-tabs-items>
         </v-card>
@@ -369,7 +487,7 @@
     </v-row>
     <Calculator
       :checkout="checkout"
-      :netPrice="thinkPrice(subtotal)"
+      :netPrice="thinkPrice()"
       @closeCheckout="checkout = false"
       @save="save"
       @print="print"
@@ -386,14 +504,19 @@ export default {
     "orders",
     "subtotal",
     "dialog",
-    "customers",
     "idOrder",
     "bank2",
     "statusCook",
-    "couponParent"
+    "couponParent",
+    "unit",
+    "products",
+    "printOrder",
+    "lodDai",
+    "lodBorDai"
   ],
   data: () => ({
-    items: ["นาย", "นาง", "น.ส.", "ด.ช.", "ด.ญ"],
+    show: false,
+    items: ["นาย", "นาง", "นางสาว", "ด.ช.", "ด.ญ"],
     items2: [
       { value: 0, name: "0 %" },
       { value: 3, name: "3 %" },
@@ -407,18 +530,20 @@ export default {
     discount_type: "no",
     type_order: "1",
     bank: "cash",
-    cusId: "60fa3812dc42a9589e33ba1b",
+    cusId: "",
+    cusIdGuest: null,
     customers2: [],
+    customers: [],
     tab: "tab-1",
     cus: {
+      _id: "",
       pname: "",
       fname: "",
       lname: "",
       birthday: "",
       tel: "",
       email: "",
-      address: "",
-      ref_level_id: "60e439b7c7d6ae35548c7b62"
+      address: ""
     },
     valid: true,
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
@@ -437,23 +562,83 @@ export default {
     bank_id: null,
     tax: 0,
     alert: false,
-    alertText: ""
-    //bank3: []
+    alertText: "",
+    checkTelRes: "เบอร์โทรศัพท์",
+    menu: false,
+    activePicker: null
   }),
   methods: {
+    checkTelephone() {
+      const resTel = this.customers.filter(c => c.tel === this.cus.tel);
+      //console.log(resTel);
+      if (this.cus.tel.length !== 10) {
+        this.$swal.fire({
+          type: "error",
+          title: "เบอร์โทรศัพท์ไม่ถูกต้อง",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000
+        });
+      } else {
+        if (resTel.length === 0) {
+          this.$swal.fire({
+            type: "success",
+            title: "สามารถใช้หมายเลขโทรศัพท์นี้ได้",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000
+          });
+        } else {
+          this.$swal.fire({
+            type: "warning",
+            title: "มีหมายเลขโทรศัพท์นี้ในระบบแล้ว",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000
+          });
+        }
+      }
+    },
+    convertArrayToString(topping) {
+      let string = "";
+      topping.map(t => {
+        string = `${string === "" ? "" : string + ","}  ${t.name}`;
+      });
+      return string;
+    },
+    color(i) {
+      if (this.bank2[i]) {
+        //return this.bank_id === this.bank2[i]._id ? "primary" : "secondary";
+      }
+    },
     closeDialog() {
       this.$emit("closeDialog");
     },
-    show() {
-      // console.log(this.customers);
-    },
-    improveCus() {
+
+    // show() {
+    //   // console.log(this.customers);
+    // },
+    async improveCus() {
+      this.customers = await this.$axios.$get("/customer2");
       for (let i in this.customers) {
         let cus = {
           _id: this.customers[i]._id,
           name: `${this.customers[i].fname} ${this.customers[i].lname} || tel : ${this.customers[i].tel}`
         };
         this.customers2.push(cus);
+      }
+
+      if (this.customers) {
+        const res = this.customers.find(c => {
+          return c.fname === "guest" && c.lname === "guest";
+        });
+        // มีปัญหา
+        this.cusId = res._id;
+        //
+        this.cusIdGuest = res._id;
       }
     },
 
@@ -463,10 +648,20 @@ export default {
       this.dialog2 = true;
       const res = await this.$axios.post("/customer", this.cus);
       if (res.status === 200) {
-        this.customers = await this.$axios.$get("/customer");
         this.improveCus();
+        this.cus = {
+          _id: "",
+          pname: "",
+          fname: "",
+          lname: "",
+          birthday: "",
+          tel: "",
+          email: "",
+          address: ""
+        };
         this.error = res.data.message;
         this.dialog2 = true;
+        this;
         this.tab = "tab-1";
       } else {
         this.error = res.data.message;
@@ -478,20 +673,23 @@ export default {
       let val = (value / 1).toFixed(2).replace(",", ".");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
+    //คิดเงิน
     thinkPrice() {
+      // console.log(this.lodBorDai);
+      // console.log(this.lodDai);
       if (this.cus_type === "member" || this.discount_type === "coupong") {
         if (this.vat === "1") {
           this.tax = 0;
-          return Math.round(
-            this.subtotal - (this.subtotal * this.coupon) / 100
-          );
+          let discount = Math.round((this.lodDai * this.coupon) / 100);
+          let afterDiscount = this.lodDai - discount + this.lodBorDai;
+          return afterDiscount;
         } else {
           this.tax = 7;
-          let net =
-            (this.subtotal * this.tax) / 100 +
-            this.subtotal -
-            (this.subtotal * this.coupon) / 100;
-          return Math.round(net);
+          let discount = Math.round((this.lodDai * this.coupon) / 100);
+          let afterDiscount = this.lodDai - discount + this.lodBorDai;
+          let vat = Math.round((afterDiscount * this.tax) / 100);
+          let afterVat = Math.round(afterDiscount + vat);
+          return afterVat;
         }
       } else {
         if (this.vat === "1") {
@@ -518,27 +716,28 @@ export default {
           //console.log(pay);
           if (pay.status === 200) {
             if (!money.noBill) {
-              this.print(money, pay.data.data);
+              this.print(money, pay.data.data, pay.data.order_id);
             }
-
+            //this.for_chef(pay.data.order_id);
             this.$emit("closeDialog_cook");
             this.$emit("closeDialog");
-            this.$emit("clearOrder");
+            this.$emit("clearOrder2");
             this.checkout = false;
             this.cus_type = "guest";
             this.discount_type = "coupong";
             this.type_order = "1";
             this.bank = "cash";
-            this.cusId = "60fa3812dc42a9589e33ba1b";
+            this.cusId = this.cusIdGuest;
             this.vat = "1";
             this.alert = false;
             this.coupon_id = null;
             this.coupon = 0;
-            this.discount_type === "no";
+            this.discount_type = "no";
             this.$swal.fire({
               position: "center",
               type: "success",
-              title: pay.data.message,
+              title: "เงินทอน " + pay.data.data.withdraw_money + " บาท",
+              text: pay.data.message,
               showConfirmButton: false,
               timer: 2500
             });
@@ -560,7 +759,7 @@ export default {
           list_product: this.orders,
           type_order: this.type_order,
           total_price: this.subtotal,
-          bill_name: "cash now"
+          bill_name: "จ่ายเงินเลย"
         };
         //const order = await this.$axios.$post("/order", newOrder);
         //console.log(order.data);
@@ -573,30 +772,33 @@ export default {
           coupon_id: this.coupon_id
         };
         this.$axios.post("/payment", newPayment).then(pay => {
-          //console.log(pay);
+          //console.log(pay.data.order_id);
           if (pay.status === 200) {
             this.invoice = pay.data.invoice;
             if (!money.noBill) {
-              this.print(money, pay.data.data);
+              this.print(money, pay.data.data, pay.data.order_id);
             }
+            // setTimeout(this.for_chef(pay.data.order_id), 2000);
+            //this.for_chef(pay.data.order_id);
             this.$emit("closeDialog_cook");
             this.$emit("closeDialog");
-            this.$emit("clearOrder");
+            this.$emit("clearOrder2");
             this.checkout = false;
             this.cus_type = "guest";
             this.discount_type = "coupong";
             this.type_order = "1";
             this.bank = "cash";
-            this.cusId = "60fa3812dc42a9589e33ba1b";
+            this.cusId = this.cusIdGuest;
             this.vat = "1";
             this.alert = false;
             this.coupon_id = null;
             this.coupon = 0;
-            this.discount_type === "no";
+            this.discount_type = "no";
             this.$swal.fire({
               position: "center",
               type: "success",
-              title: pay.data.message,
+              title: "เงินทอน " + pay.data.data.withdraw_money + " บาท",
+              text: pay.data.message,
               showConfirmButton: false,
               timer: 2500
             });
@@ -618,14 +820,14 @@ export default {
       if (this.discount_type === "member" && this.cus_type === "member") {
         const res = await this.$axios.$get("/customer/" + this.cusId);
         //console.log(res);
-        this.coupon = res.ref_level_id.discount;
+        this.coupon = res.ref_level_id ? res.ref_level_id.discount : 0;
         this.alert = false;
         //this.cusId = "";
         //console.log(this.cusId);
         this.coupon_id = null;
       } else {
         if (this.cus_type === "guest") {
-          this.cusId = "60fa3812dc42a9589e33ba1b";
+          this.cusId = this.cusIdGuest;
         }
         this.coupon = 0;
         this.coupon_id = null;
@@ -681,6 +883,10 @@ export default {
       //console.log(selectCoupon);
     },
     checkTypePayment() {
+      let discount = Math.round((this.lodDai * this.coupon) / 100);
+      let afterDiscount = this.lodDai - discount + this.lodBorDai;
+      let vat = Math.round((afterDiscount * this.tax) / 100);
+      let afterVat = Math.round(afterDiscount + vat);
       if (this.bank === "cash") {
         this.bank_id = null;
         const newPayment1 = {
@@ -689,19 +895,15 @@ export default {
           orders: this.orders,
           type_order: this.type_order,
           total_price: this.subtotal,
-          discount_price: Math.round((this.subtotal * this.coupon) / 100),
-          after_discount: Math.round(
-            this.subtotal - [(this.subtotal * this.coupon) / 100]
-          ),
-          vat_price: Math.round((this.subtotal * this.tax) / 100),
-          after_vat: Math.round(
-            (this.subtotal * this.tax) / 100 + this.subtotal
-          ),
-          net_price: Math.round(this.thinkPrice(this.subtotal))
+          discount_price: discount,
+          after_discount: afterDiscount,
+          vat_price: vat,
+          after_vat: afterVat,
+          net_price: this.thinkPrice()
         };
         return newPayment1;
       } else {
-        this.bank_id = this.bank2[0]._id;
+        this.bank_id = this.bank2[0] ? this.bank2[0]._id : null;
         const newPayment2 = {
           ref_cus_id: this.cusId,
           ref_bank_id: this.bank_id,
@@ -709,37 +911,43 @@ export default {
           orders: this.orders,
           type_order: this.type_order,
           total_price: this.subtotal,
-          discount_price: Math.round((this.subtotal * this.coupon) / 100),
-          after_discount: Math.round(
-            this.subtotal - [(this.subtotal * this.coupon) / 100]
-          ),
-          vat_price: Math.round((this.subtotal * this.tax) / 100),
-          after_vat: Math.round(
-            (this.subtotal * this.tax) / 100 + this.subtotal
-          ),
-          net_price: Math.round(this.thinkPrice(this.subtotal))
+          discount_price: discount,
+          after_discount: afterDiscount,
+          vat_price: vat,
+          after_vat: afterVat,
+          net_price: this.thinkPrice()
         };
         return newPayment2;
       }
     },
     cancelOrder() {
       if (this.idOrder !== null) {
+        //console.log("hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         this.$axios
           .$delete("/order/" + this.idOrder)
           .then(() => {
-            this.$emit("clearOrder");
+            this.$emit("clearOrder2");
             this.$emit("closeDialog");
           })
           .catch(e => {
             this.$swal(e);
           });
       } else {
-        this.$emit("clearOrder");
+        this.$emit("clearOrder2");
         this.$emit("closeDialog");
       }
     },
-    print(money, pay) {
+    async print(money, pay, order_id) {
       const cusName = this.customers.filter(cus => cus._id === this.cusId);
+      const order = await this.$axios.$get("/order/" + order_id);
+      const bankImg = () => {
+        if (pay.ref_bank_id) {
+          const obj = this.bank2.find(b => b._id === pay.ref_bank_id);
+          return obj;
+        } else {
+          return null;
+        }
+      };
       //console.log(cusName);
       var WinPrint = window.open(
         "",
@@ -780,57 +988,68 @@ export default {
         )}</th></tr>`
       );
       WinPrint.document.write("</table>");
-      //WinPrint.document.write("<img src='" + __dirname + "25.png'>");
       WinPrint.document.write(
         "<table   style='width: 100%;font-size: 0.5em;'>"
       );
       WinPrint.document.write(
         "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th><th style='border-bottom: thin dotted;border-top: thin dotted' colspan='2' width='100px'>ราคา</th></tr>"
       );
-      for (let i in this.orders) {
+      //console.log(this.orders);
+      for (let i in order.list_product) {
         WinPrint.document.write("<tr style='border-bottom: thin solid'>");
         WinPrint.document.write(
           `<td style='padding-left:20px;'>${parseInt(i) + 1}</td><td >${
-            this.orders[i].name
-          }</td><td style='padding-left:20px;'>${
-            this.orders[i].qty
+            order.list_product[i].discount ? "" : "**"
+          }${order.list_product[i].name} ${
+            order.list_product[i].normal_price
+          } บาท</td><td style='padding-left:20px;'>${
+            order.list_product[i].qty
           }</td><td style='padding-left:20px;'>${this.formatPrice(
-            this.orders[i].price
+            order.list_product[i].price
           )} </td><td style='padding-right:20px;'>฿</td>`
         );
         WinPrint.document.write("</tr>");
+        for (let j in order.list_product[i].topping) {
+          WinPrint.document.write(
+            `<tr><td></td><td > - ${order.list_product[i].topping[j].name}${
+              order.list_product[i].topping[j].price !== 0
+                ? "เพิ่ม " + order.list_product[i].topping[j].price + " บาท"
+                : ""
+            }</td></td></tr>`
+          );
+        }
       }
       WinPrint.document.write(
         "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
       );
       WinPrint.document.write("</table>");
       WinPrint.document.write(
-        "<table  style='margin-top:20px;font-size: 0.6em;'>"
+        "<table  style='margin-top:20px;margin-bottom:30px;font-size: 0.6em;'>"
       );
       WinPrint.document.write(
         `<tr><th width='1000px' align=left style='padding-right:60px;'>อาหารเครื่องดื่ม</th><th width='100px'>${this.formatPrice(
-          this.subtotal
+          pay.total_price
         )} </th><th>บาท</th></tr>`
       );
-      if (this.coupon !== 0) {
-        const dis = Math.round((this.subtotal * this.coupon) / 100);
+      if (pay.discount_price !== 0) {
+        //const dis = Math.round((this.subtotal * this.coupon) / 100);
         WinPrint.document.write(
           `<tr><th width='1000px' align=left style='padding-right:60px;'>ส่วนลด</th><th width='100px'>${this.formatPrice(
-            dis
+            pay.discount_price
           )} </th><th>บาท</th></tr>`
         );
       }
-      if (this.tax !== 0) {
-        const vat = Math.round((this.subtotal * this.tax) / 100);
+      if (pay.vat_price !== 0) {
+        //const vat = Math.round((this.subtotal * this.tax) / 100);
         WinPrint.document.write(
           `<tr><th width='1000px' align=left style='padding-right:60px;'>ภาษี</th><th width='100px'>${this.formatPrice(
-            vat
+            pay.vat_price
           )} </th><th>บาท</th></tr>`
         );
       }
       WinPrint.document.write(
         `<tr><th width='1000px' align=left style='padding-right:60px'>ยอดรวมสุทธิ</th><th width='100px'>${this.formatPrice(
-          Math.round(this.thinkPrice(this.subtotal))
+          pay.net_price
         )} </th><th>บาท</th></tr>`
       );
       WinPrint.document.write(
@@ -843,15 +1062,104 @@ export default {
           money.withdraw
         )} </th><th>บาท</th></tr>`
       );
+      // image bank
+      if (bankImg()) {
+        WinPrint.document.write(
+          `<tr><th  align=center style='padding-left:60px' ><img width='120px' height='120px' src='${
+            this.$nuxt.context.env.config.IMG_URL
+          }${bankImg().img}'></th></tr>
+        `
+        );
+      }
       WinPrint.document.write(
-        `<tr><th  align=center style='padding-left:60px' >**ขอบคุณที่ใช้บริการ**</th></tr>`
+        `
+        <tr ><th align=center style='padding-left:60px' >ขอบคุณที่ใช้บริการ</th></tr>
+        <tr ><th align=start colspan=2>หมายเหตุ ** สินค้าไม่สามารถใช้กับส่วนลดได้</th><th></th></tr>
+        `
       );
-      WinPrint.document.write("</table>");
+      WinPrint.document.write("</table><hr style='break-after:page'>");
+
+      let list = order.list_product;
+      const compareFood = id => {
+        const res = this.products.find(p => p._id === id);
+        return res;
+      };
+      list.map(l => {
+        l.unit = compareFood(l.ref_pro_id).ref_uid._id;
+      });
+      const filterByUnit = id => {
+        const Arr = list.filter(l => l.unit === id);
+        return Arr;
+      };
+
+      //WinPrint.document.write("<img src='" + __dirname + "25.png'>");
+      if (this.printOrder === true) {
+        this.unit.map(u => {
+          const resArr = filterByUnit(u._id);
+          if (resArr.length !== 0) {
+            //for drink **************************************************************************************
+
+            WinPrint.document.write(
+              "<table style='width: 100%;font-size: 0.4em;'>"
+            );
+
+            WinPrint.document.write(
+              `<tr><th align='left'>พนักงานที่รับออเดอร์ : ${order.ref_emp_id.fname} ${order.ref_emp_id.lname}</th></tr>`
+            );
+            WinPrint.document.write(
+              `<tr><th align='left'>ชื่อบิล : ${order.bill_name}</th></tr>`
+            );
+            WinPrint.document.write(
+              `<tr><th align='center'>วันที่ ${this.formatDate(
+                order.datetime
+              )} </th></tr>`
+            );
+            WinPrint.document.write(
+              `<tr><th align='center'>***สำหรับจัดทำ${u.u_name}***</th></tr>`
+            );
+            WinPrint.document.write("</table>");
+            WinPrint.document.write(
+              "<table   style='width: 100%;font-size: 0.5em;margin-bottom:30px;'>"
+            );
+            WinPrint.document.write(
+              "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th></tr>"
+            );
+            //let subTotal = 0;
+
+            resArr.map((r, j) => {
+              WinPrint.document.write("<tr style='border-bottom: thin solid'>");
+              WinPrint.document.write(
+                `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
+                  r.name
+                }</td><td style='padding-left:20px;'>${r.qty}</td>`
+              );
+              WinPrint.document.write("</tr>");
+              for (let k in r.topping) {
+                WinPrint.document.write(
+                  `<tr><td></td><td > - ${r.topping[k].name} </td></td></tr>`
+                );
+              }
+              if (r.detail.length !== 0) {
+                WinPrint.document.write(
+                  `<tr><td></td><td > ** ${r.detail} **</td></td></tr>`
+                );
+              }
+            });
+            WinPrint.document.write("</table><hr style='break-after:page'>");
+          }
+        });
+      }
+
       WinPrint.document.close();
       WinPrint.focus();
-      setTimeout(WinPrint.print(), 3000);
+      setTimeout(() => {
+        WinPrint.print();
+        WinPrint.close();
+      }, 500);
+      //setTimeout(this.for_chef(pay.ref_order_id), 700);
       //WinPrint.close();
     },
+
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
@@ -865,6 +1173,8 @@ export default {
   },
   created() {
     this.improveCus();
+    this.cusId = this.cusIdGuest;
+
     //this.improveBank();
   }
 };

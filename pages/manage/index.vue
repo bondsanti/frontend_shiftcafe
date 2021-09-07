@@ -5,7 +5,15 @@
 
       <v-row>
         <v-col cols="12" sm="12">
-          <p class="mb-4">ยอดขายประจำวันที่ {{ formatDate(dateNow) }}</p>
+          <!-- <v-row align="center" class="spacer" no-gutters>
+            <v-card max-width="434" class="mx-auto rounded-xl" tile>
+              <p class="mb-4">ยอดขายประจำวันที่ {{ formatDate(dateNow) }}</p>
+              <v-avatar class="mx-auto " size="105" max-width="90px" tile>
+                <v-img src="/analytics.png"></v-img>
+              </v-avatar>
+            </v-card>
+          </v-row> -->
+
           <apexcharts
             :animations="animations"
             @sendDateIndex="sendDateIndex"
@@ -28,7 +36,7 @@
             phylum="unit"
           />
         </v-col>
-        <!-- <v-col cols="12" sm="6"><datasell /></v-col> -->
+        <v-col cols="12"><CircleChart :year="year" :product="product"/></v-col>
       </v-row>
     </div>
 
@@ -39,6 +47,7 @@
 import sell from "@/components/manage/dashboard/sell.vue";
 import apexcharts from "@/components/manage/dashboard/apexcharts.vue";
 import pieCharts from "@/components/manage/dashboard/pieCharts.vue";
+import CircleChart from "@/components/manage/dashboard/CircleChart.vue";
 export default {
   head() {
     return {
@@ -65,7 +74,8 @@ export default {
   components: {
     sell,
     apexcharts,
-    pieCharts
+    pieCharts,
+    CircleChart
   },
   data() {
     return {
@@ -79,43 +89,35 @@ export default {
     };
   },
   async asyncData(context) {
-    const [year, category, unit] = await Promise.all([
+    const [year, category, unit, product] = await Promise.all([
       // context.$axios.$get("/payment-today"),
       context.$axios.$get("/payment-year"),
       context.$axios.$get("/category"),
-      context.$axios.$get("/unit")
+      context.$axios.$get("/unit"),
+      context.$axios.$get("/product")
     ]);
-    return { year, category, unit };
+    return { year, category, unit, product };
   },
 
   methods: {
     sendDateIndex(date) {
       this.dateNow = date;
       this.$refs.sellChild.thinkMonth(date);
-
-      //this.$refs.sellChild.thinkYear();
+      this.$refs.sellChild.thinkYear(date);
     },
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
       return this.$moment(strdate).format("DD MMMM YYYY ");
+    },
+    filterPayment() {
+      const res = this.year.filter(y => y.status !== 1);
+      this.year = res;
     }
   },
 
-  mounted() {
-    // this.$axios
-    //   .get(
-    //     "https://campaign-admin.gewista.at/chart/12/2021-07-01T10:03:23/2021-07-10T10:03:2"
-    //   )
-    //   .then(response => {
-    //     this.chartData = response.data;
-    //     //  console.log(response.data);
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //     this.errored = true;
-    //   })
-    //   .finally(() => (this.loading = false));
+  created() {
+    this.filterPayment();
   }
 };
 </script>

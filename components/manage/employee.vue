@@ -1,8 +1,8 @@
 <template>
   <div class="ma-3">
     <!-- view -->
-    <v-dialog v-model="dialogView" max-width="400px">
-      <v-card>
+    <v-dialog v-model="dialogView" max-width="500px">
+      <v-card class="rounded-xl">
         <v-form>
           <v-card-title>
             <span class="text-h">
@@ -25,30 +25,35 @@
     </v-dialog>
     <!-- view -->
 
-    <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
+    <v-card
+      class="mx-auto mt-6  py-3 rounded-xl"
+      elevaation="24"
+      justify-centaer
+    >
       <v-card-title>
         <!-- ********************************************************************************************************************************************************************** -->
-        <v-dialog v-model="dialogadd" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
+       
             <v-btn
               color="primary"
               dark
-              class="mr-5"
-              v-bind="attrs"
-              v-on="on"
+              class="mr-5 rounded-xl"
+              elevation="15"           
               @click="addItem"
             >
               <v-icon left> mdi-card-account-details-outline </v-icon>
               จัดการพนักงาน
             </v-btn>
-          </template>
-        </v-dialog>
+     
+        <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
           label="ค้นหา"
           single-line
+          class="rounded-xl"
+          solo
           hide-details
         ></v-text-field>
       </v-card-title>
@@ -76,13 +81,16 @@
         <template v-slot:top>
           <!-- ********************************************************************************************************************************************************************** -->
           <!-- add------------------dialogadd--------------------------------- -->
-          <v-dialog v-model="dialogadd" max-width="650px">
-            <v-card>
+          <v-dialog v-model="dialogadd" max-width="650px" persistent>
+            <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left>mdi-card-account-details-outline </v-icon>
                   เพิ่มข้อมูลพนักงาน</span
                 >
+                <v-btn text color="error" class="mr-4 ml-2" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
 
               <v-card-text>
@@ -94,7 +102,7 @@
                           label="คำนำหน้า"
                           append-icon="mdi-account"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           :items="pnamesec"
                           v-model="employeeitmeadd.pname"
                           :rules="requiredRules"
@@ -109,7 +117,7 @@
                           append-icon="mdi-account"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                           @keypress.enter="check"
                         ></v-text-field>
                       </v-col>
@@ -118,7 +126,13 @@
                         sm="2"
                         class="justify-center align-center"
                       >
-                        <v-btn color="warning" @click="check">ตรวจสอบ</v-btn>
+                        <v-btn
+                          class="mr-1 rounded-xl"
+                          elevation="15"
+                          color="warning"
+                          @click="check"
+                          >ตรวจสอบ</v-btn
+                        >
                         <div class="mt-2 ml-4" v-if="usernametrue">
                           <span class="green--text ">ใช้ได้</span>
                         </div>
@@ -132,10 +146,11 @@
                           v-model="employeeitmeadd.password"
                           :rules="requiredRules"
                           label="password"
+                          hide-details="auto"
                           type="password"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                           append-icon="mdi-lock"
                         ></v-text-field>
                       </v-col>
@@ -147,7 +162,7 @@
                           label="ชื่อ"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -158,7 +173,7 @@
                           append-icon="mdi-rename-box"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
 
@@ -184,6 +199,7 @@
                           </template>
                           <v-date-picker
                             v-model="employeeitmeadd.birthday"
+                            locale="th"
                             :active-picker.sync="activePicker"
                             :max="
                               new Date(
@@ -194,7 +210,6 @@
                                 .substr(0, 10)
                             "
                             min="1950-01-01"
-                            @change="testDate"
                           ></v-date-picker>
                         </v-menu>
                       </v-col>
@@ -209,7 +224,7 @@
                           label="เลขบัตรประจำตัวประชาชน"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -223,7 +238,7 @@
                           outlined
                           type="number"
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -234,7 +249,7 @@
                           :rules="emailRules"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -246,7 +261,7 @@
                           label="ที่อยู่"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-textarea>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -254,7 +269,7 @@
                           label="ตำแหน่งงาน"
                           append-icon="mdi-briefcase"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           item-text="name"
                           item-value="_id"
                           :items="roleitme.flat()"
@@ -268,16 +283,23 @@
               </v-card-text>
 
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="closeadd">
-                  <v-icon aria-hidden="false" class="mx-2">
+                <v-btn
+                  class="ma-1  rounded-xl"
+                  elevation="15"
+                  color="primary"
+                  dark
+                  @click="closeadd"
+                >
+                  <v-icon aria-hidden="false" class="mx-2 ">
                     mdi-close-box
                   </v-icon>
                   ยกเลิก
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="ma-1"
+                  class="ma-1  rounded-xl"
                   color="info"
+                  elevation="15"
                   :disabled="!valid"
                   @click="save()"
                 >
@@ -293,13 +315,16 @@
           <!-- ********************************************************************************************************************************************************************** -->
 
           <!-- edi------------------------------------------------------------------ -->
-          <v-dialog v-model="dialog" max-width="600px">
+          <v-dialog v-model="dialog" max-width="650px">
             <v-card>
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left>mdi-card-account-details-outline </v-icon>
                   แก้ไขข้อมูลพนักงาน</span
                 >
+                <v-btn text color="error" class="mr-4" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
 
               <v-card-text>
@@ -311,7 +336,7 @@
                           label="คำนำหน้า"
                           append-icon="mdi-account"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           :items="pnamesec"
                           v-model="employeeitme.pname"
                           :rules="rules"
@@ -324,10 +349,11 @@
                           disabled
                           label="username"
                           type="username"
+                          clearable
                           append-icon="mdi-account"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
 
@@ -339,7 +365,8 @@
                           label="ชื่อ"
                           outlined
                           required
-                          color="#1D1D1D"
+                          clearable
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -349,8 +376,9 @@
                           label="นามสกุล"
                           append-icon="mdi-rename-box"
                           outlined
+                          clearable
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
 
@@ -367,6 +395,7 @@
                             <v-text-field
                               v-model="employeeitme.birthday"
                               label="วันเกิด"
+                              clearable
                               append-icon="mdi-calendar"
                               readonly
                               v-bind="attrs"
@@ -376,6 +405,7 @@
                           </template>
                           <v-date-picker
                             v-model="employeeitme.birthday"
+                            locale="th"
                             :active-picker.sync="activePicker"
                             :max="
                               new Date(
@@ -386,7 +416,6 @@
                                 .substr(0, 10)
                             "
                             min="1950-01-01"
-                            @change="testDate"
                           ></v-date-picker>
                         </v-menu>
                         <!-- <date-picker
@@ -415,14 +444,16 @@
                           type="number"
                           label="เลขบัตรประจำตัวประชาชน"
                           outlined
+                          clearable
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-text-field
                           v-model="employeeitme.tel"
                           maxlength="10"
+                          clearable
                           minlength="10"
                           :rules="numberRules"
                           append-icon="mdi-phone"
@@ -430,7 +461,7 @@
                           outlined
                           type="number"
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -441,7 +472,8 @@
                           :rules="emailRules"
                           outlined
                           required
-                          color="#1D1D1D"
+                          clearable
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -450,10 +482,11 @@
                           :rules="rules"
                           append-icon="mdi-map-marker"
                           label="ที่อยู่"
+                          clearable
                           outlined
                           required
                           rows="1"
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-textarea>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -461,7 +494,7 @@
                           label="ตำแหน่งงาน"
                           append-icon="mdi-briefcase"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           item-text="name"
                           item-value="_id"
                           :items="roleitme.flat()"
@@ -475,7 +508,13 @@
               </v-card-text>
 
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="close">
+                <v-btn
+                  class="ma-1 rounded-xl"
+                  elevation="15"
+                  color="primary"
+                  dark
+                  @click="close"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -483,7 +522,8 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="ma-1"
+                  class="mr-1 rounded-xl"
+                  elevation="15"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -499,13 +539,16 @@
           <!-- -----------------------------------------edi-->
 
           <!-- password--------------------------------------------- -->
-          <v-dialog v-model="dialogpass" max-width="400px">
-            <v-card>
+          <v-dialog v-model="dialogpass" max-width="600px">
+            <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left> mdi-card-account-details-outline </v-icon>
                   เปลี่ยนรหัสผ่าน</span
                 >
+                <v-btn text color="error" class="mr-4 ml-2" @click="reset">
+                  รีเซ็ตแบบฟอร์ม
+                </v-btn>
               </v-card-title>
 
               <v-card-text>
@@ -513,16 +556,17 @@
                   <div>
                     <v-row>
                       <v-col cols="12"> </v-col>
-
                       <v-col cols="12" sm="12">
                         <v-text-field
                           v-model="employeeitme.password"
                           :rules="requiredRules"
+                          hide-details="auto"
                           label="PASSWORD"
-                          type="password"
                           outlined
+                          clearable
+                          type="password"
                           required
-                          color="#1D1D1D"
+                          color="primary"
                           append-icon="mdi-lock"
                         ></v-text-field>
                       </v-col>
@@ -536,7 +580,13 @@
                 </v-alert>
               </v-card-text>
               <v-card-actions>
-                <v-btn class="ma-1" color="primary" dark @click="closePass">
+                <v-btn
+                  class="ma-1 rounded-xl"
+                  elevation="15"
+                  color="primary"
+                  dark
+                  @click="closePass"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
@@ -544,7 +594,8 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="ma-1"
+                  class="ma-1 rounded-xl"
+                  elevation="15"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -559,8 +610,8 @@
           </v-dialog>
           <!-- ---------------------------------------------------password -->
 
-          <v-dialog v-model="dialogManager" max-width="500px">
-            <v-stepper v-model="e1">
+          <v-dialog v-model="dialogManager" max-width="500px" persistent>
+            <v-stepper v-model="e1" class=" rounded-xl">
               <v-stepper-header>
                 <v-stepper-step :complete="e1 > 1" step="1">
                   เลือกผู้จัดการ
@@ -583,51 +634,76 @@
                     chips
                     small-chips
                     label="โปรดเลือกผู้จัดการ"
-                    multiple
+                    class="ma-2"
                   ></v-autocomplete>
 
-                  <v-btn color="primary" @click="e1 = 2">
+                  <v-btn
+                    color="primary"
+                    class="ma-2 rounded-xl"
+                    @click="requestOTP"
+                  >
                     ถัดไป
                   </v-btn>
 
-                  <v-btn text @click="dialogManager = false">
+                  <v-btn text @click="canelOTP">
                     ยกเลิก
                   </v-btn>
                 </v-stepper-content>
 
                 <v-stepper-content step="2">
-                  <v-card
-                    class="mb-12"
-                    color="secondary"
-                    height="200px"
-                  ></v-card>
+                  <v-card class="mb-12 pa-5" color="secondary" height="200px">
+                    <v-row class="justify-center"
+                      >กรุณากรอกรหัส OTP
+                      ที่ส่งไปยังผู้จัดการที่คุณเลือกไว้</v-row
+                    >
+                    <v-row class="justify-center" v-if="!otpAgain">{{
+                      timerForOTP
+                    }}</v-row>
+                    <v-row class="justify-center" v-if="otpAgain"
+                      ><v-btn fab icon @click="requestOTP">
+                        <v-icon>mdi-refresh-circle</v-icon>
+                      </v-btn></v-row
+                    >
+                    <v-row class="mt-7"
+                      ><v-text-field
+                        v-model="otpCode"
+                        filled
+                        solo
+                        label="OTP CODE"
+                        prepend-inner-icon="mdi-comment-question"
+                      ></v-text-field
+                    ></v-row>
+                  </v-card>
 
-                  <v-btn color="primary" @click="e1 = 1">
+                  <v-btn
+                    color="primary"
+                    :disabled="otpCode.length !== 6"
+                    @click="confirmOTP"
+                  >
                     ยืนยัน
                   </v-btn>
 
-                  <v-btn text @click="dialogManager = false">
+                  <v-btn text @click="canelOTP">
                     ยกเลิก
-                  </v-btn>
-                </v-stepper-content>
-
-                <v-stepper-content step="3">
-                  <v-card
-                    class="mb-12"
-                    color="grey lighten-1"
-                    height="200px"
-                  ></v-card>
-
-                  <v-btn color="primary" @click="e1 = 1">
-                    Continue
-                  </v-btn>
-
-                  <v-btn text>
-                    Cancel
                   </v-btn>
                 </v-stepper-content>
               </v-stepper-items>
             </v-stepper>
+          </v-dialog>
+          <v-dialog v-model="dialogOTP" max-width="290" persistent>
+            <v-card>
+              <v-card-title class="text-h5">
+                <v-icon left>{{ otpResult.icon }}</v-icon> {{ otpResult.text }}
+              </v-card-title>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+
+                <v-btn color="green darken-1" text @click="checkOtpResult">
+                  ตกลง
+                </v-btn>
+              </v-card-actions>
+            </v-card>
           </v-dialog>
 
           <!-- ********************************************************************************************************************************************************************** -->
@@ -648,10 +724,7 @@
                 <v-btn
                   color="primary"
                   class="ma-2"
-                  @click="
-                    deleteItemConfirm();
-                    showAlert();
-                  "
+                  @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="mx-4">
                     mdi-delete-forever</v-icon
@@ -664,7 +737,13 @@
           <!-- ----------------------------------------------------------delete -->
         </template>
         <template v-slot:[`item.actions`]="{ item }">
-          <v-btn class="mr1" small color="warning" @click="editItem(item)">
+          <v-btn
+            class="mr-1 rounded-xl"
+            elevation="15"
+            small
+            color="warning"
+            @click="editItem(item)"
+          >
             <v-icon aria-hidden="false" class="mx-1">
               mdi-pencil
             </v-icon>
@@ -672,7 +751,8 @@
           </v-btn>
           <v-btn
             rounded-pill
-            class="mr-1"
+            class="mr-1 rounded-xl"
+            elevation="15"
             color="error"
             small
             @click="deleteItem(item)"
@@ -685,8 +765,14 @@
         </template>
         <!-- btn-edi-pass--------------------------------------------------- -->
         <template v-slot:[`item.pasword`]="{ item }">
-          <v-btn small color="#03A9F4" @click="editItemPass(item)">
-            <div class="d-block  white--text">
+          <v-btn
+            small
+            class="mr-1 rounded-xl"
+            color="#03A9F4"
+            elevation="15"
+            @click="editItemPass(item)"
+          >
+            <div class="d-block   white--text">
               <v-icon aria-hidden="false">
                 mdi-lock
               </v-icon>
@@ -697,7 +783,13 @@
         <!-- --------------------------------------------------btn edi pass -->
         <!-- btn-view--------------------------------------------------- -->
         <template v-slot:[`item.view`]="{ item }">
-          <v-btn class="mr1" small color="teal" @click="Detail(item)">
+          <v-btn
+            class="mr1 rounded-xl"
+            small
+            elevation="15"
+            color="teal"
+            @click="Detail(item)"
+          >
             <div class="d-block  white--text">
               <v-icon aria-hidden="false">
                 mdi-eye
@@ -709,9 +801,10 @@
         <!-- ----------------- ---------------------------------btn view -->
         <template v-slot:[`item.private`]="{ item }">
           <v-btn
-            class="mr1"
+            class="mr1 rounded-xl"
             small
             color="purple darken-2"
+            elevation="15"
             @click="selectManager(item)"
           >
             <div class="d-block  white--text">
@@ -737,9 +830,9 @@
           {{ item.lname }}
         </template>
         <template v-slot:[`item.username`]="{ item }">
-          <v-icon class="ma-2 ml-2" color="primary">
+          <!-- <v-icon class="ma-2 ml-2" color="primary">
             mdi-identifier
-          </v-icon>
+          </v-icon> -->
           {{ item.username }}
         </template>
         <template v-slot:[`item.birthday`]="{ item }">
@@ -761,12 +854,9 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import moment from "moment";
 import "moment/locale/th";
-
-import DatePicker from "vue2-datepicker";
-import "@/assets/css/datepicker.css";
-import "vue2-datepicker/locale/th";
 
 export default {
   data: () => ({
@@ -788,7 +878,7 @@ export default {
       { text: "ลำดับ", sortable: false, value: "No" },
       { text: "คำนำหน้า", align: "start", value: "pname" },
       { text: "ชื่อ", align: "start", value: "fname" },
-      { text: "นามสกุล", align: "start", value: "fname" },
+      { text: "นามสกุล", align: "start", value: "lname" },
       // { text: "ภาพ", sortable: false, value: "img" },
       { text: "ไอดีใช้เข้าระบบ", align: "start", value: "username" },
       { text: "ตำแหน่ง", align: "start", value: "ref_id_role.position" },
@@ -804,6 +894,7 @@ export default {
       { text: "หมายเหตุ", value: "actions", sortable: false }
     ],
     editedIndex: -1,
+    employeeitmeshow: { password: "" },
     employeeitme: {
       _id: "",
       username: "null",
@@ -832,6 +923,7 @@ export default {
       email: "",
       address: ""
     },
+    length: null,
     type: null,
     deleteId: null,
     requiredRules: [
@@ -847,13 +939,12 @@ export default {
     ],
     numberRules: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
-      v => (/\d{9,10}/.test(v) && v.length <= 10) || "เบอร์โทรศัพท์ไม่ถูกต้อง",
+      v => (/\d{10}/.test(v) && v.length <= 10) || "เบอร์โทรศัพท์ไม่ถูกต้อง",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ],
     numberRulesidcard: [
       v => !!v || "โปรดกรอกข้อความให้ครบในช่อง!",
-      v => v.length <= 13 || "ใส่ตัวเลขเกิน13ตัว",
-      v => v.length >= 13 || "ใส่ตัวเลขไม่ถึง13ตัว",
+      v => (/\d{13}/.test(v) && v.length <= 13) || "เลขบัตรไม่ถูกต้อง",
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ],
     usernametrue: false,
@@ -863,9 +954,19 @@ export default {
     manager: [],
     activePicker: null,
     menu: false,
-    menu2: false
+    menu2: false,
+    timerForOTP: null,
+    otpAgain: false,
+    dialogOTP: false,
+    otpCode: "",
+    otpResult: {
+      icon: "mdi-lock-open-check",
+      text: "รหัส OTP ถูกต้อง",
+      status: false
+    },
+    otpToken: null,
+    itemForRight: null
   }),
-  components: { DatePicker },
   computed: {},
   filters: {
     moment: function(date) {
@@ -896,20 +997,161 @@ export default {
     }
   },
 
-  mounted() {
-    this.toast = this.$swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000
-    });
-  },
   methods: {
-    testDate() {
-      // console.log(this.employeeitmeadd.birthday);
-      // console.log(this.employeeitme.birthday);
+    reset() {
+      this.$refs.form.reset();
     },
-    selectManager() {
+    canelOTP() {
+      this.e1 = 1;
+      this.telManager = null;
+      this.dialogManager = false;
+      this.otpCode = "";
+      this.otpToken = null;
+      this.otpResult = {
+        icon: "mdi-lock-open-check",
+        text: "รหัส OTP ถูกต้อง",
+        status: false
+      };
+      this.itemForRight = null;
+    },
+    checkOtpResult() {
+      if (this.otpResult.status === true) {
+        this.dialogOTP = false;
+        this.login();
+      } else {
+        this.dialogOTP = false;
+      }
+    },
+    confirmOTP() {
+      this.$axios
+        .post("/authen/verify-otp", {
+          verify: this.otpToken,
+          code: this.otpCode,
+          emp_spoof: this.itemForRight
+        })
+        .then(res => {
+          //console.log(res);
+          if (res.status === 200) {
+            this.otpResult = {
+              icon: "mdi-lock-open-check",
+              text: res.data.data.message,
+              status: true
+            };
+            this.$swal({
+              type: "success",
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              title: res.data.data.message
+            });
+            this.dialogOTP = true;
+          } else {
+            this.otpResult = {
+              icon: "mdi-alert",
+              text: res.data.message,
+              status: false
+            };
+            this.$swal({
+              type: "error",
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              title: res.data.message
+            });
+            this.dialogOTP = true;
+          }
+        });
+    },
+    requestOTP() {
+      //console.log(this.telManager);
+      if (this.telManager !== null) {
+        this.$axios
+          .post("/authen/request-otp", { tel: this.telManager })
+          .then(res => {
+            //console.log(res);
+            if (res.status === 200) {
+              this.otpToken = res.data.token;
+              this.e1 = 2;
+              this.startTimer(300);
+            } else {
+              this.otpResult = {
+                icon: "mdi-alert",
+                text: res.data.message,
+                status: false
+              };
+              this.dialogOTP = true;
+            }
+          });
+      }
+    },
+    startTimer(duration) {
+      //console.log(duration);
+      let timer = duration;
+      let minutes;
+      let seconds;
+
+      const countdown = () => {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        this.timerForOTP = minutes + ":" + seconds;
+
+        timer -= 1;
+      };
+      let res = setInterval(() => {
+        countdown();
+        if (timer < 0) {
+          //console.log("time out");
+          clearInterval(res);
+          this.otpAgain = true;
+        }
+      }, 1000);
+    },
+    async login() {
+      //this.$refs.form.validate();
+      //console.log(item);
+      const payload = {
+        data: {
+          username: this.itemForRight.username,
+          password: this.itemForRight.password,
+          type: 1
+        }
+      };
+
+      this.$auth.loginWith("local", payload).then(async res => {
+        //console.log(res);
+        if (res.status === 200) {
+          await this.$store.dispatch(
+            "setPosition",
+            this.user.ref_id_role.position
+          );
+          const position = this.$store.getters["position"];
+          //console.log(this.user.ref_id_role.position);
+          if (
+            position == "admin" ||
+            position == "manager" ||
+            position == "checker"
+          ) {
+            this.$router.push("/manage");
+          } else if (position === "staff" || position === "cashier") {
+            this.$router.push("/seller");
+          } else {
+            this.$router.push("/member");
+          }
+        } else {
+          // this.snackbar = true;
+          // this.error = res.data.message;
+          alert(res.data.message);
+        }
+      });
+    },
+    selectManager(item) {
+      this.itemForRight = item;
       const managerFilter = this.employee.filter(e => {
         return e.ref_id_role.position === "manager";
       });
@@ -920,7 +1162,7 @@ export default {
         });
       });
       this.dialogManager = true;
-      console.log(this.manager);
+      //console.log(this.itemForRight);
     },
     moment2(date) {
       this.$moment().format("LLLL");
@@ -934,22 +1176,36 @@ export default {
       if (cus.length > 0) {
         this.usernameErr = true;
         this.usernametrue = false;
+        this.$swal({
+          type: "error",
+          title: "ไม่สามารถใช้งานได้",
+          toast: true,
+          position: "top-end",
+          html: `Username มีผู้ใช้งานอยู่แล้ว`,
+          showConfirmButton: false,
+          timer: 10000,
+          timerProgressBar: true
+        });
       } else {
         this.usernameErr = false;
         this.usernametrue = true;
+        this.$swal({
+          type: "success",
+          title: "ใช้งานได้",
+          toast: true,
+          position: "top-end",
+          html: `สามารถใช้งาน Username นี้ได้`,
+          showConfirmButton: false,
+          timer: 10000,
+          timerProgressBar: true
+        });
       }
       //return { category };
     },
-    showAlert() {
-      this.toast({
-        type: "success",
-        title: "ดำเนิการสำเร็จ"
-      });
-      this.text_val_for_test = Date.now();
+    reset() {
+      this.$refs.form.reset();
     },
-    someFn(ev) {
-      console.log(ev);
-    },
+
     editItemPass(item) {
       this.type = "edit";
       this.employeeitme = item;
@@ -1005,8 +1261,22 @@ export default {
     },
     deleteItemConfirm() {
       this.employee.splice(this.editedIndex, 1);
-      this.$axios.$delete("/employee/" + this.deleteId).then(() => {});
-      this.closeDelete();
+      this.$axios
+        .$delete("/employee/" + this.deleteId)
+        .then(res => {
+          this.$emit("refresh");
+          this.closeDelete();
+          this.$swal({
+            type: "success",
+            title: res.message
+          });
+        })
+        .catch(e => {
+          this.$swal({
+            type: "error",
+            title: e
+          });
+        });
     },
     close() {
       this.dialog = false;
@@ -1106,21 +1376,36 @@ export default {
     },
 
     save() {
-      this.$refs.form.validate();
       if (this.type === "add") {
+        this.$refs.form.validate();
         this.loading = true;
-
-        this.$emit("addEmployee", { ...this.employeeitmeadd });
-        this.showAlert();
-        this.closeadd();
+        this.$axios
+          .$post("/employee/", this.employeeitmeadd)
+          .then(res => {
+            //  console.log(res.message);
+            this.$emit("refresh");
+            this.closeadd();
+            this.$swal.fire({
+              type: "success",
+              title: res.message
+            });
+          })
+          .catch(e => {
+            this.$swal({
+              type: "error",
+              title: e
+            });
+          });
       } else {
-        //console.log(this.employeeitme);
         this.loading = true;
         this.$axios
           .$put("/employee/" + this.employeeitme._id, this.employeeitme)
-          .then(() => {
+          .then(res => {
             this.$emit("refresh");
-            this.showAlert();
+            this.$swal({
+              type: "success",
+              title: res.message
+            });
             this.closePass();
             this.close();
             this.improverole;
@@ -1131,6 +1416,9 @@ export default {
       }
     }
   },
-  props: ["employee", "role"]
+  props: ["employee", "role"],
+  computed: {
+    ...mapState("auth", ["user"])
+  }
 };
 </script>

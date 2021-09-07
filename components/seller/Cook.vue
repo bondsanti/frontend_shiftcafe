@@ -25,7 +25,13 @@
               บันทึกคำสั่งซื้อ
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn @click="$emit('closeOrderDl')">ปิด</v-btn>
+            <v-btn
+              @click="
+                $emit('closeOrderDl');
+                bill_name = null;
+              "
+              >ปิด</v-btn
+            >
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -44,16 +50,16 @@
             ><v-btn outlined @click="$emit('closeHold')">ปิด</v-btn></v-toolbar
           >
           <div class="d-flex flex-row mb-3 ">
-            <v-col cols="3" md="3"><h3>ชื่อบิล</h3></v-col>
+            <v-col cols="3" md="3"><h4>ชื่อบิล</h4></v-col>
             <v-col cols="4" md="3" class="hidden-sm-and-down"
               ><h3>เวลา</h3></v-col
             >
             <v-col cols="4" md="1" class="hidden-sm-and-down"
-              ><h3>รายการ</h3></v-col
+              ><h4>รายการ</h4></v-col
             >
-            <v-col cols="3" md="1"><h3>รวมเงิน</h3></v-col>
-            <v-col cols="3" md="2"><h3>สถานะ</h3></v-col>
-            <v-col cols="3" md="2"><h3>จัดการ</h3></v-col>
+            <v-col cols="3" md="1"><h4>รวมเงิน</h4></v-col>
+            <v-col cols="3" md="2"><h4>สถานะ</h4></v-col>
+            <v-col cols="3" md="2"><h4>จัดการ</h4></v-col>
           </div>
           <div
             class="d-flex flex-row m-2"
@@ -339,22 +345,28 @@
                 ><h4>ราคา</h4></v-col
               >
             </v-row>
-            <v-row
-              no-gutters
-              style="flex-wrap: nowrap"
-              v-for="item in itemBy ? itemBy.list_product : []"
-              :key="item.name"
+            <div
+              v-for="(item, i) in itemBy ? itemBy.list_product : []"
+              :key="i"
             >
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-left">
-                {{ item.name }}
-              </v-col>
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center">
-                {{ item.qty }}
-              </v-col>
-              <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-right">
-                {{ formatPrice(item.price) }}
-              </v-col>
-            </v-row>
+              <v-row no-gutters style="flex-wrap: nowrap">
+                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-left ">
+                  {{ item.name }}
+                </v-col>
+                <v-col cols="4" class=" flex-grow-0 flex-shrink-0 text-center">
+                  {{ item.qty }}
+                </v-col>
+                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-right">
+                  {{ formatPrice(item.price) }}
+                </v-col>
+              </v-row>
+              <v-row no-gutters v-if="item.topping.length !== 0">
+                - {{ convertArrayToString(item.topping) }}</v-row
+              >
+              <v-row no-gutters v-if="item.detail.length !== 0">
+                ** {{ item.detail }} **</v-row
+              >
+            </div>
             <v-row>
               <v-col cols="12" class="flex-grow-0 flex-shrink-0 text-center"
                 ><h3>
@@ -384,18 +396,23 @@
       :customers="preConfirm.customers"
       :bank2="preConfirm.banks"
       :subtotal="preConfirm.subtotal"
+      :lodDai="preConfirm.lodDai"
+      :lodBorDai="preConfirm.lodBorDai"
       :idOrder="preConfirm.idOrder"
       :orders="preConfirm.orders"
+      :couponParent="preConfirm.couponParent"
       :statusCook="preConfirm.status_cook"
       @closeDialog_cook="closeDialog_cook"
       ref="childRef"
+      :printOrder="false"
     />
   </div>
 </template>
 <script>
 import ConfirmOrder from "@/components/seller/confirmOrder.vue";
+import FooterVue from "../layout/Footer.vue";
 export default {
-  props: ["holdDl", "orderOnDatabase", "orderDl"],
+  props: ["holdDl", "orderOnDatabase", "orderDl", "unit", "products"],
   components: {
     ConfirmOrder
   },
@@ -412,10 +429,20 @@ export default {
       orders: null,
       subtotal: null,
       idOrder: null,
-      status_cook: null
+      status_cook: null,
+      couponParent: null,
+      lodDai: 0,
+      lodBorDai: 0
     }
   }),
   methods: {
+    convertArrayToString(topping) {
+      let string = "";
+      topping.map(t => {
+        string = `${string === "" ? "" : string + ","}  ${t.name}`;
+      });
+      return string;
+    },
     async addOrderToDatabase() {
       this.$emit("addOrderToDatabase", this.bill_name);
       this.bill_name = null;
@@ -467,15 +494,33 @@ export default {
       });
     },
     async checkout(i) {
+      this.preConfirm.lodDai = 0;
+      this.preConfirm.lodBorDai = 0;
+      //หาราคาสินค้าที่สามารถลดได้
+      const discount = this.orderOnDatabase[i].list_product.filter(
+        o => o.discount === true
+      );
+      discount.map(d => {
+        this.preConfirm.lodDai += parseInt(d.price);
+      });
+      //หาราคาสินค้าที่สามารถลดไม่ได้
+      const noDiscount = this.orderOnDatabase[i].list_product.filter(
+        o => o.discount === false
+      );
+      noDiscount.map(n => {
+        this.preConfirm.lodBorDai += parseInt(n.price);
+      });
+
       this.preConfirm.customers = await this.$axios.$get("/customer2");
       this.preConfirm.banks = await this.$axios.$get("/bank");
+      this.preConfirm.couponParent = await this.$axios.$get("/coupon");
       this.preConfirm.subtotal = this.orderOnDatabase[i].total_price;
       this.preConfirm.idOrder = this.orderOnDatabase[i]._id;
       this.preConfirm.orders = this.orderOnDatabase[i].list_product;
       this.preConfirm.status_cook = this.orderOnDatabase[i].status_cook;
       this.$refs.childRef.improveCus();
       this.dialog = true;
-      //console.log(this.preConfirm.customers);
+      //console.log(this.preConfirm);
     },
     async closeDialog_cook() {
       this.$emit("refreshUser");
@@ -544,13 +589,22 @@ export default {
         WinPrint.document.write(
           `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
             list[j].name
-          }</td><td style='padding-left:20px;'>${
+          } ${list[j].normal_price} บาท</td><td style='padding-left:20px;'>${
             list[j].qty
           }</td><td style='padding-left:20px;'>${this.formatPrice(
             list[j].price
           )} </td><td style='padding-right:20px;'>฿</td>`
         );
         WinPrint.document.write("</tr>");
+        for (let k in list[j].topping) {
+          WinPrint.document.write(
+            `<tr><td></td><td > - ${list[j].topping[k].name}${
+              list[j].topping[k].price !== 0
+                ? "เพิ่ม " + list[j].topping[k].price + " บาท"
+                : ""
+            }</td></td></tr>`
+          );
+        }
       }
       WinPrint.document.write(
         "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
@@ -564,66 +618,98 @@ export default {
           subTotal
         )} </th><th>บาท</th></tr>`
       );
+
       WinPrint.document.write("</table>");
       WinPrint.document.close();
       WinPrint.focus();
-      setTimeout(WinPrint.print(), 3000);
+      setTimeout(() => {
+        WinPrint.print();
+        //WinPrint.close();
+      }, 500);
     },
     for_chef(i) {
       //const today = new Date(this.orderOnDatabase[i].datetime);
+      //console.log(this.unit);
+
+      let list = this.orderOnDatabase[i].list_product;
+      //ใน list ไม่มี unit เลยต้องหาจากโปรดัก จะได้แยกหมวดหมู่ใหญ่ได้
+      const compareFood = id => {
+        const res = this.products.find(p => p._id === id);
+        return res;
+      };
+      list.map(l => {
+        l.unit = compareFood(l.ref_pro_id).ref_uid._id;
+      });
+
+      const filterByUnit = id => {
+        const Arr = list.filter(l => l.unit === id);
+        return Arr;
+      };
+      // console.log(foodArr);
+      // console.log(drinkArr);
       var WinPrint = window.open(
         "",
         "",
         "left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0"
       );
+      this.unit.map(u => {
+        const resArr = filterByUnit(u._id);
+        if (resArr.length !== 0) {
+          //for drink **************************************************************************************
 
-      WinPrint.document.write("<table style='width: 100%;font-size: 0.4em;'>");
+          WinPrint.document.write(
+            "<table style='width: 100%;font-size: 0.4em;'>"
+          );
 
-      WinPrint.document.write(
-        `<tr><th align='left'>พนักงานที่รับออเดอร์ : ${this.orderOnDatabase[i].ref_emp_id.fname} ${this.orderOnDatabase[i].ref_emp_id.lname}</th></tr>`
-      );
-      WinPrint.document.write(
-        `<tr><th align='left'>ชื่อบิล : ${this.orderOnDatabase[i].bill_name}</th></tr>`
-      );
-      WinPrint.document.write(
-        `<tr><th align='center'>วันที่ ${this.formatDate(
-          this.orderOnDatabase[i].datetime
-        )} </th></tr>`
-      );
-      WinPrint.document.write(
-        "<tr><th align='center'>***สำหรับจัดทำอาหารและเครื่องดื่ม***</th></tr>"
-      );
-      WinPrint.document.write("</table>");
-      WinPrint.document.write(
-        "<table   style='width: 100%;font-size: 0.5em;'>"
-      );
-      WinPrint.document.write(
-        "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th><th style='border-bottom: thin dotted;border-top: thin dotted' colspan='2' width='100px'>ราคา</th></tr>"
-      );
-      let subTotal = 0;
-      let list = this.orderOnDatabase[i].list_product;
-      for (let j in list) {
-        subTotal = subTotal + parseInt(list[j].price);
-        WinPrint.document.write("<tr style='border-bottom: thin solid'>");
-        WinPrint.document.write(
-          `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
-            list[j].name
-          }</td><td style='padding-left:20px;'>${
-            list[j].qty
-          }</td><td style='padding-left:20px;'>${this.formatPrice(
-            list[j].price
-          )} </td><td style='padding-right:20px;'>฿</td>`
-        );
-        WinPrint.document.write("</tr>");
-      }
-      WinPrint.document.write(
-        "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
-      );
-      WinPrint.document.write("</table>");
+          WinPrint.document.write(
+            `<tr><th align='left'>พนักงานที่รับออเดอร์ : ${this.orderOnDatabase[i].ref_emp_id.fname} ${this.orderOnDatabase[i].ref_emp_id.lname}</th></tr>`
+          );
+          WinPrint.document.write(
+            `<tr><th align='left'>ชื่อบิล : ${this.orderOnDatabase[i].bill_name}</th></tr>`
+          );
+          WinPrint.document.write(
+            `<tr><th align='center'>วันที่ ${this.formatDate(
+              this.orderOnDatabase[i].datetime
+            )} </th></tr>`
+          );
+          WinPrint.document.write(
+            `<tr><th align='center'>***สำหรับจัดทำ${u.u_name}***</th></tr>`
+          );
+          WinPrint.document.write("</table>");
+          WinPrint.document.write(
+            "<table   style='width: 100%;font-size: 0.5em;margin-bottom:30px;'>"
+          );
+          WinPrint.document.write(
+            "<tr ><th style='border-bottom: thin dotted;border-top: thin dotted' width=18% >ลำดับที่</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='1000px' style='padding-right:60px'>รายการ</th><th style='border-bottom: thin dotted;border-top: thin dotted' width='100px' style='padding-right:30px'>จำนวน</th></tr>"
+          );
+          //let subTotal = 0;
+
+          resArr.map((r, j) => {
+            WinPrint.document.write("<tr style='border-bottom: thin solid'>");
+            WinPrint.document.write(
+              `<td style='padding-left:20px;'>${parseInt(j) + 1}</td><td >${
+                r.name
+              }</td><td style='padding-left:20px;'>${r.qty}</td>`
+            );
+            WinPrint.document.write("</tr>");
+            for (let k in r.topping) {
+              WinPrint.document.write(
+                `<tr><td></td><td > - ${r.topping[k].name} </td></td></tr>`
+              );
+            }
+            if (r.detail.length !== 0) {
+              WinPrint.document.write(
+                `<tr><td></td><td > ** ${r.detail} **</td></td></tr>`
+              );
+            }
+          });
+          WinPrint.document.write("</table><hr style='break-after:page'>");
+        }
+      });
 
       WinPrint.document.close();
       WinPrint.focus();
-      setTimeout(WinPrint.print(), 3000);
+      WinPrint.print();
     }
   }
 };

@@ -1,7 +1,7 @@
 const config = require("./config.js");
 
 module.exports = {
-  mode: "universal",
+  mode: "spa",
 
   /*
    ** Headers of the page
@@ -49,7 +49,7 @@ module.exports = {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [{ src: "~/plugins/datepicker", ssr: false }],
+  plugins: [],
 
   /*
    ** Nuxt.js modules
@@ -85,7 +85,8 @@ module.exports = {
       }
     },
     redirect: {
-      login: "/login"
+      login: "/login",
+      logout: "/login"
     }
   },
   moment: {
@@ -101,8 +102,13 @@ module.exports = {
           primary: "#1d1d1d",
           secondary: "#ededed",
           info: "#39b54a",
-          info2:"#00b894"
-        }
+          accent: "#485fc7",
+          warning: "#ffe08a",
+          error: "#f14668",
+          success: "#00b894",
+          shades:"#FFFFFF"
+        },
+        dark: {}
       }
     }
   },

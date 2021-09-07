@@ -1,26 +1,19 @@
 <template>
   <div class="ma-3">
-    <v-card class="mx-auto mt-6  py-3" elevaation="5" justify-centaer>
+    <v-card
+      class="mx-auto mt-6  py-3 rounded-xl "
+      elevaation="5"
+      justify-centaer
+    >
       <v-card-title>
-        <v-dialog v-model="dialog" max-width="500px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-card color="primary" dark class="mr-5 mb-4">
-              <v-btn color="primary" @click="dialog = true">
-                <v-icon left> mdi-file-powerpoint-box </v-icon>จัดการพอยท์
-                เพิ่ม/ลด
-              </v-btn>
-            </v-card>
-            <v-btn
-              color="primary"
-              disabled
-              dark
-              class="mr-5"
-              v-bind="attrs"
-              v-on="on"
-            >
-            </v-btn>
-          </template>
-        </v-dialog>
+        <v-btn
+          color="primary"
+          class="mr-1 mb-6 rounded-xl"
+          elevation="15"
+          @click="dialog = true"
+        >
+          <v-icon left> mdi-file-powerpoint-box </v-icon>จัดการพอยท์ เพิ่ม/ลด
+        </v-btn>
 
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
@@ -28,6 +21,7 @@
           v-model="search"
           append-icon="mdi-magnify"
           label="ค้นหา"
+          class="rounded-xl"
           solo
           hide-details
         ></v-text-field>
@@ -37,9 +31,9 @@
         :headers="headers"
         :items="pointTableData"
         :search="search"
-        :items-per-page="10"
+        :items-per-page="25"
         :footer-props="{
-          'items-per-page-options': [10, 20, 30, 40, 50, -1],
+          'items-per-page-options': [30, 40, 50, -1],
           prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
@@ -51,9 +45,12 @@
               <v-card>
                 <v-card-title>
                   <span class="text-h5">
-                    <v-icon left>mdi-card-account-details-outline </v-icon>
+                    <v-icon left>mdi-file-powerpoint-box </v-icon>
                     จัดการพอยท์ เพิ่ม/ลด
                   </span>
+                  <v-btn text color="error" class="mr-4" @click="reset">
+                    รีเซ็ตแบบฟอร์ม
+                  </v-btn>
                 </v-card-title>
 
                 <v-card-text>
@@ -80,7 +77,8 @@
                           min="1"
                           outlined
                           required
-                          color="#1D1D1D"
+                          clearable
+                          color="primary"
                           type="number"
                           :rules="[v => v > 0 || '0 ไม่ได้น้า ต้อง 1 ขึ้นเน้อ']"
                         ></v-text-field>
@@ -89,6 +87,7 @@
                         <v-select
                           v-model="status"
                           outlined
+                          clearable
                           :items="items"
                           label="Standard"
                         ></v-select>
@@ -99,7 +98,8 @@
 
                 <v-card-actions>
                   <v-btn
-                    class="ma-1"
+                    class="ma-1 rounded-xl"
+                    elevation="15"
                     color="primary"
                     dark
                     @click="dialog = false"
@@ -111,7 +111,8 @@
                   </v-btn>
                   <v-spacer></v-spacer>
                   <v-btn
-                    class="ma-1"
+                    class="ma-1 rounded-xl"
+                    elevation="15"
                     color="info"
                     @click="save()"
                     :disabled="!valid"
@@ -129,7 +130,9 @@
         <template v-slot:[`item.No`]="{ index }">
           {{ index + 1 }}
         </template>
-
+        <template v-slot:[`item.ref_cus_id`]="{ item }">
+          <v-icon>mdi-account</v-icon>{{ item.ref_cus_id }}
+        </template>
         <template v-slot:[`item.point`]="{ item }">
           <v-icon class="ma-2 ml-2" color="primary">
             mdi-file-powerpoint-box
@@ -165,10 +168,15 @@ export default {
         sortable: false,
         value: "No"
       },
+
+      {
+        text: "วันทีเพิ่มลดแต้ม",
+        sortable: false,
+        value: "datetime"
+      },
       {
         text: "ชื่อลูกค้าที่ถูกจัดการ",
-        align: "start",
-        sortable: true,
+        sortable: false,
         value: "ref_cus_id"
       },
       {
@@ -179,22 +187,15 @@ export default {
 
       {
         text: "แต้ม(P)",
-        align: "start",
         sortable: false,
         value: "point"
       },
       {
         text: "สถานะ",
-        align: "start",
         sortable: false,
         value: "status"
-      },
-
-      {
-        text: "วันทีเพิ่มลดแต้ม",
-        sortable: false,
-        value: "datetime"
       }
+
       //   { text: "Actions", value: "actions", sortable: false }
     ],
     cusId: null,
@@ -206,7 +207,7 @@ export default {
   }),
   computed: {
     pointTableData() {
-      return this.pointmanage.map(item => {
+      return this.pointmanage.reverse().map(item => {
         return {
           ref_cus_id: `${item.ref_cus_id ? item.ref_cus_id.pname : ""} ${
             item.ref_cus_id ? item.ref_cus_id.fname : ""
@@ -221,6 +222,9 @@ export default {
   },
 
   methods: {
+    reset() {
+      this.$refs.form.reset();
+    },
     getColorstatus(status) {
       if (status === "เพิ่ม") return "green";
       else return "red";
@@ -245,11 +249,18 @@ export default {
         .$post("/point-manage", newPoint)
         .then(res => {
           this.$emit("refreshPoint");
-          console.log(res);
+          //console.log(res);
+          this.$swal({
+            type: "success",
+            title: res.message
+          });
           this.dialog = false;
         })
         .catch(e => {
-          console.log(e);
+          this.$swal({
+            type: "error",
+            title: e
+          });
         });
     },
     improveCus() {

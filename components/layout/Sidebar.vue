@@ -1,6 +1,46 @@
 <template>
   <div>
-    <v-navigation-drawer v-model="drawer" fixed app color="#1d1d1d" dark>
+    <v-app-bar fixed app color="primary" dark>
+      <v-app-bar-nav-icon @click="drawer = !drawer" />
+      <v-toolbar-title class="hidden-xs-only">{{
+        this.$store.getters["setting"][0].head_title
+      }}</v-toolbar-title>
+      <v-btn icon @click="$nuxt.refresh()">
+        <v-icon>mdi-refresh</v-icon>
+      </v-btn>
+      <v-spacer></v-spacer>
+      <!-- <v-switch
+        class="mx-6 mt-6"
+        v-model="$vuetify.theme.dark"
+        hint=""
+        color="info"
+        inset
+        label="ธีม"
+        persistent-hint
+      ></v-switch> -->
+      <span class="mr-4  hidden-xs-only font-weight-bold">{{ timer }}</span>
+
+      <v-avatar size="36px" class="mr-2 hidden-xs-only">
+        <v-icon x-large>mdi-account-circle</v-icon>
+      </v-avatar>
+
+      <v-toolbar-title
+        >{{ $store.getters["displayName"] }} |
+        <strong>{{ $store.getters["position"] }}</strong></v-toolbar-title
+      >
+      <v-btn icon @click="logout">
+        <v-icon>mdi-logout</v-icon>
+      </v-btn>
+    </v-app-bar>
+    <!-- -------------------------------------------------------------------------------------------------------------------- -->
+    <v-navigation-drawer
+      v-model="drawer"
+      fixed
+      temporary
+      app
+      color="primary"
+      dark
+    >
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -57,6 +97,8 @@
 export default {
   data() {
     return {
+      timer: null,
+      drawer: null,
       fixed: false,
       below: [
         {
@@ -68,6 +110,11 @@ export default {
           icon: "mdi-cog ",
           title: "ตั้งค่า",
           to: "/manage/settings"
+        },
+        {
+          icon: "mdi-folder-clock-outline",
+          title: "บันทึกกิจกรรม",
+          to: "/manage/log"
         }
       ],
 
@@ -95,7 +142,7 @@ export default {
         },
         {
           icon: "mdi-food-fork-drink  ",
-          title: "ประเภทอาหาร",
+          title: "หมวดหมู่สินค้า",
           to: "/manage/category"
         },
         {
@@ -140,10 +187,35 @@ export default {
     };
   },
   methods: {
-    // async logout() {
-    //   await this.$auth.logout();
-    //   this.$router.push("/login");
-    // },
+    logout() {
+      this.$axios.$post("/authen/logout").then(async () => {
+        await this.$auth.logout();
+        this.$router.push("/login");
+        this.$swal.fire({
+          type: "info",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          title: "ออกจากระบบเรียบร้อยแล้ว",
+          didOpen: toast => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          }
+        });
+      });
+    },
+    getTime() {
+      let now = new Date();
+      return `${
+        now.getHours() < 10 ? "0" + now.getHours() : now.getHours()
+      } : ${
+        now.getMinutes() < 10 ? "0" + now.getMinutes() : now.getMinutes()
+      } : ${now.getSeconds() < 10 ? "0" + now.getSeconds() : now.getSeconds()}`;
+      //let now = new Date();
+    },
+
     checkManager() {
       if (this.$store.getters["position"] === "manager") {
         this.items = [
@@ -229,16 +301,16 @@ export default {
     }
   },
   computed: {
-    drawer: {
-      get() {
-        return this.$store.state.drawer;
-      },
-      set(newVal) {
-        this.$store.commit("set_drawer", newVal);
-      }
+    routesMain() {
+      return this.$router.options.routes.filter(route => route.meta.main);
     }
   },
+
   created() {
+    setInterval(() => {
+      this.timer = this.getTime();
+    }, 1000);
+
     this.checkManager();
   }
 };

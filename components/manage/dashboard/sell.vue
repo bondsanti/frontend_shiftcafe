@@ -6,10 +6,13 @@
         <v-card
           class="pa-1 rounded-lg"
           color="primary"
-          :elevation="hover ? 24 : 2"
+          :elevation="hover ? 24 : 6"
           dark
         >
-          <div class="d-flex flex-no-wrap justify-space-between">
+          <div
+            class="d-flex flex-no-wrap justify-space-between"
+            v-ripple="{ center: true }"
+          >
             <div>
               <v-card-title class="text-h5">
                 ยอดขายวันนี้
@@ -23,7 +26,7 @@
               </v-card-actions>
             </div>
             <v-avatar class="mx-auto mt-7" size="105" max-width="90px" tile>
-              <v-img src="/wallet.gif"></v-img>
+              <v-img src="/money.png"></v-img>
             </v-avatar>
           </div>
         </v-card>
@@ -37,10 +40,13 @@
         <v-card
           class="pa-1 rounded-lg"
           color="primary"
-          :elevation="hover ? 16 : 2"
+          :elevation="hover ? 24 : 6"
           dark
         >
-          <div class="d-flex flex-no-wrap justify-space-between">
+          <div
+            class="d-flex flex-no-wrap justify-space-between"
+            v-ripple="{ center: true }"
+          >
             <div>
               <v-card-title class="text-h5">
                 ยอดขายเดือนนี้
@@ -53,7 +59,7 @@
               </v-card-actions>
             </div>
             <v-avatar class="mx-auto mt-7" size="105" max-width="90px" tile>
-              <v-img src="/wallet.gif"></v-img>
+              <v-img src="/wallet_1.png"></v-img>
             </v-avatar>
           </div>
         </v-card>
@@ -66,10 +72,13 @@
         <v-card
           class="pa-1 rounded-lg"
           color="primary"
-          :elevation="hover ? 16 : 2"
+          :elevation="hover ? 24 : 6"
           dark
         >
-          <div class="d-flex flex-no-wrap justify-space-between">
+          <div
+            class="d-flex flex-no-wrap justify-space-between"
+            v-ripple="{ center: true }"
+          >
             <div>
               <v-card-title class="text-h5">
                 ยอดขายรวมปีนี้
@@ -82,7 +91,7 @@
               </v-card-actions>
             </div>
             <v-avatar class="mx-auto mt-7" size="105" max-width="90px" tile>
-              <v-img src="/wallet.gif"></v-img>
+              <v-img src="/trophy.png"></v-img>
             </v-avatar>
           </div>
         </v-card>
@@ -153,13 +162,19 @@ export default {
 
       this.monthPrice = monthTotal;
     },
-    thinkYear() {
+    thinkYear(datePara) {
       let yearTotal = 0;
-      for (let i in this.year) {
-        yearTotal += this.year[i].net_price;
-      }
+      let date = new Date(datePara);
+
+      const year2 = this.year.filter(y => {
+        return new Date(y.datetime).getFullYear() === date.getFullYear();
+      });
+      year2.map(y => {
+        yearTotal += y.net_price;
+      });
 
       this.yearPrice = yearTotal;
+      //console.log(yearTotal);
     },
     rangeMonth() {
       const today = new Date(this.dateNow);
@@ -167,24 +182,24 @@ export default {
       let endDay = new Date(today.getFullYear(), month2 + 1, 0);
 
       //return this.formatDate(startDay) + " - " + this.formatDate(endDay);
-      return `1/${this.monthNamesThai[today.getMonth()]}/${today.getFullYear() +
-        543} - ${endDay.getDate()}/${
+      return `1  ${this.monthNamesThai[today.getMonth()]} ${today.getFullYear() +
+        543} - ${endDay.getDate()} ${
         this.monthNamesThai[today.getMonth()]
-      }/${today.getFullYear() + 543} `;
+      } ${today.getFullYear() + 543} `;
     },
 
     formatDate2() {
       const today = new Date(this.dateNow);
 
-      return `${this.monthNamesThai[today.getMonth()]} / ${today.getFullYear() +
+      return `${this.monthNamesThai[today.getMonth()]}  ${today.getFullYear() +
         543}`;
     },
     formatDate3() {
       const today = new Date(this.dateNow);
 
-      return `${today.getDate()} / ${
+      return ` ${today.getDate()}  ${
         this.monthNamesThai[today.getMonth()]
-      } / ${today.getFullYear() + 543}`;
+      }  ${today.getFullYear() + 543}`;
     },
     formatPrice(value2) {
       const value = parseInt(value2);
@@ -194,7 +209,7 @@ export default {
   },
   created() {
     this.thinkMonth(new Date());
-    this.thinkYear();
+    this.thinkYear(new Date());
   }
 };
 </script>

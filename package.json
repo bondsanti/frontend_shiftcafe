@@ -19,10 +19,10 @@
     "moment": "^2.29.1",
     "nuxt": "^2.0.0",
     "nuxt-sweetalert2": "^1.0.0",
+    "pdfmake": "^0.2.2",
     "vue-advanced-cropper": "^1.8.0",
     "vue-apexcharts": "^1.6.1",
     "vue-image-shadow": "^1.1.0",
-    "vue2-datepicker": "^3.9.1",
     "vue3-apexcharts": "^1.4.0"
   },
   "devDependencies": {

@@ -62,7 +62,32 @@ export default {
       chartOptions: {
         chart: {
           width: "100%",
-          type: "pie"
+          type: "pie",
+          toolbar: {
+            show: true,
+            offsetX: 0,
+            offsetY: 0,
+            tools: {
+              download: true
+            },
+            export: {
+              csv: {
+                filename: "test2",
+                columnDelimiter: ",",
+                headerCategory: "ประเภทอาหาร",
+                headerValue: "จำนวน",
+                dateFormatter(timestamp) {
+                  return new Date(timestamp).toDateString();
+                }
+              },
+              svg: {
+                filename: undefined
+              },
+              png: {
+                filename: undefined
+              }
+            }
+          }
         },
 
         labels: [],
@@ -108,9 +133,57 @@ export default {
       return moment(strdate).format("D/MM/YY ");
     },
     sendDate() {
+      this.checkFilename();
       this.series = [];
       this.mergeProduct();
       this.menu2 = false;
+    },
+    checkFilename() {
+      const chartOptions2 = {
+        chart: {
+          width: "100%",
+          type: "pie",
+          toolbar: {
+            show: true,
+            offsetX: 0,
+            offsetY: 0,
+            tools: {
+              download: true
+            },
+            export: {
+              csv: {
+                filename:
+                  this.phylum === "category"
+                    ? "รายงานหมวดหมู่อาหาร " + this.dateNow
+                    : "รายงานประเภทอาหาร " + this.dateNow,
+                columnDelimiter: ",",
+                headerCategory:
+                  this.phylum === "category"
+                    ? "หมวดหมู่อาหาร "
+                    : "ประเภทอาหาร ",
+                headerValue: "จำนวน",
+                dateFormatter(timestamp) {
+                  return new Date(timestamp).toDateString();
+                }
+              },
+              svg: {
+                filename:
+                  this.phylum === "category"
+                    ? "รายงานหมวดหมู่อาหาร " + this.dateNow
+                    : "รายงานประเภทอาหาร " + this.dateNow
+              },
+              png: {
+                filename:
+                  this.phylum === "category"
+                    ? "รายงานหมวดหมู่อาหาร " + this.dateNow
+                    : "รายงานประเภทอาหาร " + this.dateNow
+              }
+            }
+          }
+        }
+      };
+
+      this.chartOptions = chartOptions2;
     },
     getItemByDay() {
       let date = new Date(this.dateNow);
@@ -126,17 +199,24 @@ export default {
     },
     getProductByCategory(arr, id) {
       let newCat = [];
+      let countCat = 0;
       if (this.phylum === "category") {
         newCat = arr.filter(a => {
           return a.ref_pro_id.ref_cate_id === id;
+        });
+        newCat.map(n => {
+          countCat += n.qty;
         });
         //console.log(newCat);
       } else {
         newCat = arr.filter(a => {
           return a.ref_pro_id.ref_uid === id;
         });
+        newCat.map(n => {
+          countCat += n.qty;
+        });
       }
-      return newCat;
+      return countCat;
     },
     mergeProduct() {
       let pro = [];
@@ -145,11 +225,12 @@ export default {
         item.ref_order_id ? pro.push(...item.ref_order_id.list_product) : "";
       });
       this.category.map(c => {
-        this.series.push(this.getProductByCategory(pro, c._id).length);
+        this.series.push(this.getProductByCategory(pro, c._id));
       });
     }
   },
   created() {
+    this.checkFilename();
     this.chartOptions.labels = this.category.map(c => {
       return this.phylum === "category" ? c.cate_name : c.u_name;
     });

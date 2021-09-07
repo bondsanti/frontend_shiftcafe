@@ -3,21 +3,36 @@
     <div class="text-center mb-5">
       <v-img
         height="100%"
-        :src="`${$nuxt.context.env.config.IMG_URL}${loadData.ref_level_id.img}`"
+        :src="
+          `${$nuxt.context.env.config.IMG_URL}${
+            loadData.ref_level_id ? loadData.ref_level_id.img : 'logo.ico'
+          }`
+        "
       >
         <v-row align="end">
           <v-col align-self="start" class="pa-6" cols="3">
-            <v-avatar class="profile" size="100">
+            <v-avatar
+              class="profile ma-2"
+              :size="
+                $vuetify.breakpoint.xs || $vuetify.breakpoint.md ? 50 : 100
+              "
+            >
               <v-img
                 src="profile-member.png"
                 style="border: 2px solid #ffffff"
               ></v-img>
             </v-avatar>
           </v-col>
-          <v-col align-self="start" class="pa-5 mt-10 " cols="9">
-            <h4 class="award1 pa-2 text-truncate text-uppercase" outlined tile>
+          <v-col align-self="start" class="  mt-5 " cols="9">
+            <p
+              :class="
+                $vuetify.breakpoint.xs || $vuetify.breakpoint.md
+                  ? 'award1 pa-2 pl-5 text-truncate text-uppercas caption'
+                  : 'award1 pa-2 pl-10 text-truncate text-uppercas text-lg-body-1'
+              "
+            >
               {{ loadData.fname }} {{ loadData.lname }}
-            </h4>
+            </p>
           </v-col>
         </v-row>
       </v-img>
@@ -35,7 +50,9 @@
             <!-- <strong>{{ formatPrice(Sumtotal) }}%</strong> -->
             <strong
               >{{ formatPrice(totalprice) }}/{{
-                formatPrice(loadData.ref_level_id.target_price)
+                formatPrice(
+                  loadData.ref_level_id ? loadData.ref_level_id.target_price : 0
+                )
               }}</strong
             >
           </v-progress-linear>
@@ -59,7 +76,10 @@
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
+              <v-list-item-title
+                v-text="item.text"
+                class="pa-2"
+              ></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -145,11 +165,31 @@ export default {
     async logout() {
       await this.$auth.logout();
       this.$router.push("/login");
+      this.$swal.fire({
+        type: "info",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        title: "ออกจากระบบเรียบร้อยแล้ว",
+        didOpen: toast => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        }
+      });
     },
     formatPrice(Sumtotal) {
       const value = parseInt(Sumtotal);
       let val = (value / 1).toFixed(2).replace(",", ".");
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+    classForText() {
+      if (this.$vuetify.breakpoint.xs || this.$vuetify.breakpoint.md) {
+        return "award1 pa-2 text-truncate text-uppercas caption";
+      } else {
+        return "award1 pa-2 text-truncate text-uppercas";
+      }
     }
   }
 };

@@ -3,6 +3,7 @@
     :product="product"
     :unit="unit"
     :category="category"
+    :list-order="listOrder"
     @refresh="refresh"
   />
 </template>
@@ -33,31 +34,38 @@ export default {
     };
   },
   async asyncData(context) {
-    const [product, unit, category] = await Promise.all([
+    const [product, unit, category, order] = await Promise.all([
       context.$axios.$get("/product"),
       context.$axios.$get("/unit"),
-      context.$axios.$get("/category")
+      context.$axios.$get("/category"),
+      context.$axios.$get("/order")
     ]);
     //const products = await context.$axios.$get("/product");
     // console.log(category);
-    return { product, unit, category };
+    return { product, unit, category, order };
   },
   components: {
     product
   },
   methods: {
-    // async addProduct(dataProduct) {
-    //   await this.$axios.$post("/product", dataProduct);
-
-    //   this.product = await this.$axios.$get("/product");
-    // },
     async refresh() {
       this.product = await this.$axios.$get("/product");
+    },
+    allListProduct() {
+      const list = [];
+      this.order.map(o => {
+        list.push(...o.list_product);
+      });
+      this.listOrder = list;
     }
   },
   data: () => ({
-    product: []
-  })
+    product: [],
+    listOrder: []
+  }),
+  created() {
+    this.allListProduct();
+  }
 };
 </script>
 

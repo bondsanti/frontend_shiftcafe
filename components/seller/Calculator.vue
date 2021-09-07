@@ -14,9 +14,10 @@
                   min="1"
                   label="รับเงินมา"
                   outlined
-                  v-model.lazy="receive"
+                  v-model="receive"
                   type="number"
                   @keypress.enter="calMoney"
+                  @keydown="calMoney"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -31,7 +32,7 @@
                 ><v-btn block @click="addNum('3')">3</v-btn></v-col
               >
               <v-col cols="3"
-                ><v-btn block color="red" @click="silver('100')"
+                ><v-btn block color="red" class="white--text" @click="silver('100')"
                   >100 ฿</v-btn
                 ></v-col
               >
@@ -47,7 +48,7 @@
                 ><v-btn block @click="addNum('6')">6</v-btn></v-col
               >
               <v-col cols="3"
-                ><v-btn block color="purple darken-1" @click="silver('500')"
+                ><v-btn block color="purple darken-1" class="white--text" @click="silver('500')"
                   >500 ฿</v-btn
                 ></v-col
               >
@@ -63,7 +64,7 @@
                 ><v-btn block @click="addNum('9')">9</v-btn></v-col
               >
               <v-col cols="3"
-                ><v-btn block color="orange lighten-4" @click="silver('1000')"
+                ><v-btn block color="orange lighten-1" class="white--text" @click="silver('1000')"
                   >1000 ฿</v-btn
                 ></v-col
               >
@@ -83,7 +84,7 @@
                 ></v-col
               >
               <v-col cols="3"
-                ><v-btn block color="green" @click="silver('2000')"
+                ><v-btn block color="green" class="white--text" @click="silver('2000')"
                   >ชำระเต็ม</v-btn
                 ></v-col
               >
@@ -95,9 +96,10 @@
                 icon="mdi-alert-circle"
                 border="left"
                 prominent
-                style="width:100%; font-size:2em"
+                style="width:100%; font-size:1.5em"
               >
-                ยอดเงินที่รับมาไม่พอ
+                ยอดเงินที่รับมาไม่พอยังขาดอีก
+                <strong class="mx-3">{{ diff }}</strong> บาท
               </v-alert>
             </v-row>
             <v-row class="justify-center" v-if="error1">
@@ -107,11 +109,11 @@
                 icon="mdi-arrow-right-bold"
                 border="left"
                 prominent
-                style="width:100% "
+                style="width:100% ;font-size:2em"
               >
                 <div class="d-flex flex-row justify-md-space-around ">
                   เงินทอน
-                  <h1>{{ formatPrice(withdraw) }}</h1>
+                  <strong class="mx-3">{{ formatPrice(withdraw) }}</strong>
                   บาท
                 </div>
               </v-alert>
@@ -156,27 +158,34 @@ export default {
     withdraw: "",
     error2: true,
     error1: false,
-    dialog2: false
+    dialog2: false,
+    diff: 0
   }),
   props: ["netPrice", "checkout", "subPrice"],
   methods: {
+    
     calMoney() {
-      const netPrice = Math.round(this.netPrice);
-      if (
-        parseInt(this.receive) < netPrice ||
-        this.receive === NaN ||
-        this.receive === null ||
-        this.receive === 0 ||
-        this.receive === ""
-      ) {
-        this.error2 = true;
-        this.withdraw = 0;
-        this.error1 = false;
-      } else {
-        this.withdraw = parseInt(this.receive) - netPrice;
-        this.error2 = false;
-        this.error1 = true;
-      }
+      setTimeout(() => {
+        //console.log(this.receive);
+
+        const netPrice = Math.round(this.netPrice);
+        if (
+          parseInt(this.receive) < netPrice ||
+          this.receive === NaN||
+          this.receive === null ||
+          this.receive === 0 ||
+          this.receive === ""
+        ) {
+          this.error2 = true;
+          this.withdraw = 0;
+          this.error1 = false;
+          this.diff = netPrice - parseInt(this.receive);
+        } else {
+          this.withdraw = parseInt(this.receive) - netPrice;
+          this.error2 = false;
+          this.error1 = true;
+        }
+      }, 100);
       //console.log(this.receive);
     },
     closeCheckout() {

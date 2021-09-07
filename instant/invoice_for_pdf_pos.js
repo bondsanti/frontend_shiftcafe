@@ -1,0 +1,344 @@
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "@/instant/vfs_fonts";
+import moment from "moment";
+
+const formatPrice = total_price => {
+  const value = parseInt(total_price);
+  let val = (value / 1).toFixed(2).replace(",", ".");
+  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
+const formatDate = date => {
+  moment().format("LLLL");
+  let strdate = moment(date).add(543, "years");
+  return moment(strdate).format("D MMMM YYYY H:mm");
+};
+export const printInvoicePdfPos = (pay, show, setting) => {
+  const dataForTable = [];
+  pay.ref_order_id.list_product.map((o, i) => {
+    const nameList = `${o.discount ? "" : "**"} ${
+      o.topping.length === 0 ? o.name : o.name + " " + o.normal_price + " บาท\n"
+    }${o.topping.map(t =>
+      t.price !== 0 ? t.name + " " + t.price + " ฿" : t.name
+    )}`;
+    dataForTable.push([
+      {
+        text: i + 1,
+        border: [false, false, false, false],
+        margin: [0, 2, 0, 2],
+        alignment: "left",
+        bold: true
+      },
+      {
+        text: nameList,
+        border: [false, false, false, false],
+        margin: [0, 2, 0, 2],
+        alignment: "left",
+        bold: true
+      },
+      {
+        text: o.qty,
+        border: [false, false, false, false],
+        margin: [0, 2, 0, 2],
+        alignment: "left",
+        bold: true
+      },
+      {
+        border: [false, false, false, false],
+        text: formatPrice(o.price) + " ฿",
+        bold: true,
+        alignment: "right",
+        margin: [0, 2, 0, 2]
+      }
+    ]);
+  });
+
+  const discount = () => {
+    const obj = {
+      columns: [
+        {
+          text: "ส่วนลด",
+          width: "*",
+          fontSize: 14,
+          bold: true,
+          alignment: "left"
+        },
+        {
+          text: formatPrice(pay.discount_price) + " บาท",
+          width: "*",
+          fontSize: 14,
+          bold: true,
+          alignment: "right"
+        }
+      ]
+    };
+    if (pay.discount_price !== 0) {
+      return obj;
+    }
+  };
+
+  const vat = () => {
+    const obj = {
+      columns: [
+        {
+          text: "ภาษี",
+          width: "*",
+          fontSize: 14,
+          bold: true,
+          alignment: "left"
+        },
+        {
+          text: formatPrice(pay.vat_price) + " บาท",
+          width: "*",
+          fontSize: 14,
+          bold: true,
+          alignment: "right"
+        }
+      ]
+    };
+    if (pay.vat_price !== 0) {
+      return obj;
+    }
+  };
+
+  pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  pdfMake.fonts = {
+    THSarabunNew: {
+      normal: "THSarabunNew.ttf",
+      bold: "THSarabunNew-Bold.ttf",
+      italics: "THSarabunNew-Italic.ttf",
+      bolditalics: "THSarabunNew-BoldItalic.ttf"
+    }
+  };
+  const documentDefinitions = {
+    info: {
+      title: "ใบเสร็จรับเงินเลขที่ " + pay.invoice,
+      author: setting.restaurant
+    },
+    pageSize: {
+      width: 320,
+      height: "auto"
+    },
+
+    content: [
+      {
+        columns: [
+          {
+            text: setting.restaurant,
+
+            width: "*",
+            fontSize: 14,
+            bold: true,
+            alignment: "left",
+            margin: [0, 10, 0, 0]
+          },
+          {
+            image: show,
+            width: 30,
+            margin: [0, 0, 0, 10]
+          }
+        ]
+      },
+      {
+        columns: [
+          {
+            text: "ที่อยู่ :",
+            width: 48,
+            bold: true,
+            fontSize: 10,
+            alignment: "left"
+          },
+          {
+            text: setting.address,
+            width: "*",
+            bold: true,
+            fontSize: 10,
+            alignment: "left"
+          }
+        ]
+      },
+      {
+        columns: [
+          {
+            text: "เบอร์มือถือ :",
+            width: 48,
+            bold: true,
+            fontSize: 10,
+            alignment: "left"
+          },
+          {
+            text: setting.tel,
+            width: "*",
+            bold: true,
+            fontSize: 10,
+            alignment: "left"
+          }
+        ]
+      },
+      {
+        columns: [
+          {
+            text: "พนักงานรับเงิน :",
+            bold: true,
+            width: 48,
+            fontSize: 10,
+            alignment: "left"
+          },
+          {
+            text: pay.ref_emp_id.fname + " " + pay.ref_emp_id.lname,
+            width: "*",
+            bold: true,
+            fontSize: 10,
+            alignment: "left"
+          }
+        ]
+      },
+      {
+        text: "ใบเสร็จรับเงินเลขที่ : " + pay.invoice,
+        bold: true,
+        fontSize: 10,
+        alignment: "center"
+      },
+      {
+        text: "วันที่ " + formatDate(pay.datetime),
+        bold: true,
+        fontSize: 10,
+        alignment: "center"
+      },
+      {
+        table: {
+          headerRows: 1,
+          widths: [20, "*", 25, "*"],
+          body: [
+            [
+              {
+                text: "ลำดับ",
+                bold: true,
+                border: [false, true, false, true],
+                margin: [0, 5, 0, 5]
+              },
+              {
+                text: "รายการ",
+                bold: true,
+                border: [false, true, false, true],
+                margin: [0, 5, 0, 5]
+              },
+              {
+                text: "จำนวน",
+                bold: true,
+                border: [false, true, false, true],
+                margin: [0, 5, 0, 5]
+              },
+              {
+                text: "ราคา",
+                border: [false, true, false, true],
+                alignment: "right",
+                bold: true,
+                margin: [0, 5, 0, 5]
+              }
+            ],
+            ...dataForTable,
+            [
+              {
+                text: "",
+                border: [false, true, false, false],
+
+                alignment: "left"
+              },
+              {
+                text: "",
+                border: [false, true, false, false],
+
+                alignment: "left"
+              },
+              {
+                text: "",
+                border: [false, true, false, false],
+
+                alignment: "left"
+              },
+              {
+                border: [false, true, false, false],
+                text: "",
+                alignment: "right"
+              }
+            ]
+          ]
+        }
+      },
+      {
+        columns: [
+          {
+            text: "อาหารเครื่องดื่ม",
+            width: "*",
+            fontSize: 14,
+            bold: true,
+            alignment: "left"
+          },
+          {
+            text: formatPrice(pay.total_price) + " บาท",
+            width: "*",
+            fontSize: 14,
+            bold: true,
+            alignment: "right"
+          }
+        ]
+      },
+      discount(),
+      vat(),
+      {
+        columns: [
+          {
+            text: "ราคาสุทธิ",
+            width: "*",
+            fontSize: 16,
+            bold: true,
+            alignment: "left"
+          },
+          {
+            text: formatPrice(pay.net_price) + " บาท",
+            width: "*",
+            fontSize: 16,
+            bold: true,
+            alignment: "right"
+          }
+        ]
+      },
+      {
+        text: "ขอบคุณที่ใช้บริการครับ/ค่ะ",
+        bold: true,
+        fontSize: 14,
+        alignment: "center",
+        margin: [0, 10, 0, 0]
+      },
+      {
+        text: "หมายเหตุ ** สินค้าไม่สามารถใช้กับส่วนลดได้",
+        bold: true,
+        fontSize: 10,
+        alignment: "left",
+        margin: [0, 5, 0, 0]
+      }
+    ],
+    styles: {
+      notesTitle: {
+        fontSize: 10,
+        bold: true
+      },
+      notesText: {
+        fontSize: 10
+      }
+    },
+    defaultStyle: {
+      columnGap: 5,
+      font: "THSarabunNew"
+    }
+  };
+  pdfMake.createPdf(documentDefinitions).open();
+  // pdfMake
+  //   .createPdf(documentDefinitions)
+  //   .download(
+  //     this.reportType === "ประจำวัน"
+  //       ? "รายงานยอดขายประจำวันที่ " + this.formatDate(this.daytime)
+  //       : "รายงานยอดขายประจำเดือน " + this.formatDate2(this.daytime)
+  //   );
+};

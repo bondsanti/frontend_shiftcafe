@@ -116,7 +116,7 @@
                 <v-btn
                   class="mr2 rounded-xl"
                   color="warning"
-                  elevation="15"
+                  elevation="2"
                   @click="Detail(item.actions)"
                   small
                 >

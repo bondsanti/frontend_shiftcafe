@@ -376,6 +376,7 @@
 </template>
 
 <script>
+const { colors } = require("@/instant/colors.js");
 export default {
   props: ["settings"],
 
@@ -407,56 +408,64 @@ export default {
       //console.log(this.colors);
       this.$vuetify.theme.themes.light.success = this.colors.picker_success
         ? this.colors.picker_success.hex
-        : "#00b894";
+        : colors.success;
       this.$vuetify.theme.themes.light.error = this.colors.picker_error
         ? this.colors.picker_error.hex
-        : "#f14668";
+        : colors.error;
       this.$vuetify.theme.themes.light.warning = this.colors.picker_warning
         ? this.colors.picker_warning.hex
-        : "#ffe08a";
+        : colors.warning;
       this.$vuetify.theme.themes.light.accent = this.colors.picker_accent
         ? this.colors.picker_accent.hex
-        : "#485fc7";
+        : colors.accent;
       this.$vuetify.theme.themes.light.primary = this.colors.picker_primary
         ? this.colors.picker_primary.hex
-        : "#1d1d1d";
+        : colors.primary;
       this.$vuetify.theme.themes.light.info = this.colors.picker_info
         ? this.colors.picker_info.hex
-        : "#39b54a";
+        : colors.info;
       this.$vuetify.theme.themes.light.secondary = this.colors.picker_secondary
         ? this.colors.picker_secondary.hex
-        : "#ededed";
+        : colors.secondary;
 
       ///เก็บลง local storage
       localStorage.setItem(
         "primary",
-        this.colors.picker_primary ? this.colors.picker_primary.hex : "#1d1d1d"
+        this.colors.picker_primary
+          ? this.colors.picker_primary.hex
+          : colors.primary
       );
       localStorage.setItem(
         "success",
-        this.colors.picker_success ? this.colors.picker_success.hex : "#00b894"
+        this.colors.picker_success
+          ? this.colors.picker_success.hex
+          : colors.success
       );
       localStorage.setItem(
         "error",
-        this.colors.picker_error ? this.colors.picker_error.hex : "#f14668"
+        this.colors.picker_error ? this.colors.picker_error.hex : colors.error
       );
       localStorage.setItem(
         "warning",
-        this.colors.picker_warning ? this.colors.picker_warning.hex : "#ffe08a"
+        this.colors.picker_warning
+          ? this.colors.picker_warning.hex
+          : colors.warning
       );
       localStorage.setItem(
         "accent",
-        this.colors.picker_accent ? this.colors.picker_accent.hex : "#485fc7"
+        this.colors.picker_accent
+          ? this.colors.picker_accent.hex
+          : colors.accent
       );
       localStorage.setItem(
         "info",
-        this.colors.picker_info ? this.colors.picker_info.hex : "#39b54a"
+        this.colors.picker_info ? this.colors.picker_info.hex : colors.info
       );
       localStorage.setItem(
         "secondary",
         this.colors.picker_secondary
           ? this.colors.picker_secondary.hex
-          : "#ededed"
+          : colors.secondary
       );
 
       this.dialog = false;

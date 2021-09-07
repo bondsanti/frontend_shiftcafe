@@ -581,7 +581,22 @@ export default {
     //   this.$vuetify.theme.themes.light.secondary = this.picker_secondary.hex;
     // }
   },
-  mounted() {}
+  mounted() {
+    const primary = localStorage.getItem("primary");
+    const success = localStorage.getItem("success");
+    const error = localStorage.getItem("error");
+    const warning = localStorage.getItem("warning");
+    const accent = localStorage.getItem("accent");
+    const info = localStorage.getItem("info");
+    const secondary = localStorage.getItem("secondary");
+    this.colors.picker_primary.hex = primary ? primary : colors.primary;
+    this.colors.picker_success.hex = success ? success : colors.success;
+    this.colors.picker_error.hex = error ? error : colors.error;
+    this.colors.picker_warning.hex = warning ? warning : colors.warning;
+    this.colors.picker_accent.hex = accent ? accent : colors.accent;
+    this.colors.picker_info.hex = info ? info : colors.info;
+    this.colors.picker_secondary.hex = secondary ? secondary : colors.secondary;
+  }
 };
 </script>
 

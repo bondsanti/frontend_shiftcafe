@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-navigation-drawer v-model="navDrawer" fixed app color="#1d1d1d" dark>
+    <v-navigation-drawer v-model="navDrawer" fixed app color="primary" dark>
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6">
@@ -224,18 +224,18 @@ export default {
       }
     }
   },
-    computed: {
+  computed: {
     navDrawer: {
       get() {
-        return this.$store.state.navDrawer
+        return this.$store.state.navDrawer;
       },
       set(val) {
-        this.$store.commit('SET_NAV_DRAWER', val)
+        this.$store.commit("SET_NAV_DRAWER", val);
       }
     },
 
     routesMain() {
-      return this.$router.options.routes.filter((route) => route.meta.main)
+      return this.$router.options.routes.filter(route => route.meta.main);
     }
   },
 

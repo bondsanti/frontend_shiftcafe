@@ -102,7 +102,7 @@
                           :rules="rules"
                           v-model="productsItem.product_name"
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
 
@@ -110,7 +110,7 @@
                         <v-select
                           label="หมวดหมู่"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           item-text="name"
                           item-value="_id"
                           :rules="rules"
@@ -122,7 +122,7 @@
                         <v-select
                           label="ประเภท"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           :rules="rules"
                           item-text="name"
                           item-value="_id"
@@ -140,7 +140,7 @@
                           min="0"
                           v-model="productsItem.price_cost"
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
 
@@ -154,7 +154,7 @@
                           :rules="rules"
                           v-model="productsItem.price"
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
 

@@ -64,7 +64,7 @@
                       :rules="rules"
                       clearable
                       required
-                      color="#1D1D1D"
+                      color="primary"
                     ></v-text-field>
                   </v-col>
 

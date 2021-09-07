@@ -105,7 +105,8 @@ module.exports = {
           accent: "#485fc7",
           warning: "#ffe08a",
           error: "#f14668",
-          success: "#00b894"
+          success: "#00b894",
+          shades:"#FFFFFF"
         },
         dark: {}
       }

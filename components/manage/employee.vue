@@ -102,7 +102,7 @@
                           label="คำนำหน้า"
                           append-icon="mdi-account"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           :items="pnamesec"
                           v-model="employeeitmeadd.pname"
                           :rules="requiredRules"
@@ -117,7 +117,7 @@
                           append-icon="mdi-account"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                           @keypress.enter="check"
                         ></v-text-field>
                       </v-col>
@@ -150,7 +150,7 @@
                           type="password"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                           append-icon="mdi-lock"
                         ></v-text-field>
                       </v-col>
@@ -162,7 +162,7 @@
                           label="ชื่อ"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -173,7 +173,7 @@
                           append-icon="mdi-rename-box"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
 
@@ -224,7 +224,7 @@
                           label="เลขบัตรประจำตัวประชาชน"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -238,7 +238,7 @@
                           outlined
                           type="number"
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -249,7 +249,7 @@
                           :rules="emailRules"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -261,7 +261,7 @@
                           label="ที่อยู่"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-textarea>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -269,7 +269,7 @@
                           label="ตำแหน่งงาน"
                           append-icon="mdi-briefcase"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           item-text="name"
                           item-value="_id"
                           :items="roleitme.flat()"
@@ -336,7 +336,7 @@
                           label="คำนำหน้า"
                           append-icon="mdi-account"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           :items="pnamesec"
                           v-model="employeeitme.pname"
                           :rules="rules"
@@ -353,7 +353,7 @@
                           append-icon="mdi-account"
                           outlined
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
 
@@ -366,7 +366,7 @@
                           outlined
                           required
                           clearable
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -378,7 +378,7 @@
                           outlined
                           clearable
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
 
@@ -446,7 +446,7 @@
                           outlined
                           clearable
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -461,7 +461,7 @@
                           outlined
                           type="number"
                           required
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -473,7 +473,7 @@
                           outlined
                           required
                           clearable
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -486,7 +486,7 @@
                           outlined
                           required
                           rows="1"
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-textarea>
                       </v-col>
                       <v-col cols="12" sm="6">
@@ -494,7 +494,7 @@
                           label="ตำแหน่งงาน"
                           append-icon="mdi-briefcase"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           item-text="name"
                           item-value="_id"
                           :items="roleitme.flat()"
@@ -566,7 +566,7 @@
                           clearable
                           type="password"
                           required
-                          color="#1D1D1D"
+                          color="primary"
                           append-icon="mdi-lock"
                         ></v-text-field>
                       </v-col>

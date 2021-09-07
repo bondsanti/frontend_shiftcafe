@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar fixed app color="#1d1d1d" dark>
+    <v-app-bar fixed app color="primary" dark>
       <v-toolbar-title>บริษัท เดฟ ฟอง จำกัด</v-toolbar-title>
 
       <v-spacer></v-spacer>

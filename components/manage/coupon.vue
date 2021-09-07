@@ -95,7 +95,7 @@
                           label="ชื่อคูปอง"
                           :rules="rules"
                           v-model="couponitem.codename"
-                          color="#1D1D1D"
+                          color="primary"
                           @keypress.enter="check"
                         ></v-text-field>
                       </v-col>
@@ -123,7 +123,7 @@
                         <v-select
                           label="ออกให้"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           item-text="name"
                           item-value="_id"
                           :items="Empname.flat()"
@@ -201,7 +201,7 @@
                         <v-select
                           label="ส่วนลดในคูปอง"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           :items="discount"
                           v-model="couponitem.discount"
                           :rules="rules"
@@ -216,7 +216,7 @@
                           v-model="couponitem.num_use"
                           :rules="rules"
                           type="number"
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" class="mt-n7">
@@ -289,7 +289,7 @@
                           label="ชื่อคูปอง"
                           v-model="couponitem.codename"
                           @keypress.enter="check"
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col
@@ -309,7 +309,7 @@
                         <v-select
                           label="ออกให้"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           item-text="name"
                           item-value="_id"
                           :items="Empname.flat()"
@@ -382,7 +382,7 @@
                         <v-select
                           label="ส่วนลดในคูปอง"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           :items="discount"
                           v-model="couponitem.discount"
                         ></v-select>
@@ -394,14 +394,14 @@
                           label="จำนวลคูปองที่สมารถใช้ได้ต่อครั้ง"
                           v-model="couponitem.num_use"
                           type="number"
-                          color="#1D1D1D"
+                          color="primary"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6">
                         <v-select
                           label="ปรับสถานะคูปอง"
                           outlined
-                          color="#1D1D1D"
+                          color="primary"
                           :items="status"
                           v-model="couponitem.status"
                         ></v-select>

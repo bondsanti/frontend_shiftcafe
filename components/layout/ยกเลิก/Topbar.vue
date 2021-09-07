@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar :clipped-left="clipped" fixed app color="#1d1d1d" dark>
+  <v-app-bar :clipped-left="clipped" fixed app color="primary" dark>
     <v-app-bar-nav-icon @click.stop="ToggleNavDrawer()" />
     <v-toolbar-title v-if="!navDrawer" class="hidden-xs-only">{{
       this.$store.getters["setting"][0].head_title

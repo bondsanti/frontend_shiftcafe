@@ -84,13 +84,13 @@
                                 <div>
                                     <v-row>
                                         <v-col cols="12">
-                                            <v-select label="คำนำหน้า" outlined color="#1D1D1D" :items="pnamesec" v-model="customerItme.pname" clearable :rules="requiredRules"></v-select>
+                                            <v-select label="คำนำหน้า" outlined color="primary" :items="pnamesec" v-model="customerItme.pname" clearable :rules="requiredRules"></v-select>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <v-text-field v-model="customerItme.fname" clearable maxlength="25" :rules="requiredRules" label="ชื่อ" outlined required color="#1D1D1D"></v-text-field>
+                                            <v-text-field v-model="customerItme.fname" clearable maxlength="25" :rules="requiredRules" label="ชื่อ" outlined required color="primary"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <v-text-field v-model="customerItme.lname" clearable maxlength="25" :rules="requiredRules" label="นามสกุล" outlined required color="#1D1D1D"></v-text-field>
+                                            <v-text-field v-model="customerItme.lname" clearable maxlength="25" :rules="requiredRules" label="นามสกุล" outlined required color="primary"></v-text-field>
                                         </v-col>
 
                                         <v-col cols="12" sm="6">              
@@ -110,7 +110,7 @@
                                         </v-col>
 
                                         <v-col cols="12" sm="4">
-                                            <v-text-field v-model="customerItme.tel" clearable hint="ไม่ต้องเติม - ในเบอร์โทรศัพท์" maxlength="10" min="0" oninput="validity.valid||(value='');" :rules="numberRules" label="เบอร์โทรติดต่อ" outlined type="number" required color="#1D1D1D" @keypress.enter="check"  counter="10"></v-text-field>
+                                            <v-text-field v-model="customerItme.tel" clearable hint="ไม่ต้องเติม - ในเบอร์โทรศัพท์" maxlength="10" min="0" oninput="validity.valid||(value='');" :rules="numberRules" label="เบอร์โทรติดต่อ" outlined type="number" required color="primary" @keypress.enter="check"  counter="10"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="2" class="justify-center align-center">
                                             <v-btn elevation="5" color="warning" @click="check">ตรวจสอบ</v-btn>
@@ -123,13 +123,13 @@
                                         </v-col>
 
                                         <v-col cols="12" sm="6">
-                                            <v-text-field v-model="customerItme.email" clearable label="อีเมล" :rules="emailRules" outlined required color="#1D1D1D"></v-text-field>
+                                            <v-text-field v-model="customerItme.email" clearable label="อีเมล" :rules="emailRules" outlined required color="primary"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <v-text-field v-model="customerItme.address" clearable :rules="requiredRules" label="ที่อยู่" outlined required color="#1D1D1D"></v-text-field>
+                                            <v-text-field v-model="customerItme.address" clearable :rules="requiredRules" label="ที่อยู่" outlined required color="primary"></v-text-field>
                                         </v-col>
                                         <!-- <v-col cols="12" sm="12">
-                                          <v-select label="ระดับ" outlined color="#1D1D1D" item-text="name" item-value="_id" :disabled="$store.getters['position'] === 'cashier'" v-model="customerItme.ref_level_id" :items="level"></v-select>
+                                          <v-select label="ระดับ" outlined color="primary" item-text="name" item-value="_id" :disabled="$store.getters['position'] === 'cashier'" v-model="customerItme.ref_level_id" :items="level"></v-select>
                                         </v-col>                 -->
                                     </v-row>
                                 </div>
@@ -183,13 +183,13 @@
                                 <div>
                                     <v-row>
                                         <v-col cols="12">
-                                            <v-select label="คำนำหน้า" outlined color="#1D1D1D" :items="pnamesec" v-model="customerItme.pname" :rules="requiredRules" clearable></v-select>
+                                            <v-select label="คำนำหน้า" outlined color="primary" :items="pnamesec" v-model="customerItme.pname" :rules="requiredRules" clearable></v-select>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <v-text-field v-model="customerItme.fname" clearable maxlength="25" :rules="requiredRules" label="ชื่อ" outlined required color="#1D1D1D"></v-text-field>
+                                            <v-text-field v-model="customerItme.fname" clearable maxlength="25" :rules="requiredRules" label="ชื่อ" outlined required color="primary"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <v-text-field v-model="customerItme.lname" clearable maxlength="25" :rules="requiredRules" label="นามสกุล" outlined required color="#1D1D1D"></v-text-field>
+                                            <v-text-field v-model="customerItme.lname" clearable maxlength="25" :rules="requiredRules" label="นามสกุล" outlined required color="primary"></v-text-field>
                                         </v-col>
 
                                         <v-col cols="12" sm="6">
@@ -209,7 +209,7 @@
                                         </v-col>
 
                                         <v-col cols="12" sm="4">
-                                            <v-text-field v-model="customerItme.tel" clearable hint="ไม่ต้องเติม - ในเบอร์โทรศัพท์" maxlength="10" :rules="numberRules" label="เบอร์โทรติดต่อ" outlined min="0" oninput="validity.valid||(value='');" counter="10" type="number" required color="#1D1D1D" @keypress.enter="check"></v-text-field>
+                                            <v-text-field v-model="customerItme.tel" clearable hint="ไม่ต้องเติม - ในเบอร์โทรศัพท์" maxlength="10" :rules="numberRules" label="เบอร์โทรติดต่อ" outlined min="0" oninput="validity.valid||(value='');" counter="10" type="number" required color="primary" @keypress.enter="check"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="2" class="justify-center align-center">
                                             <v-btn class="rounded-xl" @click="check" color="warning">
@@ -222,16 +222,16 @@
                                             </div>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <v-text-field v-model="customerItme.email" clearable label="อีเมล" :rules="emailRules" outlined required color="#1D1D1D"></v-text-field>
+                                            <v-text-field v-model="customerItme.email" clearable label="อีเมล" :rules="emailRules" outlined required color="primary"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <v-text-field v-model="customerItme.address" clearable :rules="requiredRules" label="ที่อยู่" outlined required color="#1D1D1D"></v-text-field>
+                                            <v-text-field v-model="customerItme.address" clearable :rules="requiredRules" label="ที่อยู่" outlined required color="primary"></v-text-field>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <v-select label="ระดับ" outlined color="#1D1D1D" item-text="name" item-value="_id" :disabled="$store.getters['position'] === 'cashier'" v-model="customerItme.ref_level_id" :items="level"></v-select>
+                                            <v-select label="ระดับ" outlined color="primary" item-text="name" item-value="_id" :disabled="$store.getters['position'] === 'cashier'" v-model="customerItme.ref_level_id" :items="level"></v-select>
                                         </v-col>
                                         <v-col cols="12" sm="6">
-                                            <v-text-field v-model="customerItme.password" clearable :rules="requiredRules" label="รหัสผ่าน" outlined required color="#1D1D1D"></v-text-field>
+                                            <v-text-field v-model="customerItme.password" clearable :rules="requiredRules" label="รหัสผ่าน" outlined required color="primary"></v-text-field>
                                         </v-col>
                    
                                     </v-row>

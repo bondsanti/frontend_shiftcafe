@@ -36,7 +36,7 @@
                         label="เลือก"
                         clearable
                         outlined
-                        color="#1D1D1D"
+                        color="primary"
                         :items="items"
                         :rules="rules"
                         required
@@ -80,14 +80,14 @@
                         type="number"
                         v-model="cashdraw.total_money"
                         :rules="rules"
-                        color="#1D1D1D"
+                        color="primary"
                         prefix="฿"
                       ></v-text-field>
                     </v-col>
 
                     <v-col cols="12" class="mt-n7">
                       <v-textarea
-                        color="#1D1D1D"
+                        color="primary"
                         outlined
                         v-model="cashdraw.remark"
                         :rules="rules"
@@ -140,7 +140,7 @@
                     <v-col cols="12"> </v-col>
                     <v-col cols="12" class="mt-n7">
                       <v-textarea
-                        color="#1D1D1D"
+                        color="primary"
                         outlined
                         v-model="cashdrawedi.remark"
                         :rules="rules"

@@ -89,7 +89,7 @@
                           outlined
                           required
                           clearable
-                          color="#1D1D1D"
+                          color="primary"
                           type="number"
                           :rules="[v => v > 0 || '0 ไม่ได้น้า ต้อง 1 ขึ้นเน้อ']"
                         ></v-text-field>

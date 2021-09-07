@@ -7,6 +7,7 @@ export default function(context) {
   const accent = localStorage.getItem("accent");
   const info = localStorage.getItem("info");
   const secondary = localStorage.getItem("secondary");
+  const shades = localStorage.getItem("shades");
 
   //set colors vuetify
   context.$vuetify.theme.themes.light.primary = primary
@@ -24,6 +25,10 @@ export default function(context) {
   context.$vuetify.theme.themes.light.secondary = secondary
     ? secondary
     : colors.secondary;
+  context.$vuetify.theme.themes.light.shades = shades
+    ? shades
+    : colors.shades;
+
   //console.log(theme);
   context.$axios
     .$get(context.env.config.BASE_URL + "/setting")

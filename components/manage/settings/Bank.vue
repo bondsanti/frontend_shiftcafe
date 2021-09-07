@@ -353,6 +353,7 @@
     <v-row>
       <v-col xs="12" sm="12" md="12" class="">
         <v-card
+         color="shades"
           elevation="15"
           class="px-6 py-5 mb-6"
           style="border-radius: 40px;"
@@ -407,11 +408,11 @@
                   md="4"
                   lg="3"
                 >
-                  <v-card elevation="15" class="rounded-xl " width="400">
+                  <v-card elevation="15" class="rounded-xl " width="350">
                     <v-img
-                      height="200px"
+                      height="150px"
                       contain
-                      :aspect-ratio="16 / 9"
+                      :aspect-ratio="21/9"
                       :src="
                         `${$nuxt.context.env.config.IMG_URL}${item.img_cover}`
                       "

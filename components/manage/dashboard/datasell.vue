@@ -32,12 +32,12 @@
             </th>
           </tr>
         </thead>
-        <tbody>
-          <!-- <tr v-for="item in desserts" :key="item.name">
+        <!-- <tbody>
+          <tr v-for="item in desserts" :key="item.name">
             <td>{{ item.name }}</td>
             <td>{{ item.calories }}</td>
-          </tr> -->
-        </tbody>
+          </tr>
+        </tbody> -->
       </template>
     </v-simple-table>
   </v-card>

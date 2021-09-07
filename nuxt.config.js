@@ -1,4 +1,5 @@
 const config = require("./config.js");
+const { colors } = require("./instant/colors");
 
 module.exports = {
   mode: "spa",
@@ -99,14 +100,14 @@ module.exports = {
       light: true, //you don't actually need this line as it's for default
       themes: {
         light: {
-          primary: "#1d1d1d",
-          secondary: "#ededed",
-          info: "#39b54a",
-          accent: "#485fc7",
-          warning: "#ffe08a",
-          error: "#f14668",
-          success: "#00b894",
-          shades:"#FFFFFF"
+          primary: colors.primary,
+          secondary: colors.secondary,
+          info: colors.info,
+          accent: colors.accent,
+          warning: colors.warning,
+          error: colors.error,
+          success: colors.success,
+          shades: colors.shades
         },
         dark: {}
       }

@@ -3,16 +3,15 @@
     <v-card class="mx-auto rounded-xl" max-width="500" color="primary ">
       <v-card-title>
         <h5 class="text-h5 white--text">
-          Color Theme
-
+          การกำหนดค่าธีม
           <v-avatar class="mx-auto" size="60" max-width="90px" tile>
-            <v-img src="/wallet_1.png"></v-img>
+            <v-img src="/paint.png"></v-img>
           </v-avatar>
         </h5>
         <v-spacer></v-spacer>
       </v-card-title>
       <v-card-text class="white--text text-center">
-        เปลี่ยนสีของเว็บไซต์
+        เปลี่ยนสีของแอปพลิเคชัน
       </v-card-text>
       <v-divider color="white" class="mx-auto"></v-divider>
       <v-card-actions>
@@ -27,13 +26,29 @@
       </v-card-actions>
     </v-card>
 
-    <v-dialog v-model="dialog" max-width="900">
-      <v-card class="pa-6 rounded-xl">
-        <p class="text-md-body-1 text-center">COLOR THEME</p>
+    <v-dialog v-model="dialog" max-width="900" persistent>
+      <v-card class="pa-3  rounded-xl" elevation="24">
+        <v-card-actions class="d-flex justify-center ">
+          <v-row>
+            <v-card-title class="ms-6 mt-3 mb-3">การกำหนดค่าธีม</v-card-title>
+            <v-btn
+              color="red darken-1"
+              class="mt-6 ms-6 mb-6"
+              text
+              @click="myDeleteFunction()"
+            >
+              <v-icon dark>
+                mdi-pencil
+              </v-icon>
+              <h4>(รีเซ็ตธีม)</h4>
+            </v-btn>
+          </v-row>
+        </v-card-actions>
+
         <div>
           <v-row>
             <!-- Color-primary -->
-            <v-col cols="3">
+            <v-col cols="12" xs="12" sm="6" md="3">
               <div class="text-center">
                 <v-menu
                   v-model="menu_primary"
@@ -43,6 +58,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                      elevation="24"
                       :color="
                         colors.picker_primary
                           ? colors.picker_primary.hex
@@ -78,7 +94,7 @@
             </v-col>
             <!--Color-primary  -->
             <!-- Color-info -->
-            <v-col cols="3">
+            <v-col cols="12" xs="12" sm="6" md="3">
               <div class="text-center">
                 <v-menu
                   v-model="menu_info"
@@ -88,6 +104,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                      elevation="24"
                       :color="
                         colors.picker_info ? colors.picker_info.hex : 'info'
                       "
@@ -122,7 +139,7 @@
             </v-col>
             <!-- Color-info -->
             <!--   Color-secondary -->
-            <v-col cols="3">
+            <v-col cols="12" xs="12" sm="6" md="3">
               <div class="text-center">
                 <v-menu
                   v-model="menu_secondary"
@@ -132,6 +149,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                      elevation="24"
                       :color="
                         colors.picker_secondary
                           ? colors.picker_secondary.hex
@@ -140,6 +158,7 @@
                       dark
                       v-bind="attrs"
                       v-on="on"
+                      class="black--text"
                     >
                       Color-secondary
                       <v-icon color="">mdi-select-color</v-icon>
@@ -172,7 +191,7 @@
             </v-col>
             <!--   Color-secondary -->
             <!--   Color-accent -->
-            <v-col cols="3">
+            <v-col cols="12" xs="12" sm="6" md="3">
               <div class="text-center">
                 <v-menu
                   v-model="menu_accent"
@@ -182,6 +201,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                      elevation="24"
                       :color="
                         colors.picker_accent
                           ? colors.picker_accent.hex
@@ -220,7 +240,7 @@
           </v-row>
           <v-row>
             <!--   Color-warning -->
-            <v-col cols="3">
+            <v-col cols="12" xs="12" sm="6" md="3">
               <div class="text-center">
                 <v-menu
                   v-model="menu_warning"
@@ -230,6 +250,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                      elevation="24"
                       :color="
                         colors.picker_warning
                           ? colors.picker_warning.hex
@@ -266,7 +287,7 @@
             </v-col>
             <!--   Color-warning -->
             <!--   Color-error-->
-            <v-col cols="3">
+            <v-col cols="12" xs="12" sm="6" md="3">
               <div class="text-center">
                 <v-menu
                   v-model="menu_error"
@@ -276,6 +297,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                      elevation="24"
                       :color="
                         colors.picker_error ? colors.picker_error.hex : 'error'
                       "
@@ -309,8 +331,8 @@
               </div>
             </v-col>
             <!--   Color-error -->
-            <!--   Color-error-->
-            <v-col cols="3">
+            <!--   Color-success-->
+            <v-col cols="12" xs="12" sm="6" md="3">
               <div class="text-center">
                 <v-menu
                   v-model="menu_success"
@@ -320,6 +342,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                      elevation="24"
                       :color="
                         colors.picker_success
                           ? colors.picker_success.hex
@@ -354,7 +377,55 @@
                 </v-menu>
               </div>
             </v-col>
-            <!--   Color-error -->
+            <!--   Color-success -->
+            <!--   Color-shades-->
+            <v-col cols="12" xs="12" sm="6" md="3">
+              <div class="text-center">
+                <v-menu
+                  v-model="menu_shades"
+                  :close-on-content-click="false"
+                  :nudge-width="120"
+                  offset-z
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      elevation="24"
+                      :color="
+                        colors.picker_shades
+                          ? colors.picker_shades.hex
+                          : 'shades'
+                      "
+                      dark
+                      v-bind="attrs"
+                      v-on="on"
+                      class="black--text"
+                    >
+                      Color-shades
+                      <v-icon color="">mdi-select-color</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-color-picker
+                      class="ma-2"
+                      canvas-height="100"
+                      v-model="colors.picker_shades"
+                      show-swatches
+                    ></v-color-picker>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn text @click="menu_shades = false">
+                        ยกเลิก
+                      </v-btn>
+                      <v-btn color="primary" text @click="menu_shades = false">
+                        ตกลง
+                      </v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-menu>
+              </div>
+            </v-col>
+            <!--   Color-shades -->
           </v-row>
         </div>
         <v-card-actions class="mt-6">
@@ -383,13 +454,14 @@ export default {
   data() {
     return {
       colors: {
-        picker_secondary: { hex: null },
-        picker_primary: { hex: null },
-        picker_info: { hex: null },
-        picker_accent: { hex: null },
-        picker_warning: { hex: null },
-        picker_error: { hex: null },
-        picker_success: { hex: null }
+        picker_secondary: {hex:null},
+        picker_primary: {hex:null},
+        picker_info: {hex:null},
+        picker_accent: {hex:null},
+        picker_warning: {hex:null},
+        picker_error: {hex:null},
+        picker_success: {hex:null},
+        picker_shades: {hex:null}
       },
       //
       dialog: false,
@@ -400,12 +472,20 @@ export default {
       menu_accent: false,
       menu_warning: false,
       menu_error: false,
-      menu_success: false
+      menu_success: false,
+      menu_shades: false
     };
   },
   methods: {
+    myDeleteFunction: function() {
+      localStorage.clear(); //all items
+      window.location.reload();
+    },
     setThemeColor() {
       //console.log(this.colors);
+      this.$vuetify.theme.themes.light.shades = this.colors.picker_shades
+        ? this.colors.picker_shades.hex
+        : colors.shades;
       this.$vuetify.theme.themes.light.success = this.colors.picker_success
         ? this.colors.picker_success.hex
         : colors.success;
@@ -429,6 +509,12 @@ export default {
         : colors.secondary;
 
       ///เก็บลง local storage
+      localStorage.setItem(
+        "shades",
+        this.colors.picker_shades
+          ? this.colors.picker_shades.hex
+          : colors.shades
+      );
       localStorage.setItem(
         "primary",
         this.colors.picker_primary

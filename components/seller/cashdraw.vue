@@ -1,6 +1,11 @@
 <template>
   <div class="ma-3">
-    <v-card class="mx-auto mt-6 py-3 rounded-xl" elevaation="5" justify-centaer>
+    <v-card
+      class="mx-auto mt-6 py-3 rounded-xl"
+      elevaation="5"
+      justify-centaer
+      
+    >
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -15,7 +20,7 @@
               <v-icon left> mdi-cash-register</v-icon> ลงข้อมูลเงินทอน
             </v-btn>
           </template>
-          <v-card class="rounded-xl ">
+          <v-card class="rounded-xl " >
             <v-form>
               <v-card-title>
                 <span class="text-h">
@@ -123,7 +128,7 @@
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogeditItem" max-width="500px">
-          <v-card class="rounded-xl">
+          <v-card class="rounded-xl" >
             <v-form>
               <v-card-title>
                 <span class="text-h">

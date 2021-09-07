@@ -43,7 +43,7 @@
         ></v-text-field>
       </v-card-title>
       <!-- add edit -->
-      <v-dialog v-model="dialog" max-width="700px" persistent>
+      <v-dialog v-model="dialog" max-width="800px" persistent>
         <v-card>
           <v-card-title>
             <span class="text-h5">
@@ -224,7 +224,7 @@
 
       <!-- delete -->
       <v-dialog v-model="dialogDelete" max-width="410">
-        <v-card>
+        <v-card color="shades">
           <v-card-title class="primary--text text-center">
             คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
           </v-card-title>
@@ -255,8 +255,9 @@
         :page.sync="page"
         :search="search"
         hide-default-footer
+       
       >
-        <template v-slot:default="props">
+        <template v-slot:default="props" >
           <v-row>
             <v-col
               v-for="item in props.items"
@@ -266,7 +267,12 @@
               md="4"
               lg="3"
             >
-              <v-card dark class="mx-2 rounded-xl" elevation="15">
+              <v-card
+                dark
+                class="mx-2 rounded-xl"
+                elevation="15"
+                color="primary"
+              >
                 <div class="d-flex justify-start mb-6">
                   <!-- แสดงข้อมูล -->
                   <v-avatar class="ma-3 rounded-xl" size="125" tile>

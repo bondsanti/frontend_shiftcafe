@@ -327,7 +327,7 @@
 
           <v-btn
             class="ma-1"
-            color="Success"
+            color="success"
             @click="save()"
             style="color: #fff;border-radius: 0.25rem; padding: 0.5rem 1rem; border: none; outline: none;"
           >

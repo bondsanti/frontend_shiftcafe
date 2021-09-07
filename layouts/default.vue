@@ -12,7 +12,7 @@
     <v-main class="secondary">
       <nuxt />
     </v-main>
-    <v-footer dark padless>
+    <v-footer dark padless color="primary">
       <v-card class="flex" flat tile>
         <v-card-title class="red">
           <strong class="subheading"

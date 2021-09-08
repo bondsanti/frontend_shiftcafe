@@ -22,12 +22,39 @@
             <v-col
               v-for="(coupon, i) in visiblePages"
               :key="i"
-              sm="12"
+              sm="6"
               md="4"
               cols="12"
               class="mt-n2"
             >
-              <v-card color="primary" dark>
+              <v-card class="rounded-xl">
+                <v-img src="COUPON02.png" height="auto">
+                  <v-row style="margin-top:13%" no-gutters justify="end">
+                    <v-col cols="2"></v-col>
+                    <v-col cols="10">
+                      <v-list-item three-line>
+                        <v-list-item-content>
+                          <v-list-item-title
+                            ><h4>CODE: {{ coupon.codename }}</h4>
+                          </v-list-item-title>
+                          <v-list-item-subtitle>
+                            จำนวนลด: {{ coupon.discount }} %
+                          </v-list-item-subtitle>
+                          <v-list-item-subtitle class="caption">
+                            ระยะเวลา: {{ formatDate(coupon.start) }} -
+                            {{ formatDate(coupon.end) }}
+                          </v-list-item-subtitle>
+                        </v-list-item-content>
+                      </v-list-item>
+                      <v-row justify="end" class="mb-2 mr-2"
+                        >สิทธิ์การใช้งานคงเหลือ
+                        {{ coupon.num_use }} ครั้ง</v-row
+                      >
+                    </v-col>
+                  </v-row>
+                </v-img>
+              </v-card>
+              <!-- <v-card color="primary" dark>
                 <div class="d-flex flex-no-wrap justify-space-around">
                   <div>
                     <v-card-title class="text-h5">{{
@@ -57,7 +84,7 @@
                     ></v-img>
                   </v-avatar>
                 </div>
-              </v-card>
+              </v-card> -->
             </v-col>
           </v-row>
           <div class="text-center">

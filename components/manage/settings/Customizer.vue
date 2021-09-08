@@ -20,7 +20,7 @@
 
     <v-card
       color="primary"
-      elevation="24"
+      elevation="10"
       class="rounded-xl"
       v-for="(settings, i) in settings"
       :key="i"

@@ -42,7 +42,7 @@
           color="primary"
           dark
           class="mr-5 rounded-xl mb-2 "
-          elevation="15"
+          elevation="10"
           @click="addItem"
         >
           <v-icon left> mdi-ticket-percent-outline</v-icon> จัดการคูปอง
@@ -107,7 +107,7 @@
                         <v-btn
                           @click="check"
                           class="mr-1 rounded-xl"
-                          elevation="15"
+                          elevation="10"
                           color="warning"
                         >
                           ตรวจสอบ</v-btn
@@ -157,7 +157,7 @@
                             v-model="couponitem.start"
                             :rules="rules"
                             locale="th"
-                            elevation="15"
+                            elevation="10"
                             :active-picker.sync="activePicker"
                             min="1950-01-01"
                             @input="menu = false"
@@ -189,7 +189,7 @@
                             v-model="couponitem.end"
                             :rules="rules"
                             @input="menu2 = false"
-                            elevation="15"
+                            elevation="10"
                             locale="th"
                             :active-picker.sync="activePicker2"
                             min="1950-01-01"
@@ -235,7 +235,7 @@
               <v-card-actions>
                 <v-btn
                   class="ma-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   color="primary"
                   dark
                   @click="close"
@@ -249,7 +249,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   class="ma-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -340,7 +340,7 @@
                           <v-date-picker
                             v-model="couponitem.start"
                             @input="menu3 = false"
-                            elevation="15"
+                            elevation="10"
                             locale="th"
                             :active-picker.sync="activePicker3"
                             min="1950-01-01"
@@ -371,7 +371,7 @@
                             v-model="couponitem.end"
                             locale="th"
                             @input="menu4 = false"
-                            elevation="15"
+                            elevation="10"
                             :active-picker.sync="activePicker4"
                             min="1950-01-01"
                           ></v-date-picker>

@@ -16,12 +16,18 @@ export default function(context) {
   context.$vuetify.theme.themes.light.success = success
     ? success
     : colors.success;
-  context.$vuetify.theme.themes.light.error = error ? error : colors.error;
+  context.$vuetify.theme.themes.light.error = error 
+    ? error 
+    : colors.error;
   context.$vuetify.theme.themes.light.warning = warning
     ? warning
     : colors.warning;
-  context.$vuetify.theme.themes.light.accent = accent ? accent : colors.accent;
-  context.$vuetify.theme.themes.light.info = info ? info : colors.info;
+  context.$vuetify.theme.themes.light.accent = accent 
+    ? accent
+    : colors.accent;
+  context.$vuetify.theme.themes.light.info = info 
+    ? info 
+    : colors.info;
   context.$vuetify.theme.themes.light.secondary = secondary
     ? secondary
     : colors.secondary;

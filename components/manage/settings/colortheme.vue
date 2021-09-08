@@ -27,7 +27,7 @@
     </v-card>
 
     <v-dialog v-model="dialog" max-width="900" persistent>
-      <v-card class="pa-3  rounded-xl" elevation="24">
+      <v-card class="pa-3  rounded-xl" elevation="10">
         <v-card-actions class="d-flex justify-center ">
           <v-row>
             <v-card-title class="ms-6 mt-3 mb-3">การกำหนดค่าธีม</v-card-title>
@@ -58,7 +58,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                      elevation="24"
+                      elevation="10"
                       :color="
                         colors.picker_primary
                           ? colors.picker_primary.hex
@@ -104,7 +104,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                      elevation="24"
+                      elevation="10"
                       :color="
                         colors.picker_info ? colors.picker_info.hex : 'info'
                       "
@@ -149,7 +149,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                      elevation="24"
+                      elevation="10"
                       :color="
                         colors.picker_secondary
                           ? colors.picker_secondary.hex
@@ -201,7 +201,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                      elevation="24"
+                      elevation="10"
                       :color="
                         colors.picker_accent
                           ? colors.picker_accent.hex
@@ -250,7 +250,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                      elevation="24"
+                      elevation="10"
                       :color="
                         colors.picker_warning
                           ? colors.picker_warning.hex
@@ -297,7 +297,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                      elevation="24"
+                      elevation="10"
                       :color="
                         colors.picker_error ? colors.picker_error.hex : 'error'
                       "
@@ -342,7 +342,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                      elevation="24"
+                      elevation="10"
                       :color="
                         colors.picker_success
                           ? colors.picker_success.hex
@@ -389,7 +389,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
-                      elevation="24"
+                      elevation="10"
                       :color="
                         colors.picker_shades
                           ? colors.picker_shades.hex
@@ -589,6 +589,8 @@ export default {
     const accent = localStorage.getItem("accent");
     const info = localStorage.getItem("info");
     const secondary = localStorage.getItem("secondary");
+    const shades = localStorage.getItem("shades")
+    this.colors.picker_shades.hex = shades ? shades: colors.shades;
     this.colors.picker_primary.hex = primary ? primary : colors.primary;
     this.colors.picker_success.hex = success ? success : colors.success;
     this.colors.picker_error.hex = error ? error : colors.error;

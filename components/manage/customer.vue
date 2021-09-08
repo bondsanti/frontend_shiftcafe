@@ -40,14 +40,14 @@
         <v-card-title>
             <v-dialog v-model="dialogadd" max-width="500px">
                 <template v-slot:activator="{ on, attrs }">
-     <v-btn color="primary" dark class="ma-2 mr-1 rounded-xl" v-bind="attrs" v-on="on" @click="addItem" elevation="24">
+     <v-btn color="primary" dark class="ma-2 mr-1 rounded-xl" v-bind="attrs" v-on="on" @click="addItem" elevation="10">
                                        <v-icon left> mdi-account-plus </v-icon> ลงทะเบียนสมาชิก
                     </v-btn>
                 </template>
             </v-dialog>
             <v-spacer></v-spacer>
             <v-spacer></v-spacer>
-            <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details elevation="24" class="rounded-xl" solo></v-text-field>
+            <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details elevation="10" class="rounded-xl" solo></v-text-field>
         </v-card-title>
 
         <v-data-table :headers="headers" :items="customer" 
@@ -292,13 +292,13 @@
                 <!-- dialogDelete -->
             </template>
             <template v-slot:[`item.actions`]="{ item }">
-                <v-btn class="mr-1 rounded-xl" small elevation="24" color="warning" @click="editItem(item)">
+                <v-btn class="mr-1 rounded-xl" small elevation="10" color="warning" @click="editItem(item)">
                     <v-icon aria-hidden="false" class="me-1">
                         mdi-pencil-plus
                     </v-icon>
                     แก้ไข
                 </v-btn>
-                <v-btn rounded-lx class="mr-1 rounded-xl" elevation="24" color="error" :disabled="$store.getters['position'] === 'cashier'" small @click="deleteItem(item)">
+                <v-btn rounded-lx class="mr-1 rounded-xl" elevation="10" color="error" :disabled="$store.getters['position'] === 'cashier'" small @click="deleteItem(item)">
                     <v-icon dark class="me-1">
                         mdi-delete-forever
                     </v-icon>
@@ -346,7 +346,7 @@
                 </v-btn>
             </template>
             <template v-slot:[`item.view`]="{ item }">
-                <v-btn class="rounded-xl" elevation="24" small color="teal" @click="Detail(item)">
+                <v-btn class="rounded-xl" elevation="10" small color="teal" @click="Detail(item)">
                     <div class="d-block  white--text">
                         <v-icon aria-hidden="false" class="mx-1"> mdi-eye </v-icon>ดูรายละเอียด
                     </div>
@@ -481,7 +481,6 @@ export default {
       v => Number.isInteger(Number(v)) || "ใส่ตัวเลขเท่านั้น!"
     ]
   }),
-
 
   watch: {
     dialog(val) {

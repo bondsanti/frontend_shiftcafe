@@ -23,7 +23,7 @@
           color="primary"
           dark
           class="mr-5  mb-6 rounded-xl"
-          elevation="15"
+          elevation="10"
           @click="addItem"
         >
           <v-icon left> mdi-card-account-details-star </v-icon> เพิ่มข้อมูล
@@ -197,21 +197,21 @@
                           <div class="crop-button">
                             <v-btn
                               class="mx-1 white--text  rounded-xl"
-                              elevation="15"
+                              elevation="10"
                               @click="crop"
                               color="green"
                               >ดูรูปตัวอย่าง</v-btn
                             >
                             <v-btn
                               class="mx-1 white--text  rounded-xl"
-                              elevation="15"
+                              elevation="10"
                               @click="crop"
                               color="blue"
                               >บันทึกรูปที่หมุน</v-btn
                             >
                             <v-btn
                               class="mx-1 white--text  rounded-xl"
-                              elevation="15"
+                              elevation="10"
                               color="orange"
                               @click="croppedFinish"
                               >ตัดรูปภาพ</v-btn
@@ -247,7 +247,7 @@
                   class="ma-1  rounded-xl"
                   color="primary"
                   dark
-                  elevation="15"
+                  elevation="10"
                   @click="close"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
@@ -259,7 +259,7 @@
                 <v-btn
                   class="ma-1  rounded-xl"
                   color="info"
-                  elevation="15"
+                  elevation="10"
                   :disabled="!valid"
                   @click="save()"
                 >
@@ -313,7 +313,7 @@
 
                   <v-btn
                     class="mr-1 rounded-xl"
-                    elevation="15"
+                    elevation="10"
                     color="error"
                     @click="close"
                   >
@@ -328,7 +328,7 @@
           <v-btn
             class="mr1 rounded-xl"
             color="teal"
-            elevation="15"
+            elevation="10"
             
             @click="Detail(item.detail)"
           >
@@ -339,7 +339,7 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
-            elevation="15"
+            elevation="10"
             class="mr2 rounded-xl"
             color="warning"
             @click="editItem(item)"
@@ -350,7 +350,7 @@
             แก้ไข
           </v-btn>
           <v-btn
-            elevation="15"
+            elevation="10"
             class="mr-2 rounded-xl"
             color="error"
             @click="deleteItem(item)"

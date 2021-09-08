@@ -13,7 +13,7 @@
               color="primary"
               dark
               class="mr-5 rounded-xl ma-2"
-              elevation="15"
+              elevation="10"
               v-bind="attrs"
               v-on="on"
             >
@@ -109,7 +109,7 @@
                 <v-btn
                   color="error"
                   class="mr-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   @click="close"
                 >
                   <v-icon left> mdi-close </v-icon>ปิด
@@ -117,7 +117,7 @@
                 <v-btn
                   color="primary"
                   class="mr-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   :disabled="!valid"
                   @click="saveData()"
                 >
@@ -161,7 +161,7 @@
                 <v-btn
                   color="error"
                   class="mr-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   @click="closeedit"
                 >
                   <v-icon left> mdi-close </v-icon>ปิด
@@ -169,7 +169,7 @@
                 <v-btn
                   color="primary"
                   class="mr-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   :disabled="!valid"
                   @click="saveData()"
                 >
@@ -197,9 +197,9 @@
         multi-sort
         :items="cashTableData"
         :search="search"
-        :items-per-page="15"
+        :items-per-page="10"
         :footer-props="{
-          'items-per-page-options': [15, 20, 30, 40, 50, -1],
+          'items-per-page-options': [10, 20, 30, 40, 50, -1],
           prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
@@ -237,7 +237,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
             class="mr-1 rounded-xl ma-2"
-            elevation="24"
+            elevation="10"
             color="warning"
             small
             @click="editItem(item)"
@@ -249,7 +249,7 @@
           </v-btn>
           <v-btn
             class="mr-1 rounded-xl ma-2"
-            elevation="24"
+            elevation="15"
             color="error"
             small
             :disabled="$store.getters['position'] === 'cashier'"

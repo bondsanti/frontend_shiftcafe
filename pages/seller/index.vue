@@ -16,7 +16,7 @@
         />
       </v-col> -->
       <v-col cols="12" sm="12" md="8">
-        <v-card class=" rounded-xl pb-1 " color="#ededed" elevation="2">
+        <v-card class=" rounded-xl pb-1 " color="secondary" elevation="2">
           <!-- <v-row> -->
           <v-app-bar width="100%" color="white" flat>
             <v-col cols="3" sm="6" md="3" class="hidden-sm-and-down "
@@ -33,7 +33,7 @@
                   rounded
                   height="20"
                   dense
-                  elevation="0"
+                  elevation="10"
                   v-model="keyword"
                   @keydown="searchProduct"
                 ></v-text-field>
@@ -51,7 +51,7 @@
           <v-card
             width="100.0%"
             max-height="580px"
-            color="#ededed"
+            color="secondary"
             flat
             class="rounded-md d-flex flex-row flex-wrap overflow-y-auto mt-4 scroll"
           >
@@ -97,7 +97,7 @@
           <v-col cols="12" sm="6" md="4" lg="3" class="hidden-sm-and-down">
             <v-card
               class="rounded-xl d-flex flex-column align-center cursor ma-1"
-              elevation="24"
+              elevation="10"
               color="primary"
               width="100%"
               height="80px"

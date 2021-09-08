@@ -27,7 +27,7 @@
 
     <v-card
       class="mx-auto mt-6  py-3 rounded-xl"
-      elevaation="24"
+      elevaation="5"
       justify-centaer
     >
       <v-card-title>
@@ -37,7 +37,7 @@
               color="primary"
               dark
               class="mr-5 rounded-xl"
-              elevation="15"           
+              elevation="10"           
               @click="addItem"
             >
               <v-icon left> mdi-card-account-details-outline </v-icon>
@@ -128,7 +128,7 @@
                       >
                         <v-btn
                           class="mr-1 rounded-xl"
-                          elevation="15"
+                          elevation="10"
                           color="warning"
                           @click="check"
                           >ตรวจสอบ</v-btn
@@ -285,7 +285,7 @@
               <v-card-actions>
                 <v-btn
                   class="ma-1  rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   color="primary"
                   dark
                   @click="closeadd"
@@ -299,7 +299,7 @@
                 <v-btn
                   class="ma-1  rounded-xl"
                   color="info"
-                  elevation="15"
+                  elevation="10"
                   :disabled="!valid"
                   @click="save()"
                 >
@@ -510,7 +510,7 @@
               <v-card-actions>
                 <v-btn
                   class="ma-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   color="primary"
                   dark
                   @click="close"
@@ -523,7 +523,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   class="mr-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -582,7 +582,7 @@
               <v-card-actions>
                 <v-btn
                   class="ma-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   color="primary"
                   dark
                   @click="closePass"
@@ -595,7 +595,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   class="ma-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -739,7 +739,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
             class="mr-1 rounded-xl"
-            elevation="15"
+            elevation="10"
             small
             color="warning"
             @click="editItem(item)"
@@ -752,7 +752,7 @@
           <v-btn
             rounded-pill
             class="mr-1 rounded-xl"
-            elevation="15"
+            elevation="10"
             color="error"
             small
             @click="deleteItem(item)"
@@ -769,7 +769,7 @@
             small
             class="mr-1 rounded-xl"
             color="#03A9F4"
-            elevation="15"
+            elevation="10"
             @click="editItemPass(item)"
           >
             <div class="d-block   white--text">
@@ -786,7 +786,7 @@
           <v-btn
             class="mr1 rounded-xl"
             small
-            elevation="15"
+            elevation="10"
             color="teal"
             @click="Detail(item)"
           >
@@ -804,7 +804,7 @@
             class="mr1 rounded-xl"
             small
             color="purple darken-2"
-            elevation="15"
+            elevation="10"
             @click="selectManager(item)"
           >
             <div class="d-block  white--text">

@@ -4,8 +4,10 @@
       <v-img
         height="100%"
         :src="
-          `${$nuxt.context.env.config.IMG_URL}${
-            loadData.ref_level_id ? loadData.ref_level_id.img : 'logo.ico'
+          `${
+            loadData.ref_level_id
+              ? $nuxt.context.env.config.IMG_URL + loadData.ref_level_id.img
+              : 'no-level.png'
           }`
         "
       >

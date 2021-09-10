@@ -58,9 +58,9 @@ export const printInvoiceOnly = (pay, show, setting) => {
   pay.ref_order_id.list_product.map((l, i) => {
     WinPrint.document.write("<tr style='border-bottom: thin solid'>");
     WinPrint.document.write(
-      `<td style='padding-left:20px;'>${parseInt(i) + 1}</td><td >${l.name} ${
-        l.normal_price
-      } บาท</td><td style='padding-left:20px;'>${
+      `<td style='padding-left:20px;'>${parseInt(i) + 1}</td><td >${
+        l.discount ? "" : "**"
+      }${l.name} ${l.normal_price} บาท</td><td style='padding-left:20px;'>${
         l.qty
       }</td><td style='padding-left:20px;'>${formatPrice(
         l.price
@@ -120,6 +120,7 @@ export const printInvoiceOnly = (pay, show, setting) => {
 
   WinPrint.document.write(
     `<tr><th  align=center style='padding-left:60px' >**ขอบคุณที่ใช้บริการ**</th></tr>
+    <tr ><th align=start colspan=2>หมายเหตุ ** สินค้าไม่สามารถใช้กับส่วนลดได้</th><th></th></tr>
         `
   );
   WinPrint.document.write("</table>");

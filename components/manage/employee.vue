@@ -32,18 +32,18 @@
     >
       <v-card-title>
         <!-- ********************************************************************************************************************************************************************** -->
-       
-            <v-btn
-              color="primary"
-              dark
-              class="mr-5 rounded-xl"
-              elevation="10"           
-              @click="addItem"
-            >
-              <v-icon left> mdi-card-account-details-outline </v-icon>
-              จัดการพนักงาน
-            </v-btn>
-     
+
+        <v-btn
+          color="primary"
+          dark
+          class="mr-5 rounded-xl"
+          elevation="10"
+          @click="addItem"
+        >
+          <v-icon left> mdi-card-account-details-outline </v-icon>
+          จัดการพนักงาน
+        </v-btn>
+
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
@@ -722,6 +722,7 @@
                   >ยกเลิก</v-btn
                 >
                 <v-btn
+                  disabled
                   color="primary"
                   class="ma-2"
                   @click="deleteItemConfirm()"
@@ -750,6 +751,7 @@
             แก้ไข
           </v-btn>
           <v-btn
+            disabled
             rounded-pill
             class="mr-1 rounded-xl"
             elevation="10"

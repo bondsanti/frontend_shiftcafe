@@ -1,7 +1,8 @@
 const configs = {
   development: {
     BASE_URL: "http://192.168.1.55:5555/api",
-    IMG_URL: "http://192.168.1.55:5555/"
+    IMG_URL: "http://192.168.1.55:5555/",
+    type: process.env.NODE_ENV
   },
   production: {
     BASE_URL: "https://api.shift-cafe.com/api",
@@ -10,4 +11,7 @@ const configs = {
 };
 
 const nodeEnv = process.env.NODE_ENV;
-module.exports = configs[nodeEnv];
+
+export default nodeEnv === "development"
+  ? configs.development
+  : configs.production;

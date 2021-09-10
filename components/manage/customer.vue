@@ -272,12 +272,14 @@
                         <v-card-actions>
                             <v-spacer></v-spacer>
 
+
                 <v-btn color="" class="rounded-xl" @click="closeDelete">
                   <v-icon aria-hidden="false" class="ma-1 ">
                     mdi-close-box </v-icon
                   >ยกเลิก
                 </v-btn>
                             <v-btn class="ma-1 rounded-xl" color="primary" @click="deleteItemConfirm()">
+
                                 <v-icon aria-hidden="false" class="mx-2">
                                     mdi-delete-forever
                                 </v-icon>
@@ -296,7 +298,7 @@
                     </v-icon>
                     แก้ไข
                 </v-btn>
-                <v-btn rounded-lx class="mr-1 rounded-xl" elevation="10" color="error" :disabled="$store.getters['position'] === 'cashier'" small @click="deleteItem(item)">
+                <v-btn rounded-lx class="mr-1 rounded-xl" elevation="10" color="error" disabled small @click="deleteItem(item)">
                     <v-icon dark class="me-1">
                         mdi-delete-forever
                     </v-icon>
@@ -730,7 +732,8 @@ export default {
           .$post("/customer/", this.customerItme)
           .then(res => {
             //  console.log(res.message);
-            this.$emit("refresh");
+            //this.$emit("refresh");
+            this.$nuxt.refresh();
             this.closeadd();
             this.$swal.fire({
               type: "success",

@@ -36,26 +36,26 @@
         </v-card>
     </v-dialog>
     <!-- 2 -->
-    <v-card class="mx-auto mt-6  py-3 rounded-xl" elevaation="5" justify-centaer>
+    <v-card class="mx-auto mt-6  py-3 rounded-xl" elevaation="1" justify-centaer>
         <v-card-title>
             <v-dialog v-model="dialogadd" max-width="500px">
                 <template v-slot:activator="{ on, attrs }">
-     <v-btn color="primary" dark class="ma-2 mr-1 rounded-xl" v-bind="attrs" v-on="on" @click="addItem" elevation="10">
+     <v-btn color="primary" dark class="ma-2 mr-1 rounded-xl" v-bind="attrs" v-on="on" @click="addItem" elevation="1">
                                        <v-icon left> mdi-account-plus </v-icon> ลงทะเบียนสมาชิก
                     </v-btn>
                 </template>
             </v-dialog>
             <v-spacer></v-spacer>
             <v-spacer></v-spacer>
-            <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details elevation="10" class="rounded-xl" solo></v-text-field>
+            <v-text-field v-model="search" append-icon="mdi-magnify" label="ค้นหา" single-line hide-details elevation="1" class="rounded-xl" solo></v-text-field>
         </v-card-title>
 
-        <v-data-table :headers="headers" :items="customer" 
-        :sort-desc="[true, false]"
+        <v-data-table :headers="headers" 
         
-         :sort-by="['datetime']"
-        :search="search" multi-sort :items-per-page="15" :footer-props="{
-          'items-per-page-options': [15, 20, 30, 40, 50, -1],
+        :items="customer" 
+        :search="search"
+        :items-per-page="15" :footer-props="{
+        'items-per-page-options': [15, 20, 30, 40, 50, -1],
 
           prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
@@ -74,7 +74,7 @@
                                 ลงทะเบียนลูกค้า
                             </span>
                             <v-btn text color="error" class="mr-4 ml-3" @click="reset">
-                                รีเซ็ตแบบฟอร์มนะจ๊ะ
+                                รีเซ็ตแบบฟอร์ม
                             </v-btn>
                         </v-card-title>
                         <v-divider class="mb-3"></v-divider>
@@ -265,21 +265,19 @@
                 <!-- dialogDelete -->
                 <v-dialog v-model="dialogDelete" max-width="410">
                     <v-card class="rounded-xl">
-                        <v-card-title class="primary--text text-center">
-                            คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
-                        </v-card-title>
+ <v-card-title class="justify-center error">
+                คุณต้องลบรายการนี้หรือไม่?
+              </v-card-title>
                         <v-divider class="mx-auto"></v-divider>
                         <v-card-actions>
                             <v-spacer></v-spacer>
 
-                            <v-btn @click="closeDelete" class="ma-1 rounded-xl" color="info" plain>
-                                <v-icon aria-hidden="false" class="mx-2">
-                                    mdi-close-box
-                                </v-icon>
-
-                                ยกเลิก
-                            </v-btn>
-                            <v-btn class="ma-1" color="error" plain @click="deleteItemConfirm()">
+                <v-btn color="" class="rounded-xl" @click="closeDelete">
+                  <v-icon aria-hidden="false" class="ma-1 ">
+                    mdi-close-box </v-icon
+                  >ยกเลิก
+                </v-btn>
+                            <v-btn class="ma-1 rounded-xl" color="primary" @click="deleteItemConfirm()">
                                 <v-icon aria-hidden="false" class="mx-2">
                                     mdi-delete-forever
                                 </v-icon>
@@ -314,9 +312,9 @@
                 </v-chip>
             </template>
             <template v-slot:[`item.datetime`]="{ item }">
-                <v-chip :color="getPnameColor2(item.datetime)" dark small>
+              
                     {{ item.datetime | moment }}
-                </v-chip>
+              
             </template>
             <template v-slot:[`item.ref_level_id.level_name`]="{ item }">
                 <v-chip :color="
@@ -390,52 +388,65 @@ export default {
     headers: [
       {
         text: "ลำดับ",
-        sortable: false,
+
         value: "No"
       },
       //  { text: "ภาพ", sortable: false, value: "img" },
       {
         text: "คำนำหน้า",
         align: "start",
-        sortable: true,
+
         value: "pname"
       },
       {
         text: "ชื่อ",
         align: "start",
-        sortable: true,
+
         value: "fname"
       },
       {
         text: "นามสกุล",
         align: "start",
-        sortable: true,
+
         value: "lname"
       },
       {
         text: "ระดับ",
         align: "start",
-        sortable: true,
+
         value: "ref_level_id.level_name"
       },
       {
         text: "วันที่อัพเดทข้อมูล",
-        sortable: true,
+
         value: "datetime"
       },
       {
         text: "ดูข้อมูล",
-        sortable: false,
+
         align: "start",
         value: "view"
       },
       {
         text: "หมายเหตุ",
         align: "start",
-        sortable: false,
+
         value: "actions"
       }
     ],
+    computed: {
+      customerTableData() {
+        return this.customer.reverse().map(item => {
+          return {
+            pname: item.pname,
+            name: item.fname + item.lname,
+            datetime: this.formatDate(item.datetime),
+
+            actions: item
+          };
+        });
+      }
+    },
     customerItme: {
       _id: "",
       pname: "",
@@ -696,7 +707,7 @@ export default {
       else if (status === "silver") return "#546E7A";
       else if (status === "gold") return "#f9d423";
       else if (status === "platinum") return "#00ACC1";
-      else if (status === "no_level") return "#ff758c";
+      else if (status === "no_level") return "#1d1d1d";
       return "black";
     },
 

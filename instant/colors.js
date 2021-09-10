@@ -3,8 +3,8 @@ export const colors = {
   secondary: "#ededed",
   info: "#39b54a",
   accent: "#485fc7",
-  warning: "#ffe08a",
-  error: "#f14668",
+  warning: "#FF9800",
+  error: "#EF5350",
   success: "#00b894",
   shades: "#FFFFFF"
 };

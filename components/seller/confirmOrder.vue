@@ -490,6 +490,7 @@
 </template>
 <script>
 import { printInvoiceForCheckout } from "@/instant/print_invoice.js";
+import { printInvoiceOnly } from "@/instant/invoice_only.js";
 import Calculator from "@/components/seller/Calculator.vue";
 export default {
   components: {
@@ -935,14 +936,15 @@ export default {
     async print(pay) {
       const show = `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`;
 
-      printInvoiceForCheckout(
-        pay,
-        show,
-        this.$store.getters["setting"][0],
-        this.products,
-        this.unit,
-        this.printOrder
-      );
+      // printInvoiceForCheckout(
+      //   pay,
+      //   show,
+      //   this.$store.getters["setting"][0],
+      //   this.products,
+      //   this.unit,
+      //   this.printOrder
+      // );
+      printInvoiceOnly(pay, show, this.$store.getters["setting"][0]);
     },
 
     formatDate(date) {

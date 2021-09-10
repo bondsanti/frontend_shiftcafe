@@ -1,11 +1,6 @@
 <template>
   <div class="ma-3">
-    <v-card
-      class="mx-auto mt-6 py-3 rounded-xl"
-      elevaation="5"
-      justify-centaer
-      
-    >
+    <v-card class="mx-auto mt-6 py-3 rounded-xl" elevaation="1" justify-center>
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -13,14 +8,14 @@
               color="primary"
               dark
               class="mr-5 rounded-xl ma-2"
-              elevation="10"
+              elevation="1"
               v-bind="attrs"
               v-on="on"
             >
               <v-icon left> mdi-cash-register</v-icon> ลงข้อมูลเงินทอน
             </v-btn>
           </template>
-          <v-card class="rounded-xl " >
+          <v-card class="rounded-xl">
             <v-form>
               <v-card-title>
                 <span class="text-h">
@@ -109,7 +104,7 @@
                 <v-btn
                   color="error"
                   class="mr-1 rounded-xl"
-                  elevation="10"
+                  elevation="1"
                   @click="close"
                 >
                   <v-icon left> mdi-close </v-icon>ปิด
@@ -117,7 +112,7 @@
                 <v-btn
                   color="primary"
                   class="mr-1 rounded-xl"
-                  elevation="10"
+                  elevation="1"
                   :disabled="!valid"
                   @click="saveData()"
                 >
@@ -128,7 +123,7 @@
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogeditItem" max-width="500px">
-          <v-card class="rounded-xl" >
+          <v-card class="rounded-xl">
             <v-form>
               <v-card-title>
                 <span class="text-h">
@@ -161,7 +156,7 @@
                 <v-btn
                   color="error"
                   class="mr-1 rounded-xl"
-                  elevation="10"
+                  elevation="1"
                   @click="closeedit"
                 >
                   <v-icon left> mdi-close </v-icon>ปิด
@@ -169,7 +164,7 @@
                 <v-btn
                   color="primary"
                   class="mr-1 rounded-xl"
-                  elevation="10"
+                  elevation="1"
                   :disabled="!valid"
                   @click="saveData()"
                 >
@@ -208,24 +203,24 @@
         <template v-slot:top>
           <v-dialog v-model="dialogDelete" max-width="410">
             <v-card>
-              <v-card-title class="primary--text text-center">
-                คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
+              <v-card-title class="justify-center error">
+                คุณต้องลบรายการนี้หรือไม่?
               </v-card-title>
               <v-divider class="mx-auto"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn plain color="info" @click="closeDelete">
-                  <v-icon aria-hidden="false" class="mx- ma-1">
+                <v-btn color="" class="rounded-xl" @click="closeDelete">
+                  <v-icon aria-hidden="false" class="ma-1 ">
                     mdi-close-box </v-icon
                   >ยกเลิก
                 </v-btn>
                 <v-btn
-                  plain
-                  color="error"
+                  class="rounded-xl"
+                  color="primary"
                   :disabled="$store.getters['position'] === 'cashier'"
                   @click="deleteItemConfirm()"
                 >
-                  <v-icon aria-hidden="false" class="mx-4">
+                  <v-icon aria-hidden="false" class="ma-1 rounded-xl">
                     mdi-delete-forever </v-icon
                   >ลบ
                 </v-btn>
@@ -237,19 +232,19 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
             class="mr-1 rounded-xl ma-2"
-            elevation="10"
+            elevation="1"
             color="warning"
             small
             @click="editItem(item)"
           >
-            <v-icon aria-hidden="false" class="mx-2 ">
+            <v-icon aria-hidden="false" class="mx-2">
               mdi-pencil-plus
             </v-icon>
             แก้ไข
           </v-btn>
           <v-btn
             class="mr-1 rounded-xl ma-2"
-            elevation="15"
+            elevation="1"
             color="error"
             small
             :disabled="$store.getters['position'] === 'cashier'"
@@ -314,38 +309,32 @@ export default {
       headers: [
         {
           text: "ลำดับ",
-          sortable: false,
+
           value: "no"
         },
         {
           text: "วันที่",
-          value: "datetime",
-          sortable: false
+          value: "datetime"
         },
         {
           text: "ผู้ทำการบันทึก",
-          value: "ref_emp_id",
-          sortable: false
+          value: "ref_emp_id"
         },
         {
           text: "ประเภท",
-          value: "type",
-          sortable: false
+          value: "type"
         },
         {
           text: "จำนวนเงิน",
-          value: "total_money",
-          sortable: false
+          value: "total_money"
         },
         {
           text: "หมายเหตุ",
-          value: "remark",
-          sortable: false
+          value: "remark"
         },
         {
-          text: "หมายเหตุ",
-          value: "actions",
-          sortable: false
+          text: "เครื่องมือ",
+          value: "actions"
         }
       ]
     };
@@ -487,7 +476,7 @@ export default {
     formatDate(date) {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
-      return this.$moment(strdate).format("วันที่ DD MMMM YYYY ");
+      return this.$moment(strdate).format("D MMMM YYYY");
     }
   },
 

@@ -279,7 +279,7 @@
 
                                 ยกเลิก
                             </v-btn>
-                            <v-btn class="ma-1" color="error" plain @click="deleteItemConfirm()">
+                            <v-btn class="ma-1" color="error" plain @click="deleteItemConfirm()" disabled>
                                 <v-icon aria-hidden="false" class="mx-2">
                                     mdi-delete-forever
                                 </v-icon>
@@ -298,7 +298,7 @@
                     </v-icon>
                     แก้ไข
                 </v-btn>
-                <v-btn rounded-lx class="mr-1 rounded-xl" elevation="10" color="error" :disabled="$store.getters['position'] === 'cashier'" small @click="deleteItem(item)">
+                <v-btn rounded-lx class="mr-1 rounded-xl" elevation="10" color="error" disabled small @click="deleteItem(item)">
                     <v-icon dark class="me-1">
                         mdi-delete-forever
                     </v-icon>
@@ -719,7 +719,8 @@ export default {
           .$post("/customer/", this.customerItme)
           .then(res => {
             //  console.log(res.message);
-            this.$emit("refresh");
+            //this.$emit("refresh");
+            this.$nuxt.refresh();
             this.closeadd();
             this.$swal.fire({
               type: "success",

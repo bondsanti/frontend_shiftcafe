@@ -5,18 +5,18 @@
         <v-card class="rounded-xl">
           <v-form>
             <v-card-title>
-              <span class="text-h text-center"
-                ><v-icon left> mdi-note-text-outline </v-icon> หมายเลขออเดอร์ :
-                {{ itemBy.order_no }}
-
-                <br />
-
-                <p class="text-center">
-                  พนักงานที่รับออเดอร์ :
-                  {{ itemBy.length !== 0 ? itemBy.ref_emp_id.fname : "" }}
-                  {{ itemBy.length !== 0 ? itemBy.ref_emp_id.lname : "" }}
-                </p></span
-              >
+              <span class="text-h ">
+                <span class="text-h"
+                  ><v-icon left> mdi-note-text-outline </v-icon> หมายเลขออเดอร์
+                  : {{ itemBy ? itemBy.order_no : "" }}<br /><v-icon left>
+                    mdi-clipboard-account </v-icon
+                  >พนักงานที่รับออเดอร์ :
+                  {{ itemBy ? itemBy.ref_emp_id.fname : "" }}
+                  {{ itemBy ? itemBy.ref_emp_id.lname : "" }}
+                  <br /><v-icon left> mdi-card-account-details-outline </v-icon
+                  >ชื่อบิล : {{ itemBy ? itemBy.bill_name : "" }}
+                </span>
+              </span>
             </v-card-title>
             <v-divider class="mb-3"></v-divider>
             <v-card-text>
@@ -31,22 +31,28 @@
                   ><h4>ราคา</h4></v-col
                 >
               </v-row>
-              <v-row
-                no-gutters
-                style="flex-wrap: nowrap"
-                v-for="item in this.itemBy.list_product"
-                :key="item.name"
+              <div
+                v-for="(item, i) in itemBy ? itemBy.list_product : []"
+                :key="i"
               >
-                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-left">
-                  {{ item.name }}
-                </v-col>
-                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center">
-                  {{ item.qty }}
-                </v-col>
-                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-right">
-                  {{ formatPrice(item.price) }}
-                </v-col>
-              </v-row>
+                <v-row no-gutters style="flex-wrap: nowrap">
+                  <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-left">
+                    {{ item.name }}
+                  </v-col>
+                  <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center">
+                    {{ item.qty }}
+                  </v-col>
+                  <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-right">
+                    {{ formatPrice(item.price) }}
+                  </v-col>
+                </v-row>
+                <v-row no-gutters v-if="item.topping.length !== 0">
+                  - {{ convertArrayToString(item.topping) }}</v-row
+                >
+                <v-row no-gutters v-if="item.detail.length !== 0">
+                  ** {{ item.detail }} **</v-row
+                >
+              </div>
               <v-row>
                 <v-col cols="12" class="flex-grow-0 flex-shrink-0 text-center"
                   ><h3>ยอดสุทธิ {{ formatPrice(from.total_price) }}</h3>
@@ -55,6 +61,14 @@
             </v-card-text>
             <v-divider class="mt-n3"></v-divider>
             <v-card-actions>
+              <v-btn
+                color="success "
+                class="rounded-xl"
+                @click="for_cook"
+                outlined
+              >
+                <v-icon left> mdi-printer-pos </v-icon>พิมพ์ใบสั่งทำ
+              </v-btn>
               <v-spacer></v-spacer>
 
               <v-btn color="error" @click="close" plain>
@@ -135,6 +149,7 @@
 </template>
 
 <script>
+import printOrder from "@/instant/print_order.js";
 export default {
   data() {
     return {
@@ -143,7 +158,7 @@ export default {
       from: {
         total_price: ""
       },
-      itemBy: [],
+      itemBy: null,
       headers: [
         { text: "ลำดับ", sortable: false, value: "No" },
         {
@@ -212,6 +227,18 @@ export default {
       this.$moment().format("LLLL");
       let strdate = this.$moment(date).add(543, "years");
       return this.$moment(strdate).format("D MMMM YYYY H:mm");
+    },
+    convertArrayToString(topping) {
+      let string = "";
+      topping.map(t => {
+        string = `${string === "" ? "" : string + ","}  ${t.name}`;
+      });
+      return string;
+    },
+    async for_cook() {
+      const products = await this.$axios.$get("/product");
+      const unit = await this.$axios.$get("/unit");
+      printOrder(this.itemBy, products, unit);
     }
   },
 

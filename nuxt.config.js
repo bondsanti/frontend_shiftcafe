@@ -1,8 +1,9 @@
-const config = require("./config.js");
+import config from "./config.js";
 const { colors } = require("./instant/colors");
 
 module.exports = {
-  mode: "spa",
+  ssr: false,
+  target: "static",
 
   /*
    ** Headers of the page
@@ -123,6 +124,9 @@ module.exports = {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
+  },
+  cli: {
+    badgeMessages: ["SHIFT CAFÉ powered by DEV FONG"]
   },
   server: {
     port: 3000,

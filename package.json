@@ -5,9 +5,9 @@
   "author": "James_Devfong",
   "private": true,
   "scripts": {
-    "dev": "nuxt && NODE_ENV=development",
+    "dev": "nuxt",
     "build": "nuxt build",
-    "start": "nuxt start && NODE_ENV=production",
+    "start": "SET NODE_ENV=production && nuxt start",
     "generate": "nuxt generate"
   },
   "dependencies": {

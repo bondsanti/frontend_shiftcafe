@@ -211,9 +211,9 @@
                         @click="cancelOrder"
                         >ยกเลิกออเดอร์</v-btn
                       >
-                      <v-btn rounded large block color="red" dark @click="print"
+                      <!-- <v-btn rounded large block color="red" dark @click="print"
                         >print</v-btn
-                      >
+                      > -->
                     </v-col>
                     <v-col>
                       <v-btn
@@ -222,7 +222,7 @@
                         block
                         color="info"
                         @click="checkout = true"
-                        >บันทีกการจ่ายเงิน</v-btn
+                        >บันทึกการจ่ายเงิน</v-btn
                       >
                     </v-col>
                   </v-row>

@@ -5,7 +5,7 @@
        cursor"
       color="grey lighten-4"
       max-width="600"
-      elevation="24"
+      elevation="1"
       @click="addTopping"
     >
       <v-img

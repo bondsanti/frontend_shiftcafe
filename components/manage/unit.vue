@@ -10,7 +10,7 @@
           color="primary"
           dark
           class="ma-2 ma-1 rounded-xl"
-          elevation="24"
+          elevation="10"
           @click="addItem"
         >
           <v-icon left> mdi-barley </v-icon>
@@ -82,7 +82,7 @@
               <v-card-actions>
                 <v-btn
                   class="mr-1 rounded-xl"
-                  elevation="24"
+                  elevation="10"
                   color="primary"
                   dark
                   @click="close"
@@ -95,7 +95,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   class="mr-1 rounded-xl"
-                  elevation="24"
+                  elevation="10"
                   color="info"
                   :disabled="!valid"
                   @click="save()"
@@ -138,7 +138,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
             class="mr-1  mb-2 rounded-xl"
-            elevation="24"
+            elevation="10"
             small
             color="warning"
             @click="editItem(item)"
@@ -150,7 +150,7 @@
           </v-btn>
           <v-btn
             class="mr-1 mb-2  rounded-xl"
-            elevation="24"
+            elevation="10"
             color="error"
             small
             @click="deleteItem(item)"

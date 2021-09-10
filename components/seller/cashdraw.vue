@@ -1,6 +1,11 @@
 <template>
   <div class="ma-3">
-    <v-card class="mx-auto mt-6 py-3 rounded-xl" elevaation="5" justify-centaer>
+    <v-card
+      class="mx-auto mt-6 py-3 rounded-xl"
+      elevaation="5"
+      justify-centaer
+      
+    >
       <v-card-title>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
@@ -8,14 +13,14 @@
               color="primary"
               dark
               class="mr-5 rounded-xl ma-2"
-              elevation="15"
+              elevation="10"
               v-bind="attrs"
               v-on="on"
             >
               <v-icon left> mdi-cash-register</v-icon> ลงข้อมูลเงินทอน
             </v-btn>
           </template>
-          <v-card class="rounded-xl ">
+          <v-card class="rounded-xl " >
             <v-form>
               <v-card-title>
                 <span class="text-h">
@@ -104,7 +109,7 @@
                 <v-btn
                   color="error"
                   class="mr-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   @click="close"
                 >
                   <v-icon left> mdi-close </v-icon>ปิด
@@ -112,7 +117,7 @@
                 <v-btn
                   color="primary"
                   class="mr-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   :disabled="!valid"
                   @click="saveData()"
                 >
@@ -123,7 +128,7 @@
           </v-card>
         </v-dialog>
         <v-dialog v-model="dialogeditItem" max-width="500px">
-          <v-card class="rounded-xl">
+          <v-card class="rounded-xl" >
             <v-form>
               <v-card-title>
                 <span class="text-h">
@@ -156,7 +161,7 @@
                 <v-btn
                   color="error"
                   class="mr-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   @click="closeedit"
                 >
                   <v-icon left> mdi-close </v-icon>ปิด
@@ -164,7 +169,7 @@
                 <v-btn
                   color="primary"
                   class="mr-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   :disabled="!valid"
                   @click="saveData()"
                 >
@@ -192,9 +197,9 @@
         multi-sort
         :items="cashTableData"
         :search="search"
-        :items-per-page="15"
+        :items-per-page="10"
         :footer-props="{
-          'items-per-page-options': [15, 20, 30, 40, 50, -1],
+          'items-per-page-options': [10, 20, 30, 40, 50, -1],
           prevIcon: 'mdi-chevron-left',
           nextIcon: 'mdi-chevron-right',
           'items-per-page-text': 'ข้อมูลหน้าต่อไป'
@@ -232,7 +237,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
             class="mr-1 rounded-xl ma-2"
-            elevation="24"
+            elevation="10"
             color="warning"
             small
             @click="editItem(item)"
@@ -244,7 +249,7 @@
           </v-btn>
           <v-btn
             class="mr-1 rounded-xl ma-2"
-            elevation="24"
+            elevation="15"
             color="error"
             small
             :disabled="$store.getters['position'] === 'cashier'"

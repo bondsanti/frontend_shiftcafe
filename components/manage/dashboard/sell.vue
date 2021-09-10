@@ -6,7 +6,7 @@
         <v-card
           class="pa-1 rounded-lg"
           color="primary"
-          :elevation="hover ? 24 : 6"
+          :elevation="hover ? 10 : 6"
           dark
         >
           <div
@@ -40,7 +40,7 @@
         <v-card
           class="pa-1 rounded-lg"
           color="primary"
-          :elevation="hover ? 24 : 6"
+          :elevation="hover ? 10 : 6"
           dark
         >
           <div
@@ -72,7 +72,7 @@
         <v-card
           class="pa-1 rounded-lg"
           color="primary"
-          :elevation="hover ? 24 : 6"
+          :elevation="hover ? 10 : 6"
           dark
         >
           <div

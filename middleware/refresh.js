@@ -1,3 +1,4 @@
+const { colors } = require("./../instant/colors");
 export default function(context) {
   const primary = localStorage.getItem("primary");
   const success = localStorage.getItem("success");
@@ -6,15 +7,34 @@ export default function(context) {
   const accent = localStorage.getItem("accent");
   const info = localStorage.getItem("info");
   const secondary = localStorage.getItem("secondary");
-  context.$vuetify.theme.themes.light.primary = primary ? primary : "#1d1d1d";
-  context.$vuetify.theme.themes.light.success = success ? success : "#00b894";
-  context.$vuetify.theme.themes.light.error = error ? error : "#f14668";
-  context.$vuetify.theme.themes.light.warning = warning ? warning : "#ffe08a";
-  context.$vuetify.theme.themes.light.accent = accent ? accent : "#485fc7";
-  context.$vuetify.theme.themes.light.info = info ? info : "#39b54a";
+  const shades = localStorage.getItem("shades");
+
+  //set colors vuetify
+  context.$vuetify.theme.themes.light.primary = primary
+    ? primary
+    : colors.primary;
+  context.$vuetify.theme.themes.light.success = success
+    ? success
+    : colors.success;
+  context.$vuetify.theme.themes.light.error = error 
+    ? error 
+    : colors.error;
+  context.$vuetify.theme.themes.light.warning = warning
+    ? warning
+    : colors.warning;
+  context.$vuetify.theme.themes.light.accent = accent 
+    ? accent
+    : colors.accent;
+  context.$vuetify.theme.themes.light.info = info 
+    ? info 
+    : colors.info;
   context.$vuetify.theme.themes.light.secondary = secondary
     ? secondary
-    : "#ededed";
+    : colors.secondary;
+  context.$vuetify.theme.themes.light.shades = shades
+    ? shades
+    : colors.shades;
+
   //console.log(theme);
   context.$axios
     .$get(context.env.config.BASE_URL + "/setting")

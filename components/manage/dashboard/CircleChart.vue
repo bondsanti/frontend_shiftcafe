@@ -1,5 +1,5 @@
 <template>
-  <v-card class="rounded-lg" color="">
+  <v-card class="rounded-lg" color="shades">
     <v-app-bar flat color="rgba(0,0,0,0)">
       <h3>
         จำนวนอาหารและเครื่องดื่มที่ขายได้ ประจำวันที่ {{ formatDate(dateNow) }}

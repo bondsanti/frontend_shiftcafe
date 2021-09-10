@@ -23,7 +23,7 @@
           color="primary"
           dark
           class="ma-5 rounded-xl"
-          elevation="15"
+          elevation="10"
           @click="addItem"
         >
           <v-icon left> mdi-food-turkey</v-icon> เพิ่มสินค้า
@@ -181,13 +181,13 @@
                           <div class="crop-button">
                             <v-btn
                               class="mx-5 rounded-xl"
-                              elevation="15"
+                              elevation="10"
                               @click="crop"
                               color="green"
                               >ดูรูปตัวอย่าง</v-btn
                             ><v-btn
                               class="mx-5 rounded-xl"
-                              elevation="15"
+                              elevation="10"
                               color="orange"
                               @click="croppedFinish"
                               >ตัดรูปภาพ</v-btn
@@ -199,7 +199,7 @@
                             <v-btn
                               @click="$refs.file.click()"
                               class="upload-example__button rounded-xl"
-                              elevation="15"
+                              elevation="10"
                             >
                               <input
                                 type="file"
@@ -220,7 +220,7 @@
               <v-card-actions>
                 <v-btn
                   class="ma-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   color="primary"
                   dark
                   @click="close"
@@ -233,7 +233,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   class="ma-1 rounded-xl"
-                  elevation="15"
+                  elevation="10"
                   color="info"
                   :disabled="!valid"
                   @click="save"
@@ -272,7 +272,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
             class="ma-2 white--text rounded-xl"
-            elevation="15"
+            elevation="10"
             color="warning"
             @click="editItem(item)"
           >
@@ -283,7 +283,7 @@
           </v-btn>
           <v-btn
             class="ma-2 rounded-xl"
-            elevation="15"
+            elevation="10"
             color="error"
             @click="deleteItem(item)"
           >

@@ -26,7 +26,7 @@
           </v-toolbar-items>
         </v-toolbar>
         <v-sheet
-          elevation="18"
+          elevation="10"
           class="ma-auto pa-5 "
           height="auto"
           width="210mm"

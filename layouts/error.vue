@@ -5,7 +5,7 @@
       color="primary"
       dark
       width="500"
-      elevation="24"
+      elevation="10"
     >
       <v-card-title>
         <v-icon large left>

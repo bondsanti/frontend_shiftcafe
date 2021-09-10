@@ -2,14 +2,14 @@
   <div class="ma-3">
     <v-card
       class="mx-auto mt-6  py-3 rounded-xl "
-      elevaation="5"
+      elevation="1"
       justify-centaer
     >
       <v-card-title>
         <v-btn
           color="primary"
           class="mr-1 mb-6 rounded-xl"
-          elevation="10"
+          elevation="1"
           @click="dialog = true"
         >
           <v-icon left> mdi-file-powerpoint-box </v-icon>จัดการพอยท์ เพิ่ม/ลด
@@ -99,7 +99,7 @@
                 <v-card-actions>
                   <v-btn
                     class="ma-1 rounded-xl"
-                    elevation="10"
+                    elevation="1"
                     color="primary"
                     dark
                     @click="dialog = false"
@@ -112,7 +112,7 @@
                   <v-spacer></v-spacer>
                   <v-btn
                     class="ma-1 rounded-xl"
-                    elevation="10"
+                    elevation="1"
                     color="info"
                     @click="save()"
                     :disabled="!valid"

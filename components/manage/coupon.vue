@@ -45,7 +45,7 @@
           elevation="10"
           @click="addItem"
         >
-          <v-icon left> mdi-ticket-percent-outline</v-icon> จัดการคูปอง
+          <v-icon left> mdi-ticket-percent-outline</v-icon> เพิ่มคูปอง
         </v-btn>
 
         <v-spacer></v-spacer>
@@ -482,7 +482,12 @@
             ดูข้อมูล
           </v-btn>
 
-          <v-btn small class="mb-2 rounded-xl " color="warning" @click="editItem(item)">
+          <v-btn
+            small
+            class="mb-2 rounded-xl "
+            color="warning"
+            @click="editItem(item)"
+          >
             <v-icon aria-hidden="false" class="">
               mdi-pencil
             </v-icon>
@@ -549,7 +554,6 @@ import moment from "moment";
 import "moment/locale/th";
 
 export default {
-
   data: () => ({
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valid: true,

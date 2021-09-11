@@ -41,7 +41,7 @@
           @click="addItem"
         >
           <v-icon left> mdi-card-account-details-outline </v-icon>
-          จัดการพนักงาน
+          เพิ่มข้อมูลพนักงาน
         </v-btn>
 
         <v-spacer></v-spacer>

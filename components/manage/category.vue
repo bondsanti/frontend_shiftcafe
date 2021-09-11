@@ -27,7 +27,7 @@
           elevation="10"
           @click="addItem"
         >
-          <v-icon left> mdi-food-fork-drink </v-icon> จัดหมวดหมู่สินค้า
+          <v-icon left> mdi-food-fork-drink </v-icon> เพิ่มหมวดหมู่สินค้า
         </v-btn>
         <v-spacer></v-spacer>
         <v-spacer></v-spacer>
@@ -255,9 +255,8 @@
         :page.sync="page"
         :search="search"
         hide-default-footer
-       
       >
-        <template v-slot:default="props" >
+        <template v-slot:default="props">
           <v-row>
             <v-col
               v-for="item in props.items"
@@ -946,8 +945,7 @@ export default {
       if (result.products.length !== 0) {
         this.$swal.fire({
           type: "error",
-          title:
-            "ลบบ่ได้เด้อ มีการใช้งานที่สินค้าตามรายชื่อด้านล่าง ไปไล่เปลี่ยนอันอื่นก่อนเด้หล่า",
+          title: "ลบไม่ได้ มีการใช้งานที่สินค้าตามรายชื่อด้านล่าง",
           text: result.products.map(p => p.product_name)
         });
       } else {

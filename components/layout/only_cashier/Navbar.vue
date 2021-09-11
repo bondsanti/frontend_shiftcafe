@@ -104,7 +104,7 @@ export default {
         },
         {
           icon: "mdi-gift",
-          title: "แลก Point",
+          title: "จัดการแต้ม",
           to: "/seller/point"
         },
 

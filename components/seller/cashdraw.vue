@@ -5,6 +5,7 @@
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
+              v-if="$store.getters['position'] !== 'checker'"
               color="primary"
               dark
               class="mr-5 rounded-xl ma-2"
@@ -217,7 +218,10 @@
                 <v-btn
                   class="rounded-xl"
                   color="primary"
-                  :disabled="$store.getters['position'] === 'cashier'"
+                  :disabled="
+                    $store.getters['position'] === 'cashier' ||
+                      $store.getters['position'] === 'checker'
+                  "
                   @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="ma-1 rounded-xl">
@@ -236,6 +240,7 @@
             color="warning"
             small
             @click="editItem(item)"
+            :disabled="$store.getters['position'] === 'checker'"
           >
             <v-icon aria-hidden="false" class="mx-2">
               mdi-pencil-plus
@@ -247,7 +252,10 @@
             elevation="1"
             color="error"
             small
-            :disabled="$store.getters['position'] === 'cashier'"
+            :disabled="
+              $store.getters['position'] === 'cashier' ||
+                $store.getters['position'] === 'checker'
+            "
             @click="deleteItem(item)"
           >
             <v-icon dark class="mx-2">

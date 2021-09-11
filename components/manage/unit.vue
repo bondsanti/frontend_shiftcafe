@@ -14,7 +14,7 @@
           @click="addItem"
         >
           <v-icon left> mdi-barley </v-icon>
-          <span>ประเภทอาหาร</span>
+          <span>เพิ่มประเภทอาหาร</span>
         </v-btn>
 
         <v-spacer></v-spacer>
@@ -178,7 +178,7 @@
           border="left"
           class="text-center"
         >
-          โปรดตวรจสอบหน่วยนับให้ดีก่อนลบประเภทอหารที่ใช้อยู่
+          โปรดตรวจสอบประเภทอาหารที่ใช้ในระบบให้ดีก่อนทำการลบ
           <q class="font-weight-black ">
             ระบบจะมีปัญหาได้
           </q>
@@ -201,7 +201,7 @@ export default {
         value: "No"
       },
       {
-        text: "ชื่อหม่วดหมู่",
+        text: "ประเภทอาหาร",
         align: "start",
         value: "u_name"
       },
@@ -256,8 +256,7 @@ export default {
         //alert("ลบไม่ได้นะจ้ะ");
         this.$swal.fire({
           type: "error",
-          title:
-            "ลบบ่ได้เด้อ มีการใช้งานที่สินค้าตามรายชื่อด้านล่าง ไปไล่เปลี่ยนอันอื่นก่อนเด้หล่า",
+          title: "ลบไม่ได้ มีการใช้งานที่สินค้าตามรายชื่อด้านล่าง",
           text: result.products.map(p => p.product_name)
         });
       } else {

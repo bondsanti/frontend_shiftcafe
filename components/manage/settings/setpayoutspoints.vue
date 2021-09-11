@@ -42,7 +42,7 @@
           <v-row>
             <v-col cols="12">
               <v-text-field
-                label="จำนวลเงิน"
+                label="จำนวนเงิน"
                 prepend-inner-icon="mdi-point-of-sale"
                 class="rounded-xl"
                 v-model="settingitem.price_buy"
@@ -55,7 +55,7 @@
           <v-row>
             <v-col cols="12">
               <v-text-field
-                label="จำนวลแต้ม"
+                label="จำนวนแต้ม"
                 prepend-inner-icon="mdi-file-powerpoint-box"
                 class="rounded-xl"
                 v-model="settingitem.point"

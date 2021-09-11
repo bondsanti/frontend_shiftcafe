@@ -13,12 +13,12 @@ Material Design Icons : [https://pictogrammers.github.io/@mdi/font/5.0.45/](http
 1. Install all packages
 
    ```bash
-   yarn
+   yarn install
 
    # npm install [for npm]
    ```
 
-2. Run development server
+2. Run development npm fund
 
    ```bash
    yarn serve

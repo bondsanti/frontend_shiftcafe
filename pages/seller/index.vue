@@ -221,7 +221,7 @@ export default {
     Listorder
   },
   data: () => ({
-    cateName: "Food & Drink",
+    cateName: "เมนูทั้งหมด",
     products: [],
     dialog: false,
     row: null,
@@ -271,7 +271,7 @@ export default {
     },
     allProduct() {
       this.product2 = this.products;
-      this.cateName = "ทั้งหมดทั้งมวล";
+      this.cateName = "เมนูทั้งหมด";
     },
     formatDate(date) {
       this.$moment().format("LLLL");

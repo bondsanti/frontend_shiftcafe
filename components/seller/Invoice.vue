@@ -126,7 +126,10 @@
                   small
                   v-if="item.actions.status === 0"
                   dark
-                  :disabled="$store.getters['position'] === 'cashier'"
+                  :disabled="
+                    $store.getters['position'] === 'cashier' ||
+                      $store.getters['position'] === 'checker'
+                  "
                 >
                   <v-icon aria-hidden="false">
                     mdi-stop-circle-outline

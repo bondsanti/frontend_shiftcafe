@@ -29,13 +29,18 @@
             >
               <v-card class="rounded-xl">
                 <v-img src="COUPON02.png" height="auto">
-                  <v-row style="margin-top:13%" no-gutters justify="end">
+                  <v-row style="margin-top:15%" no-gutters justify="end">
                     <v-col cols="2"></v-col>
                     <v-col cols="10">
                       <v-list-item three-line>
                         <v-list-item-content>
                           <v-list-item-title
-                            ><h4>CODE: {{ coupon.codename }}</h4>
+                            ><div class="d-flex">
+                              CODE:
+                              <v-chip small color="primary">{{
+                                coupon.codename
+                              }}</v-chip>
+                            </div>
                           </v-list-item-title>
                           <v-list-item-subtitle>
                             จำนวนลด: {{ coupon.discount }} %
@@ -48,7 +53,10 @@
                       </v-list-item>
                       <v-row justify="end" class="mb-2 mr-2"
                         >สิทธิ์การใช้งานคงเหลือ
-                        {{ coupon.num_use }} ครั้ง</v-row
+                        <v-chip small color="primary">{{
+                          coupon.num_use
+                        }}</v-chip>
+                        ครั้ง</v-row
                       >
                     </v-col>
                   </v-row>
@@ -211,8 +219,16 @@ export default {
       return this.$moment(strdate).format("D MMMM YYYY");
     },
     filterCoupon() {
-      const res = this.coupon.filter(c => c.status === 1);
-      this.dealers = res;
+      const today = new Date();
+      const res = this.coupon.filter(c => c.status === 1 && c.num_use !== 0);
+      const res2 = res.filter(r => {
+        return (
+          today.getTime() >= new Date(r.start).getTime() &&
+          today.getTime() <= new Date(r.end).getTime()
+        );
+      });
+      //console.log(res[0]);
+      this.dealers = res2;
       //console.log(res);
     }
   },

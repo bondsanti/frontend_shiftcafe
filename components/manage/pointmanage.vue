@@ -80,7 +80,7 @@
                           clearable
                           color="primary"
                           type="number"
-                          :rules="[v => v > 0 || '0 ไม่ได้น้า ต้อง 1 ขึ้นเน้อ']"
+                          :rules="pointRules"
                         ></v-text-field>
                       </v-col>
                       <v-col cols="12">
@@ -203,15 +203,21 @@ export default {
     items: ["เพิ่ม", "ลด"],
     status: "เพิ่ม",
     point: 0,
-    valid: true
+    valid: true,
+    pointRules: [
+      v => v > 0 || "ขั้นต่ำ 1 แต้ม",
+      v => /^\d*[1-9]\d*$/.test(v) || "ห้ามมีทศนิยม"
+    ]
   }),
   computed: {
     pointTableData() {
       return this.pointmanage.reverse().map(item => {
         return {
-          ref_cus_id: `${item.ref_cus_id ? item.ref_cus_id.pname : ""} ${
-            item.ref_cus_id ? item.ref_cus_id.fname : ""
-          } ${item.ref_cus_id ? item.ref_cus_id.lname : ""}`,
+          ref_cus_id: `${
+            item.ref_cus_id ? item.ref_cus_id.pname : "ไม่พบรหัสลูกค้าในระบบ"
+          } ${item.ref_cus_id ? item.ref_cus_id.fname : ""} ${
+            item.ref_cus_id ? item.ref_cus_id.lname : ""
+          }`,
           ref_emp_id: `${item.ref_emp_id.fname} ${item.ref_emp_id.lname}`,
           point: item.point,
           status: item.status === "plus" ? "เพิ่ม" : "ลบ",

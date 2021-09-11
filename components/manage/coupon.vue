@@ -212,7 +212,7 @@
                       <v-col cols="12" md="6" sm="6">
                         <v-text-field
                           outlined
-                          label="จำนวลคูปองที่สมารถใช้ได้ต่อครั้ง"
+                          label="จำนวนคูปองที่สมารถใช้ได้ต่อครั้ง"
                           v-model="couponitem.num_use"
                           :rules="rules"
                           type="number"
@@ -391,7 +391,7 @@
                       <v-col cols="12" sm="6">
                         <v-text-field
                           outlined
-                          label="จำนวลคูปองที่สมารถใช้ได้ต่อครั้ง"
+                          label="จำนวนคูปองที่สมารถใช้ได้ต่อครั้ง"
                           v-model="couponitem.num_use"
                           type="number"
                           color="primary"
@@ -709,7 +709,7 @@ export default {
         value: "discount"
       },
       {
-        text: "จำนวลคูปอง",
+        text: "จำนวนคูปอง",
         align: "start",
         value: "num_use"
       },
@@ -817,7 +817,7 @@ export default {
           value: this.moment2(item.end)
         },
         {
-          name: "จำนวลคูปองที่เหลือ",
+          name: "จำนวนคูปองที่เหลือ",
           value: item.num_use
         },
         {

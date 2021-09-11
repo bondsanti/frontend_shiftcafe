@@ -68,7 +68,7 @@
                       <v-col cols="12" md="6" class="mt-n7">
                         <v-text-field
                           outlined
-                          label="จำนวลอาหารที่พร้อมขาย"
+                          label="จำนวนอาหารที่พร้อมขาย"
                           v-model="stockitme.qty_max"
                           :rules="nameRules"
                           required
@@ -205,7 +205,7 @@ export default {
       { text: "ลำดับ", sortable: false, value: "No" },
       { text: "ชื่อสิ้นค้า", align: "start", value: "ref_pro_id.product_name" },
       { text: "ให้แจ้งเตื่อนเมื่่อใกล้หมด", align: "start", value: "qty_min" },
-      { text: "จำนวลอาหารที่พร้อมขาย", align: "start", value: "qty_max" },
+      { text: "จำนวนอาหารที่พร้อมขาย", align: "start", value: "qty_max" },
       { text: "พนักงานที่แก้ไข", align: "start", value: "ref_emp_id" },
       { text: "วันที่", align: "start", value: "datetime" },
       { text: "หมายเหตุ", value: "actions", sortable: false }

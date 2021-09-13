@@ -202,27 +202,40 @@
         }"
       >
         <template v-slot:top>
-          <v-dialog v-model="dialogDelete" max-width="410">
+          <v-dialog v-model="dialogDelete" max-width="410" max-height="300px">
             <v-card>
-              <v-card-title class="justify-center error">
-                คุณต้องลบรายการนี้หรือไม่?
+              <v-card-title class="shades--text justify-center error">
+                คุณต้องลบรายการนี้หรือไม่
+                <v-icon color="shades" class="mx-2">mdi-delete</v-icon>
               </v-card-title>
               <v-divider class="mx-auto"></v-divider>
-              <v-card-actions>
+              <v-card-actions class="mt-6 ">
                 <v-spacer></v-spacer>
-                <v-btn color="" class="rounded-xl" @click="closeDelete">
+                <v-btn
+                  x-large
+                  color="warning"
+                  text
+                  rounded
+                  class="rounded-xl"
+                  @click="closeDelete"
+                >
                   <v-icon aria-hidden="false" class="ma-1 ">
                     mdi-close-box </v-icon
                   >ยกเลิก
                 </v-btn>
+                <v-spacer></v-spacer>
                 <v-btn
-                  class="rounded-xl"
-                  color="primary"
+                  class="rounded-xl my-3"
+                  text
+                  x-large
+                  rounded
+                  color="success"
                   :disabled="
                     $store.getters['position'] === 'cashier' ||
                       $store.getters['position'] === 'checker'
                   "
                   @click="deleteItemConfirm()"
+                  :loading="loading"
                 >
                   <v-icon aria-hidden="false" class="ma-1 rounded-xl">
                     mdi-delete-forever </v-icon
@@ -291,7 +304,7 @@ export default {
       dialogDelete: false,
       dialogeditItem: false,
       //
-
+      loading: false,
       rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
       valid: true,
       //
@@ -396,16 +409,26 @@ export default {
       this.dialogDelete = true;
     },
     deleteItemConfirm() {
-      this.loadData.splice(this.editedIndex, 1);
       this.$axios
         .$delete("/withdraw/" + this.deleteId)
         .then(res => {
-          this.$emit("refresh");
-          this.closeDelete();
-          this.$swal({
-            type: "success",
-            title: res.message
-          });
+          // new Promise(resolve => setTimeout(resolve, 2000));
+          this.loadData.splice(this.editedIndex, 1);
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.closeDelete();
+            this.$emit("refresh");
+            this.$swal({
+              type: "success",
+              title: res.message,
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 500,
+              timerProgressBar: true
+            });
+          }, 500);
         })
         .catch(e => {
           this.$swal({
@@ -439,7 +462,7 @@ export default {
     saveData() {
       this.$refs.form.validate();
       if (this.type === "edit") {
-        this.loading = true;
+        this.loading = false;
         this.$axios
           .$put("/withdraw/" + this.cashdrawedi._id, this.cashdrawedi)
           .then(res => {
@@ -457,7 +480,7 @@ export default {
           });
       } else {
         // add
-        this.loading = true;
+        this.loading = false;
         this.$axios
           .$post("/withdraw/", this.cashdraw)
           .then(res => {

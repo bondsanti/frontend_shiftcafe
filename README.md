@@ -15,7 +15,7 @@ Material Design Icons : [https://pictogrammers.github.io/@mdi/font/5.0.45/](http
    ```bash
    yarn install
 
-   # npm install [for npm]
+    npm install [for npm]
    ```
 
 2. Run development npm fund
@@ -23,7 +23,7 @@ Material Design Icons : [https://pictogrammers.github.io/@mdi/font/5.0.45/](http
    ```bash
    yarn serve
 
-   # npm run serve [for npm]
+    npm run serve [for npm]
    ```
 
 3. Generate build files for deployment
@@ -31,15 +31,16 @@ Material Design Icons : [https://pictogrammers.github.io/@mdi/font/5.0.45/](http
    ```bash
    yarn run build
 
-   # npm run build [for npm]
-   # yarn start
+    npm run build [for npm]
+
+   
    ```
 
 4. Generate static project
 
    ```generate
 
-   yarn run build
+   yarn start
 
    ```
 

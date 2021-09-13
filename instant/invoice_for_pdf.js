@@ -1,5 +1,5 @@
 import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "@/instant/vfs_fonts";
+import pdfFonts from "@/components/manage/settings/vfs_fonts";
 import moment from "moment";
 
 const formatPrice = total_price => {

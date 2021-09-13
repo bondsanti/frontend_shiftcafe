@@ -127,7 +127,7 @@
                         class="justify-center align-center"
                       >
                         <v-btn
-                          class="mr-1 rounded-xl"
+                          class="mr-1 rounded-xl mb-1 mt-1"
                           elevation="10"
                           color="warning"
                           @click="check"
@@ -522,7 +522,7 @@
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn
-                  class="mr-1 rounded-xl"
+                  class="mr-1 rounded-xl mb-1 mt-1"
                   elevation="10"
                   color="info"
                   :disabled="!valid"
@@ -739,7 +739,7 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
-            class="mr-1 rounded-xl"
+            class="mr-1 rounded-xl mb-1 mt-1"
             elevation="10"
             small
             color="warning"
@@ -753,7 +753,7 @@
           <v-btn
             disabled
             rounded-pill
-            class="mr-1 rounded-xl"
+            class="mr-1 rounded-xl mb-1 mt-1"
             elevation="10"
             color="error"
             small
@@ -769,7 +769,7 @@
         <template v-slot:[`item.pasword`]="{ item }">
           <v-btn
             small
-            class="mr-1 rounded-xl"
+            class="mr-1 rounded-xl mb-1 mt-1"
             color="#03A9F4"
             elevation="10"
             @click="editItemPass(item)"

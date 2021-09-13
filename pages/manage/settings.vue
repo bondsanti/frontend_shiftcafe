@@ -330,7 +330,7 @@ export default {
       this.settings = await this.$axios.$get("/setting");
     },
     goTopayment() {
-      this.$router.push("/manage/Bank");
+      this.$router.push("/manage/bank");
     },
     Customizer() {
       this.$router.push("customizer");

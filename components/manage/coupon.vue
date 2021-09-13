@@ -472,7 +472,8 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
             small
-            class=" white--text mb-2 rounded-xl "
+            class=" white--text mr-1 rounded-xl mb-1 mt-1"
+            
             color="teal"
             @click="Detail(item)"
           >
@@ -484,7 +485,7 @@
 
           <v-btn
             small
-            class="mb-2 rounded-xl "
+            class="mr-1 rounded-xl mb-1 mt-1"
             color="warning"
             @click="editItem(item)"
           >
@@ -496,7 +497,7 @@
 
           <v-btn
             rounded-lx
-            class="mb-2 rounded-xl "
+            class="mr-1 rounded-xl mb-1 mt-1"
             color="error"
             small
             @click="deleteItem(item)"

@@ -1,9 +1,9 @@
 <template>
-  <Bank :bank="bank" @refresh="refresh" />
+  <bank :bank="bank" @refresh="refresh" />
 </template>
 
 <script>
-import Bank from "@/components/manage/settings/Bank.vue";
+import bank from "@/components/manage/settings/bank.vue";
 export default {
   head() {
     return {
@@ -32,7 +32,7 @@ export default {
     return { bank };
   },
   components: {
-    Bank
+    bank
   },
 
   methods: {

@@ -32,7 +32,9 @@
                   full-width
                   rounded
                   height="20"
+                  label="ค้นหา"
                   dense
+                  solo
                   elevation="10"
                   v-model="keyword"
                   @keydown="searchProduct"

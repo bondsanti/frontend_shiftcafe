@@ -12,7 +12,7 @@
         <v-col xs="12" sm="12" md="9" class="">
           <v-card>
             <v-card-title class="primary white--text text-h5">
-              พอยท์ของฉัน
+              แต้มของฉัน
             </v-card-title>
             <v-row class="pa-4" justify="space-between">
               <v-row no-gutters style="flex-wrap: nowrap">
@@ -38,12 +38,12 @@
             <v-col class="">
               <v-card class="px-6 py-5 mb-5 mt-5">
                 <div class="text-center">
-                  <h2 class="">รายการประวัติพอยท์ของฉัน</h2>
+                  <h2 class="">รายการประวัติแต้มของฉัน</h2>
                   <v-divider class="mt-3 mb-2"></v-divider>
                 </div>
                 <v-data-table
                   :headers="headers"
-                  :items="loadPoint"
+                  :items="loadPoint2"
                   :items-per-page="10"
                   :sort-by="['datetime']"
                   :sort-desc="[true, false]"
@@ -59,8 +59,18 @@
                   </template>
                   <template v-slot:[`item.status`]="{ item }">
                     <v-chip :color="getColor(item.status)" dark small>
-                      {{ getTxt(item.status) }} {{ item.point }} พอยท์
+                      {{ getTxt(item.status) }} {{ item.point }} แต้ม
                     </v-chip>
+                  </template>
+                  <template v-slot:no-data>
+                    <v-alert
+                      :value="true"
+                      color="error"
+                      type="warning"
+                      class="mt-2"
+                    >
+                      คุณยังไม่มีประวัติการได้รับแต้ม
+                    </v-alert>
                   </template>
                 </v-data-table>
               </v-card>
@@ -189,9 +199,10 @@ export default {
       Sumtotal = 0;
       totalprice = 0;
     }
-    //console.log(loadPoint);
+    //console.log(loadPoint[0]);
     //console.log(context.$auth.user);
-    return { loadData, loadPoint, totalprice, Sumtotal };
+    const loadPoint2 = loadPoint.filter(l => l.point !== 0);
+    return { loadData, loadPoint2, totalprice, Sumtotal };
   },
   filters: {
     moment: function(date) {

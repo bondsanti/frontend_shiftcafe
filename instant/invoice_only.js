@@ -5,6 +5,12 @@ const formatPrice = total_price => {
   return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
+const formatPrice2 = total_price => {
+  const value = parseInt(total_price);
+  let val = (value / 1).toFixed(0).replace(",", ".");
+  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 const formatDate = date => {
   moment().format("LLLL");
   let strdate = moment(date).add(543, "years");
@@ -38,7 +44,7 @@ export const printInvoiceOnly = (pay, show, setting) => {
   WinPrint.document.write(
     `<tr><th align='left'>พนักงานรับเงิน : ${pay.ref_emp_id.fname} ${pay.ref_emp_id.fname}</th></tr>`
   );
-  if (pay.ref_cus_id.fname !== "guest") {
+  if (pay.ref_cus_id.fname !== "guest" && pay.ref_cus_id.lname !== "guest") {
     WinPrint.document.write(
       `<tr><th align='left'>ลูกค้า : คุณ ${pay.ref_cus_id.fname} ${pay.ref_cus_id.lname}</th></tr>`
     );
@@ -116,6 +122,29 @@ export const printInvoiceOnly = (pay, show, setting) => {
     `<tr><th width='1000px' align=left style='padding-right:60px'>เงินทอน</th><th width='100px'>${formatPrice(
       pay.withdraw_money
     )} </th><th>บาท</th></tr>`
+  );
+
+  ////customer
+  if (pay.ref_cus_id.fname !== "guest" && pay.ref_cus_id.lname !== "guest") {
+    WinPrint.document.write(
+      "<tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr> <tr><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td><td style='border-bottom: thin dotted'></td></tr>"
+    );
+
+    WinPrint.document.write(
+      `<tr><th width='1000px' align=left style='padding-right:60px'>แต้มคงเหลือล่าสุด</th><th width='100px'>${formatPrice2(
+        pay.ref_cus_id.point
+      )} </th><th>แต้ม</th></tr>`
+    );
+    WinPrint.document.write(
+      `<tr><th width='1000px' align=left style='padding-right:60px'>แต้มที่ได้รับ</th><th width='100px'>${formatPrice2(
+        pay.ref_point_pay_id.point
+      )} </th><th>แต้ม</th></tr>`
+    );
+  }
+
+  ///////end///////
+  WinPrint.document.write(
+    "<tr><th colspan=3 style='border-bottom: thin solid'></th></tr>"
   );
 
   WinPrint.document.write(

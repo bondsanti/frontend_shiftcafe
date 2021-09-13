@@ -937,15 +937,15 @@ export default {
     async print(pay) {
       const show = `${this.$nuxt.context.env.config.IMG_URL}${this.$store.getters["setting"][0].logo}`;
 
-      // printInvoiceForCheckout(
-      //   pay,
-      //   show,
-      //   this.$store.getters["setting"][0],
-      //   this.products,
-      //   this.unit,
-      //   this.printOrder
-      // );
-      printInvoiceOnly(pay, show, this.$store.getters["setting"][0]);
+      printInvoiceForCheckout(
+        pay,
+        show,
+        this.$store.getters["setting"][0],
+        this.products,
+        this.unit,
+        this.printOrder
+      );
+      //printInvoiceOnly(pay, show, this.$store.getters["setting"][0]);
     },
 
     formatDate(date) {

@@ -69,7 +69,7 @@
                 class="flex-grow-1 flex-shrink-0"
               >
                 <h4 class="pa-2 text-truncate text-red" color="" outlined tile>
-                  {{ loadData.password }}
+                  ************
 
                   <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">

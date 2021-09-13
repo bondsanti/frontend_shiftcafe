@@ -228,7 +228,8 @@ export default {
         );
       });
       //console.log(res[0]);
-      this.dealers = res2;
+
+      this.dealers = res2.reverse();
       //console.log(res);
     }
   },

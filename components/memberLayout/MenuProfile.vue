@@ -105,7 +105,7 @@
       small
     >
       <v-btn to="/point">
-        <span>พอยท์</span>
+        <span>แต้ม</span>
         <v-icon>mdi-gift</v-icon>
       </v-btn>
       <v-btn to="/coupon">
@@ -142,7 +142,7 @@ export default {
       items: [
         { text: "ข้อมูลส่วนตัว", icon: "mdi-account", to: "/member" },
         {
-          text: "พอยท์",
+          text: "แต้ม",
           icon: "mdi-gift",
           to: "/point"
         },

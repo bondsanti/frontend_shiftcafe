@@ -8,11 +8,81 @@ const formatPrice = total_price => {
   return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
+const formatPrice2 = total_price => {
+  const value = parseInt(total_price);
+  let val = (value / 1).toFixed(0).replace(",", ".");
+  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 const formatDate = date => {
   moment().format("LLLL");
   let strdate = moment(date).add(543, "years");
   return moment(strdate).format("D MMMM YYYY H:mm");
 };
+
+const checkIsMember = pay => {
+  let data = {
+    column: null,
+    table: []
+  };
+  if (pay.ref_cus_id.fname !== "guest" && pay.ref_cus_id.lname !== "guest") {
+    data.column = {
+      columns: [
+        {
+          text: "ลูกค้า : ",
+          bold: true,
+          width: 48,
+          fontSize: 10,
+          alignment: "left"
+        },
+        {
+          text: pay.ref_cus_id.fname + " " + pay.ref_cus_id.lname,
+          width: "*",
+          bold: true,
+          fontSize: 10,
+          alignment: "left"
+        }
+      ]
+    };
+    data.table = [
+      [
+        {
+          text: "แต้มคงเหลือล่าสุด",
+          border: [false, false, false, false],
+          fontSize: 14,
+          bold: true,
+          alignment: "left"
+        },
+        {
+          text: formatPrice2(pay.ref_cus_id.point) + " แต้ม",
+          border: [false, false, false, false],
+          fontSize: 14,
+          bold: true,
+          alignment: "right"
+        }
+      ],
+      [
+        {
+          text: "แต้มที่ได้รับ",
+          bold: true,
+          fontSize: 14,
+          border: [false, false, false, true],
+          margin: [0, 0, 0, 0]
+        },
+        {
+          text: formatPrice2(pay.ref_point_pay_id.point) + " แต้ม",
+          bold: true,
+          fontSize: 14,
+          border: [false, false, false, true],
+          margin: [0, 0, 0, 0],
+          alignment: "right"
+        }
+      ]
+    ];
+  }
+  return data;
+};
+
 export const printInvoicePdfPos = (pay, show, setting) => {
   const dataForTable = [];
   pay.ref_order_id.list_product.map((o, i) => {
@@ -193,6 +263,8 @@ export const printInvoicePdfPos = (pay, show, setting) => {
           }
         ]
       },
+
+      checkIsMember(pay).column,
       {
         text: "ใบเสร็จรับเงินเลขที่ : " + pay.invoice,
         bold: true,
@@ -266,43 +338,84 @@ export const printInvoicePdfPos = (pay, show, setting) => {
           ]
         }
       },
-      {
-        columns: [
-          {
-            text: "อาหารเครื่องดื่ม",
-            width: "*",
-            fontSize: 14,
-            bold: true,
-            alignment: "left"
-          },
-          {
-            text: formatPrice(pay.total_price) + " บาท",
-            width: "*",
-            fontSize: 14,
-            bold: true,
-            alignment: "right"
-          }
-        ]
-      },
+
       discount(),
       vat(),
+
       {
-        columns: [
-          {
-            text: "ราคาสุทธิ",
-            width: "*",
-            fontSize: 16,
-            bold: true,
-            alignment: "left"
-          },
-          {
-            text: formatPrice(pay.net_price) + " บาท",
-            width: "*",
-            fontSize: 16,
-            bold: true,
-            alignment: "right"
-          }
-        ]
+        table: {
+          headerRows: 1,
+          widths: ["*", "*"],
+          body: [
+            [
+              {
+                text: "อาหารเครื่องดื่ม",
+                border: [false, false, false, false],
+                fontSize: 14,
+                bold: true,
+                alignment: "left"
+              },
+              {
+                text: formatPrice(pay.total_price) + " บาท",
+                border: [false, false, false, false],
+                fontSize: 14,
+                bold: true,
+                alignment: "right"
+              }
+            ],
+            [
+              {
+                text: "ราคาสุทธิ",
+                bold: true,
+                fontSize: 16,
+                border: [false, false, false, true],
+                margin: [0, 5, 0, 5]
+              },
+              {
+                text: formatPrice(pay.net_price) + " บาท",
+                bold: true,
+                fontSize: 16,
+                border: [false, false, false, true],
+                margin: [0, 5, 0, 5],
+                alignment: "right"
+              }
+            ],
+            ...checkIsMember(pay).table
+            // [
+            //   {
+            //     text: "แต้มคงเหลือล่าสุด",
+            //     border: [false, false, false, false],
+            //     fontSize: 14,
+            //     bold: true,
+            //     alignment: "left"
+            //   },
+            //   {
+            //     text: formatPrice2(pay.ref_cus_id.point) + " แต้ม",
+            //     border: [false, false, false, false],
+            //     fontSize: 14,
+            //     bold: true,
+            //     alignment: "right"
+            //   }
+            // ],
+            // [
+            //   {
+            //     text: "แต้มที่ได้รับ",
+            //     bold: true,
+            //     fontSize: 14,
+            //     border: [false, false, false, true],
+            //     margin: [0, 0, 0, 0]
+            //   },
+            //   {
+            //     text: formatPrice2(pay.ref_point_pay_id.point) + " แต้ม",
+            //     bold: true,
+            //     fontSize: 14,
+            //     border: [false, false, false, true],
+            //     margin: [0, 0, 0, 0],
+            //     alignment: "right"
+            //   }
+            // ]
+          ]
+        }
       },
       {
         text: "ขอบคุณที่ใช้บริการครับ/ค่ะ",

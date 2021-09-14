@@ -1,16 +1,16 @@
 <template>
   <div class="" style="height: 100%">
     <v-card class="py-5 px-5" style="height: 100%;" color="secondary">
-      <v-dialog v-model="dialog" max-width="500px">
+      <v-dialog v-model="dialog" max-width="566px">
         <v-card class="rounded-xl" id="printable">
           <v-form>
-            <v-card-title>
-              <span class="text-h-6">
-                <v-icon left> mdi-note-text-outline </v-icon>
+            <v-card-title class="primary rounded-t-xl">
+              <span class="text-h-6 shades--text">
+                <v-icon left color="shades"> mdi-note-text-outline </v-icon>
                 หมายเลขใบเสร็จรับเงิน : {{ itemBy.invoice }}
               </span>
             </v-card-title>
-            <v-divider class="mb-3"></v-divider>
+            <v-divider class="mx-auto"></v-divider>
             <v-card-text>
               <v-row v-for="(de, i) in detailArr" :key="i">
                 <v-col cols="6" class="flex-grow-0 flex-shrink-0 text-center">
@@ -21,30 +21,32 @@
                 </v-col>
               </v-row>
             </v-card-text>
-            <v-divider class="mt-3"></v-divider>
-            <v-card-actions>
-              <v-btn color="teal" @click="printInvoice" dark class="rounded-xl">
-                <v-icon left> mdi-printer </v-icon>พิมพ์ใบเสร็จรับเงิน
+            <v-divider class="mt-1"></v-divider>
+            <v-card-actions class="shades rounded-xl">
+              <v-btn color="teal" text @click="printInvoice" dark>
+                <v-icon left> mdi-printer </v-icon>
+                <h4 class="hidden-sm-and-down">พิมพ์ใบเสร็จรับเงิน</h4>
               </v-btn>
-              <v-btn fab color="green" @click="printInvoicePdf" dark small>
+
+              <v-btn color="#FFB344" text @click="printInvoicePdf" dark>
                 <v-icon>mdi-cellphone </v-icon>
+                <h4 class="hidden-sm-and-down">ใบเสร็จรับเงินเต็ม</h4>
               </v-btn>
-              <v-btn
-                fab
-                color="light-green accent-3"
-                @click="printInvoicePdfPos"
-                dark
-                small
-              >
+              <v-btn text color="#E05D5D" @click="printInvoicePdfPos" dark>
                 <v-icon>mdi-printer-pos </v-icon>
+                <h4 class="hidden-sm-and-down">PDF</h4>
               </v-btn>
-              <!-- <v-btn color="teal" @click="print" dark class="rounded-xl">
-                <v-icon left> mdi-printer </v-icon>พิมพ์เทส
-              </v-btn> -->
               <v-spacer></v-spacer>
 
-              <v-btn color="error" @click="close" class="rounded-xl">
-                <v-icon left> mdi-close </v-icon>ปิด
+              <v-btn
+                color="error"
+                small
+                text
+                @click="close"
+                class="rounded-xl d-flex flex-row-reverse"
+              >
+                <v-icon left> mdi-close </v-icon>
+                <span class="hidden-sm-and-down" >ปิด</span>
               </v-btn>
             </v-card-actions>
           </v-form>
@@ -156,26 +158,38 @@
         </v-col>
       </v-row>
     </v-card>
-    <v-dialog v-model="dialogDelete" max-width="360px" width="auto">
+    <v-dialog v-model="dialogDelete" max-width="410px" width="auto">
       <v-card>
-        <v-card-title class="text-h5 primary--text   text-center">
+        <v-card-title class="shades--text justify-center error">
           {{
             typePayment === "disable"
               ? "แน่ใจแล้วใช่มั้ยที่จะยกเลิกบิล"
               : "แน่ใจแล้วใช่มั้ยที่จะเปิดการใช้งานบิล"
           }}
+          <v-icon color="shades" class="mx-2">mdi-delete</v-icon>
         </v-card-title>
-        <v-divider class="mt-3"></v-divider>
+        <v-divider class="mx-auto"></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="primary"
-            class="ma-2  rounded-xl"
+            x-large
+            color="warning"
+            text
+            rounded
+            class="rounded-xl"
             @click="dialogDelete = false"
           >
             <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon>ปิด
           </v-btn>
-          <v-btn color="red" class="ma-2  rounded-xl" @click="manageBill" dark>
+          <v-btn
+            class="rounded-xl my-3"
+            text
+            x-large
+            rounded
+            color="success"
+            @click="manageBill"
+            dark
+          >
             <v-icon aria-hidden="false"
               >{{
                 typePayment === "disable"

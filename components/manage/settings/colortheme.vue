@@ -30,7 +30,10 @@
       <v-card class="pa-3  rounded-xl" elevation="10">
         <v-card-actions class="d-flex justify-center ">
           <v-row>
-            <v-card-title class="ms-6 mt-3 mb-3">การกำหนดค่าธีม</v-card-title>
+            <v-card-title class="ms-6 mt-3 mb-3">
+              <v-icon class="mx-2">mdi-palette-outline</v-icon>
+              การกำหนดค่าธีม</v-card-title
+            >
             <v-btn
               color="red darken-1"
               class="mt-6 ms-6 mb-6"
@@ -44,7 +47,7 @@
             </v-btn>
           </v-row>
         </v-card-actions>
-
+        <v-divider class="mx-auto mb-6"></v-divider>
         <div>
           <v-row>
             <!-- Color-primary -->
@@ -454,14 +457,14 @@ export default {
   data() {
     return {
       colors: {
-        picker_secondary: {hex:null},
-        picker_primary: {hex:null},
-        picker_info: {hex:null},
-        picker_accent: {hex:null},
-        picker_warning: {hex:null},
-        picker_error: {hex:null},
-        picker_success: {hex:null},
-        picker_shades: {hex:null}
+        picker_secondary: { hex: null },
+        picker_primary: { hex: null },
+        picker_info: { hex: null },
+        picker_accent: { hex: null },
+        picker_warning: { hex: null },
+        picker_error: { hex: null },
+        picker_success: { hex: null },
+        picker_shades: { hex: null }
       },
       //
       dialog: false,
@@ -589,8 +592,8 @@ export default {
     const accent = localStorage.getItem("accent");
     const info = localStorage.getItem("info");
     const secondary = localStorage.getItem("secondary");
-    const shades = localStorage.getItem("shades")
-    this.colors.picker_shades.hex = shades ? shades: colors.shades;
+    const shades = localStorage.getItem("shades");
+    this.colors.picker_shades.hex = shades ? shades : colors.shades;
     this.colors.picker_primary.hex = primary ? primary : colors.primary;
     this.colors.picker_success.hex = success ? success : colors.success;
     this.colors.picker_error.hex = error ? error : colors.error;

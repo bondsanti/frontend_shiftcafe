@@ -225,22 +225,35 @@
       <!-- delete -->
       <v-dialog v-model="dialogDelete" max-width="410">
         <v-card color="shades">
-          <v-card-title class="primary--text text-center">
-            คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
+          <v-card-title class="shades--text justify-center error">
+            คุณต้องลบรายการนี้หรือไม่
+            <v-icon color="shades" class="mx-2">mdi-delete</v-icon>
           </v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="info" plain class="ma-2" @click="closeDelete">
+            <v-btn
+              x-large
+              color="warning"
+              text
+              rounded
+              class="rounded-xl"
+              @click="closeDelete"
+            >
               <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon
               >ยกเลิก
             </v-btn>
             <v-btn
-              color="error"
-              class="ma-2"
-              plain
+              class="rounded-xl my-3"
+              text
+              x-large
+              rounded
+              color="success"
+              :loading="loading"
               @click="deleteItemConfirm()"
             >
-              <v-icon aria-hidden="false"> mdi-delete-forever </v-icon>ลบ
+              <v-icon aria-hidden="false" class="mx-4">
+                mdi-delete-forever </v-icon
+              >ลบ
             </v-btn>
             <v-spacer></v-spacer>
           </v-card-actions>
@@ -657,6 +670,7 @@ export default {
   },
 
   data: () => ({
+    loading: false,
     // fielinput ปุ่มรีค่าในform
     fileInputKey: 0,
     //แคป
@@ -953,12 +967,21 @@ export default {
         this.$axios
           .$delete("/category/" + this.deleteId)
           .then(res => {
-            this.$emit("refresh");
-            this.closeDelete();
-            this.$swal({
-              type: "success",
-              title: res.message
-            });
+            this.loading = true;
+            setTimeout(() => {
+              this.loading = false;
+              this.closeDelete();
+              this.$emit("refresh");
+              this.$swal({
+                type: "success",
+                title: res.message,
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+              });
+            }, 500);
           })
           .catch(e => {
             this.$swal({
@@ -992,12 +1015,11 @@ export default {
     save() {
       if (this.type === "add") {
         this.$refs.form.validate();
-        this.loading = true;
+        this.loading = false;
         // formdata ส่งข้อมูลฟรอม
         let formdata = new FormData();
         formdata.append("cate_name", this.cate.cate_name);
         formdata.append("img", this.preImg);
-        //console.log(this.productsItem);
         // ส่งข้อมูลpost
         this.$axios
           .$post("/category", formdata)
@@ -1023,14 +1045,12 @@ export default {
             });
           });
       } else {
-        this.loading = true;
+        this.loading = false;
         let formdata = new FormData();
         formdata.append("cate_name", this.cate.cate_name);
         if (this.preImg !== null) {
           formdata.append("img", this.preImg);
         }
-        // console.log(this.productsItem);
-
         // ส่งข้อมูล put
         this.$axios
           .$put("/category/" + this.cate._id, formdata)

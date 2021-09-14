@@ -34,44 +34,45 @@
     </v-card>
 
     <v-dialog v-model="dialog" max-width="400">
-      <v-card class="pa-6 rounded-xl">
-        <p class="text-md-body-1 text-center">
+      <v-card class=" rounded-xl">
+        <v-card-title class="primary--text  justify-center ">
           ตั้งค่าอัตราการจ่ายแต้ม
-        </p>
-        <div>
-          <v-row>
+          <v-icon color="shades" class="mx-2">mdi-point</v-icon>
+        </v-card-title>
+        <v-divider class="mx-auto"></v-divider>
+        <v-card-actions class="mt-6">
+          <v-row color="primary">
             <v-col cols="12">
               <v-text-field
                 label="จำนวนเงิน"
                 prepend-inner-icon="mdi-point-of-sale"
-                class="rounded-xl"
+                solo
+                color="success"
                 v-model="settingitem.price_buy"
                 type="number"
-                rounded
               >
               </v-text-field>
             </v-col>
-          </v-row>
-          <v-row>
+
             <v-col cols="12">
               <v-text-field
                 label="จำนวนแต้ม"
+                solo
+                color="success"
                 prepend-inner-icon="mdi-file-powerpoint-box"
-                class="rounded-xl"
                 v-model="settingitem.point"
-                rounded
                 type="number"
               ></v-text-field>
             </v-col>
           </v-row>
-        </div>
+        </v-card-actions>
         <v-card-actions>
-          <v-btn color="error darken-1" text @click="close()">
+          <v-btn color="error " text rounded x-large @click="close()">
             <v-icon aria-hidden="false" class="mx-2"> mdi-close-box </v-icon>
             ยกเลิก
           </v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="save()">
+          <v-btn color="success" text rounded x-large @click="save()">
             <v-icon aria-hidden="false" class="mx-2">
               mdi-content-save
             </v-icon>
@@ -160,5 +161,3 @@ export default {
   }
 };
 </script>
-
-<style></style>

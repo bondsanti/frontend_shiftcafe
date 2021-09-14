@@ -442,22 +442,32 @@
 
           <v-dialog v-model="dialogDelete" max-width="310px">
             <v-card>
-              <v-card-title class=" white--text  primary">
-                <p class="text-center">
-                  คุณแน่ใจแล้วใช้มั้ยที่จะลบข้อมูล
-                </p>
+              <v-card-title class="shades--text justify-center error">
+                คุณต้องลบรายการนี้หรือไม่
+                <v-icon color="shades" class="mx-2">mdi-delete</v-icon>
               </v-card-title>
+              <v-divider class="mx-auto"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="info" small class="ma-2" @click="closeDelete">
+                <v-btn
+                  x-large
+                  color="warning"
+                  text
+                  rounded
+                  class="rounded-xl"
+                  @click="closeDelete"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box </v-icon
                   >ยกเลิก
                 </v-btn>
                 <v-btn
-                  small
-                  color="primary"
-                  class="ma-2"
+                  class="rounded-xl my-3"
+                  text
+                  x-large
+                  rounded
+                  color="success"
+                  :loading="loading"
                   @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="mx-4">
@@ -473,7 +483,6 @@
           <v-btn
             small
             class=" white--text mr-1 rounded-xl mb-1 mt-1"
-            
             color="teal"
             @click="Detail(item)"
           >
@@ -574,7 +583,7 @@ export default {
     dialogView: false,
     dialogedit: false,
     dialogDelete: false,
-
+    loading: false,
     search: "",
     // rules
     //
@@ -903,12 +912,21 @@ export default {
       this.$axios
         .$delete("/coupon/" + this.deleteId)
         .then(res => {
-          this.$emit("refresh");
-          this.closeDelete();
-          this.$swal({
-            type: "success",
-            title: res.message
-          });
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.closeDelete();
+            this.$emit("refresh");
+            this.$swal({
+              type: "success",
+              title: res.message,
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true
+            });
+          }, 500);
         })
         .catch(e => {
           this.$swal({
@@ -938,7 +956,7 @@ export default {
 
     save() {
       if (this.type === "add") {
-        this.loading = true;
+        this.loading = false;
         this.$refs.form.validate();
         this.$axios
           .$post("/coupon/", this.couponitem)
@@ -957,7 +975,7 @@ export default {
             });
           });
       } else {
-        this.loading = true;
+        this.loading = false;
         this.$axios
           .$put("/coupon/" + this.couponitem._id, this.couponitem)
           .then(res => {

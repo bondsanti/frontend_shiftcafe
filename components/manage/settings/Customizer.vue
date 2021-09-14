@@ -32,7 +32,7 @@
 
       <v-divider></v-divider>
 
-      <v-list dense>
+      <v-list dense color="shades">
         <v-list-item>
           <v-list-item-content>
             <h3>ชื่อร้าน:</h3>
@@ -91,7 +91,7 @@
             <h3>โลโก้:</h3>
           </v-list-item-content>
           <v-spacer></v-spacer>
-          <v-card color="#ccd1d6" class="px-1 pa-3 mt-2 ">
+          <v-card color="secondary" class="px-1 pa-3 mt-2 ">
             <v-img
               :src="`${$nuxt.context.env.config.IMG_URL}${settings.logo}`"
               class=""
@@ -129,7 +129,7 @@
     <!-- add  edit -->
     <v-dialog v-model="dialog" max-width="1200px" persistent>
       <v-card>
-        <v-card-title class=" grey lighten-2 mb-6">
+       <v-card-title class="shades--text justify-center primary mb-6">
           ตั้งค่า
         </v-card-title>
 

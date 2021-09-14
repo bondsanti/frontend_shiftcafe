@@ -110,20 +110,32 @@
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="410px">
             <v-card>
-              <v-card-title class="primary--text text-center">
-                คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
+              <v-card-title class="shades--text justify-center error">
+                คุณต้องลบรายการนี้หรือไม่
+                <v-icon color="shades" class="mx-2">mdi-delete</v-icon>
               </v-card-title>
+              <v-divider class="mx-auto"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="info" plain class="ma-2" @click="closeDelete">
+                <v-btn
+                  x-large
+                  color="warning"
+                  text
+                  rounded
+                  class="rounded-xl"
+                  @click="closeDelete"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box </v-icon
                   >ยกเลิก
                 </v-btn>
                 <v-btn
-                  color="error"
-                  plain
-                  class="ma-2"
+                  class="rounded-xl my-3"
+                  text
+                  x-large
+                  rounded
+                  color="success"
+                  :loading="loading"
                   @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="mx-4">
@@ -194,6 +206,7 @@ export default {
   data: () => ({
     dialog: false,
     dialogDelete: false,
+    loading: false,
     valid: true,
     search: "",
     headers: [
@@ -256,7 +269,7 @@ export default {
       if (result.products.length !== 0) {
         //alert("ลบไม่ได้นะจ้ะ");
         this.$swal.fire({
-          type: "error",
+          type: "info",
           title: "ลบไม่ได้ มีการใช้งานที่สินค้าตามรายชื่อด้านล่าง",
           text: result.products.map(p => p.product_name)
         });
@@ -265,12 +278,21 @@ export default {
         this.$axios
           .$delete("/unit/" + this.deleteId)
           .then(res => {
-            this.$emit("refresh");
-            this.closeDelete();
-            this.$swal({
-              type: "success",
-              title: res.message
-            });
+            this.loading = true;
+            setTimeout(() => {
+              this.loading = false;
+              this.closeDelete();
+              this.$emit("refresh");
+              this.$swal({
+                type: "success",
+                title: res.message,
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+              });
+            }, 500);
           })
           .catch(e => {
             this.$swal({
@@ -298,27 +320,10 @@ export default {
     save() {
       this.$refs.form.validate();
       if (this.type === "add") {
-        this.loading = true;
-        // this.$axios
-        //   .post("https://notify-api.line.me/api/notify", {
-        //     headers: {
-        //       "Content-Type": "application/x-www-form-urlencoded",
-        //       Authorization:
-        //         "Bearer j7U4MD5lkr2kSss9zJg7SiObRI4gHWUVMOTwkZLq47u"
-        //     },
-        //     data: "message=testing"
-        //   })
-        //   .then(response => {
-        //     console.log(response);
-        //   })
-        //   .catch(err => {
-        //     console.log(err);
-        //   });
-
+        this.loading = false;
         this.$axios
           .$post("/unit/", this.units)
           .then(res => {
-            //  console.log(res.message);
             this.$emit("refresh");
             this.close();
             this.$swal.fire({
@@ -333,7 +338,7 @@ export default {
             });
           });
       } else {
-        this.loading = true;
+        this.loading = false;
         this.$axios
           .$put("/unit/" + this.units._id, this.units)
           .then(res => {

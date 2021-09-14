@@ -56,6 +56,7 @@
           <q class="font-weight-black ">
             ระบบจะบันทึกกิจกรรมทุกอย่าง
           </q>
+          <v-icon color="info">mdi-spin mdi-update</v-icon>
         </v-alert>
       </v-card-text>
     </v-card>

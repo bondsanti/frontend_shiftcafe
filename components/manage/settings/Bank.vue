@@ -290,7 +290,7 @@
 
           <v-btn
             class="ma-1"
-            color="Success"
+            color="success"
             :disabled="!valid"
             @click="
               save();
@@ -313,14 +313,18 @@
       <v-card
         style="backdrop-filter:blur(5px); background-color:rgba(255,255,255,0.9); border-radius: 0.25rem; "
       >
-        <v-card-title class=" text-center ml-12">
-          แน่ใจแล้วใช่มั้ยที่จะลบ
-        </v-card-title>
+        <v-card-title class="shades--text justify-center error">
+                คุณต้องลบรายการนี้หรือไม่
+                <v-icon color="shades" class="mx-2">mdi-delete</v-icon>
+              </v-card-title>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="Success"
-            class="ma-2"
+            x-large
+                  color="warning"
+                  text
+                  rounded
+                  class="rounded-xl"
             @click="
               closeDelete();
               overlay = false;
@@ -332,8 +336,11 @@
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
-            color="primary"
-            class="ma-2"
+              class="rounded-xl my-3"
+                  text
+                  x-large
+                  rounded
+                  color="success"
             @click="
               deleteItemConfirm();
               overlay = false;
@@ -408,7 +415,7 @@
                   md="4"
                   lg="3"
                 >
-                  <v-card elevation="10" class="rounded-xl " width="350">
+                  <v-card elevation="10" class="rounded-xl " width="350" color="primary">
                     <v-img
                       height="150px"
                       contain
@@ -435,39 +442,39 @@
                         <v-btn
                           text
                           depressed
-                          color="primary accent-4"
+                          color="success"
                           @click="
                             Detail(item);
                             overlay = !overlay;
                           "
                         >
                           <span class="primary--text">
-                            <v-icon>mdi-eye-settings-outline</v-icon>
+                            <v-icon color="success" >mdi-eye-settings-outline</v-icon>
                           </span>
                           <v-icon></v-icon>
                         </v-btn>
                         <v-btn
                           text
-                          color="primary accent-4"
+                          color="warning"
                           @click="
                             editItem(item);
                             overlay = !overlay;
                           "
                         >
                           <span class="primary--text">
-                            <v-icon>mdi-pencil</v-icon>
+                            <v-icon color="warning" >mdi-pencil</v-icon>
                           </span>
                         </v-btn>
                         <v-btn
                           text
-                          color="primary accent-4"
+                          color="error"
                           @click="
                             deleteItem(item);
                             overlay = !overlay;
                           "
                         >
                           <span class="primary--text">
-                            <v-icon>mdi-delete</v-icon>
+                            <v-icon color="error">mdi-delete</v-icon>
                           </span>
                         </v-btn>
                       </v-row>

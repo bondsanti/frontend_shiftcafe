@@ -247,23 +247,40 @@
             </v-card>
           </v-dialog>
 
-          <v-dialog v-model="dialogDelete" max-width="270px">
+          <v-dialog v-model="dialogDelete" max-width="410px">
             <v-card>
-              <v-card-title class="text-h5 white--text  primary">
-                แน่ใจแล้วใช่มั้ยที่จะลบ
+              <v-card-title class="shades--text justify-center error">
+                คุณต้องลบรายการนี้หรือไม่
+                <v-icon color="shades" class="mx-2">mdi-delete</v-icon>
               </v-card-title>
+              <v-divider class="mx-auto"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="info" class="ma-2" @click="closeDelete">
+                <v-btn
+                  x-large
+                  color="warning"
+                  text
+                  rounded
+                  class="rounded-xl"
+                  @click="closeDelete"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
-                    mdi-ticket-percent-outline </v-icon
-                  >ยกเลิก</v-btn
+                    mdi-close-box </v-icon
+                  >ยกเลิก
+                </v-btn>
+                <v-btn
+                  class="rounded-xl my-3"
+                  text
+                  x-large
+                  rounded
+                  color="success"
+                  :loading="loading"
+                  @click="deleteItemConfirm()"
                 >
-                <v-btn color="primary" class="ma-2" @click="deleteItemConfirm">
                   <v-icon aria-hidden="false" class="mx-4">
-                    mdi-ticket-percent-outline</v-icon
-                  >ลบ</v-btn
-                >
+                    mdi-delete-forever </v-icon
+                  >ลบ
+                </v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -339,6 +356,7 @@ export default {
     dialog: false,
     dialogDelete: false,
     dialogPhoto: false,
+    loading: false,
     search: "",
     unitname: [],
     categoryname: [],
@@ -504,13 +522,23 @@ export default {
             "ไม่สามารถลบสินค้านี้ได้ เพราะมีการใช้งานอยู่ที่ประวัติคำสั่งซื้อเก่าๆ"
         });
       } else {
-        this.$axios.$delete("/product/" + this.deleteId).then(() => {
+        this.$axios.$delete("/product/" + this.deleteId).then(res => {
           this.product.splice(this.editedIndex, 1);
-          this.closeDelete();
-          this.$swal.fire({
-            type: "success",
-            title: "ลบสินค้าสำเร็จ"
-          });
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.closeDelete();
+            this.$emit("refresh");
+            this.$swal({
+              type: "success",
+              title: res.message,
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true
+            });
+          }, 500);
         });
       }
     },
@@ -534,7 +562,7 @@ export default {
     },
     save() {
       if (this.type === "add") {
-        this.loading = true;
+        this.loading = false;
         this.$refs.form.validate();
         let formdata = new FormData();
         formdata.append("product_name", this.productsItem.product_name);
@@ -575,7 +603,7 @@ export default {
             });
           });
       } else {
-        this.loading = true;
+        this.loading = false;
         let formdata = new FormData();
         formdata.append("product_name", this.productsItem.product_name);
         formdata.append("ref_uid", this.productsItem.ref_uid);

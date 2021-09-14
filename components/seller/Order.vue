@@ -4,16 +4,18 @@
       <v-dialog v-model="dialog" max-width="500px">
         <v-card class="rounded-xl">
           <v-form>
-            <v-card-title>
-              <span class="text-h ">
+            <v-card-title class="primary rounded-t-xl">
+              <span class="text-h  shades--text">
                 <span class="text-h"
-                  ><v-icon left> mdi-note-text-outline </v-icon> หมายเลขออเดอร์
-                  : {{ itemBy ? itemBy.order_no : "" }}<br /><v-icon left>
+                  ><v-icon left color="shades"> mdi-note-text-outline </v-icon>
+                  หมายเลขออเดอร์ : {{ itemBy ? itemBy.order_no : ""
+                  }}<br /><v-icon left color="shades">
                     mdi-clipboard-account </v-icon
                   >พนักงานที่รับออเดอร์ :
                   {{ itemBy ? itemBy.ref_emp_id.fname : "" }}
                   {{ itemBy ? itemBy.ref_emp_id.lname : "" }}
-                  <br /><v-icon left> mdi-card-account-details-outline </v-icon
+                  <br /><v-icon left color="shades">
+                    mdi-card-account-details-outline </v-icon
                   >ชื่อบิล : {{ itemBy ? itemBy.bill_name : "" }}
                 </span>
               </span>
@@ -21,7 +23,9 @@
             <v-divider class="mb-3"></v-divider>
             <v-card-text>
               <v-row>
-                <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center"
+                <v-col
+                  cols="4"
+                  class="flex-grow-0 flex-shrink-0 text-center mb-3"
                   ><h4>รายการ</h4></v-col
                 >
                 <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-center"
@@ -35,7 +39,7 @@
                 v-for="(item, i) in itemBy ? itemBy.list_product : []"
                 :key="i"
               >
-                <v-row no-gutters style="flex-wrap: nowrap">
+                <v-row no-gutters style="flex-wrap: nowrap" class="my-3">
                   <v-col cols="4" class="flex-grow-0 flex-shrink-0 text-left">
                     {{ item.name }}
                   </v-col>
@@ -61,17 +65,12 @@
             </v-card-text>
             <v-divider class="mt-n3"></v-divider>
             <v-card-actions>
-              <v-btn
-                color="success "
-                class="rounded-xl"
-                @click="for_cook"
-                outlined
-              >
+              <v-btn color="success " class="rounded-xl" @click="for_cook" text>
                 <v-icon left> mdi-printer-pos </v-icon>พิมพ์ใบสั่งทำ
               </v-btn>
               <v-spacer></v-spacer>
 
-              <v-btn color="error" @click="close" plain>
+              <v-btn color="error" text @click="close">
                 <v-icon left> mdi-close </v-icon>ปิด
               </v-btn>
             </v-card-actions>

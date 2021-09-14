@@ -273,20 +273,32 @@
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="410">
             <v-card>
-              <v-card-title class="primary--text text-center">
-                คุณแน่ใจหรือว่าต้องการลบรายการนี้หรือไม่?
+              <v-card-title class="shades--text justify-center error">
+                คุณต้องลบรายการนี้หรือไม่
+                <v-icon color="shades" class="mx-2">mdi-delete</v-icon>
               </v-card-title>
+              <v-divider class="mx-auto"></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="info" plain class="ma-2" @click="closeDelete">
+                <v-btn
+                  x-large
+                  color="warning"
+                  text
+                  rounded
+                  class="rounded-xl"
+                  @click="closeDelete"
+                >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box </v-icon
                   >ยกเลิก
                 </v-btn>
                 <v-btn
-                  color="error"
-                  plain
-                  class="ma-2"
+                  class="rounded-xl my-3"
+                  text
+                  x-large
+                  rounded
+                  color="success"
+                  :loading="loading"
                   @click="deleteItemConfirm()"
                 >
                   <v-icon aria-hidden="false" class="mx-4">
@@ -329,7 +341,6 @@
             class="mr1 rounded-xl"
             color="teal"
             elevation="10"
-            
             @click="Detail(item.detail)"
           >
             <div class="d-block  white--text">
@@ -412,6 +423,7 @@ export default {
     dialogDelete: false,
     dialogDetail: false,
     dialogPhoto: false,
+    loading: false,
     //
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valiid: true,
@@ -633,12 +645,21 @@ export default {
       this.$axios
         .$delete("/level-member/" + this.deleteId)
         .then(res => {
-          this.$emit("refresh");
-          this.closeDelete();
-          this.$swal({
-            type: "success",
-            title: res.message
-          });
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.closeDelete();
+            this.$emit("refresh");
+            this.$swal({
+              type: "success",
+              title: res.message,
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true
+            });
+          }, 500);
         })
         .catch(e => {
           this.$swal({
@@ -670,7 +691,7 @@ export default {
     // บันทึก
     save() {
       if (this.type === "add") {
-        this.loading = true;
+        this.loading = false;
         this.$refs.form.validate();
         let formdata = new FormData();
         formdata.append("level_name", this.levelmemberitme.level_name);
@@ -709,7 +730,7 @@ export default {
             });
           });
       } else {
-        this.loading = true;
+        this.loading = false;
 
         let formdata = new FormData();
         formdata.append("level_name", this.levelmemberitme.level_name);

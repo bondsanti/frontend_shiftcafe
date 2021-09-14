@@ -471,7 +471,13 @@
                 </v-form>
               </v-card-text>
               <v-card-text>
-                <v-alert outlined type="warning" prominent border="left">
+                <v-alert
+                  outlined
+                  type="warning"
+                  prominent
+                  border="left"
+                  class="d-lg-none"
+                >
                   โปรดกรอกข้อความให้ในช่อง และ
                   <q class="font-weight-black"
                     >กดปุ่มตรวจสอบเบอร์ทุกครั้งเพื่อไม่ให้ซ้ำกัน</q
@@ -488,14 +494,14 @@
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-close-box
                   </v-icon>
-                  ยกเลิก
+                  <span class="hidden-sm-and-down"> ยกเลิก</span>
                 </v-btn>
                 <v-spacer></v-spacer>
                 <v-btn class="ma-1 rounded-xl" color="info" @click="save()">
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
                   </v-icon>
-                  บันทึกข้อมูลลูกค้า
+                  <span class="hidden-sm-and-down"> บันทึกข้อมูลลูกค้า</span>
                 </v-btn>
               </v-card-actions>
             </v-card>

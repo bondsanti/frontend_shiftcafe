@@ -6,22 +6,13 @@
         this.$store.getters["setting"][0].head_title
       }}</v-toolbar-title>
       <v-btn icon @click="$nuxt.refresh()">
-        <v-icon>mdi-refresh</v-icon>
+        <v-icon> mdi-refresh</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-      <!-- <v-switch
-        class="mx-6 mt-6"
-        v-model="$vuetify.theme.dark"
-        hint=""
-        color="info"
-        inset
-        label="ธีม"
-        persistent-hint
-      ></v-switch> -->
       <span class="mr-4  hidden-xs-only font-weight-bold">{{ timer }}</span>
 
       <v-avatar size="36px" class="mr-2 hidden-xs-only">
-        <v-icon x-large>mdi-account-circle</v-icon>
+        <v-icon x-large> mdi-account-circle</v-icon>
       </v-avatar>
 
       <v-toolbar-title
@@ -188,22 +179,18 @@ export default {
   },
   methods: {
     logout() {
-      this.$axios.$post("/authen/logout").then(async () => {
-        await this.$auth.logout();
-        this.$router.push("/login");
+      this.$axios.$post("/authen/logout").then(async res => {
         this.$swal.fire({
           type: "info",
           toast: true,
           position: "top-end",
           showConfirmButton: false,
           timer: 3000,
-          timerProgressBar: true,
-          title: "ออกจากระบบเรียบร้อยแล้ว",
-          didOpen: toast => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
-          }
+          title: res.message
         });
+        await this.$auth.logout();
+        this.$router.push("/login");
+        // console.log(res);
       });
     },
     getTime() {

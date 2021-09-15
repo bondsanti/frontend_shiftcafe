@@ -101,19 +101,19 @@
               </v-form>
               <v-divider class="mt-n3"></v-divider>
               <v-card-actions>
-                <v-spacer></v-spacer>
                 <v-btn
                   color="error"
                   class="mr-1 rounded-xl"
-                  elevation="1"
+                  text
                   @click="close"
                 >
                   <v-icon left> mdi-close </v-icon>ปิด
                 </v-btn>
+                <v-spacer></v-spacer>
                 <v-btn
-                  color="primary"
+                  color="success"
                   class="mr-1 rounded-xl"
-                  elevation="1"
+                  text
                   :disabled="!valid"
                   @click="saveData()"
                 >
@@ -151,25 +151,29 @@
                   </v-row>
                 </v-card-text>
               </v-form>
-              <v-divider class="mt-n3"></v-divider>
+              <v-divider></v-divider>
               <v-card-actions>
-                <v-spacer></v-spacer>
                 <v-btn
                   color="error"
+                  text
+                  x-large
                   class="mr-1 rounded-xl"
-                  elevation="1"
                   @click="closeedit"
                 >
-                  <v-icon left> mdi-close </v-icon>ปิด
+                  <v-icon left> mdi-close </v-icon>
+                  <span class="hidden-xs-and-down">ปิด</span>
                 </v-btn>
+                <v-spacer></v-spacer>
                 <v-btn
                   color="primary"
+                  text
+                  x-large
                   class="mr-1 rounded-xl"
-                  elevation="1"
                   :disabled="!valid"
                   @click="saveData()"
                 >
-                  <v-icon left> mdi-content-save </v-icon>บันทึก
+                  <v-icon left> mdi-content-save </v-icon>
+                  <span class="hidden-xs-and-down">บันทึก</span>
                 </v-btn>
               </v-card-actions>
             </v-form>
@@ -227,7 +231,6 @@
                 <v-btn
                   class="rounded-xl my-3"
                   text
-                  x-large
                   rounded
                   color="success"
                   :disabled="
@@ -249,9 +252,8 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn
             class="mr-1 rounded-xl ma-2"
-            elevation="1"
-            color="warning"
             small
+            color="warning"
             @click="editItem(item)"
             :disabled="$store.getters['position'] === 'checker'"
           >
@@ -262,9 +264,8 @@
           </v-btn>
           <v-btn
             class="mr-1 rounded-xl ma-2"
-            elevation="1"
-            color="error"
             small
+            color="error"
             :disabled="
               $store.getters['position'] === 'cashier' ||
                 $store.getters['position'] === 'checker'
@@ -425,8 +426,7 @@ export default {
               toast: true,
               position: "top-end",
               showConfirmButton: false,
-              timer: 500,
-              timerProgressBar: true
+              timer: 1500
             });
           }, 500);
         })

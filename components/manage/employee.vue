@@ -1186,7 +1186,7 @@ export default {
           html: `Username มีผู้ใช้งานอยู่แล้ว`,
           showConfirmButton: false,
           timer: 10000,
-          timerProgressBar: true
+          
         });
       } else {
         this.usernameErr = false;
@@ -1199,7 +1199,7 @@ export default {
           html: `สามารถใช้งาน Username นี้ได้`,
           showConfirmButton: false,
           timer: 10000,
-          timerProgressBar: true
+         
         });
       }
       //return { category };

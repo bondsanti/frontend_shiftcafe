@@ -767,7 +767,7 @@ export default {
         position: "top-end",
         showConfirmButton: false,
         timer: 3000,
-        timerProgressBar: true,
+        
         title: "เพิ่ม"
       });
     },
@@ -808,7 +808,7 @@ export default {
         position: "top-end",
         showConfirmButton: false,
         timer: 3000,
-        timerProgressBar: true,
+       
         title: "ลบ"
       });
     },
@@ -979,7 +979,7 @@ export default {
                 position: "top-end",
                 showConfirmButton: false,
                 timer: 2000,
-                timerProgressBar: true
+                
               });
             }, 500);
           })

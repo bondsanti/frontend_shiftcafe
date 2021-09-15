@@ -52,6 +52,15 @@ module.exports = {
    ** Plugins to load before mounting the App
    */
   plugins: [],
+  render: {
+    csp: {
+      hashAlgorithm: "sha256",
+      policies: {
+        "default-src": ["'self'", "https://api.shift-cafe.com"]
+      },
+      addMeta: true
+    }
+  },
 
   /*
    ** Nuxt.js modules

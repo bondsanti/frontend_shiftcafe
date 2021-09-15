@@ -12,7 +12,7 @@
                 :rules="rules"
                 autofocus
                 v-model="bill_name"
-                @keypress.enter="addOrderToDatabase"
+                @keypress.enter.prevent="addOrderToDatabase"
               ></v-text-field>
             </v-card-text>
           </v-form>

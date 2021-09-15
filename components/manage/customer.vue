@@ -810,9 +810,7 @@ export default {
           position: "top-end",
           showConfirmButton: false,
           timer: 3000,
-          timerProgressBar: true,
-
-          timerProgressBar: true
+         
         });
       } else {
         this.telErr = false;
@@ -823,7 +821,7 @@ export default {
           position: "top-end",
           showConfirmButton: false,
           timer: 3000,
-          timerProgressBar: true,
+         
           title: "ใช้งานได้"
         });
       }

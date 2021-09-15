@@ -51,7 +51,7 @@
               </v-form>
             </div>
 
-            <v-btn block light @click="login" :disabled="!valid">  Login </v-btn>
+            <v-btn block light @click="login" :disabled="!valid"> Login </v-btn>
           </v-col>
           <v-col cols="1" sm="1" md="3" lg="4"></v-col>
         </v-row>
@@ -149,16 +149,19 @@ export default {
             position: "top-end",
             showConfirmButton: false,
             timer: 3000,
-            timerProgressBar: true,
-            title: res.data.message,
-            didOpen: toast => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-            }
+            title: res.data.message
           });
         } else {
-          this.snackbar = true;
+          this.snackbar = false;
           this.error = res.data.message;
+          this.$swal.fire({
+            type: "error",
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            title: res.data.message
+          });
         }
       });
     }

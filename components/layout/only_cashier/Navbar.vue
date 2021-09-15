@@ -127,22 +127,17 @@ export default {
   methods: {
     // ออกจากระบบ
     logout() {
-      this.$axios.$post("/authen/logout").then(async () => {
-        await this.$auth.logout();
-        this.$router.push("/login");
+      this.$axios.$post("/authen/logout").then(async res => {
         this.$swal.fire({
           type: "info",
           toast: true,
           position: "top-end",
           showConfirmButton: false,
           timer: 3000,
-          timerProgressBar: true,
-          title: "ออกจากระบบเรียบร้อยแล้ว",
-          didOpen: toast => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
-          }
+          title: res.message
         });
+        await this.$auth.logout();
+        this.$router.push("/login");
       });
     },
     //

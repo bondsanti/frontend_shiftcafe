@@ -164,21 +164,30 @@ export default {
   },
 
   methods: {
-    async logout() {
-      await this.$auth.logout();
-      this.$router.push("/login");
-      this.$swal.fire({
-        type: "info",
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        title: "ออกจากระบบเรียบร้อยแล้ว",
-        didOpen: toast => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        }
+    // async logout() {
+    //   await this.$auth.logout();
+    //   this.$router.push("/login");
+    //   this.$swal.fire({
+    //     type: "info",
+    //     toast: true,
+    //     position: "top-end",
+    //     showConfirmButton: false,
+    //     timer: 3000,
+    //     title: "ออกจากระบบเรียบร้อยแล้ว",
+    //   });
+    // },
+    logout() {
+      this.$axios.$post("/authen/logout").then(async res => {
+        this.$swal.fire({
+          type: "info",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          title: res.message
+        });
+        await this.$auth.logout();
+        this.$router.push("/login");
       });
     },
     formatPrice(Sumtotal) {

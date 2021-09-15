@@ -289,14 +289,14 @@ export default {
                 toast: true,
                 position: "top-end",
                 showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true
+                timer: 2000,               
               });
             }, 500);
           })
           .catch(e => {
             this.$swal({
               type: "error",
+              toast: true,
               title: e
             });
           });

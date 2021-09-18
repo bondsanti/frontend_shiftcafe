@@ -273,7 +273,7 @@ export default {
       for (let i in this.customers) {
         let cus = {
           _id: this.customers[i]._id,
-          name: `${this.customers[i].fname} ${this.customers[i].lname} || tel : ${this.customers[i].tel}`
+          name: `${this.customers[i].fname} ${this.customers[i].lname} || เบอร์ : ${this.customers[i].tel} >> แต้ม(P): ${this.customers[i].point}` 
         };
         this.customers2.push(cus);
       }

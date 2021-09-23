@@ -125,6 +125,7 @@
                 <v-tooltip top>
                   <template v-slot:activator="{ attrs, on }">
                     <v-btn
+                      :disabled="checkDisable"
                       v-bind="attrs"
                       v-on="on"
                       small
@@ -222,6 +223,7 @@
                       <v-tooltip top>
                         <template v-slot:activator="{ attrs, on }">
                           <v-btn
+                            :disabled="checkDisable"
                             v-bind="attrs"
                             v-on="on"
                             small
@@ -629,6 +631,15 @@ export default {
     },
     for_chef(i) {
       printOrder(this.orderOnDatabase[i], this.products, this.unit);
+    }
+  },
+  computed: {
+    checkDisable() {
+      if (this.$store.getters["position"] === "staff") {
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 };

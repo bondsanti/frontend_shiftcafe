@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
+    "test": "SET NODE_ENV=production && nuxt",
     "build": "nuxt build",
     "start": "SET NODE_ENV=production && nuxt start",
     "generate": "nuxt generate"

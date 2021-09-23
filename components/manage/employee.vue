@@ -60,7 +60,7 @@
 
       <v-data-table
         :headers="headers"
-        :items="employee"
+        :items="employeeFilter"
         :search="search"
         :items-per-page="15"
         :footer-props="{
@@ -127,6 +127,7 @@
                         class="justify-center align-center"
                       >
                         <v-btn
+                          :disabled="employeeitmeadd.username == ''"
                           class="mr-1 rounded-xl mb-1 mt-1"
                           elevation="10"
                           color="warning"
@@ -300,8 +301,8 @@
                   class="ma-1  rounded-xl"
                   color="info"
                   elevation="10"
-                  :disabled="!valid"
                   @click="save()"
+                  :disabled="!valid"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
                     mdi-content-save
@@ -315,7 +316,7 @@
           <!-- ********************************************************************************************************************************************************************** -->
 
           <!-- edi------------------------------------------------------------------ -->
-          <v-dialog v-model="dialog" max-width="650px">
+          <v-dialog v-model="dialog" max-width="650px" persistent>
             <v-card>
               <v-card-title>
                 <span class="text-h5"
@@ -539,29 +540,51 @@
           <!-- -----------------------------------------edi-->
 
           <!-- password--------------------------------------------- -->
-          <v-dialog v-model="dialogpass" max-width="600px">
+          <v-dialog v-model="dialogpass" max-width="600px" persistent>
             <v-card class="rounded-xl">
               <v-card-title>
                 <span class="text-h5"
                   ><v-icon left> mdi-card-account-details-outline </v-icon>
                   เปลี่ยนรหัสผ่าน</span
                 >
-                <v-btn text color="error" class="mr-4 ml-2" @click="reset">
+                <v-btn
+                  text
+                  color="error"
+                  class="mr-4 ml-2"
+                  @click="$refs.formPass.reset()"
+                >
                   รีเซ็ตแบบฟอร์ม
                 </v-btn>
               </v-card-title>
 
               <v-card-text>
-                <v-form v-model="valid" ref="form">
+                <v-form v-model="validPass" ref="formPass">
                   <div>
                     <v-row>
                       <v-col cols="12"> </v-col>
                       <v-col cols="12" sm="12">
                         <v-text-field
-                          v-model="employeeitme.password"
-                          :rules="requiredRules"
+                          v-model="password.new"
+                          :rules="checknewPassword"
                           hide-details="auto"
-                          label="PASSWORD"
+                          label="รหัสผ่านใหม่"
+                          outlined
+                          clearable
+                          type="password"
+                          required
+                          color="primary"
+                          append-icon="mdi-lock"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col cols="12"> </v-col>
+                      <v-col cols="12" sm="12">
+                        <v-text-field
+                          v-model="password.reNew"
+                          :rules="checkReNewPassword"
+                          hide-details="auto"
+                          label="กรอกรหัสผ่านใหม่อีกครั้ง"
                           outlined
                           clearable
                           type="password"
@@ -597,7 +620,7 @@
                   class="ma-1 rounded-xl"
                   elevation="10"
                   color="info"
-                  :disabled="!valid"
+                  :disabled="!validPass"
                   @click="save()"
                 >
                   <v-icon aria-hidden="false" class="mx-2">
@@ -751,7 +774,7 @@
             แก้ไข
           </v-btn>
           <v-btn
-            disabled
+            :disabled="checkDisable"
             rounded-pill
             class="mr-1 rounded-xl mb-1 mt-1"
             elevation="10"
@@ -778,7 +801,7 @@
               <v-icon aria-hidden="false">
                 mdi-lock
               </v-icon>
-              เปลียนรหัสผ่าน
+              เปลี่ยนรหัสผ่าน
             </div>
           </v-btn>
         </template>
@@ -846,7 +869,7 @@
           </v-chip>
         </template>
         <template v-slot:no-data>
-          <v-btn color="primary" @click="employee">
+          <v-btn color="primary" @click="$nuxt.refresh()">
             Reset(ข้อมูลไม่โหลด)
           </v-btn>
         </template>
@@ -873,6 +896,7 @@ export default {
     //
     rules: [value => !!value || "โปรดกรอกข้อมูลให้ครบถ้วน"],
     valid: true,
+    validPass: true,
     search: "",
     roleitme: [],
     pnamesec: ["นาย", "นาง", "นางสาว", "Guest"],
@@ -910,6 +934,10 @@ export default {
       tel: " ",
       email: "",
       address: ""
+    },
+    password: {
+      new: null,
+      reNew: null
     },
     employeeitmeadd: {
       _id: "",
@@ -1000,9 +1028,6 @@ export default {
   },
 
   methods: {
-    reset() {
-      this.$refs.form.reset();
-    },
     canelOTP() {
       this.e1 = 1;
       this.telManager = null;
@@ -1185,8 +1210,7 @@ export default {
           position: "top-end",
           html: `Username มีผู้ใช้งานอยู่แล้ว`,
           showConfirmButton: false,
-          timer: 10000,
-          
+          timer: 10000
         });
       } else {
         this.usernameErr = false;
@@ -1198,10 +1222,12 @@ export default {
           position: "top-end",
           html: `สามารถใช้งาน Username นี้ได้`,
           showConfirmButton: false,
-          timer: 10000,
-         
+          timer: 10000
         });
       }
+      return new Promise((resolve, reject) => {
+        resolve(this.usernameErr);
+      });
       //return { category };
     },
     reset() {
@@ -1288,12 +1314,16 @@ export default {
     },
     closePass() {
       this.dialogpass = false;
+      this.$refs.formPass.reset();
+      this.$refs.formPass.resetValidation();
+
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
       });
     },
     closeadd() {
       this.dialogadd = false;
+      this.$refs.form.resetValidation();
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem);
       });
@@ -1377,28 +1407,38 @@ export default {
       this.dialogView = true;
     },
 
-    save() {
+    async save() {
       if (this.type === "add") {
         this.$refs.form.validate();
-        this.loading = true;
-        this.$axios
-          .$post("/employee/", this.employeeitmeadd)
-          .then(res => {
-            //  console.log(res.message);
-            this.$emit("refresh");
-            this.closeadd();
-            this.$swal.fire({
-              type: "success",
-              title: res.message
+        const res = await this.check();
+        //console.log(res);
+        if (!this.usernameErr) {
+          this.loading = true;
+          this.$axios
+            .$post("/employee/", this.employeeitmeadd)
+            .then(res => {
+              //  console.log(res.message);
+              this.$emit("refresh");
+              this.closeadd();
+              this.$swal.fire({
+                type: "success",
+                title: res.message
+              });
+              this.$refs.form.resetValidation();
+            })
+            .catch(e => {
+              this.$swal({
+                type: "error",
+                title: e
+              });
             });
-          })
-          .catch(e => {
-            this.$swal({
-              type: "error",
-              title: e
-            });
-          });
+        }
       } else {
+        //console.log(this.password);
+        if (this.password.new && this.password.reNew) {
+          this.employeeitme.password = this.password.reNew;
+        }
+        //console.log(this.employeeitme);
         this.loading = true;
         this.$axios
           .$put("/employee/" + this.employeeitme._id, this.employeeitme)
@@ -1411,6 +1451,7 @@ export default {
             this.closePass();
             this.close();
             this.improverole;
+            this.$refs.form.resetValidation();
           })
           .catch(e => {
             console.log(e);
@@ -1420,7 +1461,30 @@ export default {
   },
   props: ["employee", "role"],
   computed: {
-    ...mapState("auth", ["user"])
+    ...mapState("auth", ["user"]),
+    employeeFilter() {
+      const result = this.employee.filter(e => e._id !== this.user._id);
+      //console.log(this.user);
+      return result;
+    },
+    checkDisable() {
+      const { position } = this.user.ref_id_role;
+      //console.log(position);
+      if (position === "admin") {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    checknewPassword() {
+      return [v => !!v || "โปรดกรอกข้อมูล"];
+    },
+    checkReNewPassword() {
+      return [
+        v => v === this.password.new || "รหัสผ่านไม่ตรงกัน",
+        v => !!v || "โปรดกรอกข้อมูล"
+      ];
+    }
   }
 };
 </script>
